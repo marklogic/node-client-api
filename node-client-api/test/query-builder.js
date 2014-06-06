@@ -1089,24 +1089,57 @@ describe('query-builder', function() {
 
   it('should specify a constraint', function(){
     assert.deepEqual(
-        q.range('key1', q.bind('constraint1')),
-        {range:{
-          'json-key': 'key1'
+        q.collection('foo', q.bind('constraint1')),
+        {collection:{
+          prefix: 'foo'
           },
           name:'constraint1'}
         );
+    // TODO: test with fragmentScope
+    assert.deepEqual(
+        q.scope('foo', q.bind('constraint1')),
+        {'container':{'json-key': 'foo'},
+          name:'constraint1'}
+        );
+    // TODO: test with geoOptions
+    assert.deepEqual(
+        q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1')),
+        {'geo-attr-pair':{parent:{name:'parent'},
+          lat:{name:'latitude'}, lon:{name:'longitude'}},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoElement('parent', 'element', q.bind('constraint1')),
+        {'geo-elem':{parent:{name:'parent'},
+          element:{name:'element'}},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1')),
+        {'geo-elem-pair':{parent:{name:'parent'},
+          lat:{name:'latitude'}, lon:{name:'longitude'}},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoPath('foo', q.bind('constraint1')),
+        {'geo-path':{'path-index':{text: 'foo'}},
+          name:'constraint1'}
+        );
+    // TODO: test with rangeOption
+    assert.deepEqual(
+        q.range('key1', q.bind('constraint1')),
+        {range:{'json-key': 'key1'},
+          name:'constraint1'}
+        );
+    // TODO: test with termOption
     assert.deepEqual(
         q.value('key1', q.bind('constraint1')),
-        {value:{
-          'json-key': 'key1'
-          },
+        {value:{'json-key': 'key1'},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.word('key1', q.bind('constraint1')),
-        {word:{
-          'json-key': 'key1'
-          },
+        {word:{'json-key': 'key1'},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1352,6 +1385,23 @@ describe('document query', function(){
       var built = q.slice(0);
       built.sliceClause.should.be.ok;
       built.sliceClause['page-length'].should.equal(0);
+    });
+    it('should initialize and modify a query', function(){
+      // serialize to JSON so the seed has no functions
+      var seed = q.where(
+          q.collection('foo')
+      );
+      var marshalled = JSON.stringify(seed);
+      var unmarshalled = JSON.parse(marshalled);
+      var built = q.init(unmarshalled).slice(11, 10);
+      built.whereClause.should.be.ok;
+      built.whereClause.query.should.be.ok;
+      built.whereClause.query.queries.should.be.ok;
+      built.whereClause.query.queries.length.should.equal(1);
+      built.whereClause.query.queries[0]['collection-query'].should.be.ok;
+      built.sliceClause.should.be.ok;
+      built.sliceClause['page-start'].should.equal(11);
+      built.sliceClause['page-length'].should.equal(10);
     });
   });
 });

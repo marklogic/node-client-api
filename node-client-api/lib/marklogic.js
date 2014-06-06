@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 var documents    = require('./documents.js');
-var queryBuilder = require('../lib/query-builder.js');
+var transactions = require('./transactions.js');
+var queryBuilder = require('./query-builder.js');
 
 function MarkLogicClient(connectionParams) {
   this.connectionParams = connectionParams;
 
   // operations grouped by entity
-  this.documents = new documents(this);
+  this.documents    = new documents(this);
+  this.transactions = new transactions(this);
 
   // operation shortcuts
   this.check             = this.documents.check;

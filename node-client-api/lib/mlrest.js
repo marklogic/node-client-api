@@ -18,11 +18,7 @@ var events                = require("events");
 var http                  = require('http');
 var createAuthInitializer = require('www-authenticate');
 var Promise               = require("bluebird");
-
-// TODO: move to util library
-function isString(o) {
-  return (typeof(o) === 'string' || o instanceof String);
-}
+var mlutil                = require('./mlutil.js');
 
 function createAuthenticator(client, user, password, challenge) {
   var authenticator = createAuthInitializer.call(null, user, password)(challenge);
@@ -219,11 +215,11 @@ function proxyOnEnd() {
     } else if (this.data === null) {
       this.resolve();          
     } else if (this.data.length === 1) {
-// TODO: determine whether to parse based on the content type
-      if (isString(this.data[0])) {
-        this.resolve(JSON.parse(this.data[0]));          
+// TODO: set the format in the mapper to signal whether to parse
+      if (mlutil.isString(this.data[0])) {
+        this.resolve((this.format === 'text') ? this.data[0] : JSON.parse(this.data[0]));          
       } else if (this.data[0] instanceof Buffer) {
-        this.resolve(JSON.parse(this.data[0].toString()));          
+        this.resolve(JSON.parse(this.data[0].toString()));
       } else {
         this.resolve(this.data[0]);
       }
@@ -293,8 +289,32 @@ function ResponseProxy(mapper, hasSingleResult) {
   this.mapper          = mapper;
   this.hasSingleResult = (hasSingleResult === true);
   this.collector       = responseCollector.bind(this);
+  this.format          = null;
 }
 util.inherits(ResponseProxy, events.EventEmitter);
+
+function emptyEventMapper(response, proxy) {
+  var addErrorListener = true;
+  var eventNames = ['error', 'end'];
+  for (var i=0; i < eventNames.length; i++) {
+    var event = eventNames[i];
+    var listeners = proxy.listeners(event);
+    if (listeners.length === 0)
+      continue;
+    switch(event) {
+    case 'error':
+      addErrorListener = false;
+      break;
+    }
+    for (var j=0; j < listeners.length; j++) {
+      response.on(event, listeners[j]);
+    }
+  }
+  if (addErrorListener) {
+    response.on('error', mlutil.requestErrorHandler);
+  }
+  response.resume();
+}
 
 // TODO: accept response proxy instead of responder
 function createRequest(client, options, writable, responder) {
@@ -341,7 +361,8 @@ function createResponder(responseProxy, withStream) {
 }
 
 module.exports = {
-    request:   createRequest,
-    response:  createResponse,
-    responder: createResponder
+    request:          createRequest,
+    response:         createResponse,
+    responder:        createResponder,
+    emptyEventMapper: emptyEventMapper
 };

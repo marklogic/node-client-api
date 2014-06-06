@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var mlutil = require('./mlutil.js');
+
 var comparisons = {
     '<'  : 'LT',
     '<=' : 'LE',
@@ -42,84 +44,28 @@ var datatypes = {
     'xs:unsignedLong':      'xs:unsignedLong',
     'xs:yearMonthDuration': 'xs:yearMonthDuration'
 };
-function asArray(args, length) {
-  if (!(args instanceof Array || args.callee))
-    return [args];
-  var sliceLength = (length) ? length : args.length;
-  switch (sliceLength) {
-  case 0:
-    return [];
-  case 1:
-    var first = args[0];
-    return (first instanceof Array) ? first : [first];
-  default:
-    return Array.prototype.slice.call(args, 0, sliceLength);
-  }
-}
-function isString(value) {
-  return (value instanceof String || (typeof value) === 'string');
-}
-function isNumber(value) {
-  return (value instanceof Number || (typeof value) === 'number');
-}
-function isBoolean(value) {
-  return (value instanceof Boolean || (typeof value) === 'boolean');
-}
-function arrayCount(args, count) {
-  switch(args.length) {
-  case 0:
-    return args;
-  case 1:
-    var first = args[0];
-    if (first instanceof Array) {
-      if (first.length <= count) {
-        return first;
-      }
-      return Array.prototype.slice.call(first, 0, count);
-    }
-    return [first];
-  default:
-    if (args.length <= count) {
-      return args;
-    }
-    return Array.prototype.slice.call(args, 0, count);
-  }
-}
-function first(args) {
-  switch(args.length) {
-  case 0:
-    return {};
-  case 1:
-    var firstArg = args[0];
-    if (firstArg instanceof Array) {
-      return firstArg[0];
-    }
-    return firstArg;
-  default:
-    return args[0];
-  }
+function asIndex(index) {
+  return mlutil.isString(index) ? property(index) : index;
 }
 function addIndex(query, index, isContainer) {
   var containerOnly = isContainer || false;
-  if (index.property) {
-    query['json-key'] = index.property;
-  } else if (index.element) {
+  if (index['json-key'] !== undefined) {
+    query['json-key'] = index['json-key'];
+  } else if (index.element !== undefined) {
     query.element = index.element;
-    if (index.attribute) {
+    if (index.attribute !== undefined) {
       query.attribute = attribute;
     }
-  } else if (isString(index)) {
-    query['json-key'] = index;
   } else if (containerOnly) {
-  } else if (index.field) {
+  } else if (index.field !== undefined) {
     query.field = index.field;
-  } else if (index['path-index']) {
+  } else if (index['path-index'] !== undefined) {
     query['path-index'] = index['path-index'];
   }
 }
 
 function and() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var query = {
     queries: []
   };
@@ -131,7 +77,7 @@ function and() {
       seekingOrdered = false;
     } else if (arg instanceof Array){
       Array.prototype.push.apply(query.queries, arg);
-    } else if (seekingOrdered && isBoolean(arg)) {
+    } else if (seekingOrdered && mlutil.isBoolean(arg)) {
       query.ordered = arg;
       seekingOrdered = false;
     } else {
@@ -141,7 +87,7 @@ function and() {
   return {'and-query': query};
 }
 function andNot() {
-  var args = arrayCount(arguments, 2);
+  var args = mlutil.arrayCount(arguments, 2);
   switch(args.length) {
   case 0:
     throw new Error('missing positive and negative queries: '+args);
@@ -155,7 +101,7 @@ function andNot() {
   }
 }
 function attribute() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   switch(args.length) {
   case 0:
     throw new Error('missing element and attribute: '+args);
@@ -194,7 +140,7 @@ function attribute() {
  }
 }
 function boost() {
-  var args = arrayCount(arguments, 2);
+  var args = mlutil.arrayCount(arguments, 2);
   switch(args.length) {
   case 0:
     throw new Error('missing matching and boosting queries: '+args);
@@ -208,7 +154,7 @@ function boost() {
   }
 }
 function box() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var region = null;
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
@@ -236,7 +182,7 @@ function box() {
   return {box: region};
 }
 function circle() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var query = {};
   var seekingRadius    = true;
   var seekingLatitude  = true;
@@ -244,7 +190,7 @@ function circle() {
   var point = null;
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
-    if (seekingRadius && isNumber(arg)) {
+    if (seekingRadius && mlutil.isNumber(arg)) {
       query.radius = arg;
       seekingRadius = false;
     } else if (seekingLatitude && arg.point) {
@@ -259,10 +205,10 @@ function circle() {
       query.point = [{latitude: arg[0], longitude: arg[1]}];
       seekingLatitude  = false;
       seekingLongitude = false;
-    } else if (seekingLatitude && isNumber(arg)) {
+    } else if (seekingLatitude && mlutil.isNumber(arg)) {
       point = {latitude: arg};
       seekingLatitude = false;
-    } else if (seekingLongitude && isNumber(arg)) {
+    } else if (seekingLongitude && mlutil.isNumber(arg)) {
       point.longitude = arg;
       seekingLongitude = false;
     } else {
@@ -277,45 +223,98 @@ function circle() {
   return {circle: query};
 }
 function collection() {
-  switch(arguments.length) {
-  case 0:
+  var args = mlutil.asArray(arguments);
+  var argLen = args.length;
+  if (argLen === 0) {
     return {collection: null};
-  default:
-    return {'collection-query': {
-      uri: asArray(arguments)
-    }};
   }
+  if (argLen <= 2) {
+    for (var i=0; i < argLen; i++) {
+      var arg = args[i];
+      var constraintName = arg.constraintName;
+      if (constraintName !== undefined) {
+        var qualifier = {};
+        if (argLen === 2) {
+          var prefix = args[(i + 1) % 2];
+          if (prefix !== undefined) {
+            qualifier.prefix = prefix;
+          }
+        }
+        return {
+          name: constraintName,
+          collection: qualifier
+        };
+      }
+    }
+  }
+  return {'collection-query': {
+    uri: args
+  }};
 }
 function scope() {
-  var args = asArray(arguments);
-  var query = null;
-  switch(args.length) {
-  case 0:
-    query = {};
-    break;
-  case 1:
-    query = {};
-    addIndex(query, args[0], true);
-    break;
-  case 2:
-    // TODO: maybe better to copy than mutate
-    query = args[1];
-    addIndex(query, args[0], true);
-    break;
-  default:
-    // TODO: maybe better to copy than mutate
-    query = args[2];
-    addIndex(query, args[0], true);
-    var second = args[1];
-    if (second['fragment-scope']) {
-      query['fragment-scope'] = second['fragment-scope'];
-    }
-    break;
+  var args = mlutil.asArray(arguments);
+  if (args.length < 1) {
+    throw new Error('element or property scope not specified: '+args);
   }
-  return {'container-query': query};
+  var constraintIndex = null;
+  var constraint = {};
+  var constraintName;
+  var hasQuery = false;
+  for (var i=0; i < args.length; i++) {
+    var arg = args[i];
+    if (i === 0) {
+      constraintIndex = asIndex(arg);
+      addIndex(constraint, constraintIndex, true);
+      continue;
+    }
+    if (fragmentScope === undefined) {
+      var fragmentScope = arg['fragment-scope'];
+      if (fragmentScope !== undefined) {
+        constraint['fragment-scope'] = fragmentScope;
+        continue;
+      }
+    }
+    if (constraintName === undefined) {
+      constraintName = arg.constraintName;
+      if (constraintName !== undefined) {
+        continue;
+      }
+    }
+    if (hasQuery) {
+      continue;
+    }
+    hasQuery = true;
+    var queryKeys = Object.keys(arg);
+    for (var j=0; j < queryKeys.length; j++) {
+      var queryKey = queryKeys[j];
+      constraint[queryKey] = arg[queryKey];
+    }
+  }
+
+  var wrapper = {};
+  if (hasQuery) {
+    if (constraintName === undefined) {
+      wrapper['container-query'] = constraint;
+    } else {
+      throw new Error('scope has both binding and query: '+args);
+    }
+  } else {
+    if (constraintName === undefined) {
+      constraintName = defaultConstraintName(constraintIndex);
+      if (constraintName === null) {
+        throw new Error('could not default constraint name from '+
+            Object.keys(constraintIndex).join(', ') + ' index'
+            );
+      }
+    }
+    wrapper.name = constraintName;
+    wrapper.container = constraint;
+  }
+
+  return wrapper;
 }
 function datatype() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   switch(args.length) {
   case 0:
     throw new Error('missing datatype: '+args);
@@ -327,14 +326,14 @@ function datatype() {
   }
 }
 function directory() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var query = {
       uri: []
   };
   var seekingInfinite = true;
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
-    if (seekingInfinite && isBoolean(arg)) {
+    if (seekingInfinite && mlutil.isBoolean(arg)) {
       query.infinite = arg;
       seekingInfinite = false;
     } else if (arg instanceof Array){
@@ -347,14 +346,14 @@ function directory() {
 }
 function document() {
   return {'document-query':{
-    uri: asArray(arguments)
+    uri: mlutil.asArray(arguments)
   }};
 }
 function documentFragment() {  
-  return {'document-fragment-query': first(arguments)};
+  return {'document-fragment-query': mlutil.first(arguments)};
 }
 function element() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   switch(args.length) {
   case 0:
     throw new Error('missing element: '+args);
@@ -367,17 +366,17 @@ function element() {
  }
 }
 function field() {
-  return {field: first(arguments)};
+  return {field: mlutil.first(arguments)};
 }
 function fragmentScope() {
-  var scope = first(arguments);
+  var scope = mlutil.first(arguments);
   if (scope === 'documents' || scope === 'properties') {
     return {'fragment-scope': scope};
   }
   throw new Error('unknown argument: '+scope);
 }
 function geoAttributePair() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length < 3)
     throw new Error('not enough parameters: '+args);
   var query = {};
@@ -388,7 +387,7 @@ function geoAttributePair() {
     var arg = args[iArg++];
     if (arg.qname) {
       query[key] = arg.qname;
-    } else if (isString(arg)) {
+    } else if (mlutil.isString(arg)) {
       query[key] = nsName.call(this, arg);
     } else if (arg.element) {
       if (key === 'parent' || !query.parent) {
@@ -404,10 +403,10 @@ function geoAttributePair() {
       throw new Error('no parameter for '+key+': '+JSON.stringify(arg));
     }
   }
-  return {'geo-attr-pair-query': geoQuery(args, query, iArg)};
+  return geoQuery('geo-attr-pair', args, query, iArg);
 }
 function geoElement() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length < 2)
     throw new Error('not enough parameters: '+args);
   var query = {};
@@ -417,7 +416,7 @@ function geoElement() {
     var arg = args[i];
     if (arg.qname) {
       query[key] = arg.qname;
-    } else if (isString(arg)) {
+    } else if (mlutil.isString(arg)) {
       query[key] = nsName.call(this, arg);
     } else if (arg.element) {
       query[key] = arg.element;
@@ -425,10 +424,10 @@ function geoElement() {
       throw new Error('no parameter for '+key+': '+JSON.stringify(arg));
     }
   }
-  return {'geo-elem-query': geoQuery(args, query, 2)};
+  return geoQuery('geo-elem', args, query, 2);
 }
 function geoElementPair() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length < 3)
     throw new Error('not enough parameters: '+args);
   var query = {};
@@ -438,7 +437,7 @@ function geoElementPair() {
     var arg = args[i];
     if (arg.qname) {
       query[key] = arg.qname;
-    } else if (isString(arg)) {
+    } else if (mlutil.isString(arg)) {
       query[key] = nsName.call(this, arg);
     } else if (arg.element) {
       query[key] = arg.element;
@@ -446,27 +445,28 @@ function geoElementPair() {
       throw new Error('no parameter for '+key+': '+JSON.stringify(arg));
     }
   }
-  return {'geo-elem-pair-query': geoQuery(args, query, 3)};
+  return geoQuery('geo-elem-pair', args, query, 3);
 }
 function geoPath() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length < 1)
     throw new Error('not enough parameters: '+args);
   var query = {};
   var arg = args[0];
   if (arg['path-index']) {
     query['path-index'] = arg['path-index'];
-  } else if (arg instanceof Array && arg.length === 2 && isString(arg[0])) {
+  } else if (arg instanceof Array && arg.length === 2 && mlutil.isString(arg[0])) {
     query['path-index'] = {text: arg[0], namespaces: arg[1]};
-  } else if (isString(arg)) {
+  } else if (mlutil.isString(arg)) {
     query['path-index'] = {text: arg};
   }
-  return {'geo-path-query': geoQuery(args, query, 1)};
+  return geoQuery('geo-path', args, query, 1);
 }
-function geoQuery(args, query, next) {
+function geoQuery(variant, args, query, next) {
   var seekingFragmentScope = true;
   var seekingGeoOption = true;
   var seekingRegion = true;
+  var constraintName;
   for (var i=next; i < args.length; i++) {
     var arg = args[i];
     if (seekingGeoOption && arg['geo-option']) {
@@ -475,6 +475,8 @@ function geoQuery(args, query, next) {
     } else if (seekingFragmentScope && arg['fragment-scope']) {
       query['fragment-scope'] = arg['fragment-scope'];
       seekingFragmentScope = false;
+    } else if (constraintName !== undefined) {
+      continue;
     } else if (seekingRegion && arg.box) {
       query.box = arg.box;
       seekingRegion = false;
@@ -493,28 +495,42 @@ function geoQuery(args, query, next) {
     } else if (seekingRegion && arg instanceof Array && arg.length === 2) {
       query.point = [latlon.call(this, arg)];
     } else {
+      if (constraintName === undefined) {
+        constraintName = arg.constraintName;
+        if (constraintName !== undefined) {
+          continue;
+        }
+      }
       throw new Error('unknown parameter: '+arg);
     }
   }
-  return query;
+
+  var wrapper = {};
+  if (constraintName === undefined) {
+    wrapper[variant+'-query'] = query;
+  } else {
+    wrapper.name = constraintName;
+    wrapper[variant] = query;
+  }
+  return wrapper;
 }
 /*
 TODO: heatmap - latdivs, londivs, n, s, e, w
  */
 function geoOption() {
-  return {'geo-option': asArray(arguments)};
+  return {'geo-option': mlutil.asArray(arguments)};
 }
 function latlon() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length != 2)
     throw new Error('incorrect parameters: '+args);
   return {latitude: args[0], longitude: args[1]};
 }
 function locks() {  
-  return {'locks-query': first(arguments)};
+  return {'locks-query': mlutil.first(arguments)};
 }
 function near() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var query = {
     queries: []
   };
@@ -529,7 +545,7 @@ function near() {
     } else if (seekingWeight && arg.weight) {
       query.weight = arg.weight;
       seekingWeight = false;
-    } else if (seekingDistance && isNumber(arg)) {
+    } else if (seekingDistance && mlutil.isNumber(arg)) {
       query.distance = arg;
       seekingDistance = false;
     } else if (arg instanceof Array){
@@ -541,18 +557,18 @@ function near() {
   return {'near-query': query};
 }
 function not() {  
-  return {'not-query': first(arguments)};
+  return {'not-query': mlutil.first(arguments)};
 }
 function or() {
   return {'or-query':{
-      queries: asArray(arguments)
+      queries: mlutil.asArray(arguments)
     }};
 }
 function ordered() {
-  return {ordered: first(arguments)};
+  return {ordered: mlutil.first(arguments)};
 }
 function pathIndex() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var query = null;
   switch(args.length) {
   case 0:
@@ -572,7 +588,7 @@ function pathIndex() {
   return {'path-index': query};
 }
 function point() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var region = null;
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
@@ -594,7 +610,7 @@ function point() {
   return {point: [region]};
 }
 function polygon() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var points = [];
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
@@ -611,16 +627,16 @@ function polygon() {
   return {polygon:{point: points}};
 }
 function properties() {  
-  return {'properties-query': first(arguments)};
+  return {'properties-query': mlutil.first(arguments)};
 }
 function property() {
-  return {'json-key': first(arguments)};
+  return {'json-key': mlutil.first(arguments)};
 }
 function qname() {
   return {qname: nsName(arguments)};
 }
 function nsName(callerArgs) {
-  var args = asArray(callerArgs);
+  var args = mlutil.asArray(callerArgs);
   switch(args.length) {
   case 0:
     throw new Error('no name');
@@ -633,8 +649,9 @@ function nsName(callerArgs) {
   }
 }
 function range() {
-  var args = asArray(arguments);
-  var query = {};
+  var args = mlutil.asArray(arguments);
+  var constraint = {};
+  var constraintIndex = null;
   var values = null;
   var operator = null;
   var seekingDatatype = true;
@@ -644,30 +661,30 @@ function range() {
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
     if (i === 0) {
-      addIndex(query, arg, true);
-    } else if (seekingDatatype && arg.datatype) {
-      query.type = arg.datatype;
-      if (arg.collation)
-        query.collation = arg.collation;
+      constraintIndex = asIndex(arg);
+      addIndex(constraint, constraintIndex, true);
+    } else if (seekingDatatype && arg.datatype !== undefined) {
+      constraint.type = arg.datatype;
+      if (arg.collation) {
+        constraint.collation = arg.collation;
+      }
       seekingDatatype = false;
-    } else if (seekingFragmentScope && arg['fragment-scope']) {
-      query['fragment-scope'] = arg['fragment-scope'];
+    } else if (seekingFragmentScope && arg['fragment-scope'] !== undefined) {
+      constraint['fragment-scope'] = arg['fragment-scope'];
       seekingFragmentScope = false;
-    } else if (seekingRangeOption && arg['range-option']) {
-      query['range-option'] = arg['range-option'];
+    } else if (seekingRangeOption && arg['range-option'] !== undefined) {
+      constraint['range-option'] = arg['range-option'];
       seekingRangeOption = false;
-    } else if (constraintName !== undefined) {
-      continue;
     } else if (arg instanceof Array){
       if (values === null) {
         values = arg;
       } else {
         Array.prototype.push.apply(values, arg);        
       }
-    } else if ((seekingDatatype || operator === null) && isString(arg)) {
+    } else if ((seekingDatatype || operator === null) && mlutil.isString(arg)) {
       var testType = (seekingDatatype) ? datatypes[arg.trim()] : null;
       if (testType) {
-        query.type = testType;
+        constraint.type = testType;
         seekingDatatype = false;
       } else {
         var testComp = (operator === null) ? comparisons[arg.trim()] : null;
@@ -680,34 +697,55 @@ function range() {
         }
       }
     } else {
-      constraintName = arg.constraintName;
-      if (constraintName !== undefined) {
-      } else if (values === null) {
+      if (constraintName === undefined) {
+        constraintName = arg.constraintName;
+        if (constraintName !== undefined) {
+          continue;
+        }
+      }
+      if (values === null) {
         values = [arg];
       } else {
         values.push(arg);
       }
     }
   }
-  if (constraintName === undefined) {
-    query['range-operator'] = (operator !== null) ? operator : 'EQ';
-    query.value = values;
-    return {'range-query': query};
+
+  var wrapper = {};
+  if (values !== null) {
+    if (constraintName === undefined) {
+      constraint['range-operator'] = (operator !== null) ? operator : 'EQ';
+      constraint.value = values;
+      wrapper['range-query'] = constraint;
+    } else {
+      throw new Error('range has both binding and query: '+args);
+    }
+  } else {
+    if (constraintName === undefined) {
+      constraintName = defaultConstraintName(constraintIndex);
+      if (constraintName === null) {
+        throw new Error('could not default constraint name from '+
+            Object.keys(constraintIndex).join(', ') + ' index'
+            );
+      }
+    }
+    wrapper.name = constraintName;
+    wrapper.range = constraint;
   }
 
-  return {name: constraintName, range: query};
+  return wrapper;
 }
 function rangeOption() {
-  return {'range-option': asArray(arguments)};
+  return {'range-option': mlutil.asArray(arguments)};
 }
 function southWestNorthEast() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length != 4)
     throw new Error('incorrect parameters: '+args);
   return {south: args[0], west: args[1], north: args[2], east: args[3]};
 }
 function term() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var query = {
       text: []
   };
@@ -719,7 +757,7 @@ function term() {
       seekingWeight = false;
     } else if (arg instanceof Array){
       Array.prototype.push.apply(query.text, arg);
-    } else if (seekingWeight && isNumber(arg)) {
+    } else if (seekingWeight && mlutil.isNumber(arg)) {
       query.weight = arg;
       seekingWeight = false;
     } else {
@@ -729,11 +767,12 @@ function term() {
   return {'term-query': query};
 }
 function termOption() {
-  return {'term-option': asArray(arguments)};
+  return {'term-option': mlutil.asArray(arguments)};
 }
 function textQuery(variant, callerArgs) {
-  var args = asArray(callerArgs);
-  var query = {};
+  var args = mlutil.asArray(callerArgs);
+  var constraint = {};
+  var constraintIndex = null;
   var text = null;
   var seekingFragmentScope = true;
   var seekingTermOption = true;
@@ -742,18 +781,17 @@ function textQuery(variant, callerArgs) {
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
     if (i === 0) {
-      addIndex(query, arg, true);
+      constraintIndex = asIndex(arg);
+      addIndex(constraint, constraintIndex, true);
     } else if (seekingFragmentScope && arg['fragment-scope']) {
-      query['fragment-scope'] = arg['fragment-scope'];
+      constraint['fragment-scope'] = arg['fragment-scope'];
       seekingFragmentScope = false;
     } else if (seekingTermOption && arg['term-option']) {
-      query['term-option'] = arg['term-option'];
+      constraint['term-option'] = arg['term-option'];
       seekingTermOption = false;
     } else if (seekingWeight && arg.weight) {
-      query.weight = arg.weight;
+      constraint.weight = arg.weight;
       seekingWeight = false;
-    } else if (constraintName !== undefined) {
-      continue;
     } else if (arg instanceof Array) {
       if (text === null) {
         text = arg;
@@ -761,9 +799,13 @@ function textQuery(variant, callerArgs) {
         Array.prototype.push.apply(text, arg);        
       }
     } else {
-      constraintName = arg.constraintName;
-      if (constraintName !== undefined) {
-      } else if (text === null) {
+      if (constraintName === undefined) {
+        constraintName = arg.constraintName;
+        if (constraintName !== undefined) {
+          continue;
+        }
+      }
+      if (text === null) {
         text = [arg];
       } else {
         text.push(arg);
@@ -772,37 +814,68 @@ function textQuery(variant, callerArgs) {
   }
 
   var wrapper = {};
-  if (constraintName === undefined) {
-    query.text = text;
-    wrapper[variant+'-query'] = query;
+  if (text !== null) {
+    if (constraintName === undefined) {
+      constraint.text = text;
+      wrapper[variant+'-query'] = constraint;
+    } else {
+      throw new Error(variant+' has both binding and query: '+args);      
+    }
   } else {
+    if (constraintName === undefined) {
+      constraintName = defaultConstraintName(constraintIndex);
+      if (constraintName === null) {
+        throw new Error('could not default constraint name from '+
+            Object.keys(constraintIndex).join(', ') + ' index'
+            );
+      }
+    }
     wrapper.name = constraintName;
-    wrapper[variant] = query;
+    wrapper[variant] = constraint;
   }
+  
   return wrapper;
 }
 function value() {
   return textQuery('value', arguments);
 }
 function weight() {
-  return {weight: first(arguments)};
+  return {weight: mlutil.first(arguments)};
 }
 function word() {
   return textQuery('word', arguments);
 }
 
 function QueryBuilder() {
-  // TODO: initialize clauses
 }
-QueryBuilder.prototype.where     = where;
-QueryBuilder.prototype.calculate = calculate;
-QueryBuilder.prototype.orderBy   = orderBy;
-QueryBuilder.prototype.slice     = slice;
+QueryBuilder.prototype.where       = where;
+QueryBuilder.prototype.calculate   = calculate;
+QueryBuilder.prototype.orderBy     = orderBy;
+QueryBuilder.prototype.slice       = slice;
+QueryBuilder.prototype.withOptions = withOptions;
+
+function initQueryBuilder(seed) {
+  var qb = new QueryBuilder();
+  if (arguments.length > 0) {
+    var clauseKeys = [
+      'whereClause', 'calculateClause', 'orderByClause',
+      'sliceClause', 'withOptionsClause'
+    ];
+    for (var i=0; i < clauseKeys.length; i++){
+      var key = clauseKeys[i];
+      var value = seed[key];
+      if (value !== undefined) {
+        qb[key] = value;
+      }
+    }
+  }
+  return qb;
+}
 
 function where() {
   var self = (this instanceof QueryBuilder) ? this : new QueryBuilder();
 
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var argLen = args.length;
   // TODO: if empty, clear the clause
 
@@ -815,13 +888,13 @@ function where() {
     self.whereClause = {query: {queries: [and()]}};
     break;
   case 1:
-    var first = args[0];
-    if ('$query' in first) {
+    var firstQuery = args[0];
+    if (firstQuery.$query !== undefined) {
       isQBE = true;
-      self.whereClause = first;
+      self.whereClause = firstQuery;
     } else {
       var firstWhereClause = {};
-      parsedQuery = first.parsedQuery;
+      parsedQuery = firstQuery.parsedQuery;
       if (parsedQuery === undefined) {
         firstWhereClause.query = {queries: args};
       } else {
@@ -880,13 +953,13 @@ function byExample(query) {
 function orderBy() {
   var self = (this instanceof QueryBuilder) ? this : new QueryBuilder();
 
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   // TODO: if empty, clear the clause
 
   var sortOrder = [];
   for (var i=0; i < args.length; i++) {
     var arg = args[i];
-    sortOrder.push(isString(arg) ? sort(arg) : arg);
+    sortOrder.push(mlutil.isString(arg) ? sort(arg) : arg);
   }
 
   self.orderByClause = {
@@ -903,24 +976,24 @@ function score() {
 }
 
 function sort() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length === 0) {
     throw new Error('missing sorted index: '+args);
   }
 
-  var first = args[0];
-  var isScore = (!isString(first) && 'score' in first);
+  var firstIndex = asIndex(args[0]);
+  var isScore = ('score' in firstIndex);
 
   var sorter = {};
   if (isScore) {
-    sorter.score = first.score;
+    sorter.score = firstIndex.score;
   } else {
-    addIndex(sorter, first, false);
+    addIndex(sorter, firstIndex, false);
   }
 
   for (var i=1; i < args.length; i++) {
     var arg = args[i];
-    if (isString(arg)) {
+    if (mlutil.isString(arg)) {
       switch (arg) {
       case 'ascending':
       case 'descending':
@@ -950,13 +1023,13 @@ function sort() {
 function slice() {
   var self = (this instanceof QueryBuilder) ? this : new QueryBuilder();
 
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var argLen = args.length;
   // TODO: if empty, clear the clause
 
-  var pageStart  = (argLen > 1 || (argLen === 1 && isNumber(args[0]))) ?
+  var pageStart  = (argLen > 1 || (argLen === 1 && mlutil.isNumber(args[0]))) ?
       args[0] : null;
-  var pageLength = (argLen > 2 || (argLen === 2 && isNumber(args[1]))) ?
+  var pageLength = (argLen > 2 || (argLen === 2 && mlutil.isNumber(args[1]))) ?
       args[1] : null;
 
   var sliceClause = {};
@@ -982,7 +1055,7 @@ function slice() {
 function calculate() {
   var self = (this instanceof QueryBuilder) ? this : new QueryBuilder();
 
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
 
   // TODO: distinguish facets and values
   var calculateClause = {
@@ -995,7 +1068,7 @@ function calculate() {
 }
 
 function facet() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var argLen = args.length;
   if (argLen < 1) {
     throw new Error('facet must at a minimum identify the index');
@@ -1012,7 +1085,7 @@ function facet() {
     var arg = args[i];
     switch(i) {
     case 0:
-      if (isString(arg)) {
+      if (mlutil.isString(arg)) {
         constraintName = arg;
       } else {
         constraintIndex = arg;
@@ -1020,7 +1093,7 @@ function facet() {
       continue;
     case 1:
       if (constraintIndex === null) {
-        if (isString(arg)) {
+        if (mlutil.isString(arg)) {
           constraintIndex = property(arg);
           continue;
         } else if (arg['json-key'] || arg.element || arg.field || arg['path-index'] ||
@@ -1100,7 +1173,7 @@ function facet() {
 }
 
 function facetOptions() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   if (args.length < 1) {
     throw new Error('no facet options');
   }
@@ -1196,7 +1269,7 @@ function threeValueBucket(bucket, anchor1, value1, comparator, anchor2, value2) 
   return true;
 }
 function defaultConstraintName(index) {
-  var name = index.property;
+  var name = index['json-key'];
   if (name !== undefined) {
     return name;
   }
@@ -1223,7 +1296,7 @@ function parsedFrom(qtext) {
 }
 
 function parseBindings() {
-  var args = asArray(arguments);
+  var args = mlutil.asArray(arguments);
   var argLen = args.length;
   if (argLen < 1) {
     throw new Error('no bindings for the query text');
@@ -1242,13 +1315,41 @@ function parseBindings() {
 }
 
 function bind() {
-// TODO: allow binding in queries including collection (with prefix), scope, geospatial, custom
-//       and properties selector
-// DONE:  range, word, value
+// TODO: custom constraint, properties selector
   return {constraintName: (arguments.length > 0) ? arguments[0] : null};
 }
 
-// TODO: withOptions()
+function withOptions() {
+  var self = (this instanceof QueryBuilder) ? this : new QueryBuilder();
+
+  // TODO: share with documents.js
+  var optionKeyMapping = {
+    search:'search-option',     weight:'quality-weight',
+    forestNames:'forest-names', similarDocs:'return-similar',
+    metrics:'return-metrics',   relevance:'return-relevance',
+    queryPlan:'return-plan',    debug:'debug',
+    category:true,              txid:true
+  };
+
+  var withOptionsClause = {};
+  if (0 < arguments.length) {
+    var arg = arguments[0];
+    var argKeys = Object.keys(arg);
+    for (var i=0; i < argKeys.length; i++) {
+      var key = argKeys[i];
+      if (optionKeyMapping[key] !== undefined) {
+        var value = arg[key];
+        if (value !== undefined) {
+          withOptionsClause[key] = value;
+        }
+      }
+    }
+  }
+  self.withOptionsClause = withOptionsClause;
+
+  return self;
+}
+
 module.exports = {
     anchor:             anchor,
     and:                and,
@@ -1275,6 +1376,7 @@ module.exports = {
     geoElementPair:     geoElementPair,
     geoPath:            geoPath,
     geoOption:          geoOption,
+    init:               initQueryBuilder,
     latlon:             latlon,
     locks:              locks,
     near:               near,
@@ -1303,5 +1405,6 @@ module.exports = {
     value:              value,
     weight:             weight,
     where:              where,
+    withOptions:        withOptions,
     word:               word
 };

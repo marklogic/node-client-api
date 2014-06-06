@@ -593,6 +593,33 @@ describe('document query', function(){
         done();
       }, done);
     });
+    it('should get the plan and permissions', function(done){
+      db.query(
+        q.where(
+            q.collection('matchList')
+          ).
+        withOptions({queryPlan:true, category:'permissions'})
+        ).
+      result(function(response) {
+        response.length.should.equal(6);
+        // TODO: separate the diagnostics from the facets
+        for (var i=0; i < 6; i++) {
+          switch(i) {
+          case 0:
+            var summary = response[i];
+            summary.should.be.ok;
+            summary.plan.should.be.ok;
+            break;
+          default:
+            var document = response[i];
+            document.should.be.ok;
+            document.permissions.should.be.ok;
+            ('content' in document).should.equal(false);
+          }
+        }
+        done();
+      }, done);
+    });
   });
   describe('for a where clause with a parsed query', function() {
     it('should match a value query', function(done){

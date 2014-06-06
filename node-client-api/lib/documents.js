@@ -18,21 +18,10 @@ var stream          = require('stream');
 var Dicer           = require('dicer');
 var multipartStream = require('multipart').createMultipartStream;
 var mlrest          = require('./mlrest.js');
+var mlutil          = require('./mlutil.js');
 
 var multipartBoundary = 'MLBOUND_' + Date.UTC(2014,12,31);
 var NEWLINE = '\r\n';
-
-function isString(o) {
-  return (typeof(o) === 'string' || o instanceof String);
-}
-
-function initRequestOptions(config) {
-  var requestOptions = {};
-  for (var key in config) {
-      requestOptions[key] = config[key];
-  }
-  return requestOptions;
-}
 
 function parsePartHeaders(headers) {
   var partHeaders = {};
@@ -54,6 +43,7 @@ function parsePartHeaders(headers) {
           if (value) {
             if (key === 'filename') {
               key = 'uri';
+              value = value.substring(1,value.length - 1);
             }
 
             var currentValue = partHeaders[key];
@@ -95,14 +85,10 @@ function parsePartHeaders(headers) {
   return partHeaders;
 }  
 
-function requestErrorHandler(e) {
-  console.log('problem with request: ' + e.message);
-  throw new Error(e.message);
-}
-
 function checkEventMapper(response, proxy) {
   proxy.emit('data', (response.statusCode < 300));
   proxy.emit('end');
+  // TODO: emit error in failure case
   response.resume();
 }
 function checkDocument() {
@@ -110,19 +96,19 @@ function checkDocument() {
     throw new Error('must supply uri for document check()');
   }
 
-  var params = (!isString(arguments[0])) ? arguments[0] : null; 
+  var params = (!mlutil.isString(arguments[0])) ? arguments[0] : null; 
 
   var path = '/v1/documents?format=json';
   if (params === null) {
     path += '&uri='+arguments[0];
   } else {
     path += '&uri='+params.uri;
-    if ('transactionId' in params) {
-      path += '&txid='+params.transactionId;
+    if ('txid' in params) {
+      path += '&txid='+params.txid;
     }
   }
 
-  var requestOptions = initRequestOptions(this.client.connectionParams);
+  var requestOptions = mlutil.copyProperties(this.client.connectionParams);
   requestOptions.method = 'HEAD';
   requestOptions.path = path ;
 
@@ -132,19 +118,14 @@ function checkDocument() {
   var request = mlrest.request(
     this.client, requestOptions, false, responseProxy.collector
     );
-  request.on('error', requestErrorHandler);
+  request.on('error', mlutil.requestErrorHandler);
   request.end();
 
   return mlrest.responder(responseProxy, false);
 }
 
-function copyProperties(source, target) {
-  for (var key in source.content) {
-    target[key] = source.content[key];
-  }
-}
 function emitMetadata(metadata, proxy) {
-  copyProperties(metadata, metadata);
+  mlutil.copyProperties(metadata.content, metadata);
   delete metadata.content;
   proxy.emit('data', metadata);
 }
@@ -153,21 +134,20 @@ function multipartEventMapper(response, proxy) {
   // TODO: empty response should not be multipart/mixed 
   var responseLength = response.headers['content-length'];
   if (responseLength === undefined || responseLength === "0") {
-    console.log('empty response');
-    response.on('data', requestErrorHandler);
-    response.on('error', requestErrorHandler);
+    response.on('data', mlutil.requestErrorHandler);
+    response.on('error', mlutil.requestErrorHandler);
     return response;
   }
   var responseType = response.headers['content-type'];
   if (responseType === undefined || !responseType.match(/^multipart.mixed.*$/)) {
-    response.on('data', requestErrorHandler);
-    response.on('error', requestErrorHandler);
+    response.on('data', mlutil.requestErrorHandler);
+    response.on('error', mlutil.requestErrorHandler);
     return response;
   }
 
   // TODO: extract boundary
   var parser = new Dicer({boundary: multipartBoundary});
-  parser.on('error', requestErrorHandler);
+  parser.on('error', mlutil.requestErrorHandler);
 
   var metadata = null;
   if (proxy.resolve || proxy.reject) {
@@ -178,7 +158,7 @@ function multipartEventMapper(response, proxy) {
       var isMetadata  = false;
       var isUtf8      = false;
       var partContent = null;
-      part.on('error', requestErrorHandler);
+      part.on('error', mlutil.requestErrorHandler);
       part.on('header', function(headers) {
         partHeaders = parsePartHeaders(headers);
         isInline = (partHeaders.partType === 'inline');
@@ -227,7 +207,7 @@ function multipartEventMapper(response, proxy) {
             metadata = partHeaders;
           } else {
             if (metadata !== null) {
-              copyProperties(metadata, partHeaders);
+              mlutil.copyProperties(metadata.content, partHeaders);
               metadata = null;
             }
             proxy.emit('data', partHeaders);
@@ -252,7 +232,7 @@ function multipartEventMapper(response, proxy) {
       var isMetadata  = false;
       var isUtf8      = false;
       var partContent    = null;
-      part.on('error', requestErrorHandler);
+      part.on('error', mlutil.requestErrorHandler);
       part.on('header', function(headers) {
         partHeaders = parsePartHeaders(headers);
         isInline    = (partHeaders.partType === 'inline');
@@ -299,7 +279,7 @@ function multipartEventMapper(response, proxy) {
             metadata = partHeaders;
           } else {
             if (metadata !== null) {
-              copyProperties(metadata, partHeaders);
+              mlutil.copyProperties(metadata.content, partHeaders);
               metadata = null;
             }
             proxy.emit('result', partHeaders);
@@ -354,7 +334,7 @@ function readDocument() {
     throw new Error('incorrect number of arguments for document query()');
   }
 
-  var params = (!isString(arguments[0])) ? arguments[0] : null; 
+  var params = (!mlutil.isString(arguments[0])) ? arguments[0] : null; 
 
 // TODO: set format to JSON only if metadata, set flag to force mapping
   var path = '/v1/documents?format=json';
@@ -365,13 +345,13 @@ function readDocument() {
     path += '&uri='+params.uri + '&category=' + (
         (categories instanceof Array) ? categories.join('&category=') : categories
         );
-    if ('transactionId' in params) {
-      path += '&txid='+params.transactionId;
+    if ('txid' in params) {
+      path += '&txid='+params.txid;
     }
 // TODO: transform, range[from, to]
   }
 
-  var requestOptions = initRequestOptions(this.client.connectionParams);
+  var requestOptions = mlutil.copyProperties(this.client.connectionParams);
   requestOptions.method = 'GET';
 // TODO: read multipart only if metadata and content
   requestOptions.headers = {
@@ -386,7 +366,7 @@ function readDocument() {
   var request = mlrest.request(
     this.client, requestOptions, false, responseProxy.collector
     );
-  request.on('error', requestErrorHandler);
+  request.on('error', mlutil.requestErrorHandler);
   request.end();
 
   return mlrest.responder(responseProxy, true);
@@ -395,8 +375,13 @@ function readDocument() {
 function createWriteStream(document) {
   var responseProxy = mlrest.response(resultEventMapper, true);
 
-  var request = startWriteRequest(this.client, document, responseProxy);
-  request.on('error', requestErrorHandler);
+  var request = startWriteRequest(
+      this.client,
+      document,
+      false,
+      responseProxy
+      );
+  request.on('error', mlutil.requestErrorHandler);
 
   var writer = mlrest.responder(responseProxy, false);
   writer.client  = this.client;
@@ -405,7 +390,7 @@ function createWriteStream(document) {
   writer.write = nextWriteStream.bind(writer);
   writer.end   = endWriteStream.bind(writer);
 
-  writeNextDocumentStart(request, document, true);
+  writeStreamDocumentStart(request, document, true);
 
   return writer;
 }
@@ -442,7 +427,7 @@ function resultEventMapper(response, proxy) {
     }
   }
   if (addErrorListener) {
-    response.on('error', requestErrorHandler);
+    response.on('error', mlutil.requestErrorHandler);
   }
   response.resume();
 }
@@ -452,10 +437,9 @@ function writeDocuments() {
     throw new Error('must provide uris for document write()');
   }
 
-  // TODO: transactionId, transform
-  var params = (arguments.length === 1 && 'documents' in arguments[0]) ?
+  var params = (arguments.length === 1 && arguments[0].documents !== undefined) ?
       arguments[0] : null;
-
+  
   var documents = null;
   if (params !== null) {
     documents = (params.documents instanceof Array) ? params.documents :
@@ -470,8 +454,13 @@ function writeDocuments() {
 
   var responseProxy = mlrest.response(resultEventMapper, true);
 
-  var request = startWriteRequestProxy(this.client, true, responseProxy);
-  request.on('error', requestErrorHandler);
+  var request = startWriteRequest(
+      this.client,
+      (params !== null) ? params : (documents.length === 1) ? documents[0] : null,
+      true,
+      responseProxy
+      );
+  request.on('error', mlutil.requestErrorHandler);
 
   var multipart = multipartStream({
     prefix: multipartBoundary
@@ -488,29 +477,33 @@ function writeDocuments() {
   return mlrest.responder(responseProxy, false);
 }
 
-// TODO: rename
-function startWriteRequestProxy(client, isMultipart, responseProxy) {
-  var requestOptions = initRequestOptions(client.connectionParams);
+function startWriteRequest(client, requestParams, isMultipart, responseProxy) {
+  var endpoint = '/v1/documents';
+  if (requestParams !== null) {
+    var sep = '?';
+    var category  = requestParams.category;
+    if (category !== undefined) {
+      endpoint += sep+'category='+(
+          (category instanceof Array) ? category.join('&category=') : category
+          );
+      sep = '&';
+    }
+    var txid = requestParams.txid;
+    if (txid!== undefined) {
+      endpoint += sep+'txid='+txid;
+      sep = '&';
+    }
+    // TODO: transform
+  }
+
+  var requestOptions = mlutil.copyProperties(client.connectionParams);
   requestOptions.method = 'POST';
   requestOptions.headers = {
       'Content-Type': 'multipart/mixed; boundary='+multipartBoundary+
         (isMultipart ? '1' : ''),
       'Accept': 'application/json'
   };
-  requestOptions.path = '/v1/documents';
-
-  return mlrest.request(client, requestOptions, true, responseProxy.collector);
-}
-
-// TODO: consolidate with startWriteRequestProxy()
-function startWriteRequest(client, document, responseProxy) {
-  var requestOptions = initRequestOptions(client.connectionParams);
-  requestOptions.method = 'POST';
-  requestOptions.headers = {
-      'Content-Type': 'multipart/mixed; boundary='+multipartBoundary,
-      'Accept': 'application/json'
-  };
-  requestOptions.path = '/v1/documents';
+  requestOptions.path = endpoint;
 
   return mlrest.request(client, requestOptions, true, responseProxy.collector);
 }
@@ -553,22 +546,23 @@ function writeNextDocument(multipart, document, isFirst) {
 // TODO: defaulting contentType, content other than string or JSON
     multipart.write({
       'Content-Type'       : document.contentType+
-          (isString(document.content) ? '; encoding=utf-8' : ''),
+          (mlutil.isString(document.content) ? '; encoding=utf-8' : ''),
       'Content-Disposition': disposition+'; category=content'
       },
-      isString(document.content) ? document.content :
+      mlutil.isString(document.content) ? document.content :
         JSON.stringify(document.content)
     );    
   }
 }
 
-function writeNextDocumentStart(request, document, isFirst) {
+function writeStreamDocumentStart(request, document, isFirst) {
   if (!request || !document) {
     return;
   }
 
   var uri         = (document.uri) ? document.uri : null;
   var disposition = (uri) ? 'attachment; filename="'+uri+'"' : 'inline' ;
+  // TODO: transactionId
 
   var metadata = collectMetadata(document);
   if (metadata !== null) {
@@ -606,47 +600,24 @@ function endWriteRequest(request, multipart) {
   request.end();
 }
 
-function deleteEventMapper(response, proxy) {
-  var addErrorListener = true;
-  var eventNames = ['error', 'end'];
-  for (var i=0; i < eventNames.length; i++) {
-    var event = eventNames[i];
-    var listeners = proxy.listeners(event);
-    if (listeners.length === 0)
-      continue;
-    switch(event) {
-    case 'error':
-      addErrorListener = false;
-      break;
-    }
-    for (var j=0; j < listeners.length; j++) {
-      response.on(event, listeners[j]);
-    }
-  }
-  if (addErrorListener) {
-    response.on('error', requestErrorHandler);
-  }
-  response.resume();
-}
-
 function deleteDocument() {
   if (arguments.length !== 1) {
     throw new Error('incorrect number of arguments for document del()');
   }
 
-  var params = (!isString(arguments[0])) ? arguments[0] : null; 
+  var params = (!mlutil.isString(arguments[0])) ? arguments[0] : null; 
 
   var path = '/v1/documents?';
   if (params === null) {
     path += 'uri='+arguments[0];
   } else {
     path += 'uri='+params.uri;
-    if ('transactionId' in params) {
-      path += '&txid='+params.transactionId;
+    if ('txid' in params) {
+      path += '&txid='+params.txid;
     }
   }
 
-  var requestOptions = initRequestOptions(this.client.connectionParams);
+  var requestOptions = mlutil.copyProperties(this.client.connectionParams);
   requestOptions.method = 'DELETE';
   requestOptions.path = path;
 
@@ -654,14 +625,14 @@ function deleteDocument() {
   // convenience to fire HTTP responder events on eventer
   // convenience to aggregate HTTP data for promise
   // lock the proxy after then or starting response (throw error on mod after lock)
-  var responseProxy = mlrest.response(deleteEventMapper, true);
+  var responseProxy = mlrest.response(mlrest.emptyEventMapper, true);
 
   // TODO: pass proxy instead of collector
   var request = mlrest.request(
     this.client, requestOptions, false, responseProxy.collector
     );
   // TODO: register same error handler for request and response
-  request.on('error', requestErrorHandler);
+  request.on('error', mlutil.requestErrorHandler);
   request.end();
 
   return mlrest.responder(responseProxy, false);
@@ -748,7 +719,52 @@ function queryDocuments(queryBuilder) {
     }
   }
 
-  // TODO: collect options from withOptions clause
+  var category      = (pageLength > 0) ? ['content', 'collections'] : null;
+  var txid = null;
+
+  var withOptionsClause = queryBuilder.withOptionsClause;
+  if (withOptionsClause !== undefined) {
+    if (searchBody.search.options === undefined) {
+      searchBody.search.options = {};
+    }
+
+    // TODO: share with queryBuilder.js
+    var optionKeyMapping = {
+        search:'search-option',     weight:'quality-weight',
+        forestNames:'forest-names', similarDocs:'return-similar',
+        metrics:'return-metrics',   relevance:'return-relevance',
+        queryPlan:'return-plan',    debug:'debug',
+        category:true,              txid:true
+      };
+
+    var optionsKeys = Object.keys(withOptionsClause);
+    for (var i=0; i < optionsKeys.length; i++) {
+      var key     = optionsKeys[i];
+      var mapping = optionKeyMapping[key];
+      if (mapping !== undefined) {
+        var value = withOptionsClause[key];
+        if (value !== undefined) {
+          if (mapping === true) {
+            switch(key) {
+            case 'category':
+              if (pageLength !== 0) {
+                category = value;
+              }
+              break;
+            case 'txid':
+              txid = value;
+              break;
+            }
+          } else {
+            if (view === null) {
+              view = 'metadata';
+            }
+            searchBody.search.options[mapping] = value;
+          }
+        }
+      }
+    }
+  }
 
   var endpoint =  null;
   if (queryBuilder.queryType === 'qbe') {
@@ -756,19 +772,24 @@ function queryDocuments(queryBuilder) {
   } else {
     endpoint = '/v1/search?format='+queryBuilder.queryFormat;
   }
-
+  if (category !== null) {
+    endpoint += '&category=' +
+    (mlutil.isString(category) ? category : category.join('&category='));
+  }
   if (pageStart !== null) {
     endpoint += '&start='+pageStart;
   }
   if (pageLength !== null && pageLength !== 0) {
     endpoint += '&pageLength='+pageLength;
   }
-
+  if (txid !== null) {
+    endpoint += '&txid='+txid;
+  }
   if (view) {
     endpoint += '&view='+view;
   }
 
-  var requestOptions = initRequestOptions(this.client.connectionParams);
+  var requestOptions = mlutil.copyProperties(this.client.connectionParams);
   requestOptions.method = 'POST';
 
   requestOptions.headers = {
@@ -786,7 +807,7 @@ function queryDocuments(queryBuilder) {
   var request = mlrest.request(
     this.client, requestOptions, true, responseProxy.collector
     );
-  request.on('error', requestErrorHandler);
+  request.on('error', mlutil.requestErrorHandler);
   request.write(JSON.stringify(searchBody), 'utf8');
   request.end();
 
