@@ -2,7 +2,7 @@
 
 ## Status
 
-### Current basic support
+### Done for early access (basic support)
 
 * createDatabaseClient() - except HTTPS
 * documents.query()
@@ -14,7 +14,7 @@
 ** queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
 ** queryBuilder.copyFrom()
 ** QBE - except calculate() and orderBy()
-* documents.check() - except uri and version
+* documents.check() - except version
 * documents.remove()
 * documents.read()
 * documents.write() - except JSON language, XML repair, server-assigned URI
@@ -32,6 +32,6 @@
 * optimistic locking / conditional content
 * fragmentScope() in where() or on range, value, or word including applying parsed query to property fragment
 * binary read, read range, query, write, and write stream
-* more robust error handling, logging, request tuning, and so on
+* robust error handling, logging, and request tuning
 * jsdoc
   
