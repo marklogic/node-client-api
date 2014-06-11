@@ -12,7 +12,9 @@
 ** queryBuilder.slice() - except iterator / reducer
 ** queryBuilder.withOptions() - except concurrencyLevel, forestName
 ** queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
+** queryBuilder.copyFrom()
 ** QBE - except calculate() and orderBy()
+* documents.check() - except uri
 * documents.remove()
 * documents.read()
 * documents.write() - except JSON language, XML repair, server-assigned URI
@@ -26,8 +28,6 @@
 
 ### To do for early access
 
-* documents.check()
-* queryBuilder.copyFrom()
 * transforms on write requests (but not read)
 * optimistic locking / conditional content
 * fragmentScope() in where() or on range, value, or word including applying parsed query to property fragment

@@ -30,8 +30,8 @@ describe('transaction', function(){
   describe('with commit', function(){
     var uri = '/test/txn/commit1.json';
     before(function(done){
-      db.check(uri).result(function(exists){
-        if (exists) {
+      db.check(uri).result(function(document){
+        if (document.exists) {
           db.remove(uri).
             result(function(response) {done();}, done);          
         } else {
@@ -61,8 +61,9 @@ describe('transaction', function(){
         document.content.txKey.should.equal(tid);
         return db.check(uri).result();
         }).
-      then(function(exists) {
-        exists.should.eql(false);
+      then(function(document) {
+        document.should.be.ok;
+        document.exists.should.eql(false);
         return db.transactions.commit(tid).result();
         }).
       then(function(response) {
@@ -112,8 +113,9 @@ describe('transaction', function(){
       then(function(response) {
         return db.check(uri).result();
         }).
-      then(function(exists) {
-        exists.should.eql(false);
+      then(function(document) {
+        document.should.be.ok;
+        document.exists.should.eql(false);
         done();
         }, done);
     });

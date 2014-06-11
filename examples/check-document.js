@@ -24,7 +24,7 @@ var db = require('../').createDatabaseClient({
 ['/countries/uv.json', '/does/not/exist.json'].
   forEach(function(uri){
     //shortcut for db.documents.check(...)
-    db.check(uri).result(function(exists) {
-        console.log('document at '+uri+' exists: '+exists);
+    db.check(uri).result(function(document) {
+        console.log('document at '+uri+' exists: '+document.exists);
         });
     });

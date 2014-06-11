@@ -177,8 +177,9 @@ describe('document content', function(){
             result(function(result) {
               return db.check('/test/remove/doc1.json').result();
               }, done).
-            then(function(exists) {
-              exists.should.eql(false);
+            then(function(document) {
+              document.should.be.ok;
+              document.exists.should.eql(false);
               done();
               }, done);
         });
@@ -196,8 +197,9 @@ describe('document content', function(){
         });
         it('should exist', function(done){
           db.check('/test/check/doc1.json').
-            result(function(exists) {
-              exists.should.eql(true);
+            result(function(document) {
+              document.should.be.ok;
+              document.exists.should.eql(true);
               done();
               }, done);
         });

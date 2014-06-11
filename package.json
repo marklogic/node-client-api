@@ -3,6 +3,7 @@
   "name": "marklogic",
   "description": "Provides a node.js client interface to the MarkLogic database server",
   "version": "0.0.1",
+  "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "keywords": [
     "marklogic",
@@ -11,21 +12,26 @@
     "search",
     "query"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "dicer": "^0.2.3",
+    "www-authenticate": "^0.6.2",
+    "bluebird": "^1.2.4",
+    "multipart": "^0.1.5",
+    "deepcopy": "^0.3.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/marklogic/node-client-api.git"
+  },
   "engines": {
     "node": "*"
   },
   "devDependencies": {
     "gulp": "^3.6.1",
-    "dicer": "^0.2.3",
-    "www-authenticate": "^0.6.2",
     "gulp-jshint": "^1.5.3",
     "mocha": "^1.18.2",
     "gulp-mocha": "^0.4.1",
     "jsdoc": "^3.3.0-alpha5",
-    "gulp-jsdoc": "^0.1.4",
-    "gulp-intercept": "^0.1.0",
-    "bluebird": "^1.2.4",
-    "multipart": "^0.1.5"
+    "gulp-jsdoc": "^0.1.4"
   }
 }

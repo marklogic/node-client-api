@@ -1393,7 +1393,7 @@ describe('document query', function(){
       );
       var marshalled = JSON.stringify(seed);
       var unmarshalled = JSON.parse(marshalled);
-      var built = q.init(unmarshalled).slice(11, 10);
+      var built = q.copyFrom(unmarshalled).slice(11, 10);
       built.whereClause.should.be.ok;
       built.whereClause.query.should.be.ok;
       built.whereClause.query.queries.should.be.ok;
