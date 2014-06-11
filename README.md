@@ -6,14 +6,14 @@
 
 * createDatabaseClient() - except HTTPS
 * documents.query()
-** queryBuilder.where() - except geospatial heatmap
-** queryBuilder.orderBy()
-** queryBuilder.calculate() - except custom constraint, constraint merge, values()
-** queryBuilder.slice() - except iterator / reducer
-** queryBuilder.withOptions() - except concurrencyLevel, forestName
-** queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
-** queryBuilder.copyFrom()
-** QBE - except calculate() and orderBy()
+    * queryBuilder.where() - except geospatial heatmap
+    * queryBuilder.orderBy()
+    * queryBuilder.calculate() - except custom constraint, constraint merge, values()
+    * queryBuilder.slice() - except iterator / reducer
+    * queryBuilder.withOptions() - except concurrencyLevel, forestName
+    * queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
+    * queryBuilder.copyFrom()
+    * QBE - except calculate() and orderBy()
 * documents.check() - except version
 * documents.remove()
 * documents.read()
@@ -25,7 +25,6 @@
 * transactions.commit()
 * transactions.rollback()
 
-
 ### To do for early access
 
 * transforms on write requests (but not read)
@@ -34,4 +33,3 @@
 * binary read, read range, query, write, and write stream
 * robust error handling, logging, and request tuning
 * jsdoc
-  
