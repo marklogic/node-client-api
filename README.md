@@ -14,7 +14,7 @@
 ** queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
 ** queryBuilder.copyFrom()
 ** QBE - except calculate() and orderBy()
-* documents.check() - except uri
+* documents.check() - except uri and version
 * documents.remove()
 * documents.read()
 * documents.write() - except JSON language, XML repair, server-assigned URI
