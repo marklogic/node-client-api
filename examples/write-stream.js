@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var db = require('../').createDatabaseClient({
-  host:     'localhost',
-  port:     '8004',
-  user:     'rest-writer',
-  password: 'x',
-  authType: 'DIGEST'
-});
+var exutil = require('./example-util.js');
+
+var db = require('../').createDatabaseClient(exutil.restWriterConnection);
 
 console.log('WRITE STREAM in two chunks');
 
@@ -30,7 +26,7 @@ var writableStream = db.createWriteStream({
     });
 writableStream.result(function(response) {
     console.log('\nWRITTEN');
-    console.log(response);
+    console.log(JSON.stringify(response));
     });
 
 writableStream.write('{"key1"', 'utf8');

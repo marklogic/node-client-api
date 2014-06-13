@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var util = require('./util.js');
+var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient({
-  host:     'localhost',
-  port:     '8004',
-  user:     'rest-reader',
-  password: 'x',
-  authType: 'DIGEST'
-});
+var db = require('../').createDatabaseClient(exutil.restReaderConnection);
 
-db.read({uri:'/countries/uv.json', categories:['content', 'metadata']}).
-  result(function(document) {
+db.read({uris:'/countries/uv.json', categories:['content', 'metadata']}).
+  result(function(documents) {
+    var document = documents[0];
     console.log(
       document.content.name+': '+(
         document.permissions.map(function(permission) {

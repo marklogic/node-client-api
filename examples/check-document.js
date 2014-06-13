@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var db = require('../').createDatabaseClient({
-  host:     'localhost',
-  port:     '8004',
-  user:     'rest-reader',
-  password: 'x',
-  authType: 'DIGEST'
-});
+var exutil = require('./example-util.js');
+
+var db = require('../').createDatabaseClient(exutil.restReaderConnection);
 
 ['/countries/uv.json', '/does/not/exist.json'].
   forEach(function(uri){

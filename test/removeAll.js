@@ -15,26 +15,13 @@
  */
 var should = require('should');
 
+var testutil = require('./test-util.js');
+
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var connection = {
-    host:     'localhost',
-    port:     '8004',         // TODO: 8013 from common utility module
-    user:     'rest-writer',
-    password: 'x',
-    authType: 'DIGEST'
-};
-var restAdminConnection = {};
-Object.keys(connection).forEach(function(key){
-  if (key === 'user') {
-    restAdminConnection.user = 'rest-admin';    
-  } else {
-    restAdminConnection[key] = connection[key];
-  }
-});
-var db = marklogic.createDatabaseClient(connection);
-var restAdminDB = marklogic.createDatabaseClient(restAdminConnection);
+var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
+var restAdminDB = marklogic.createDatabaseClient(testutil.restAdminConnection);
 
 // NOTE: clears the forest
 // TODO: increase the time allowed

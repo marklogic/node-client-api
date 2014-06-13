@@ -8,16 +8,20 @@
   "keywords": [
     "marklogic",
     "nosql",
+    "bigdata",
     "database",
     "search",
-    "query"
+    "query",
+    "json",
+    "xml"
   ],
   "dependencies": {
     "dicer": "^0.2.3",
     "www-authenticate": "^0.6.2",
     "bluebird": "^1.2.4",
     "multipart": "^0.1.5",
-    "deepcopy": "^0.3.3"
+    "deepcopy": "^0.3.3",
+    "winston": "^0.7.3"
   },
   "repository": {
     "type": "git",

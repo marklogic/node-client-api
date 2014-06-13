@@ -16,18 +16,16 @@
 var fs = require('fs');
 var marklogic = require('../');
 
-var db = marklogic.createDatabaseClient({
-    host:     'localhost',
-    port:     '8004',
-    user:     'rest-writer',
-    password: 'x',
-    authType: 'DIGEST'
-});
+var exutil = require('./example-util.js');
 
-var fsdir = '/home/ehennum/data/cia-wfb-json/countries/';
+var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
+
+var fsdir = './data/';
 var dbdir = '/countries/';
 
 var batchSize = 100;
+
+var collection = '/countries';
 
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
@@ -38,6 +36,7 @@ function readFile(filenames, i, buffer, isLast) {
       uri:         dbdir+filename,
       category:    'content',
       contentType: 'application/json',
+      collections: collection,
       content:     content.toString()
       });
 
@@ -77,3 +76,14 @@ fs.readdir(fsdir, function(err, filenames) {
 
   writeBatch(jsonFilenames, 0);
 });
+
+var imageFile = 'uv_flag_2004.gif';
+var ws = db.createWriteStream({
+  uri:         dbdir+imageFile,
+  contentType: 'image/gif',
+  collections: collection
+  });
+ws.result(function(response) {
+  console.log('wrote '+imageFile);
+  });
+fs.createReadStream(fsdir+imageFile).pipe(ws);

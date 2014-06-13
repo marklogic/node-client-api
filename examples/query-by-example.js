@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var util = require('./util.js');
+var exutil = require('./example-util.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient({
-  host:     'localhost',
-  port:     '8004',
-  user:     'rest-reader',
-  password: 'x',
-  authType: 'DIGEST'
-});
+var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 /* alternative with promise
 db.searchBuilder(
@@ -37,7 +31,7 @@ db.searchBuilder(
       }}).
   result(function(response) {
     console.log('matched results:');
-    util.logObject(response);
+    exutil.logObject(response);
     });
 */
 
@@ -56,4 +50,6 @@ db.query(
         document.content.name+' at '+document.uri
         );
       });
+    }, function(error) {
+      console.log(error);
     });

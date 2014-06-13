@@ -13,12 +13,12 @@
     * queryBuilder.withOptions() - except concurrencyLevel, forestName
     * queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
     * queryBuilder.copyFrom()
-    * QBE - except calculate() and orderBy()
 * documents.check() - except version
 * documents.remove()
 * documents.read()
+* documents.createReadStream() - including binary
 * documents.write() - except JSON language, XML repair, server-assigned URI
-* documents.createWriteStream()
+* documents.createWriteStream() - including binary
 * documents.patch() - except custom apply
 * documents.removeAll()
 * transactions.open()
@@ -27,9 +27,9 @@
 
 ### To do for early access
 
-* transforms on write requests (but not read)
+* QBE - working prior to native JSON cut-over except calculate() and orderBy()
 * optimistic locking / conditional content
 * fragmentScope() in where() or on range, value, or word including applying parsed query to property fragment
-* binary read, read range, query, write, and write stream
+* binary read, read range, query, and write
 * robust error handling, logging, and request tuning
 * jsdoc

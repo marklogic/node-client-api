@@ -15,25 +15,13 @@
  */
 var should = require('should');
 
+var testutil = require('./test-util.js');
+
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var readerConnection = {
-    host:     'localhost',
-    port:     '8004',         // TODO: 8013 from common utility module
-    user:     'rest-reader',
-    password: 'x',
-    authType: 'DIGEST'
-};
-var writerConnection = {
-    host:     'localhost',
-    port:     '8004',         // TODO: 8013 from common utility module
-    user:     'rest-writer',
-    password: 'x',
-    authType: 'DIGEST'
-};
-var db = marklogic.createDatabaseClient(writerConnection);
-var dbReader = marklogic.createDatabaseClient(readerConnection);
+var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
+var dbReader = marklogic.createDatabaseClient(testutil.restReaderConnection);
 
 describe('document content', function(){
   describe('write', function(){
@@ -48,7 +36,8 @@ describe('document content', function(){
       });
       it('should read back the value', function(done){
         db.read('/test/write/string1.json').
-          result(function(document) {
+          result(function(documents) {
+            var document = documents[0];
             document.should.be.ok;
             document.content.should.be.ok;
             document.content.key1.should.equal('value 1');
@@ -67,7 +56,8 @@ describe('document content', function(){
       });
       it('should read back the value', function(done){
         db.read('/test/write/object1.json').
-          result(function(document) {
+          result(function(documents) {
+            var document = documents[0];
             document.should.be.ok;
             document.content.should.be.ok;
             document.content.key1.should.equal('value 1');
@@ -86,7 +76,8 @@ describe('document content', function(){
       });
       it('should read back the content', function(done){
         db.read('/test/write/string1.xml').
-          result(function(document) {
+          result(function(documents) {
+            var document = documents[0];
             document.should.be.ok;
             document.content.should.be.ok;
             document.content.should.containEql('<doc>content 1</doc>');
@@ -105,7 +96,8 @@ describe('document content', function(){
       });
       it('should read back the content', function(done){
         db.read('/test/write/string1.txt').
-          result(function(document) {
+          result(function(documents) {
+            var document = documents[0];
             document.should.be.ok;
             document.content.should.be.ok;
             document.content.should.equal('text 1');
@@ -127,18 +119,14 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back both values', function(done){
-        db.query(
-            q.where(
-                q.document(
-                    '/test/write/arrayString1.json',
-                    '/test/write/arrayObject2.json'
-                    )
-                )
+        db.read(
+            '/test/write/arrayString1.json',
+            '/test/write/arrayObject2.json'
             ).
-          result(function(response) {
-            response.length.should.equal(2);
+        result(function(documents) {
+          documents.length.should.equal(2);
             for (var i=0; i < 2; i++) {
-              var document = response[i];
+              var document = documents[i];
               document.should.be.ok;
               document.content.should.be.ok;
               document.content.key1.should.equal('value 1');
@@ -149,22 +137,22 @@ describe('document content', function(){
     });
     describe('a JSON document in two chunks', function(){
       before(function(done){
-        var writableStream = db.documents.createWriteStream({
+        var writeStream = db.documents.createWriteStream({
             uri: '/test/write/writable1.json',
             contentType: 'application/json'
             });
-        writableStream.result(function(response){done();}, done);
+        writeStream.result(function(response){done();}, done);
 
-        writableStream.write('{"key1"', 'utf8');
-        writableStream.write(       ':"value 1"}', 'utf8');
-        writableStream.end();
+        writeStream.write('{"key1"', 'utf8');
+        writeStream.write(       ':"value 1"}', 'utf8');
+        writeStream.end();
       });
       it('should read back the value', function(done){
-        db.read('/test/write/writable1.json').
-          result(function(document) {
-            document.should.be.ok;
-            document.content.should.be.ok;
-            document.content.key1.should.equal('value 1');
+        db.createReadStream('/test/write/writable1.json').
+          on('data', function(chunk) {
+            var content = JSON.parse(chunk.toString());
+            content.should.be.ok;
+            content.key1.should.equal('value 1');
             done();
             }, done);
       });
@@ -234,8 +222,9 @@ describe('document metadata', function(){
         result(function(response){done();}, done);
       });
       it('should read back the metadata and content', function(done){
-        db.read({uri:'/test/write/metaContent1.json', categories:['metadata', 'content']}).
-          result(function(document) {
+        db.read({uris:'/test/write/metaContent1.json', categories:['metadata', 'content']}).
+          result(function(documents) {
+            var document = documents[0];
             document.collections.length.should.equal(2);
             for (var i=0; i < 2; i++) {
               document.collections[i].should.equal('collection1/'+i);
@@ -277,8 +266,9 @@ describe('document metadata', function(){
         result(function(response){done();}, done);
       });
       it('should read back the metadata', function(done){
-        db.read({uri:'/test/write/metaContent1.json', categories:'metadata'}).
-          result(function(document) {
+        db.read({uris:'/test/write/metaContent1.json', categories:'metadata'}).
+          result(function(documents) {
+            var document = documents[0];
             document.collections.length.should.equal(2);
             for (var i=0; i < 2; i++) {
               document.collections[i].should.equal('collection2/'+i);
@@ -339,7 +329,9 @@ describe('document patch', function(){
           p.del('$.deletableKey')
           ).
       result(function(response){
-        db.read(uri1).result(function(document) {
+        db.read(uri1).
+        result(function(documents) {
+          var document = documents[0];
           document.should.be.ok;
           document.content.should.be.ok;
           document.content.arrayParentKey.should.be.ok;
@@ -873,7 +865,9 @@ bug multipart write does not fail on bad uri
 
 indicate non-existent in multipart read, versionId in multipart read
   it('should fail to read a non-existent document', function(done){
-    db.read('/not/a/real/document.txt').result(function(document) {
+    db.read('/not/a/real/document.txt').
+    result(function(documents) {
+      var document = documents[0];
       console.log(document);
     }, done);
   });

@@ -15,16 +15,11 @@
  */
 var should = require('should');
 
+var testutil = require('./test-util.js');
+
 var marklogic = require('../');
 
-var connection = {
-    host:     'localhost',
-    port:     '8004',         // TODO: 8013 from common utility module
-    user:     'rest-writer',
-    password: 'x',
-    authType: 'DIGEST'
-};
-var db = marklogic.createDatabaseClient(connection);
+var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 
 describe('transaction', function(){
   describe('with commit', function(){

@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var exutil = require('./example-util.js');
+
 var marklogic = require('../');
 
-var db = marklogic.createDatabaseClient({
-  host:     'localhost',
-  port:     '8004',
-  user:     'rest-writer',
-  password: 'x',
-  authType: 'DIGEST'
-});
+var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
 var timestamp = (new Date()).toISOString();
 

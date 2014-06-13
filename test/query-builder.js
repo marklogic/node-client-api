@@ -724,11 +724,11 @@ describe('query-builder', function() {
   it('should create a property name', function(){
     assert.deepEqual(
         q.property ('foo'),
-        {'json-key': 'foo'}
+        {'json-property': 'foo'}
         );
     assert.deepEqual(
         q.property(['foo']),
-        {'json-key': 'foo'}
+        {'json-property': 'foo'}
         );
   });
 
@@ -755,7 +755,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', 1),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'range-operator': 'EQ',
           value: [1]
           }}
@@ -763,7 +763,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', 1, 2),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'range-operator': 'EQ',
           value: [1, 2]
           }}
@@ -771,7 +771,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', [1, 2]),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'range-operator': 'EQ',
           value: [1, 2]
           }}
@@ -779,7 +779,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range(['foo', 1, 2]),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'range-operator': 'EQ',
           value: [1, 2]
           }}
@@ -787,7 +787,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', '>', 1),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'range-operator': 'GT',
           value: [1]
           }}
@@ -795,7 +795,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', 'xs:int', '>=', 1),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           type: 'xs:int',
           'range-operator': 'GE',
           value: [1]
@@ -804,7 +804,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', q.datatype('int'), '>=', 1),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           type: 'xs:int',
           'range-operator': 'GE',
           value: [1]
@@ -813,7 +813,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', 'xs:string', '=', 'one', 'two'),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           type: 'xs:string',
           'range-operator': 'EQ',
           value: ['one', 'two']
@@ -822,7 +822,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', q.datatype('string'), '=', 'one', 'two'),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           type: 'xs:string',
           'range-operator': 'EQ',
           value: ['one', 'two']
@@ -831,7 +831,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range('foo', q.datatype('string'), '=', ['one', 'two']),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           type: 'xs:string',
           'range-operator': 'EQ',
           value: ['one', 'two']
@@ -840,7 +840,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.range(['foo', q.datatype('string'), '=', 'one', 'two']),
         {'range-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           type: 'xs:string',
           'range-operator': 'EQ',
           value: ['one', 'two']
@@ -872,14 +872,14 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.scope('foo', q.collection('bar')),
         {'container-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'collection-query':{uri:['bar']}
           }}
         );
     assert.deepEqual(
         q.scope(['foo', q.collection('bar')]),
         {'container-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'collection-query':{uri:['bar']}
           }}
         );
@@ -900,7 +900,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.scope('foo', q.fragmentScope('documents'), q.collection('bar')),
         {'container-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'fragment-scope': 'documents',
           'collection-query':{uri:['bar']}
           }}
@@ -908,7 +908,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.scope(['foo', q.fragmentScope('documents'), q.collection('bar')]),
         {'container-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           'fragment-scope': 'documents',
           'collection-query':{uri:['bar']}
           }}
@@ -999,42 +999,42 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.value('foo', 'one'),
         {'value-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one']
           }}
         );
     assert.deepEqual(
         q.value('foo', ['one']),
         {'value-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one']
           }}
         );
     assert.deepEqual(
         q.value(['foo', 'one']),
         {'value-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one']
           }}
         );
     assert.deepEqual(
         q.value('foo', 'one', 'two'),
         {'value-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one', 'two']
           }}
         );
     assert.deepEqual(
         q.value('foo', ['one', 'two']),
         {'value-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one', 'two']
           }}
         );
     assert.deepEqual(
         q.value(['foo', 'one', 'two']),
         {'value-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one', 'two']
           }}
         );
@@ -1045,42 +1045,42 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.word('foo', 'one'),
         {'word-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one']
           }}
         );
     assert.deepEqual(
         q.word('foo', ['one']),
         {'word-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one']
           }}
         );
     assert.deepEqual(
         q.word(['foo', 'one']),
         {'word-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one']
           }}
         );
     assert.deepEqual(
         q.word('foo', 'one', 'two'),
         {'word-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one', 'two']
           }}
         );
     assert.deepEqual(
         q.word('foo', ['one', 'two']),
         {'word-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one', 'two']
           }}
         );
     assert.deepEqual(
         q.word(['foo', 'one', 'two']),
         {'word-query':{
-          'json-key': 'foo',
+          'json-property': 'foo',
           text: ['one', 'two']
           }}
         );
@@ -1098,7 +1098,7 @@ describe('query-builder', function() {
     // TODO: test with fragmentScope
     assert.deepEqual(
         q.scope('foo', q.bind('constraint1')),
-        {'container':{'json-key': 'foo'},
+        {'container':{'json-property': 'foo'},
           name:'constraint1'}
         );
     // TODO: test with geoOptions
@@ -1128,18 +1128,18 @@ describe('query-builder', function() {
     // TODO: test with rangeOption
     assert.deepEqual(
         q.range('key1', q.bind('constraint1')),
-        {range:{'json-key': 'key1'},
+        {range:{'json-property': 'key1'},
           name:'constraint1'}
         );
     // TODO: test with termOption
     assert.deepEqual(
         q.value('key1', q.bind('constraint1')),
-        {value:{'json-key': 'key1'},
+        {value:{'json-property': 'key1'},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.word('key1', q.bind('constraint1')),
-        {word:{'json-key': 'key1'},
+        {word:{'json-property': 'key1'},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1148,8 +1148,8 @@ describe('query-builder', function() {
           q.word('key2', q.bind('constraint2'))
           ),
         {constraint:[
-          {value:{'json-key': 'key1'}, name:'constraint1'},
-          {word:{'json-key': 'key2'}, name:'constraint2'}
+          {value:{'json-property': 'key1'}, name:'constraint1'},
+          {word:{'json-property': 'key2'}, name:'constraint2'}
           ]}
         );
     assert.deepEqual(
@@ -1164,8 +1164,8 @@ describe('query-builder', function() {
                 )),
         {parsedQuery:{qtext:'constraint1:value1 AND constraint2:word2',
           constraint:[
-                {value:{'json-key': 'key1'}, name:'constraint1'},
-                {word:{'json-key': 'key2'}, name:'constraint2'}
+                {value:{'json-property': 'key1'}, name:'constraint1'},
+                {word:{'json-property': 'key2'}, name:'constraint2'}
                 ]}}
         );
   });
@@ -1174,7 +1174,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.facet('key1'),
         {range:{
-          'json-key': 'key1',
+          'json-property': 'key1',
           facet: true,
           type: 'xs:string'
           },
@@ -1192,7 +1192,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.facet('facet3', 'key3'),
         {range:{
-          'json-key': 'key3',
+          'json-property': 'key3',
           facet: true,
           type: 'xs:string'
           },
@@ -1210,7 +1210,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.facet('key5', q.facetOptions('item-frequency', 'descending')),
         {range:{
-          'json-key': 'key5',
+          'json-property': 'key5',
           facet: true,
           type: 'xs:string',
           'facet-option': ['item-frequency', 'descending']
@@ -1223,7 +1223,7 @@ describe('query-builder', function() {
             q.bucket('bucket6B', 60, '<', 65),
             q.bucket('bucket6C', 65, '<'    )),
         {range:{
-          'json-key': 'key6',
+          'json-property': 'key6',
           facet: true,
           type: 'xs:string',
           bucket:[
@@ -1239,7 +1239,7 @@ describe('query-builder', function() {
             q.bucket('bucket7A', q.anchor('now',  'P0D', '<', 'P1D')),
             q.bucket('bucket7B', q.anchor('now', '-P7D', '<', 'P1D'))),
         {range:{
-          'json-key': 'key7',
+          'json-property': 'key7',
           facet: true,
           type: 'xs:string',
           'computed-bucket':[
@@ -1258,7 +1258,7 @@ describe('query-builder', function() {
             q.bucket('bucket8B',
                 q.anchor('-P30D', '-P7H'), '<', q.anchor('now', '-P7H'))),
         {range:{
-          'json-key': 'key8',
+          'json-property': 'key8',
           facet: true,
           type: 'xs:string',
           'computed-bucket':[
@@ -1362,9 +1362,9 @@ describe('document query', function(){
       built.orderByClause.should.be.ok;
       built.orderByClause['sort-order'].should.be.ok;
       built.orderByClause['sort-order'].length.should.equal(5);
-      built.orderByClause['sort-order'][0]['json-key'].should.equal('key1');
+      built.orderByClause['sort-order'][0]['json-property'].should.equal('key1');
       built.orderByClause['sort-order'][1].field.should.equal('field1');
-      built.orderByClause['sort-order'][2]['json-key'].should.equal('key2');
+      built.orderByClause['sort-order'][2]['json-property'].should.equal('key2');
       built.orderByClause['sort-order'][2].direction.should.equal('ascending');
       built.orderByClause['sort-order'][3].score.should.equal('logtf');
       ('score' in (built.orderByClause['sort-order'][4])).should.equal(true);

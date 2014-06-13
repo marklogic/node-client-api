@@ -13,31 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var util = require('./util.js');
+var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient({
-  host:     'localhost',
-  port:     '8004',
-  user:     'rest-reader',
-  password: 'x',
-  authType: 'DIGEST'
-});
+var db = require('../').createDatabaseClient(exutil.restReaderConnection);
 
 /*
-db.read('/tmp/doc1.json').
+db.read('/countries/ml.json', '/countries/uv.json').
   stream().
   on('result', function(document) {
-    console.log('read document content for '+document.uri+':');
-    util.logObject(document.content);
+    console.log('read '+document.content.name+' at '+document.uri);
     }).
   on('end', function() {
-    console.log('\nREAD');
+    console.log('finished reading');
     });
  */
 
-db.read('/countries/uv.json').
-  result(function(document) {
-    console.log(
-      'read '+document.content.name+' at '+document.uri +'\n'
+db.read('/countries/ml.json', '/countries/uv.json').
+  result(function(documents) {
+    console.log('read:\n'+
+      documents.
+      map(function(document){
+        return '    '+document.content.name+' at '+document.uri;
+        }).
+      join('\n')
       );
+    }, function(error) {
+    console.log(error);
     });
