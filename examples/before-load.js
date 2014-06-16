@@ -20,7 +20,7 @@ var exutil = require('./example-util.js');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
-var fsdir = './data/';
+var fsdir = './examples/data/';
 var dbdir = '/countries/';
 
 var batchSize = 100;

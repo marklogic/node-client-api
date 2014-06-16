@@ -23,6 +23,7 @@ var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 
 describe('transaction', function(){
   describe('with commit', function(){
+    this.timeout(2000);
     var uri = '/test/txn/commit1.json';
     before(function(done){
       db.check(uri).result(function(document){
@@ -47,9 +48,11 @@ describe('transaction', function(){
           }).result();
         }).
       then(function(response) {
-        return db.read({uri:uri, txid:tid}).result();
+        return db.read({uris:uri, txid:tid}).result();
         }).
-      then(function(document) {
+      then(function(documents) {
+        documents.length.should.equal(1);
+        var document = documents[0];
         document.should.be.ok;
         document.content.should.be.ok;
         document.content.txKey.should.be.ok;
@@ -64,7 +67,9 @@ describe('transaction', function(){
       then(function(response) {
         return db.read(uri).result();
         }).
-      then(function(document) {
+      then(function(documents) {
+        documents.length.should.equal(1);
+        var document = documents[0];
         document.should.be.ok;
         document.content.should.be.ok;
         document.content.txKey.should.be.ok;
@@ -82,6 +87,7 @@ describe('transaction', function(){
     });
   });
   describe('with rollback', function(){
+    this.timeout(2000);
     var uri = '/test/txn/rollback1.json';
     it('should read from a write', function(done){
       var tid = null;
@@ -96,9 +102,11 @@ describe('transaction', function(){
           }).result();
         }).
       then(function(response) {
-        return db.read({uri:uri, txid:tid}).result();
+        return db.read({uris:uri, txid:tid}).result();
         }).
-      then(function(document) {
+      then(function(documents) {
+        documents.length.should.equal(1);
+        var document = documents[0];
         document.should.be.ok;
         document.content.should.be.ok;
         document.content.txKey.should.be.ok;
