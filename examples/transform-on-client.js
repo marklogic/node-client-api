@@ -22,7 +22,8 @@ var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 var timestamp = (new Date()).toISOString();
 
 db.read('/countries/uv.json').
-  result(function(documentBefore) {
+  result(function(documents) {
+    var documentBefore = documents[0];
     documentBefore.content.timestamp = timestamp;
     return db.write(documentBefore).result();
     }).
@@ -30,7 +31,8 @@ db.read('/countries/uv.json').
     var uri = response.documents[0].uri;
     return db.read(uri).result();
   }).
-  then(function(documentAfter) {
+  then(function(documents) {
+    var documentAfter = documents[0];
     console.log(
       documentAfter.content.name+' on '+
       documentAfter.content.timestamp
