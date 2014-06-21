@@ -13,6 +13,7 @@
     * queryBuilder.withOptions() - except concurrencyLevel, forestName
     * queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
     * queryBuilder.copyFrom()
+    * QBE - except calculate() and orderBy()
 * documents.check() - except version
 * documents.remove()
 * documents.read()
@@ -21,6 +22,7 @@
 * documents.createWriteStream()
 * documents.removeAll()
 * transactions.open()
+* transactions.read()
 * transactions.commit()
 * transactions.rollback()
 * config.transforms.list()
@@ -32,7 +34,6 @@
 
 * optimistic locking / conditional content
 * documents.patch() - working prior to native JSON cut-over except custom apply
-* QBE - working prior to native JSON cut-over except calculate() and orderBy()
 * fragmentScope() in where() or on range, value, or word including applying parsed query to property fragment
 * robust error handling, logging, and request tuning
 * jsdoc
