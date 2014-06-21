@@ -22,9 +22,9 @@
     "multipart": "^0.1.5",
     "deepcopy": "^0.3.3",
     "winston": "^0.7.3",
-    "through": "^2.3.4",
     "concat-stream": "^1.4.6",
-    "core-util-is": "^1.0.1"
+    "core-util-is": "^1.0.1",
+    "through2": "^0.5.1"
   },
   "repository": {
     "type": "git",
@@ -35,8 +35,10 @@
   },
   "devDependencies": {
     "gulp": "^3.6.1",
+    "jshint": "^2.5.1",
     "gulp-jshint": "^1.5.3",
     "mocha": "^1.18.2",
+    "should": "^4.0.4",
     "gulp-mocha": "^0.4.1",
     "jsdoc": "^3.3.0-alpha5",
     "gulp-jsdoc": "^0.1.4"

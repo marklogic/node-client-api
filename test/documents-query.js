@@ -317,7 +317,7 @@ describe('document query', function(){
         done();
       }, done);
     });
-    it('should get the plan and permissions', function(done){
+    it('should get the query plan and permissions', function(done){
       db.query(
         q.where(
             q.collection('matchList')

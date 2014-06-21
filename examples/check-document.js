@@ -21,6 +21,6 @@ var db = require('../').createDatabaseClient(exutil.restReaderConnection);
   forEach(function(uri){
     //shortcut for db.documents.check(...)
     db.check(uri).result(function(document) {
-        console.log('document at '+uri+' exists: '+document.exists);
-        });
+      console.log('document at '+uri+' exists: '+document.exists);
+      });
     });

@@ -31,13 +31,9 @@ db.query(
     )
   ).
   stream().
-  on('summary', function(summary) {
-    console.log('matched results summary:');
-    exutil.logObject(summary);
-    }).
-  on('result', function(document) {
-    console.log('matched document content for '+document.uri+':');
-    exutil.logObject(document.content);
+  on('data', function(data) {
+    console.log('matched document content for '+data.uri+':');
+    exutil.logObject(data.content);
     }).
   on('end', function() {
     console.log('\nFOUND');

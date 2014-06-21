@@ -33,6 +33,11 @@ db.write([
       }
     ]).
   result(function(response) {
-    console.log('\nWROTE:');
-    console.log(JSON.stringify(response));
+    console.log('\nWROTE:\n    '+
+        response.documents.
+        map(function(document){
+          return document.uri;
+          }).
+        join(', ')
+        );
     });

@@ -38,5 +38,5 @@ db.read('/countries/ml.json', '/countries/uv.json').
       join('\n')
       );
     }, function(error) {
-    console.log(error);
+      console.log(error);
     });

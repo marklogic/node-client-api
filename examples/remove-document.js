@@ -19,7 +19,7 @@ var db = require('../').createDatabaseClient(exutil.restWriterConnection);
 
 console.log('REMOVE of one document');
 
-//shortcut for db.documents.remove(...)
-db.remove('/tmp/doc1.json').result(function() {
+// shortcut for db.documents.remove(...)
+db.remove('/tmp/doc1.json').result(function(result) {
     console.log('REMOVED');
     });

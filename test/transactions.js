@@ -23,7 +23,7 @@ var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 
 describe('transaction', function(){
   describe('with commit', function(){
-    this.timeout(2000);
+    this.timeout(3000);
     var uri = '/test/txn/commit1.json';
     before(function(done){
       db.check(uri).result(function(document){
@@ -38,8 +38,8 @@ describe('transaction', function(){
     it('should read from a write in the same transaction', function(done){
       var tid = null;
       db.transactions.open().result().
-      then(function(txid) {
-        tid = txid;
+      then(function(response) {
+        tid = response.txid;
         return db.documents.write({
           txid: tid,
           uri: uri,
@@ -59,9 +59,9 @@ describe('transaction', function(){
         document.content.txKey.should.equal(tid);
         return db.check(uri).result();
         }).
-      then(function(document) {
-        document.should.be.ok;
-        document.exists.should.eql(false);
+      then(function(response) {
+        response.should.be.ok;
+        response.exists.should.eql(false);
         return db.transactions.commit(tid).result();
         }).
       then(function(response) {
@@ -87,13 +87,23 @@ describe('transaction', function(){
     });
   });
   describe('with rollback', function(){
-    this.timeout(2000);
+    this.timeout(3000);
     var uri = '/test/txn/rollback1.json';
-    it('should read from a write', function(done){
+    before(function(done){
+      db.check(uri).result(function(document){
+        if (document.exists) {
+          db.remove(uri).
+            result(function(response) {done();}, done);          
+        } else {
+          done();
+        }
+      }, done);
+    });
+    it('should rollback a write', function(done){
       var tid = null;
       db.transactions.open().result().
-      then(function(txid) {
-        tid = txid;
+      then(function(response) {
+        tid = response.txid;
         return db.documents.write({
           txid: tid,
           uri: uri,
@@ -116,9 +126,41 @@ describe('transaction', function(){
       then(function(response) {
         return db.check(uri).result();
         }).
-      then(function(document) {
-        document.should.be.ok;
-        document.exists.should.eql(false);
+      then(function(response) {
+        response.should.be.ok;
+        response.exists.should.eql(false);
+        done();
+        }, done);
+    });
+  });
+  describe('transaction status', function(){
+    this.timeout(3000);
+    var uri = '/test/txn/read1.json';
+    it('should read an open transaction', function(done){
+      var tid = null;
+      db.transactions.open().result().
+      then(function(response) {
+        tid = response.txid;
+        return db.documents.write({
+          txid: tid,
+          uri: uri,
+          contentType: 'application/json',
+          content: {txKey: tid}
+          }).result();
+        }).
+      then(function(response) {
+        return db.transactions.read(tid).result();
+        }).
+      then(function(response) {
+        // TODO: pre-parse based on accept header
+        var status = JSON.parse(response)['transaction-status'];
+        var hostId        = status.host['host-id'];
+        var transactionId = status['transaction-id'];
+        tid.should.equal(hostId+'_'+transactionId);
+        return db.transactions.rollback(tid).result();
+        }).
+      then(function(response) {
+        response.should.be.ok;
         done();
         }, done);
     });

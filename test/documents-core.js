@@ -387,13 +387,13 @@ describe('document negative', function(){
     db.documents.write({
       uri: '/test/negative/writeOrphanedCollection1.txt',
       contentType: 'text/plain',
-      collection: 'no document'
+      collections: 'no document'
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error){
-      (error.indexOf('400') > -1).should.equal(true);
+      (error.indexOf('404') > -1).should.equal(true);
       done();
       });
   });

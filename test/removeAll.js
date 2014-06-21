@@ -23,7 +23,6 @@ var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testutil.restAdminConnection);
 
 // NOTE: clears the forest
-// TODO: increase the time allowed
 describe('document remove all', function(){
   before(function(done){
     var types = ['collection', 'directory', 'all'];
