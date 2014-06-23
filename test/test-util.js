@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var host     = 'localhost';
+var port     = '8015';
+var authType = 'DIGEST';
 var restAdminConnection = {
-    host:     'localhost',
-    port:     '8015',
+    host:     host,
+    port:     port,
     user:     'rest-admin',
     password: 'x',
-    authType: 'DIGEST'
+    authType: authType
 };
 var restReaderConnection = {
-    host:     'localhost',
-    port:     '8015',
+    host:     host,
+    port:     port,
     user:     'rest-reader',
     password: 'x',
-    authType: 'DIGEST'
+    authType: authType
 };
 var restWriterConnection = {
-    host:     'localhost',
-    port:     '8015',
+    host:     host,
+    port:     port,
     user:     'rest-writer',
     password: 'x',
-    authType: 'DIGEST'
+    authType: authType
 };
 
 module.exports = {

@@ -4,7 +4,7 @@
 
 ### Done for early access (basic support)
 
-* createDatabaseClient() - except HTTPS
+* createDatabaseClient() including HTTPS
 * documents.query()
     * queryBuilder.where() - except geospatial heatmap
     * queryBuilder.orderBy()
