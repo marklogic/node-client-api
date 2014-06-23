@@ -29,6 +29,8 @@
 * config.transforms.read()
 * config.transforms.remove()
 * config.transforms.write()
+* config.properties.read()
+* config.properties.write()
 
 ### To do for early access
 
