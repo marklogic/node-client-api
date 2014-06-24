@@ -31,11 +31,12 @@
 * config.transforms.write()
 * config.properties.read()
 * config.properties.write()
+* optimistic locking
 
 ### To do for early access
 
-* optimistic locking / conditional content
-* documents.patch() - working prior to native JSON cut-over except custom apply
 * fragmentScope() in where() or on range, value, or word including applying parsed query to property fragment
+* conditional content
+* documents.patch() - working prior to native JSON cut-over except custom apply
 * robust error handling, logging, and request tuning
 * jsdoc
