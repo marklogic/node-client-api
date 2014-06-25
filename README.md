@@ -2,23 +2,23 @@
 
 ## Status
 
-### Done for early access (basic support)
+### Done for early access 2 (basic support)
 
 * createDatabaseClient() including HTTPS
 * documents.query()
-    * queryBuilder.where() - except geospatial heatmap
+    * queryBuilder.where()
     * queryBuilder.orderBy()
-    * queryBuilder.calculate() - except custom constraint, constraint merge, values()
-    * queryBuilder.slice() - except iterator / reducer
+    * queryBuilder.calculate() - except custom constraint, constraint merge
+    * queryBuilder.slice()
     * queryBuilder.withOptions() - except concurrencyLevel, forestName
-    * queryBuilder.parsedFrom() - except bindDefault(), bindEmpty(), custom
+    * queryBuilder.parsedFrom() - except custom
     * queryBuilder.copyFrom()
     * QBE - except calculate() and orderBy()
-* documents.check() - except version
+* documents.check()
 * documents.remove()
 * documents.read()
 * documents.createReadStream()
-* documents.write() - except JSON language, XML repair, binary metadata, binary range, server-assigned URI
+* documents.write()
 * documents.createWriteStream()
 * documents.removeAll()
 * transactions.open()
@@ -33,10 +33,14 @@
 * config.properties.write()
 * optimistic locking
 
-### To do for early access
+### To do for early access 2
 
-* fragmentScope() in where() or on range, value, or word including applying parsed query to property fragment
-* conditional content
 * documents.patch() - working prior to native JSON cut-over except custom apply
 * robust error handling, logging, and request tuning
 * jsdoc
+
+### Deferred to early access 3
+
+* bulk conditional content
+* queryBuilder.calculate() - values()
+* queryBuilder.slice() - iterator (aka reducer)

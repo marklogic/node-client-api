@@ -97,6 +97,54 @@ describe('document content', function(){
             }, done);
       });
     });
+    describe('a repaired XML string', function(){
+      var uri = '/test/write/repaired1.xml';
+      before(function(done){
+        db.documents.write({
+          uri: uri,
+          contentType: 'application/xml',
+          repair: 'full',
+          content: '<doc><child>content 1</doc>'
+          }).
+        result(function(response){done();}, done);
+      });
+      it('should read back the content', function(done){
+        db.read(uri).
+          result(function(documents) {
+            valcheck.isArray(documents).should.equal(true);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            valcheck.isUndefined(document).should.equal(false);
+            valcheck.isUndefined(document.content).should.equal(false);
+            document.content.should.containEql('<doc><child>content 1</child></doc>');
+            done();
+            }, done);
+      });
+    });
+    describe('a language-specified XML string', function(){
+      var uri = '/test/write/lang1.xml';
+      before(function(done){
+        db.documents.write({
+          uri: uri,
+          contentType: 'application/xml',
+          lang: 'fr',
+          content: '<doc>oui</doc>'
+          }).
+        result(function(response){done();}, done);
+      });
+      it('should read back the content', function(done){
+        db.read(uri).
+          result(function(documents) {
+            valcheck.isArray(documents).should.equal(true);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            valcheck.isUndefined(document).should.equal(false);
+            valcheck.isUndefined(document.content).should.equal(false);
+            document.content.should.containEql('<doc xml:lang="fr">oui</doc>');
+            done();
+            }, done);
+      });
+    });
     describe('a text string', function(){
       before(function(done){
         db.documents.write({
@@ -117,6 +165,36 @@ describe('document content', function(){
             document.content.should.equal('text 1');
             done();
             }, done);
+      });
+      it('should assign a uri on the server', function(done){
+        db.documents.write({
+          extension: 'txt',
+          directory: '/test/write/',
+          contentType: 'text/plain',
+          content: 'text with assigned extension'
+          }).result().
+        then(function(response) {
+          valcheck.isUndefined(response).should.equal(false);
+          var documents = response.documents;
+          valcheck.isArray(documents).should.equal(true);
+          documents.length.should.equal(1);
+          var document = documents[0];
+          valcheck.isUndefined(document).should.equal(false);
+          valcheck.isUndefined(document.uri).should.equal(false);          
+          return db.read(document.uri).result();
+          }).
+        then(function(documents){
+          valcheck.isArray(documents).should.equal(true);
+          documents.length.should.equal(1);
+          var document = documents[0];
+          valcheck.isUndefined(document).should.equal(false);
+          valcheck.isUndefined(document.content).should.equal(false);
+          document.content.should.equal('text with assigned extension');
+          return db.remove(document.uri).result();
+          }).
+        then(function(documents){
+          done();
+          }, done);
       });
     });
     describe('a binary', function(){
@@ -484,6 +562,9 @@ describe('document negative', function(){
   });
 
 /* TODO:
+repair for json
+lang for text
+extract for text
 multipart write should report a bad uri
 multipart read should report a non-existent uri or up-to-date versionId
   it('should fail to write a new document with an invalid uri', function(done){

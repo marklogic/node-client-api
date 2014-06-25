@@ -519,6 +519,23 @@ describe('query-builder', function() {
         );
   });
 
+  it('should create a heatmap facet', function(){
+    assert.deepEqual(
+        q.geoElement('parent', 'element',
+            q.heatmap(2, 3, q.southWestNorthEast(1.1, 2.2, 3.3, 4.4))),
+        {'geo-elem-query':{parent:{name:'parent'},
+          element:{name:'element'},
+          heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}}}
+        );
+    assert.deepEqual(
+        q.geoElement('parent', 'element',
+            q.heatmap(2, 3, 1.1, 2.2, 3.3, 4.4)),
+        {'geo-elem-query':{parent:{name:'parent'},
+          element:{name:'element'},
+          heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}}}
+        );
+  });
+
   it('should create a locks-query', function(){
     assert.deepEqual(
         q.locks(q.collection('foo')),
@@ -846,7 +863,24 @@ describe('query-builder', function() {
           value: ['one', 'two']
           }}
         );
-    // TODO: q.rangeOption, q.fragmentScope()
+    assert.deepEqual(
+        q.range('foo', 1, q.fragmentScope('properties')),
+        {'range-query':{
+          'json-property': 'foo',
+          'range-operator': 'EQ',
+          value: [1],
+          'fragment-scope': 'properties'
+          }}
+        );
+    assert.deepEqual(
+        q.range('foo', 1, q.rangeOption('cached')),
+        {'range-query':{
+          'json-property': 'foo',
+          'range-operator': 'EQ',
+          value: [1],
+          'range-option':['cached']
+          }}
+        );
   });
 
   it('should create range options', function(){
@@ -1038,7 +1072,30 @@ describe('query-builder', function() {
           text: ['one', 'two']
           }}
         );
-    // TODO: q.termOption, q.fragmentScope(), q.weight()
+    assert.deepEqual(
+        q.value('foo', 'one', q.fragmentScope('properties')),
+        {'value-query':{
+          'json-property': 'foo',
+          text: ['one'],
+          'fragment-scope': 'properties'
+          }}
+        );
+    assert.deepEqual(
+        q.value('foo', 'one', q.termOption('stemmed')),
+        {'value-query':{
+          'json-property': 'foo',
+          text: ['one'],
+          'term-option':['stemmed']
+          }}
+        );
+    assert.deepEqual(
+        q.value('foo', 'one', q.weight(2)),
+        {'value-query':{
+          'json-property': 'foo',
+          text: ['one'],
+          weight: 2
+          }}
+        );
   });
 
   it('should create a word query', function(){
@@ -1084,7 +1141,30 @@ describe('query-builder', function() {
           text: ['one', 'two']
           }}
         );
-    // TODO: q.termOption, q.fragmentScope(), q.weight()
+    assert.deepEqual(
+        q.word('foo', 'one', q.fragmentScope('properties')),
+        {'word-query':{
+          'json-property': 'foo',
+          text: ['one'],
+          'fragment-scope': 'properties'
+          }}
+        );
+    assert.deepEqual(
+        q.word('foo', 'one', q.termOption('stemmed')),
+        {'word-query':{
+          'json-property': 'foo',
+          text: ['one'],
+          'term-option':['stemmed']
+          }}
+        );
+    assert.deepEqual(
+        q.word('foo', 'one', q.weight(2)),
+        {'word-query':{
+          'json-property': 'foo',
+          text: ['one'],
+          weight: 2
+          }}
+        );
   });
 
   it('should specify a constraint', function(){
@@ -1095,17 +1175,36 @@ describe('query-builder', function() {
           },
           name:'constraint1'}
         );
-    // TODO: test with fragmentScope
     assert.deepEqual(
         q.scope('foo', q.bind('constraint1')),
         {'container':{'json-property': 'foo'},
           name:'constraint1'}
         );
-    // TODO: test with geoOptions
+    assert.deepEqual(
+        q.scope('foo', q.bind('constraint1'), q.fragmentScope('properties')),
+        {'container':{'json-property': 'foo', 'fragment-scope': 'properties'},
+          name:'constraint1'}
+        );
     assert.deepEqual(
         q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1')),
         {'geo-attr-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'}},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1'),
+            q.geoOption('boundaries-included')),
+        {'geo-attr-pair':{parent:{name:'parent'},
+          lat:{name:'latitude'}, lon:{name:'longitude'},
+          'geo-option':['boundaries-included']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1'),
+            q.fragmentScope('properties')),
+        {'geo-attr-pair':{parent:{name:'parent'},
+          lat:{name:'latitude'}, lon:{name:'longitude'},
+          'fragment-scope': 'properties'},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1115,9 +1214,41 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
+        q.geoElement('parent', 'element', q.bind('constraint1'),
+            q.geoOption('boundaries-included')),
+        {'geo-elem':{parent:{name:'parent'},
+          element:{name:'element'},
+          'geo-option':['boundaries-included']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoElement('parent', 'element', q.bind('constraint1'),
+            q.fragmentScope('properties')),
+        {'geo-elem':{parent:{name:'parent'},
+          element:{name:'element'},
+          'fragment-scope': 'properties'},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
         q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1')),
         {'geo-elem-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'}},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1'),
+            q.geoOption('boundaries-included')),
+        {'geo-elem-pair':{parent:{name:'parent'},
+          lat:{name:'latitude'}, lon:{name:'longitude'},
+          'geo-option':['boundaries-included']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1'),
+            q.fragmentScope('properties')),
+        {'geo-elem-pair':{parent:{name:'parent'},
+          lat:{name:'latitude'}, lon:{name:'longitude'},
+          'fragment-scope': 'properties'},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1125,21 +1256,60 @@ describe('query-builder', function() {
         {'geo-path':{'path-index':{text: 'foo'}},
           name:'constraint1'}
         );
-    // TODO: test with rangeOption
+    assert.deepEqual(
+        q.geoPath('foo', q.bind('constraint1'), q.geoOption('boundaries-included')),
+        {'geo-path':{'path-index':{text: 'foo'},
+          'geo-option':['boundaries-included']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.geoPath('foo', q.bind('constraint1'), q.fragmentScope('properties')),
+        {'geo-path':{'path-index':{text: 'foo'}, 'fragment-scope': 'properties'},
+          name:'constraint1'}
+        );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1')),
         {range:{'json-property': 'key1'},
           name:'constraint1'}
         );
-    // TODO: test with termOption
+    assert.deepEqual(
+        q.range('key1', q.bind('constraint1'), q.rangeOption('cached')),
+        {range:{'json-property': 'key1', 'range-option':['cached']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.range('key1', q.bind('constraint1'), q.fragmentScope('properties')),
+        {range:{'json-property': 'key1', 'fragment-scope': 'properties'},
+          name:'constraint1'}
+        );
     assert.deepEqual(
         q.value('key1', q.bind('constraint1')),
         {value:{'json-property': 'key1'},
           name:'constraint1'}
         );
     assert.deepEqual(
+        q.value('key1', q.bind('constraint1'), q.termOption('stemmed')),
+        {value:{'json-property': 'key1', 'term-option':['stemmed']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.value('key1', q.bind('constraint1'), q.fragmentScope('properties')),
+        {value:{'json-property': 'key1', 'fragment-scope': 'properties'},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
         q.word('key1', q.bind('constraint1')),
         {word:{'json-property': 'key1'},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.word('key1', q.bind('constraint1'), q.termOption('stemmed')),
+        {word:{'json-property': 'key1', 'term-option':['stemmed']},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.word('key1', q.bind('constraint1'), q.fragmentScope('properties')),
+        {word:{'json-property': 'key1', 'fragment-scope': 'properties'},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1167,6 +1337,46 @@ describe('query-builder', function() {
                 {value:{'json-property': 'key1'}, name:'constraint1'},
                 {word:{'json-property': 'key2'}, name:'constraint2'}
                 ]}}
+        );
+    assert.deepEqual(
+        q.word('key1', q.bindDefault()),
+        {'default':{word:{'json-property': 'key1'}}}
+        );
+    assert.deepEqual(
+        q.word('key1', q.bindDefault(), q.termOption('stemmed')),
+        {'default':{word:{'json-property': 'key1', 'term-option':['stemmed']}}}
+        );
+    assert.deepEqual(
+        q.word('key1', q.bindDefault(), q.fragmentScope('properties')),
+        {'default':{word:{'json-property': 'key1', 'fragment-scope': 'properties'}}}
+        );
+    assert.deepEqual(
+        q.word('key1', q.bindDefault(), q.weight(2)),
+        {'default':{word:{'json-property': 'key1', weight: 2}}}
+        );
+    assert.deepEqual(
+        q.bindEmptyAs('all-results'),
+        {empty:{'apply': 'all-results'}}
+        );
+    assert.deepEqual(
+        q.parsedFrom('word1',
+            q.parseBindings(
+                q.word('key1', q.bindDefault())
+                )),
+        {parsedQuery:{qtext:'word1',
+          term:{
+                'default':{word:{'json-property': 'key1'}}
+                }}}
+        );
+    assert.deepEqual(
+        q.parsedFrom('',
+            q.parseBindings(
+                q.bindEmptyAs('all-results')
+                )),
+        {parsedQuery:{qtext:'',
+          term:{
+                empty:{'apply': 'all-results'}
+                }}}
         );
   });
 
@@ -1293,6 +1503,18 @@ describe('document query', function(){
       built.whereClause.query.queries.should.be.ok;
       built.whereClause.query.queries.length.should.equal(1);
       built.whereClause.query.queries[0]['value-query'].should.be.ok;
+    });
+    it('should build a where clause with fragment scope', function(){
+      var built = q.where(
+          q.value('key1', 'value 1'), q.fragmentScope('properties')
+      );
+      built.whereClause.should.be.ok;
+      built.whereClause.query.should.be.ok;
+      built.whereClause.query.queries.should.be.ok;
+      built.whereClause.query.queries.length.should.equal(1);
+      built.whereClause.query.queries[0]['value-query'].should.be.ok;
+      built.whereClause['fragment-scope'].should.be.ok;
+      built.whereClause['fragment-scope'].should.equal('properties');
     });
     it('should build a where clause with QBE', function(){
       var built = q.where(
