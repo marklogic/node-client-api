@@ -11,7 +11,7 @@
     * queryBuilder.calculate() - except custom constraint, constraint merge
     * queryBuilder.slice()
     * queryBuilder.withOptions()
-    * queryBuilder.parsedFrom() - except custom constraint
+    * queryBuilder.parsedFrom()
     * queryBuilder.copyFrom()
     * QBE - except calculate() and orderBy()
 * documents.check()
@@ -31,6 +31,10 @@
 * config.transforms.write()
 * config.properties.read()
 * config.properties.write()
+* config.extlibs.list()
+* config.extlibs.read()
+* config.extlibs.remove()
+* config.extlibs.write()
 * optimistic locking
 
 ### To do for early access 2

@@ -1359,6 +1359,27 @@ describe('query-builder', function() {
         {empty:{'apply': 'all-results'}}
         );
     assert.deepEqual(
+        q.queryFunction('module1', q.bind('constraint1')),
+        {custom:{parse: {
+            apply: 'parse',
+            ns:    'http://marklogic.com/query/custom/module1',
+            at:    '/ext/marklogic/query/custom/module1.xqy'
+            },
+            facet:false},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
+        q.queryFunction('module1', q.bind('constraint1'), q.termOption('stemmed')),
+        {custom:{parse: {
+            apply: 'parse',
+            ns:    'http://marklogic.com/query/custom/module1',
+            at:    '/ext/marklogic/query/custom/module1.xqy'
+            },
+            'term-option':['stemmed'],
+            facet:false},
+          name:'constraint1'}
+        );
+    assert.deepEqual(
         q.parsedFrom('word1',
             q.parseBindings(
                 q.word('key1', q.bindDefault())
