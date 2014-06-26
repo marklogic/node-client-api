@@ -8,7 +8,7 @@
 * documents.query()
     * queryBuilder.where()
     * queryBuilder.orderBy()
-    * queryBuilder.calculate() - except custom constraint, constraint merge
+    * queryBuilder.calculate() - except constraint merge and optional datatypes
     * queryBuilder.slice()
     * queryBuilder.withOptions()
     * queryBuilder.parsedFrom()

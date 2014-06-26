@@ -1510,6 +1510,23 @@ describe('query-builder', function() {
           },
           name:'facet9'}
         );
+    assert.deepEqual(
+        q.facet('facet10', q.calculateFunction('module1')),
+        {custom:{
+          'start-facet': {
+            apply: 'start-facet',
+            ns:    'http://marklogic.com/query/custom/module1',
+            at:    '/ext/marklogic/query/custom/module1.xqy'
+            },
+          'finish-facet': {
+            apply: 'finish-facet',
+            ns:    'http://marklogic.com/query/custom/module1',
+            at:    '/ext/marklogic/query/custom/module1.xqy'
+            },
+          facet: true
+          },
+          name:'facet10'}
+        );
   });
 });
 

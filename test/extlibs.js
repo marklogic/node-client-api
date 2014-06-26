@@ -98,8 +98,21 @@ describe('extension libraries', function(){
         done();
       }, done);
     });
-/* TODO: custom facet constraint calculate
-    console.log(response);
-     */
+    it('a custom constraint for facet calculation', function(done){
+      db.query(
+          q.where().
+          calculate(
+              q.facet('directories', q.calculateFunction('directoryConstraint'))
+              ).
+          slice(0)
+          ).
+          result(function(response) {
+            response.facets.should.be.ok;
+            response.facets.directories.should.be.ok;
+            response.facets.directories.facetValues.should.be.ok;
+            response.facets.directories.facetValues.length.should.be.greaterThan(0);
+            done();
+          }, done);
+    });
   });
 });

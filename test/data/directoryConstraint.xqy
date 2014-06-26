@@ -8,12 +8,17 @@ declare namespace search = "http://marklogic.com/appservices/search";
 
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
-(: Sample custom constraint for this example : 
+(:
+   Simple directory query example -- not suitable for a large database.
+
+  Sample declaration for this custom constraint:
   <constraint name="dir">
        <custom>
-           <parse apply="parse"         ns="http://marklogic.com/query/custom/directoryConstraint"
+           <parse apply="parse"               ns="http://marklogic.com/query/custom/directoryConstraint"
                at="/ext/marklogic/query/custom/directoryConstraint.xqy"/>
-           <finish-facet apply="finish" ns="http://marklogic.com/query/custom/directoryConstraint"
+           <finish-facet apply="start-facet"  ns="http://marklogic.com/query/custom/directoryConstraint"
+               at="/ext/marklogic/query/custom/directoryConstraint.xqy"/>
+           <finish-facet apply="finish-facet" ns="http://marklogic.com/query/custom/directoryConstraint"
                at="/ext/marklogic/query/custom/directoryConstraint.xqy"/>
        </custom>
    </constraint>
@@ -33,10 +38,18 @@ as cts:query
         )
 };
 
-(:
-   Simple directory query example -- not suitable for a large database.
-:)
-declare function directoryConstraint:finish(
+declare function directoryConstraint:start-facet(
+  $constraint     as element(search:constraint), 
+  $query          as cts:query?, 
+  $facet-options  as xs:string*, 
+  $quality-weight as xs:double?, 
+  $forests        as xs:unsignedLong*) 
+as item()*
+{
+    cts:uris((),("item-order","ascending","concurrent"),(),(),$forests)
+};
+
+declare function directoryConstraint:finish-facet(
   $start          as item()*,
   $constraint     as element(search:constraint), 
   $query          as cts:query?,
@@ -54,7 +67,7 @@ as element(search:facet)
                 json:array-push($dir-array,"/"),
 
                 let $last-dir := "/"
-                for $uri in cts:uris((),("item-order","ascending"),(),(),$forests)
+                for $uri in $start
                 let $test-dir := replace($uri, "^(.*/)[^/]*$", "$1")
                 return
                     if ($test-dir eq $last-dir or not(ends-with($test-dir,"/"))) then ()
