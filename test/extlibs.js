@@ -24,7 +24,7 @@ var testutil = require('./test-util.js');
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient(testutil.restReaderConnection);
+var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testutil.restAdminConnection);
 
 describe('extension libraries', function(){
@@ -35,9 +35,7 @@ describe('extension libraries', function(){
       fs.createReadStream(fsPath).
       pipe(concatStream({encoding: 'string'}, function(source) {
         restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).
-        result(function(response){
-          done();
-        }, done);
+        result(function(response){done();}, done);
       }));
     });
     it('should read the extension library', function(done){
@@ -66,26 +64,31 @@ describe('extension libraries', function(){
 
   describe('when using', function() {
     before(function(done){
+      this.timeout(3000);
       fs.createReadStream(fsPath).
       pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).
-        result(function(response){
-          done();
-        }, done);
+        restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).result().
+        then(function(response) {
+          db.documents.write({
+            uri: '/test/extlib/queryDoc1.json',
+            contentType: 'application/json',
+            content: {constraintQueryKey:'constraint query value'}
+            }).
+          result(function(response){
+            done();}, done);
+          }, done);
       }));
     });
     after(function(done) {
       restAdminDB.config.extlibs.remove(dbPath).
-      result(function(response){
-        done();
-      }, done);
+      result(function(response){done();}, done);
     });
     it('a custom constraint to parse', function(done){
       db.query(
         q.where(
           q.parsedFrom('dirs:/test/',
             q.parseBindings(
-              q.queryFunction('directoryConstraint', q.bind('dirs'))
+              q.parseFunction('directoryConstraint', q.bind('dirs'))
               ))
           )
         ).

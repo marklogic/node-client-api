@@ -1359,7 +1359,7 @@ describe('query-builder', function() {
         {empty:{'apply': 'all-results'}}
         );
     assert.deepEqual(
-        q.queryFunction('module1', q.bind('constraint1')),
+        q.parseFunction('module1', q.bind('constraint1')),
         {custom:{parse: {
             apply: 'parse',
             ns:    'http://marklogic.com/query/custom/module1',
@@ -1369,7 +1369,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.queryFunction('module1', q.bind('constraint1'), q.termOption('stemmed')),
+        q.parseFunction('module1', q.bind('constraint1'), q.termOption('stemmed')),
         {custom:{parse: {
             apply: 'parse',
             ns:    'http://marklogic.com/query/custom/module1',
