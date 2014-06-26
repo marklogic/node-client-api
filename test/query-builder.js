@@ -1545,18 +1545,23 @@ describe('document query', function(){
     });
     it('should build a where clause with qtext', function(){
       var built = q.where(
-          q.parsedFrom('constraint1:word1',
+          q.parsedFrom('constraint1:word1 word2',
               q.parseBindings(
-                  q.word('key1', q.bind('constraint1'))
+                  q.word('key1', q.bind('constraint1')),
+                  q.word('key2', q.bindDefault()),
+                  q.bindEmptyAs('all-results')
                   )),
           q.value('key1', 'value 1')
       );
       built.whereClause.should.be.ok;
       built.whereClause.parsedQuery.should.be.ok;
-      built.whereClause.parsedQuery.qtext.should.equal('constraint1:word1');
+      built.whereClause.parsedQuery.qtext.should.equal('constraint1:word1 word2');
       built.whereClause.parsedQuery.constraint.should.be.ok;
       built.whereClause.parsedQuery.constraint.length.should.equal(1);
       built.whereClause.parsedQuery.constraint[0].name.should.equal('constraint1');
+      built.whereClause.parsedQuery.term.should.be.ok;
+      built.whereClause.parsedQuery.term['default'].should.be.ok;
+      built.whereClause.parsedQuery.term.empty.should.be.ok;
       built.whereClause.query.should.be.ok;
       built.whereClause.query.queries.should.be.ok;
       built.whereClause.query.queries.length.should.equal(1);

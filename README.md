@@ -10,8 +10,8 @@
     * queryBuilder.orderBy()
     * queryBuilder.calculate() - except custom constraint, constraint merge
     * queryBuilder.slice()
-    * queryBuilder.withOptions() - except concurrencyLevel, forestName
-    * queryBuilder.parsedFrom() - except custom
+    * queryBuilder.withOptions()
+    * queryBuilder.parsedFrom() - except custom constraint
     * queryBuilder.copyFrom()
     * QBE - except calculate() and orderBy()
 * documents.check()
