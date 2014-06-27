@@ -27,7 +27,7 @@ gulp.task('lint', function() {
 });
 
 gulp.task('test', function() {
-  gulp.src('./test/*.js')
+  gulp.src(['./test/*.js', '!./test/documents-patch.js'])
       .pipe(mocha({
         reporter: 'spec',
         globals: {
@@ -43,8 +43,7 @@ gulp.task('doc', function() {
 });
 
 gulp.task('examples', function() {
-  gulp.src(
-        ['./examples/*.js', '!./examples/before-*.js'],
+  gulp.src(['./examples/*.js', '!./examples/before-*.js'],
         {read: false}
       )
     .pipe(intercept(function(file){

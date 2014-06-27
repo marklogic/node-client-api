@@ -2,18 +2,17 @@
 
 ## Status
 
-### Done for early access 2 (basic support)
+### Done for early access 2 (basic document CRUD and query support)
 
 * createDatabaseClient() including HTTPS
 * documents.query()
-    * queryBuilder.where()
+    * queryBuilder.where() including built query, QBE, and parsedFrom() string query
     * queryBuilder.orderBy()
-    * queryBuilder.calculate() - except constraint merge and optional datatypes
+    * queryBuilder.calculate()
     * queryBuilder.slice()
     * queryBuilder.withOptions()
     * queryBuilder.parsedFrom()
     * queryBuilder.copyFrom()
-    * QBE - except calculate() and orderBy()
 * documents.check()
 * documents.remove()
 * documents.read()
@@ -39,12 +38,16 @@
 
 ### To do for early access 2
 
-* documents.patch() - working prior to native JSON cut-over except custom apply
+* documents.patch() - including custom apply
+* optional datatypes for queries and facets
+* HTTP errors as instance of Error
 * robust error handling, logging, and request tuning
 * jsdoc
+* examples
 
 ### Deferred to early access 3
 
+* calculate and and orderBy clauses with QBE for where clause
 * bulk conditional content
 * queryBuilder.calculate() - values()
 * queryBuilder.slice() - iterator (aka reducer)

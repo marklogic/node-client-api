@@ -1581,7 +1581,7 @@ describe('document query', function(){
       built.whereClause.parsedQuery.constraint[0].name.should.equal('constraint1');
       built.whereClause.parsedQuery.constraint[1].name.should.equal('constraint2');
     });
-    it('should build a where clause with qtext', function(){
+    it('should build a where clause with default and empty bindings', function(){
       var built = q.where(
           q.parsedFrom('constraint1:word1 word2',
               q.parseBindings(

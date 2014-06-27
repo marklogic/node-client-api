@@ -71,11 +71,14 @@ describe('extension libraries', function(){
         then(function(response) {
           db.documents.write({
             uri: '/test/extlib/queryDoc1.json',
+            collections: ['constraintList'],
             contentType: 'application/json',
-            content: {constraintQueryKey:'constraint query value'}
+            content: {
+              rangeKey1:         'constraintValue',
+              constraintQueryKey:'constraint query value'
+              }
             }).
-          result(function(response){
-            done();}, done);
+          result(function(response){done();}, done);
           }, done);
       }));
     });
@@ -107,12 +110,40 @@ describe('extension libraries', function(){
           slice(0)
           ).
           result(function(response) {
-            response.facets.should.be.ok;
-            response.facets.directories.should.be.ok;
-            response.facets.directories.facetValues.should.be.ok;
+            response.should.have.property('facets');
+            response.facets.should.have.property('directories');
+            response.facets.directories.should.have.property('facetValues');
             response.facets.directories.facetValues.length.should.be.greaterThan(0);
             done();
           }, done);
+    });
+    it('should merge constraints', function(done) {
+      db.query(
+          q.where(
+              q.parsedFrom('range:constraintValue dirs:/test/',
+                q.parseBindings(
+                  q.range('rangeKey1', q.bind('range'),
+                      q.rangeOption('max-occurs=10')),
+                  q.parseFunction('directoryConstraint', q.bind('dirs'))
+                  ))
+              ).
+          calculate(
+              q.facet('range', 'rangeKey1', q.facetOptions('item-frequency')),
+              q.facet('dirs', q.calculateFunction('directoryConstraint'))
+              ).
+          slice(0)
+          ).
+          result(function(response) {
+            response.should.have.property('facets');
+            response.facets.should.have.property('dirs');
+            response.facets.dirs.should.have.property('facetValues');
+            response.facets.dirs.facetValues.length.should.be.greaterThan(0);
+            response.facets.should.have.property('range');
+            response.facets.range.should.have.property('facetValues');
+            response.facets.range.facetValues.length.should.be.greaterThan(0);
+            done();
+          }, done);
+      // TODO: mix of implicit bindings for facets and explicit bindings
     });
   });
 });

@@ -10,20 +10,7 @@ declare default function namespace "http://www.w3.org/2005/xpath-functions";
 
 (:
    Simple directory query example -- not suitable for a large database.
-
-  Sample declaration for this custom constraint:
-  <constraint name="dir">
-       <custom>
-           <parse apply="parse"               ns="http://marklogic.com/query/custom/directoryConstraint"
-               at="/ext/marklogic/query/custom/directoryConstraint.xqy"/>
-           <finish-facet apply="start-facet"  ns="http://marklogic.com/query/custom/directoryConstraint"
-               at="/ext/marklogic/query/custom/directoryConstraint.xqy"/>
-           <finish-facet apply="finish-facet" ns="http://marklogic.com/query/custom/directoryConstraint"
-               at="/ext/marklogic/query/custom/directoryConstraint.xqy"/>
-       </custom>
-   </constraint>
-:)
-
+ :)
 declare function directoryConstraint:parse(
   $query-elem as element(),
   $options    as element(search:options))
