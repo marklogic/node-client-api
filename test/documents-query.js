@@ -25,6 +25,7 @@ var dbWriter = marklogic.createDatabaseClient(testutil.restWriterConnection);
 
 describe('document query', function(){
   before(function(done){
+    this.timeout(3000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
@@ -400,6 +401,44 @@ describe('document query', function(){
         document.uri.should.equal('/test/query/matchDir/doc1.json');
         document.content.should.be.ok;
         document.content.id.should.equal('matchDoc1');
+        done();
+      }, done);
+    });
+    it('should work with calculate and orderBy clauses', function(done){
+      db.query(
+        q.where(
+            q.byExample({$or:[
+              {rangeKey1: {$eq:'aa'}},
+              {rangeKey1: {$eq:'ab'}},
+              {rangeKey1: {$eq:'ac'}}
+              ]})
+        ).
+        calculate(
+            q.facet('rangeKey1'),
+            q.facet('rangeKey2')).
+        orderBy('rangeKey1', 'rangeKey2')
+        ).
+      result(function(response) {
+// console.log(JSON.stringify(response));
+        response.length.should.equal(6);
+        var order = [1, 3, 2, 4, 5];
+        for (var i=0; i <= order.length; i++) {
+          var document = response[i];
+          document.should.be.ok;
+          if (i === 0) {
+            document.facets.should.be.ok;
+            document.facets.rangeKey1.should.be.ok;
+            document.facets.rangeKey1.facetValues.should.be.ok;
+            document.facets.rangeKey1.facetValues.length.should.equal(3);
+            document.facets.rangeKey2.should.be.ok;
+            document.facets.rangeKey2.facetValues.should.be.ok;
+            document.facets.rangeKey2.facetValues.length.should.equal(3);
+          } else {
+            document.content.should.be.ok;
+            document.content.id.should.be.ok;
+            document.content.id.should.equal('matchList'+order[i - 1]);
+          }
+        }
         done();
       }, done);
     });

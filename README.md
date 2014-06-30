@@ -6,7 +6,8 @@
 
 * createDatabaseClient() including HTTPS
 * documents.query()
-    * queryBuilder.where() including built query, QBE, and parsedFrom() string query
+    * queryBuilder.where() including builder structured query,
+      QBE (Query By Example), and parsedFrom() string query
     * queryBuilder.orderBy()
     * queryBuilder.calculate()
     * queryBuilder.slice()
@@ -47,7 +48,6 @@
 
 ### Deferred to early access 3
 
-* calculate and and orderBy clauses with QBE for where clause
 * bulk conditional content
 * queryBuilder.calculate() - values()
 * queryBuilder.slice() - iterator (aka reducer)
