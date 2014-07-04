@@ -15,17 +15,31 @@
  */
 var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient(exutil.restReaderConnection);
+var marklogic = require('../');
 
-db.read({uris:'/countries/uv.json', categories:['content', 'metadata']}).
+var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
+
+console.log('Read document content and metadata');
+
+db.read({
+    uris:['/countries/ml.json', '/countries/uv.json'],
+    categories:['content', 'metadata']
+    }).
   result(function(documents) {
-    var document = documents[0];
-    console.log(
-      document.content.name+': '+(
-        document.permissions.map(function(permission) {
-          return permission['role-name'];
-          }).
-        join(', ')
-        )
+    console.log('read:\n'+
+      documents.
+      map(function(document){
+        return '    '+document.content.name+': '+(
+          document.permissions.
+          map(function(permission) {
+            return permission['role-name'];
+            }).
+          join(', ')
+          );
+        }).
+      join('\n')
       );
-    });
+    console.log('done');
+  }, function(error) {
+    console.log(error);
+  });

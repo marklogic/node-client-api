@@ -39,29 +39,8 @@ var restWriterConnection = {
     authType: authType
 };
 
-function logObject(object) {
-  if (!object)
-    return;
-
-  if (object.data) {
-    var data = object.data;
-    console.log(data);
-/*
-    if (object.format === 'json' ||
-        object.contentType.match(/^(application|text)\/([^+]+\+)?json$/)) {
-      console.log(JSON.parse(data));
-    } else {
-      console.log(data);
-    }
-*/
-  } else {
-    console.log(object);
-  } 
-};
-
 module.exports = {
     restAdminConnection:  restAdminConnection,
     restReaderConnection: restReaderConnection,
-    restWriterConnection: restWriterConnection,
-    logObject:            logObject
+    restWriterConnection: restWriterConnection
 };

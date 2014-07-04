@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var fs = require('fs');
+
+var marklogic = require('../');
+
 var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient(exutil.restWriterConnection);
+var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
-console.log('WRITE STREAM in two chunks');
+console.log('Write a document from a stream');
 
-// shortcut for db.documents.createWriteStream(...)
 var writableStream = db.createWriteStream({
-    uri:         '/tmp/stream1.json',
-    contentType: 'application/json'
-    });
+  uri:         '/countries/uv_flag_2004.gif',
+  contentType: 'image/gif',
+  collections: ['/countries', '/facts/geographic']
+  });
 writableStream.result(function(response) {
-    console.log('\nWRITTEN');
-    console.log(JSON.stringify(response));
-    });
+    console.log('wrote '+response.documents[0].uri);
+    console.log('done');
+  }, function(error) {
+    console.log(error);
+  });
 
-writableStream.write('{"key1"', 'utf8');
-writableStream.write(       ':"value 1"}', 'utf8');
-writableStream.end();
+fs.createReadStream('./examples/data/uv_flag_2004.gif').pipe(writableStream);

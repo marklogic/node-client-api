@@ -20,21 +20,26 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
-console.log('SEARCH Query Builder');
+console.log('Query documents with the Query Builder');
 
 db.query(
   q.where(
+    q.collection('/countries'),
+    q.value('region', 'Africa'),
     q.or(
-      q.value('key1', 'value 1'),
-      q.value(q.element('doc'), 'content 1')
+      q.word('background',   'France'),
+      q.word('Legal system', 'French')
       )
     )
   ).
+  // or use result() as in query-by-example.js
   stream().
-  on('data', function(data) {
-    console.log('matched document content for '+data.uri+':');
-    exutil.logObject(data.content);
+  on('data', function(document) {
+    console.log(document.content.name+' at '+document.uri);
+    }).
+  on('error', function(error) {
+    console.log(error);
     }).
   on('end', function() {
-    console.log('\nFOUND');
+    console.log('done');
     });

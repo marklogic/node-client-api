@@ -20,22 +20,7 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
-/* alternative with promise
-db.searchBuilder(
-    {'$query': {
-      'key1': 'value 1'
-      },
-    '$response': {
-      '$snippet': {'$none': {}},
-      '$extract': {'key1':  {}}
-      }}).
-  result(function(response) {
-    console.log('matched results:');
-    exutil.logObject(response);
-    });
-*/
-
-console.log('Query By Example');
+console.log('Query documents with Query By Example');
 
 db.query(
   q.where(
@@ -43,13 +28,15 @@ db.query(
       region:     'Africa',
       background: {$word: 'France'}
       })
-    )
-  ).result(function(response) {
-    response.forEach(function(document) {
+    )).
+  // or use stream() as in query-builder.js
+  result(function(documents) {
+    documents.forEach(function(document) {
       console.log(
         document.content.name+' at '+document.uri
         );
       });
+      console.log('done');
     }, function(error) {
       console.log(error);
     });

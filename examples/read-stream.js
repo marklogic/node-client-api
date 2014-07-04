@@ -15,7 +15,11 @@
  */
 var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient(exutil.restReaderConnection);
+var marklogic = require('../');
+
+var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
+
+console.log('Read a chunked stream for a binary document');
 
 var chunks = 0;
 var length = 0;
@@ -23,6 +27,9 @@ db.createReadStream('/countries/uv_flag_2004.gif').
   on('data', function(chunk) {
     chunks++;
     length += chunk.length;
+    }).
+  on('error', function(error) {
+    console.log(error);
     }).
   on('end', function() {
     console.log('read '+chunks+' chunks of '+length+' length');

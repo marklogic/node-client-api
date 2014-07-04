@@ -16,26 +16,28 @@
 var exutil = require('./example-util.js');
 
 var marklogic = require('../');
-
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
+console.log('Query documents with the Query Parser');
+
 db.query(
   q.where(
-    q.directory('/countries/'),
-    q.value('region', 'Africa'),
-    q.or(
-        q.word('background', 'France'),
-        q.word('Legal system', 'French')
-        )
-    )
-  ).result(function(response) {
-    console.log(
-      response.
-      map(function(document) {
-        return document.content.name;
-        }).
-      join(', ')
-      );
+    q.parsedFrom('location:Africa about:France',
+      q.parseBindings(
+        q.value('region',    q.bind('location')),
+        q.word('background', q.bind('about'))
+        ))
+    )).
+  // or use stream() as in query-builder.js
+  result(function(documents) {
+    documents.forEach(function(document) {
+      console.log(
+        document.content.name+' at '+document.uri
+        );
+      });
+      console.log('done');
+    }, function(error) {
+      console.log(error);
     });

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 var fs = require('fs');
+
 var marklogic = require('../');
 
 var exutil = require('./example-util.js');
@@ -25,7 +26,7 @@ var dbdir = '/countries/';
 
 var batchSize = 100;
 
-var collection = '/countries';
+var collections = ['/countries', '/facts/geographic'];
 
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
@@ -36,7 +37,7 @@ function readFile(filenames, i, buffer, isLast) {
       uri:         dbdir+filename,
       category:    'content',
       contentType: 'application/json',
-      collections: collection,
+      collections: collections,
       content:     content.toString()
       });
 
@@ -81,7 +82,7 @@ var imageFile = 'uv_flag_2004.gif';
 var ws = db.createWriteStream({
   uri:         dbdir+imageFile,
   contentType: 'image/gif',
-  collections: collection
+  collections: collections
   });
 ws.result(function(response) {
   console.log('wrote '+imageFile);

@@ -15,11 +15,14 @@
  */
 var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient(exutil.restReaderConnection);
+var marklogic = require('../');
+
+var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
+
+console.log('Check documents');
 
 ['/countries/uv.json', '/does/not/exist.json'].
   forEach(function(uri){
-    //shortcut for db.documents.check(...)
     db.check(uri).result(function(document) {
       console.log('document at '+uri+' exists: '+document.exists);
       });

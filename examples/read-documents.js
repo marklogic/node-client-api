@@ -15,20 +15,14 @@
  */
 var exutil = require('./example-util.js');
 
-var db = require('../').createDatabaseClient(exutil.restReaderConnection);
+var marklogic = require('../');
 
-/*
-db.read('/countries/ml.json', '/countries/uv.json').
-  stream().
-  on('result', function(document) {
-    console.log('read '+document.content.name+' at '+document.uri);
-    }).
-  on('end', function() {
-    console.log('finished reading');
-    });
- */
+var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
+
+console.log('Read documents');
 
 db.read('/countries/ml.json', '/countries/uv.json').
+  // or use stream() as in query-builder.js
   result(function(documents) {
     console.log('read:\n'+
       documents.
@@ -37,6 +31,7 @@ db.read('/countries/ml.json', '/countries/uv.json').
         }).
       join('\n')
       );
+    console.log('done');
     }, function(error) {
       console.log(error);
     });

@@ -21,23 +21,30 @@ var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
 var timestamp = (new Date()).toISOString();
 
-db.read('/countries/uv.json').
-  result(function(documents) {
+console.log('Transform a document on the client');
+
+db.read('/countries/uv.json').result().
+  then(function(documents) {
     var documentBefore = documents[0];
+    console.log('before: '+
+        documentBefore.content.name+' on '+
+        documentBefore.content.timestamp
+        );
     documentBefore.content.timestamp = timestamp;
     return db.write(documentBefore).result();
     }).
   then(function(response) {
     var uri = response.documents[0].uri;
+    console.log('modified: '+uri);
     return db.read(uri).result();
   }).
   then(function(documents) {
     var documentAfter = documents[0];
-    console.log(
+    console.log('after: '+
       documentAfter.content.name+' on '+
       documentAfter.content.timestamp
       );
-    }).
-  then(null, function(error) {
+    console.log('done');
+  }, function(error) {
     console.log(error.toString());
-    });
+  });
