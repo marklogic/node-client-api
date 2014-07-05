@@ -23,32 +23,28 @@ var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 
 describe('document patch', function(){
   var uri1 = '/test/patch/doc1.json';
-  before(function(done){
-    db.documents.write({
-      uri: uri1,
-      collections: ['patchCollection1'],
-      contentType: 'application/json',
-      content: {
-        id:              'patchDoc1',
-        arrayParentKey:  ['existing value'],
-        objectParentKey: {replacementKey: 'replaceable value'},
-        deletableKey:    'deletable value'
-        }
-      }).
-    result(function(response){done();}, done);
-  });
-  describe('with an insert, replace, and delete', function() {
-    it('should modify the document', function(done){
+  describe('with JSONPath', function() {
+    before(function(done){
+      db.documents.write({
+        uri: uri1,
+        collections: ['patchCollection1'],
+        contentType: 'application/json',
+        content: {
+          id:              'patchDoc1',
+          arrayParentKey:  ['existing value'],
+          objectParentKey: {replacementKey: 'replaceable value'},
+          deletableKey:    'deletable value'
+          }
+        }).
+      result(function(response){done();}, done);
+    });
+    it('should insert, replace, and delete', function(done){
       var p = marklogic.patchBuilder;
-/* TODO: switch after XPath supported for JSON on the server
-          p.insert('/arrayParentKey', 'last-child', 'appended value'),
-          p.replace('/objectParentKey/replacementKey', 'replacement value'),
-          p.del('/deletableKey')
- */
       db.documents.patch(uri1,
+          p.pathLanguage('jsonpath'),
           p.insert('$.arrayParentKey', 'last-child', 'appended value'),
           p.replace('$.objectParentKey.replacementKey', 'replacement value'),
-          p.del('$.deletableKey')
+          p.remove('$.deletableKey')
           ).
       result(function(response){
         db.read(uri1).
@@ -67,5 +63,45 @@ describe('document patch', function(){
         }, done);
     });    
   });
-  // TODO: metadata patch
+  describe('with XPath', function() {
+    before(function(done){
+      db.documents.write({
+        uri: uri1,
+        collections: ['patchCollection1'],
+        contentType: 'application/json',
+        content: {
+          id:              'patchDoc1',
+          arrayParentKey:  ['existing value'],
+          objectParentKey: {replacementKey: 'replaceable value'},
+          deletableKey:    'deletable value'
+          }
+        }).
+      result(function(response){done();}, done);
+    });
+    it('should insert, replace, and delete', function(done) {
+      var p = marklogic.patchBuilder;
+      db.documents.patch(uri1,
+          p.insert('/node("arrayParentKey")', 'last-child', 'appended value'),
+          p.replace('/node("objectParentKey")/node("replacementKey")',
+              'replacement value'),
+          p.remove('/node("deletableKey")')
+          ).
+      result(function(response){
+        db.read(uri1).
+        result(function(documents) {
+          var document = documents[0];
+          document.should.be.ok;
+          document.content.should.be.ok;
+          document.content.arrayParentKey.should.be.ok;
+          document.content.arrayParentKey.length.should.equal(2);
+          document.content.arrayParentKey[1].should.equal('appended value');
+          document.content.objectParentKey.should.be.ok;
+          document.content.objectParentKey.replacementKey.should.be.ok;
+          document.content.objectParentKey.replacementKey.should.equal('replacement value');
+          ('deletableKey' in document).should.equal(false);
+          done();}, done);
+        }, done);
+    });    
+  });    
+  // TODO: metadata patch, patch library
 });

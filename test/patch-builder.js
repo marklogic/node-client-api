@@ -85,11 +85,11 @@ describe('patch-builder', function() {
           }}
         );
     assert.deepEqual(
-        p.replace('/the/select', 'the content', 'applyFunction'),
+        p.replace('/the/select', 'the content', p.apply('functionName')),
         {replace:{
           select:  '/the/select',
           content: 'the content',
-          apply:   'applyFunction'
+          apply:   'functionName'
           }}
         );
   });
@@ -141,25 +141,25 @@ describe('patch-builder', function() {
           }}
         );
     assert.deepEqual(
-        p.replaceInsert('/the/select', '/the/context', 'last-child', 'the content', 'applyFunction'),
+        p.replaceInsert('/the/select', '/the/context', 'last-child', 'the content', p.apply('functionName')),
         {'replace-insert':{
           select:   '/the/select',
           context:  '/the/context',
           position: 'last-child',
           content:  'the content',
-          apply:    'applyFunction'
+          apply:    'functionName'
           }}
         );
   });
   it('should create a delete operation', function(){
     assert.deepEqual(
-        p.del('/the/select'),
+        p.remove('/the/select'),
         {'delete':{
           select: '/the/select'
           }}
         );
     assert.deepEqual(
-        p.del('/the/select', '?'),
+        p.remove('/the/select', '?'),
         {'delete':{
           select:      '/the/select',
           cardinality: '?'
@@ -167,4 +167,3 @@ describe('patch-builder', function() {
         );
   });
 });
-  

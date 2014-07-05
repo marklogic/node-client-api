@@ -24,6 +24,8 @@ console.log('Check documents');
 ['/countries/uv.json', '/does/not/exist.json'].
   forEach(function(uri){
     db.check(uri).result(function(document) {
-      console.log('document at '+uri+' exists: '+document.exists);
+        console.log('document at '+uri+' exists: '+document.exists);
+      }, function(error) {
+        console.log(error);
       });
     });
