@@ -7,7 +7,8 @@
 * createDatabaseClient() including HTTPS
 * documents.query()
     * queryBuilder.where() including builder structured query,
-      QBE (Query By Example), and parsedFrom() string query
+      queryBuilder.byExample() QBE (Query By Example), and
+      queryBuilder.parsedFrom() string query
     * queryBuilder.orderBy()
     * queryBuilder.calculate()
     * queryBuilder.slice()
@@ -21,6 +22,7 @@
 * documents.write()
 * documents.createWriteStream()
 * documents.removeAll()
+* documents.patch()
 * transactions.open()
 * transactions.read()
 * transactions.commit()
@@ -39,15 +41,13 @@
 
 ### To do for early access 2
 
-* documents.patch() - including custom apply
-* optional datatypes for queries and facets
 * HTTP errors as instance of Error
-* robust error handling, logging, and request tuning
 * jsdoc
-* examples
 
 ### Deferred to early access 3
 
+* robust error handling, logging, and request tuning
+* optional datatypes for queries and facets
 * bulk conditional content
 * queryBuilder.calculate() - values()
 * queryBuilder.slice() - iterator (aka reducer)
