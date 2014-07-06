@@ -57,7 +57,7 @@ describe('patch-builder', function() {
         {insert:{
           context:  '/the/context',
           position: 'last-child',
-          content:  '{"key":"the value"}'
+          content:  {key:'the value'}
           }}
         );
   });
@@ -81,7 +81,7 @@ describe('patch-builder', function() {
         p.replace('/the/select', {key:'the value'}),
         {replace:{
           select:  '/the/select',
-          content:  '{"key":"the value"}'
+          content:  {key:'the value'}
           }}
         );
     assert.deepEqual(
@@ -137,7 +137,7 @@ describe('patch-builder', function() {
           select:   '/the/select',
           context:  '/the/context',
           position: 'last-child',
-          content:  '{"key":"the value"}'
+          content:  {key:'the value'}
           }}
         );
     assert.deepEqual(

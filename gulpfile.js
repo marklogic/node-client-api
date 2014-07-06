@@ -42,8 +42,10 @@ gulp.task('doc', function() {
       .pipe(jsdoc('./doc'));
 });
 
+// do not run optimistic locking example concurrently
+// with other examples
 gulp.task('examples', function() {
-  gulp.src(['./examples/*.js', '!./examples/before-*.js'],
+  gulp.src(['./examples/*.js', '!./examples/before-*.js', '!./examples/optimistic-locking.js'],
         {read: false}
       )
     .pipe(intercept(function(file){
