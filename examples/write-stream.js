@@ -30,6 +30,7 @@ var writableStream = db.createWriteStream({
   });
 writableStream.result(function(response) {
     console.log('wrote '+response.documents[0].uri);
+    db.release();
     console.log('done');
   }, function(error) {
     console.log(error);

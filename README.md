@@ -46,8 +46,9 @@
 
 ### Deferred to early access 3
 
-* robust error handling, logging, and request tuning
+* control over JSON and XML conversion
 * optional datatypes for queries and facets
+* robust error handling, logging, and request tuning
 * bulk conditional content
 * queryBuilder.calculate() - values()
 * queryBuilder.slice() - iterator (aka reducer)
