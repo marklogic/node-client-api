@@ -41,7 +41,6 @@
 
 ### To do for early access 2
 
-* HTTP errors as instance of Error
 * jsdoc
 
 ### Deferred to early access 3

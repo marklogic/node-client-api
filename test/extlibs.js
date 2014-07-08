@@ -32,6 +32,7 @@ describe('extension libraries', function(){
   var fsPath = './test/data/directoryConstraint.xqy';
   describe('when configuring', function() {
     it('should write the extension library', function(done){
+      this.timeout(3000);
       fs.createReadStream(fsPath).
       pipe(concatStream({encoding: 'string'}, function(source) {
         restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).

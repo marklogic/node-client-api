@@ -23,7 +23,7 @@ var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
 
 describe('transaction', function(){
   describe('with commit', function(){
-    this.timeout(3000);
+    this.timeout(5000);
     var uri = '/test/txn/commit1.json';
     before(function(done){
       db.check(uri).result(function(document){
@@ -87,7 +87,7 @@ describe('transaction', function(){
     });
   });
   describe('with rollback', function(){
-    this.timeout(3000);
+    this.timeout(5000);
     var uri = '/test/txn/rollback1.json';
     before(function(done){
       db.check(uri).result(function(document){
@@ -134,7 +134,7 @@ describe('transaction', function(){
     });
   });
   describe('transaction status', function(){
-    this.timeout(3000);
+    this.timeout(5000);
     var uri = '/test/txn/read1.json';
     it('should read an open transaction', function(done){
       var tid = null;

@@ -202,6 +202,7 @@ describe('document content', function(){
       var uri = '/test/binary/test1.png';
       var binaryValue = null;
       before(function(done){
+        this.timeout(3000);
         fs.createReadStream(binaryPath).
           pipe(concatStream({encoding: 'buffer'}, function(value) {
             binaryValue = value;
@@ -209,6 +210,7 @@ describe('document content', function(){
           }));
         });
       it('should write as a piped stream', function(done){
+        this.timeout(3000);
         var ws = db.createWriteStream({
           uri:uri,
           contentType:'image/png'
@@ -444,155 +446,4 @@ describe('document metadata', function(){
       });
     });
   });
-});
-
-describe('document negative', function(){
-  it('should fail to write a document as reader', function(done){
-    dbReader.documents.write({
-      uri: '/test/negative/writeAsReader1.txt',
-      contentType: 'text/plain',
-      content: 'the text'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('403') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to write a collection on a non-existent document', function(done){
-    db.documents.write({
-      uri: '/test/negative/writeOrphanedCollection1.txt',
-      contentType: 'text/plain',
-      collections: 'no document'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('404') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to write an invalid JSON document', function(done){
-    db.documents.write({
-      uri: '/test/negative/writeInvalid1.json',
-      contentType: 'application/json',
-      content: '{"invalid"}'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('400') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to write an invalid XML document', function(done){
-    db.documents.write({
-      uri: '/test/negative/writeInvalid2.xml',
-      contentType: 'application/xml',
-      content: '<invalid><document>'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('400') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to write a document with invalid permissions', function(done){
-    db.documents.write({
-      uri: '/test/negative/writeInvalidPermissions1.txt',
-      contentType: 'text/plain',
-      permissions: [
-          {'role-name':'unreal', capabilities:['unknown']}
-          ],
-      content: 'the text'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('400') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to write a document with a non-existent transaction', function(done){
-    db.documents.write({
-      uri: '/test/negative/writeInvalidTransaction1.txt',
-      contentType: 'text/plain',
-      content: 'the text',
-      txid: 'not a real transaction'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('400') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to delete a document as reader', function(done){
-    dbReader.documents.remove({
-      uri: '/test/negative/deleteAsReader1.txt'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('403') > -1).should.equal(true);
-      done();
-      });
-  });
-  it('should fail to delete a document with a non-existent transaction', function(done){
-    db.documents.remove({
-      uri: '/test/negative/deleteInvalidTransaction1.txt',
-      txid: 'not a real transaction'
-      }).
-    result(function(response){
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error){
-      (error.indexOf('400') > -1).should.equal(true);
-      done();
-      });
-  });
-
-/* TODO:
-repair for json
-lang for text
-extract for text
-multipart write should report a bad uri
-multipart read should report a non-existent uri or up-to-date versionId
-  it('should fail to write a new document with an invalid uri', function(done){
-    db.documents.write({
-      uri: '/test/negative/not valid.txt',
-      contentType: 'text/plain',
-      content: 'the text'
-      }).
-    result(function(response){
-        response.should.equal('SHOULD HAVE FAILED');
-        done();
-      }, function(error){
-        (error.indexOf('400') > -1).should.equal(true);
-        done();
-      });
-  });
-
-  it('should fail to read a non-existent document', function(done){
-    db.read('/not/a/real/document.txt').
-    result(function(documents) {
-      valcheck.isUndefined(documents).should.equal(false);
-      documents.length.should.equal(1);
-      var document = documents[0];
-      console.log(document);
-    }, done);
-  });
-
-db.query empty
-bad authentication in test on marklogic
- */
 });

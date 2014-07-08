@@ -31,7 +31,7 @@ db.read('/countries/ml.json', '/countries/uv.json').
         }).
       join('\n')
       );
-    console.log('done');
+      exutil.succeeded();
     }, function(error) {
-      console.log(error);
+      exutil.failed(error);
     });

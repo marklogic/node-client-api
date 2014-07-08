@@ -39,8 +39,45 @@ var restWriterConnection = {
     authType: authType
 };
 
+var listeners = {
+    mode:  'waiting',
+    queue: []  
+};
+function addListener(listener) {
+  if (listeners.mode === 'waiting' && listeners.queue.length === 0) {
+    listeners.mode = 'running';
+    listener();
+  } else {
+    listeners.queue.push(listener);
+  }
+};
+function notifyListener() {
+  if (listeners.queue.length === 0) {
+    if (listeners.mode !== 'waiting') {
+      listeners.mode = 'waiting';
+    }
+    return;
+  }
+  var listener = listeners.queue.shift();
+  listener();
+};
+
+function succeeded() {
+  console.log('done');
+
+  notifyListener();
+};
+function failed(error) {
+  console.log(JSON.stringify(error));
+
+  notifyListener();
+};
+
 module.exports = {
     restAdminConnection:  restAdminConnection,
     restReaderConnection: restReaderConnection,
-    restWriterConnection: restWriterConnection
+    restWriterConnection: restWriterConnection,
+    addListener:          addListener,
+    succeeded:            succeeded,
+    failed:               failed
 };

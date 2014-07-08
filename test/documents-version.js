@@ -86,22 +86,28 @@ describe('document versions', function() {
       }, done);
     });
     it('should fail without a versionId', function(done) {
+      db.setLogger({console: false});
       db.documents.remove(uri).
       result(function(response){
+        db.setLogger({console: true});
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        (error.indexOf('RESTAPI-CONTENTNOVERSION') > -1).should.equal(true);
+        db.setLogger({console: true});
+        error.body.error['message-code'].should.equal('RESTAPI-CONTENTNOVERSION');
         done();
       });
     });
     it('should fail with the wrong versionId', function(done) {
+      db.setLogger({console: false});
       db.documents.remove({uri: uri, versionId: 1234567890}).
       result(function(response){
+        db.setLogger({console: true});
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        (error.indexOf('RESTAPI-CONTENTWRONGVERSION') > -1).should.equal(true);
+        db.setLogger({console: true});
+        error.body.error['message-code'].should.equal('RESTAPI-CONTENTWRONGVERSION');
         done();
       });
     });
@@ -138,20 +144,24 @@ describe('document versions', function() {
       }, done);
     });
     it('should fail without a versionId', function(done) {
+      db.setLogger({console: false});
       db.documents.write({
         uri: overwriteUri,
         contentType: 'application/json',
         content: {key1: 'no version'}
         }).
       result(function(response){
+        db.setLogger({console: true});
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        (error.indexOf('RESTAPI-CONTENTNOVERSION') > -1).should.equal(true);
+        db.setLogger({console: true});
+        error.body.error['message-code'].should.equal('RESTAPI-CONTENTNOVERSION');
         done();
       });
     });
     it('should fail with the wrong versionId', function(done) {
+      db.setLogger({console: false});
       db.documents.write({
         uri: overwriteUri,
         versionId: 1234567890,
@@ -159,10 +169,12 @@ describe('document versions', function() {
         content: {key1: 'wrong version'}
         }).
       result(function(response){
+        db.setLogger({console: true});
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        (error.indexOf('RESTAPI-CONTENTWRONGVERSION') > -1).should.equal(true);
+        db.setLogger({console: true});
+        error.body.error['message-code'].should.equal('RESTAPI-CONTENTWRONGVERSION');
         done();
       });
     });

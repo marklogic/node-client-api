@@ -43,7 +43,7 @@ describe('document remove all', function(){
     result(function(response){done();}, done);
   });
   it('should remove the collection', function(done){
-    this.timeout(3000);
+    this.timeout(5000);
     db.removeAll({collections:'/removeAll/collection'}).
     result(function(result) {
       return db.check('/removeAll/collection/doc'+1+'.txt').result();
@@ -60,7 +60,7 @@ describe('document remove all', function(){
       }, done);
   });
   it('should remove the directory', function(done){
-    this.timeout(3000);
+    this.timeout(5000);
     db.removeAll({directory:'/removeAll/directory'}).
     result(function(result) {
       return db.check('/removeAll/directory/doc'+1+'.txt').result();

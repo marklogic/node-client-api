@@ -18,7 +18,10 @@ var jshint    = require('gulp-jshint');
 var mocha     = require('gulp-mocha');
 var jsdoc     = require('gulp-jsdoc');
 var intercept = require('gulp-intercept');
+// var glob      = require("glob");
 // var debug     = require('gulp-debug');
+
+var exutil = require('./examples/example-util.js');
 
 gulp.task('lint', function() {
   gulp.src('./lib/*')
@@ -42,15 +45,27 @@ gulp.task('doc', function() {
       .pipe(jsdoc('./doc'));
 });
 
-// do not run optimistic locking example concurrently
-// with other examples
+function listener() {
+  console.log('-----------------------------------------------------------');
+  console.log(this.path);
+  require(this.path);
+}
+
 gulp.task('examples', function() {
-  gulp.src(['./examples/*.js', '!./examples/before-*.js', '!./examples/optimistic-locking.js'],
-        {read: false}
-      )
-    .pipe(intercept(function(file){
-      require(file.path);
-    }));
+  gulp.src(['./examples/*.js', '!./examples/before-*.js', '!./examples/example-util.js'],
+      {read: false}
+    )
+  .pipe(intercept(function(file){
+    exutil.addListener(listener.bind(file));
+  }));
+/*
+  glob.sync(
+      './examples/*.js', '!./examples/before-*.js', '!./examples/optimistic-locking.js',
+      function(files) {
+        console.log('scratching');
+        console.log(JSON.stringify(files));
+      });
+ */
 });
 
 gulp.task('default', ['lint']);

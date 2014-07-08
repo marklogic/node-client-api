@@ -29,8 +29,9 @@ db.createReadStream('/countries/uv_flag_2004.gif').
     length += chunk.length;
     }).
   on('error', function(error) {
-    console.log(error);
+    exutil.failed(error);
     }).
   on('end', function() {
     console.log('read '+chunks+' chunks of '+length+' length');
+    exutil.succeeded();
     });

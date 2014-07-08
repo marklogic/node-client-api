@@ -36,7 +36,7 @@ db.query(
         document.content.name+' at '+document.uri
         );
       });
-      console.log('done');
+      exutil.succeeded();
     }, function(error) {
-      console.log(error);
+      exutil.failed(error);
     });

@@ -45,21 +45,34 @@ db.write([
       );
     console.log('done\n');
 
+    var removedByUri        = null;
+    var removedByCollection = null;
+
     console.log('Remove a document by uri');
     db.remove('/tmp/eldorado.json').
     result(function(response) {
       console.log('Removed the document with uri: '+response.uri);
+      removedByUri = isFinishing(removedByCollection);
     }, function(error) {
-      console.log(error);
+      exutil.failed(error);
     });
 
     console.log('Remove the documents in a collection\n');
     db.removeAll({collections:'/imaginary/countries'}).
     result(function(response) {
       console.log('Removed all documents in the collection: '+response.collections);
+      removedByCollection = isFinishing(removedByUri);
     }, function(error) {
-      console.log(error);
+      exutil.failed(error);
     });
   }, function(error) {
-    console.log(error);
+    exutil.failed(error);
   });
+
+function isFinishing(isDone) {
+  if (isDone) {
+    exutil.succeeded();
+  } else {
+    return true;
+  }
+}

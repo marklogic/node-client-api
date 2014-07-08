@@ -30,10 +30,9 @@ var writableStream = db.createWriteStream({
   });
 writableStream.result(function(response) {
     console.log('wrote '+response.documents[0].uri);
-    db.release();
-    console.log('done');
+    exutil.succeeded();
   }, function(error) {
-    console.log(error);
+    exutil.failed(error);
   });
 
 fs.createReadStream('./examples/data/uv_flag_2004.gif').pipe(writableStream);

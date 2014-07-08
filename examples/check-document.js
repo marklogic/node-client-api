@@ -21,11 +21,17 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Check documents');
 
-['/countries/uv.json', '/does/not/exist.json'].
-  forEach(function(uri){
+var files = ['/countries/uv.json', '/does/not/exist.json'];
+
+var finished = 0;
+files.forEach(function(uri){
     db.check(uri).result(function(document) {
         console.log('document at '+uri+' exists: '+document.exists);
+
+        if ((++finished) === files.length) {
+          exutil.succeeded();
+        }
       }, function(error) {
-        console.log(error);
+        exutil.failed(error);
       });
     });

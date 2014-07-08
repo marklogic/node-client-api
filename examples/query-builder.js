@@ -38,8 +38,8 @@ db.query(
     console.log(document.content.name+' at '+document.uri);
     }).
   on('error', function(error) {
-    console.log(error);
+    exutil.failed(error);
     }).
   on('end', function() {
-    console.log('done');
+    exutil.succeeded();
     });

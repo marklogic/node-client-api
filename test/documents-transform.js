@@ -31,6 +31,7 @@ describe('document transform', function(){
   var transformPath = './test/data/flagTransform.xqy';
   describe('when configuring', function() {
     it('should write the transform', function(done){
+      this.timeout(3000);
       fs.createReadStream(transformPath).
       pipe(concatStream({encoding: 'string'}, function(source) {
         restAdminDB.config.transforms.write(transformName, 'xquery', source).
@@ -67,6 +68,7 @@ describe('document transform', function(){
   describe('when using', function() {
     var uri = '/test/write/transformContent1.json';
     before(function(done){
+      this.timeout(3000);
       fs.createReadStream(transformPath).
       pipe(concatStream({encoding: 'string'}, function(source) {
         restAdminDB.config.transforms.write(transformName, 'xquery', source).

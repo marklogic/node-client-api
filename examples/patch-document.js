@@ -40,7 +40,7 @@ db.patch('/countries/uv.json',
       documentAfter.content.name+' on '+
       documentAfter.content.timestamp
       );
-    console.log('done');
+    exutil.succeeded();
   }, function(error) {
-    console.log(error.toString());
+    exutil.failed(error);
   });
