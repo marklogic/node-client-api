@@ -41,7 +41,7 @@ gulp.task('test', function() {
 
 // TODO: debug jsdoc outside of gulp
 gulp.task('doc', function() {
-  gulp.src(['./*', 'README.md'])
+  gulp.src(['./lib/*.js', 'README.md'])
       .pipe(jsdoc('./doc'));
 });
 

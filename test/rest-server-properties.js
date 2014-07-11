@@ -26,16 +26,16 @@ describe('rest server properties', function() {
   it('should read and write properties', function(done) {
     var propKey = 'validate-queries';
     var origVal = null;
-    db.config.properties.read().result().
+    db.config.serverprops.read().result().
     then(function(props) {
       valcheck.isNullOrUndefined(props).should.equal(false);
       origVal = props[propKey];
       valcheck.isNullOrUndefined(origVal).should.equal(false);
       props[propKey] = !origVal;
-      return db.config.properties.write(props).result();
+      return db.config.serverprops.write(props).result();
       }).
     then(function(response) {
-      return db.config.properties.read().result();
+      return db.config.serverprops.read().result();
       }).
     then(function(props) {
       valcheck.isNullOrUndefined(props).should.equal(false);
@@ -44,10 +44,10 @@ describe('rest server properties', function() {
       modVal.should.equal(!origVal);
       var sparseProps = {};
       sparseProps[propKey] = origVal;
-      return db.config.properties.write(sparseProps).result();
+      return db.config.serverprops.write(sparseProps).result();
       }).
     then(function(response) {
-      return db.config.properties.read().result();
+      return db.config.serverprops.read().result();
       }).
     then(function(props) {
       valcheck.isNullOrUndefined(props).should.equal(false);

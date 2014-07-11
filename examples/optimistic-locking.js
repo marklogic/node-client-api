@@ -33,7 +33,7 @@ var operations = [
 
 console.log('configure the server to enforce optimistic locking');
 // a one-time administrative action
-dbAdmin.config.properties.write({
+dbAdmin.config.serverprops.write({
     'update-policy': 'version-required'
   }).
   result(function(response) {
@@ -80,7 +80,7 @@ dbAdmin.config.properties.write({
               );
 
             // reconfigure the server to turn off optimistic locking
-            return dbAdmin.config.properties.write({
+            return dbAdmin.config.serverprops.write({
               'update-policy': 'merge-metadata'
                 }).result();
             }).

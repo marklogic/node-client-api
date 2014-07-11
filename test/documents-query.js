@@ -323,7 +323,7 @@ describe('document query', function(){
         q.where(
             q.collection('matchList')
           ).
-        withOptions({queryPlan:true, category:'permissions'})
+        withOptions({queryPlan:true, categories:'permissions'})
         ).
       result(function(response) {
         response.length.should.equal(6);

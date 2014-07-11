@@ -28,11 +28,11 @@ var dbAdmin = marklogic.createDatabaseClient(testutil.restAdminConnection);
 
 describe('document versions', function() {
   before(function(done) {
-    dbAdmin.config.properties.write({'update-policy':'version-required'}).
+    dbAdmin.config.serverprops.write({'update-policy':'version-required'}).
     result(function(response) {done();}, done);
   });
   after(function(done) {
-    dbAdmin.config.properties.write({'update-policy':'merge-metadata'}).
+    dbAdmin.config.serverprops.write({'update-policy':'merge-metadata'}).
     result(function(response) {done();}, done);
   });
   describe('check', function() {
