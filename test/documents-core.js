@@ -438,9 +438,9 @@ describe('document metadata', function(){
               }
             });
             permissionsFound.should.equal(2);
-            valcheck.isUndefined(document.quality).should.equal(false);
+            document.should.have.property('quality');
             document.quality.should.equal(2);
-            ('content' in document).should.equal(false);
+            document.should.not.have.property('content');
             done();
             }, done);
       });

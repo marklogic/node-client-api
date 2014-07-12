@@ -1632,7 +1632,7 @@ describe('document query', function(){
       built.orderByClause['sort-order'][2]['json-property'].should.equal('key2');
       built.orderByClause['sort-order'][2].direction.should.equal('ascending');
       built.orderByClause['sort-order'][3].score.should.equal('logtf');
-      ('score' in (built.orderByClause['sort-order'][4])).should.equal(true);
+      built.orderByClause['sort-order'][4].should.have.property('score');
       built.orderByClause['sort-order'][4].direction.should.equal('descending');
     });
     it('should build a slice clause with start page and page length', function(){

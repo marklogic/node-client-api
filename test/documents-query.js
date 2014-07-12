@@ -339,7 +339,7 @@ describe('document query', function(){
             var document = response[i];
             document.should.be.ok;
             document.permissions.should.be.ok;
-            ('content' in document).should.equal(false);
+            document.should.not.have.property('content');
           }
         }
         done();

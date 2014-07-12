@@ -58,7 +58,7 @@ describe('document patch', function(){
           document.content.objectParentKey.should.be.ok;
           document.content.objectParentKey.replacementKey.should.be.ok;
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
-          ('deletableKey' in document).should.equal(false);
+          document.should.not.have.property('deletableKey');
           done();}, done);
         }, done);
     });    
@@ -98,7 +98,7 @@ describe('document patch', function(){
           document.content.objectParentKey.should.be.ok;
           document.content.objectParentKey.replacementKey.should.be.ok;
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
-          ('deletableKey' in document).should.equal(false);
+          document.should.not.have.property('deletableKey');
           done();}, done);
         }, done);
     });    
