@@ -28,7 +28,7 @@ db.write([
       collections: ['/imaginary/countries', '/vacation/destinations'],
       content: {name:'El Dorado', description:'City of gold'}
       },
-    { uri: '/tmp/shangrila.xml',
+    { uri: '/tmp/shangrila.json',
       category: 'content',
       contentType: 'application/json',
       collections: ['/imaginary/countries', '/vacation/destinations'],

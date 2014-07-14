@@ -39,10 +39,29 @@ gulp.task('test', function() {
       }));
 });
 
-// TODO: debug jsdoc outside of gulp
 gulp.task('doc', function() {
+  // TODO: clear the directory first
   gulp.src(['./lib/*.js', 'README.md'])
-      .pipe(jsdoc('./doc'));
+    .pipe(jsdoc.parser())
+    .pipe(jsdoc.generator('./doc',
+      {
+        path:              'ink-docstrap',
+        systemName:        'MarkLogic Node.js API',
+//      footer:            'link to doc',
+        copyright:         'Copyright 2014 MarkLogic Corporation',
+        theme:             'simplex',
+        inverseNav:        true,
+        navType:           'vertical',
+        outputSourceFiles: false,
+        outputSourcePath:  false
+        },
+      {
+        'private':         false,
+        monospaceLinks:    false,
+        cleverLinks:       false,
+        outputSourceFiles: false
+        }
+      ));
 });
 
 function listener() {
