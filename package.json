@@ -42,6 +42,7 @@
     "should": "^4.0.4",
     "gulp-mocha": "^0.4.1",
     "jsdoc": "^3.3.0-alpha5",
-    "gulp-jsdoc": "^0.1.4"
+    "gulp-jsdoc": "^0.1.4",
+    "gulp-intercept": "^0.1.0"
   }
 }
