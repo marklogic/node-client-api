@@ -163,7 +163,6 @@ describe('document query', function(){
         done();
       }, done);
     });
-/* TODO:
     it('should support an empty result set', function(done){
       db.query(
           q.where(
@@ -175,7 +174,6 @@ describe('document query', function(){
           done();
         }, done);
     });
- */
     it('should calculate key1 and key2 facets without results', function(done){
       db.query(
         q.where(
