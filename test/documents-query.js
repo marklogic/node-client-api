@@ -163,6 +163,19 @@ describe('document query', function(){
         done();
       }, done);
     });
+/* TODO:
+    it('should support an empty result set', function(done){
+      db.query(
+          q.where(
+            q.word('wordKey', 'ThisCriteriaShouldNeverMatch')
+            )
+          ).
+        result(function(response) {
+          response.length.should.equal(0);
+          done();
+        }, done);
+    });
+ */
     it('should calculate key1 and key2 facets without results', function(done){
       db.query(
         q.where(
