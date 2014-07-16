@@ -71,20 +71,14 @@ function listener() {
 }
 
 gulp.task('examples', function() {
-  gulp.src(['./examples/*.js', '!./examples/before-*.js', '!./examples/example-util.js'],
+  gulp.src(['./examples/*.js',
+        '!./examples/optimistic-locking.js', '!./examples/patch-document.js', 
+        '!./examples/before-*.js', '!./examples/example-util.js'],
       {read: false}
     )
   .pipe(intercept(function(file){
     exutil.addListener(listener.bind(file));
   }));
-/*
-  glob.sync(
-      './examples/*.js', '!./examples/before-*.js', '!./examples/optimistic-locking.js',
-      function(files) {
-        console.log('scratching');
-        console.log(JSON.stringify(files));
-      });
- */
 });
 
 gulp.task('default', ['lint']);

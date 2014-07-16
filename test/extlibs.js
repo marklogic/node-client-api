@@ -124,7 +124,7 @@ describe('extension libraries', function(){
               q.parsedFrom('range:constraintValue dirs:/test/',
                 q.parseBindings(
                   q.range('rangeKey1', q.bind('range'),
-                      q.rangeOption('max-occurs=10')),
+                      q.rangeOptions('max-occurs=10')),
                   q.parseFunction('directoryConstraint', q.bind('dirs'))
                   ))
               ).

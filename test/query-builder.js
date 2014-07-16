@@ -873,7 +873,7 @@ describe('query-builder', function() {
           }}
         );
     assert.deepEqual(
-        q.range('foo', 1, q.rangeOption('cached')),
+        q.range('foo', 1, q.rangeOptions('cached')),
         {'range-query':{
           'json-property': 'foo',
           'range-operator': 'EQ',
@@ -885,19 +885,19 @@ describe('query-builder', function() {
 
   it('should create range options', function(){
     assert.deepEqual(
-        q.rangeOption('cached'),
+        q.rangeOptions('cached'),
         {'range-option':['cached']}
         );
     assert.deepEqual(
-        q.rangeOption(['cached']),
+        q.rangeOptions(['cached']),
         {'range-option':['cached']}
         );
     assert.deepEqual(
-        q.rangeOption('cached', 'min-occurs=3'),
+        q.rangeOptions('cached', 'min-occurs=3'),
         {'range-option':['cached', 'min-occurs=3']}
         );
     assert.deepEqual(
-        q.rangeOption(['cached', 'min-occurs=3']),
+        q.rangeOptions(['cached', 'min-occurs=3']),
         {'range-option':['cached', 'min-occurs=3']}
         );
   });
@@ -1012,19 +1012,19 @@ describe('query-builder', function() {
 
   it('should create term options', function(){
     assert.deepEqual(
-        q.termOption('stemmed'),
+        q.termOptions('stemmed'),
         {'term-option':['stemmed']}
         );
     assert.deepEqual(
-        q.termOption(['stemmed']),
+        q.termOptions(['stemmed']),
         {'term-option':['stemmed']}
         );
     assert.deepEqual(
-        q.termOption('stemmed', 'case-sensitive'),
+        q.termOptions('stemmed', 'case-sensitive'),
         {'term-option':['stemmed', 'case-sensitive']}
         );
     assert.deepEqual(
-        q.termOption(['stemmed', 'case-sensitive']),
+        q.termOptions(['stemmed', 'case-sensitive']),
         {'term-option':['stemmed', 'case-sensitive']}
         );
   });
@@ -1081,7 +1081,7 @@ describe('query-builder', function() {
           }}
         );
     assert.deepEqual(
-        q.value('foo', 'one', q.termOption('stemmed')),
+        q.value('foo', 'one', q.termOptions('stemmed')),
         {'value-query':{
           'json-property': 'foo',
           text: ['one'],
@@ -1150,7 +1150,7 @@ describe('query-builder', function() {
           }}
         );
     assert.deepEqual(
-        q.word('foo', 'one', q.termOption('stemmed')),
+        q.word('foo', 'one', q.termOptions('stemmed')),
         {'word-query':{
           'json-property': 'foo',
           text: ['one'],
@@ -1273,7 +1273,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.range('key1', q.bind('constraint1'), q.rangeOption('cached')),
+        q.range('key1', q.bind('constraint1'), q.rangeOptions('cached')),
         {range:{'json-property': 'key1', 'range-option':['cached']},
           name:'constraint1'}
         );
@@ -1288,7 +1288,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.value('key1', q.bind('constraint1'), q.termOption('stemmed')),
+        q.value('key1', q.bind('constraint1'), q.termOptions('stemmed')),
         {value:{'json-property': 'key1', 'term-option':['stemmed']},
           name:'constraint1'}
         );
@@ -1303,7 +1303,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.word('key1', q.bind('constraint1'), q.termOption('stemmed')),
+        q.word('key1', q.bind('constraint1'), q.termOptions('stemmed')),
         {word:{'json-property': 'key1', 'term-option':['stemmed']},
           name:'constraint1'}
         );
@@ -1343,7 +1343,7 @@ describe('query-builder', function() {
         {'default':{word:{'json-property': 'key1'}}}
         );
     assert.deepEqual(
-        q.word('key1', q.bindDefault(), q.termOption('stemmed')),
+        q.word('key1', q.bindDefault(), q.termOptions('stemmed')),
         {'default':{word:{'json-property': 'key1', 'term-option':['stemmed']}}}
         );
     assert.deepEqual(
@@ -1369,7 +1369,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.parseFunction('module1', q.bind('constraint1'), q.termOption('stemmed')),
+        q.parseFunction('module1', q.bind('constraint1'), q.termOptions('stemmed')),
         {custom:{parse: {
             apply: 'parse',
             ns:    'http://marklogic.com/query/custom/module1',
