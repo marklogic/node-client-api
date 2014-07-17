@@ -35,10 +35,10 @@ describe('document versions', function() {
     dbAdmin.config.serverprops.write({'update-policy':'merge-metadata'}).
     result(function(response) {done();}, done);
   });
-  describe('check', function() {
-    var uri = '/test/version/check1.json';
+  describe('probe', function() {
+    var uri = '/test/version/probe1.json';
     before(function(done){
-      db.check(uri).result().
+      db.probe(uri).result().
       then(function(response) {
         if (response.exists === false) {
           db.documents.write({
@@ -53,7 +53,7 @@ describe('document versions', function() {
       }, done);
     });
     it('should return the versionId', function(done) {
-      db.check(uri).
+      db.probe(uri).
       result(function(response) {
         valcheck.isUndefined(response).should.equal(false);
         valcheck.isUndefined(response.versionId).should.equal(false);
@@ -65,7 +65,7 @@ describe('document versions', function() {
     var uri       = '/test/version/del1.json';
     var versionId = null;
     before(function(done){
-      db.check(uri).result(function(response){
+      db.probe(uri).result(function(response){
         if (response.exists === true) {
           versionId = response.versionId;
           done();
@@ -76,7 +76,7 @@ describe('document versions', function() {
             content: {key1: 'value 1'}
             }).result().
           then(function(response){
-              return db.check(uri).result();
+              return db.probe(uri).result();
             }).
           then(function(response){
             versionId = response.versionId;
@@ -123,7 +123,7 @@ describe('document versions', function() {
     var overwriteUri = '/test/version/write1.json';
     var versionId    = null;
     before(function(done){
-      db.check(overwriteUri).result(function(response){
+      db.probe(overwriteUri).result(function(response){
         if (response.exists === true) {
           versionId = response.versionId;
           done();
@@ -134,7 +134,7 @@ describe('document versions', function() {
             content: {key1: 'value 1'}
             }).result().
           then(function(response){
-              return db.check(overwriteUri).result();
+              return db.probe(overwriteUri).result();
             }).
           then(function(response){
             versionId = response.versionId;
@@ -194,7 +194,7 @@ describe('document versions', function() {
   describe('create', function() {
     var createUri = '/test/version/create1.json';
     before(function(done){
-      db.check(createUri).result(function(response){
+      db.probe(createUri).result(function(response){
         if (response.exists === true) {
           db.remove({uri: createUri, versionId: response.versionId}).
           result(function(response) {done();}, done);
@@ -204,7 +204,7 @@ describe('document versions', function() {
       }, done);
     });
     after(function(done) {
-      db.check(createUri).result(function(response){
+      db.probe(createUri).result(function(response){
         db.remove({uri: createUri, versionId: response.versionId}).
         result(function(response) {done();}, done);
       });
@@ -224,7 +224,7 @@ describe('document versions', function() {
   describe('read', function() {
     var uri = '/test/version/read1.json';
     before(function(done){
-      db.check(uri).result().
+      db.probe(uri).result().
       then(function(response) {
         if (response.exists === false) {
           db.documents.write({

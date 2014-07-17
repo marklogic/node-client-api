@@ -55,7 +55,7 @@ dbAdmin.config.serverprops.write({
           db.setLogger({console:true});
 
           console.log('get the current version id for the document');
-          db.check(uri).result().
+          db.probe(uri).result().
           then(function(document){
             console.log(
                 'try to update the document passing the version id '+document.versionId);

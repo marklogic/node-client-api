@@ -26,7 +26,7 @@ describe('transaction', function(){
     this.timeout(5000);
     var uri = '/test/txn/commit1.json';
     before(function(done){
-      db.check(uri).result(function(document){
+      db.probe(uri).result(function(document){
         if (document.exists) {
           db.remove(uri).
             result(function(response) {done();}, done);          
@@ -57,7 +57,7 @@ describe('transaction', function(){
         document.content.should.be.ok;
         document.content.txKey.should.be.ok;
         document.content.txKey.should.equal(tid);
-        return db.check(uri).result();
+        return db.probe(uri).result();
         }).
       then(function(response) {
         response.should.be.ok;
@@ -90,7 +90,7 @@ describe('transaction', function(){
     this.timeout(5000);
     var uri = '/test/txn/rollback1.json';
     before(function(done){
-      db.check(uri).result(function(document){
+      db.probe(uri).result(function(document){
         if (document.exists) {
           db.remove(uri).
             result(function(response) {done();}, done);          
@@ -124,7 +124,7 @@ describe('transaction', function(){
         return db.transactions.rollback(tid).result();
         }).
       then(function(response) {
-        return db.check(uri).result();
+        return db.probe(uri).result();
         }).
       then(function(response) {
         response.should.be.ok;

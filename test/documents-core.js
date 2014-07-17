@@ -309,7 +309,7 @@ describe('document content', function(){
         it('should not exist', function(done){
           db.remove('/test/remove/doc1.json').
             result(function(result) {
-              return db.check('/test/remove/doc1.json').result();
+              return db.probe('/test/remove/doc1.json').result();
               }, done).
             then(function(document) {
               valcheck.isUndefined(document).should.equal(false);
@@ -332,7 +332,7 @@ describe('document content', function(){
             result(function(response){done();}, done);
         });
         it('should exist', function(done){
-          db.check('/test/check/doc1.json').
+          db.probe('/test/check/doc1.json').
             result(function(document) {
               valcheck.isUndefined(document).should.equal(false);
               valcheck.isUndefined(document.exists).should.equal(false);

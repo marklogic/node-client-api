@@ -46,12 +46,12 @@ describe('document remove all', function(){
     this.timeout(5000);
     db.removeAll({collections:'/removeAll/collection'}).
     result(function(result) {
-      return db.check('/removeAll/collection/doc'+1+'.txt').result();
+      return db.probe('/removeAll/collection/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
       document.should.be.ok;
       document.exists.should.eql(false);
-      return db.check('/removeAll/collection/doc'+2+'.txt').result();
+      return db.probe('/removeAll/collection/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
       document.should.be.ok;
@@ -63,12 +63,12 @@ describe('document remove all', function(){
     this.timeout(5000);
     db.removeAll({directory:'/removeAll/directory'}).
     result(function(result) {
-      return db.check('/removeAll/directory/doc'+1+'.txt').result();
+      return db.probe('/removeAll/directory/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
       document.should.be.ok;
       document.exists.should.eql(false);
-      return db.check('/removeAll/directory/doc'+2+'.txt').result();
+      return db.probe('/removeAll/directory/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
       document.should.be.ok;
@@ -80,12 +80,12 @@ describe('document remove all', function(){
     this.timeout(9000);
     restAdminDB.removeAll({all:true}).
     result(function(result) {
-      return db.check('/removeAll/all/doc'+1+'.txt').result();
+      return db.probe('/removeAll/all/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
       document.should.be.ok;
       document.exists.should.eql(false);
-      return db.check('/removeAll/all/doc'+2+'.txt').result();
+      return db.probe('/removeAll/all/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
       document.should.be.ok;
