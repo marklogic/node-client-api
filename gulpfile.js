@@ -72,7 +72,6 @@ function listener() {
 
 gulp.task('examples', function() {
   gulp.src(['./examples/*.js',
-        '!./examples/optimistic-locking.js', '!./examples/patch-document.js', 
         '!./examples/before-*.js', '!./examples/example-util.js'],
       {read: false}
     )
