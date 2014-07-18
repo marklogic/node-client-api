@@ -39,13 +39,10 @@
 * config.extlibs.write()
 * optimistic locking
 
-### To do for early access 2
-
-* jsdoc
-
 ### Deferred to early access 3
 
-* control over JSON and XML conversion
+* control over JSON conversion
+* XML conversion
 * optional datatypes for queries and facets
 * robust error handling, logging, and request tuning
 * bulk conditional content
