@@ -15,13 +15,13 @@
  */
 var should = require('should');
 
-var testutil = require('./test-util.js');
+var testconfig = require('./test-config.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient(testutil.restReaderConnection);
-var dbWriter = marklogic.createDatabaseClient(testutil.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('document query', function(){
   before(function(done){

@@ -17,14 +17,14 @@ var should = require('should');
 
 var valcheck = require('core-util-is');
 
-var testutil = require('./test-util.js');
+var testconfig = require('./test-config.js');
 
 var marklogic = require('../');
 
-var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 db.setLogger({console: false});
 
-var dbReader = marklogic.createDatabaseClient(testutil.restReaderConnection);
+var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 dbReader.setLogger({console: false});
 
 // setLogger

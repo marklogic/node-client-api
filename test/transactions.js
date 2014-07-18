@@ -15,11 +15,11 @@
  */
 var should = require('should');
 
-var testutil = require('./test-util.js');
+var testconfig = require('./test-config.js');
 
 var marklogic = require('../');
 
-var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('transaction', function(){
   describe('with commit', function(){

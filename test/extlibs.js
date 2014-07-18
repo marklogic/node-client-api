@@ -19,13 +19,13 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testutil = require('./test-util.js');
+var testconfig = require('./test-config.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
-var restAdminDB = marklogic.createDatabaseClient(testutil.restAdminConnection);
+var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('extension libraries', function(){
   var dbPath = '/marklogic/query/custom/directoryConstraint.xqy';

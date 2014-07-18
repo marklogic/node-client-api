@@ -19,12 +19,12 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testutil = require('./test-util.js');
+var testconfig = require('./test-config.js');
 
 var marklogic = require('../');
 
-var db = marklogic.createDatabaseClient(testutil.restWriterConnection);
-var dbReader = marklogic.createDatabaseClient(testutil.restReaderConnection);
+var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 describe('document content', function(){
   describe('write', function(){

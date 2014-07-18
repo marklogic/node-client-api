@@ -13,31 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var host     = 'localhost';
-var port     = '8015';
-var authType = 'DIGEST'; 
-var restAdminConnection = {
-    host:     host,
-    port:     port,
-    user:     'rest-admin',
-    password: 'x',
-    authType: authType
-};
-// For SSL without client cert, use rejectUnauthorized: false
-var restReaderConnection = {
-    host:     host,
-    port:     port,
-    user:     'rest-reader',
-    password: 'x',
-    authType: authType
-};
-var restWriterConnection = {
-    host:     host,
-    port:     port,
-    user:     'rest-writer',
-    password: 'x',
-    authType: authType
-};
+var testconfig = require('../test/test-config.js');
 
 var listeners = {
     mode:  'waiting',
@@ -74,9 +50,9 @@ function failed(error) {
 };
 
 module.exports = {
-    restAdminConnection:  restAdminConnection,
-    restReaderConnection: restReaderConnection,
-    restWriterConnection: restWriterConnection,
+    restAdminConnection:  testconfig.restAdminConnection,
+    restReaderConnection: testconfig.restReaderConnection,
+    restWriterConnection: testconfig.restWriterConnection,
     addListener:          addListener,
     succeeded:            succeeded,
     failed:               failed

@@ -15,12 +15,12 @@
  */
 var should = require('should');
 
-var testutil = require('./test-util.js');
+var testconfig = require('./test-config.js');
 
 var valcheck = require('core-util-is');
 var marklogic = require('../');
 
-var db = marklogic.createDatabaseClient(testutil.restAdminConnection);
+var db = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('rest server properties', function() {
   it('should read and write properties', function(done) {
