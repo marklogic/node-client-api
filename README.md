@@ -2,6 +2,18 @@
 
 ## Status
 
+### Test and example setup and teardown
+
+In the root directory for the marklogic package, execute
+
+    node etc/test-setup.js
+
+    node etc/test-teardown.js
+
+After a successful setup but before running the examples, execute
+
+    node examples/before-load.js
+
 ### Done for early access 2 (basic document CRUD and query support)
 
 * createDatabaseClient() including HTTPS
@@ -41,6 +53,7 @@
 
 ### Deferred to early access 3
 
+* document.write() with Buffer or ReadableStream content in document descriptors 
 * control over JSON conversion
 * XML conversion
 * optional datatypes for queries and facets

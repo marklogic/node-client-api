@@ -15,11 +15,14 @@
  */
 var should = require('should');
 
-var fs = require('fs');
-var concatStream = require('concat-stream');
-var valcheck = require('core-util-is');
+var fs     = require('fs');
+var stream = require('stream');
+var util   = require('util');
 
-var testconfig = require('./test-config.js');
+var concatStream = require('concat-stream');
+var valcheck     = require('core-util-is');
+
+var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 
@@ -75,6 +78,50 @@ describe('document content', function(){
             }, done);
       });
     });
+/* TODO:
+    describe('a JSON buffer', function(){
+      before(function(done){
+        db.documents.write({
+          uri: '/test/write/buffer1.json',
+          contentType: 'application/json',
+          content: new Buffer('{"key1":"value 1"}', 'utf8')
+          }).
+        result(function(response){done();}, done);
+      });
+      it('should read back the value', function(done){
+        db.read('/test/write/buffer1.json').
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            documents[0].should.have.property('content');
+            documents[0].content.should.have.property('key1');
+            documents[0].content.key1.should.equal('value 1');
+            done();
+            }, done);
+      });
+    });
+    describe('a JSON readable stream', function(){
+      before(function(done){
+        db.documents.write({
+          uri: '/test/write/stream1.json',
+          contentType: 'application/json',
+          content: new ReadableString('{"key1":"value 1"}')
+          }).
+        result(function(response){done();}, done);
+      });
+      it('should read back the value', function(done){
+        db.read('/test/write/stream1.json').
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            documents[0].should.have.property('content');
+            documents[0].content.should.have.property('key1');
+            documents[0].content.key1.should.equal('value 1');
+            done();
+            }, done);
+      });
+    });
+ */
     describe('an XML string', function(){
       before(function(done){
         db.documents.write({
@@ -447,3 +494,13 @@ describe('document metadata', function(){
     });
   });
 });
+
+function ReadableString(value) {
+  stream.Readable.call(this, {encoding: 'utf8'});
+  this.value = value;
+}
+util.inherits(ReadableString, stream.Readable);
+ReadableString.prototype._read = function() {
+  this.push(this.value, 'utf8');
+  this.push(null);
+};

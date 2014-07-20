@@ -17,7 +17,7 @@ var should = require('should');
 
 var valcheck = require('core-util-is');
 
-var testconfig = require('./test-config.js');
+var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 

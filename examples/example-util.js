@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var testconfig = require('../test/test-config.js');
+var testconfig = require('../etc/test-config.js');
 
 var listeners = {
     mode:  'waiting',

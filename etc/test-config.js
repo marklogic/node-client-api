@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var host = 'localhost';
 
-var host     = 'localhost';
-var port     = '8015';
-var authType = 'DIGEST';
+var restPort     = '8015';
+var restAuthType = 'DIGEST';
+
+var managePort     = '8002';
+var manageAuthType = 'DIGEST';
 
 var restAdminUser     = 'rest-admin';
 var restAdminPassword = 'x';
@@ -27,30 +30,48 @@ var restReaderPassword = 'x';
 var restWriterUser     = 'rest-writer';
 var restWriterPassword = 'x';
 
+var manageUser     = 'manage-admin';
+var managePassword = 'x';
+
+var testServerName = 'unittest-nodeapi';
+
 // For SSL without client cert, use rejectUnauthorized: false
 module.exports = {
-    restHost:     host,
-    restPort:     port,
-    restAuthType: authType,
-    restAdminConnection:  {
+    testServerName: testServerName,
+    restPort:       restPort,
+    restAdminConnection: {
         host:     host,
-        port:     port,
+        port:     restPort,
         user:     restAdminUser,
         password: restAdminPassword,
-        authType: authType
+        authType: restAuthType
     },
     restReaderConnection: {
         host:     host,
-        port:     port,
+        port:     restPort,
         user:     restReaderUser,
         password: restReaderPassword,
-        authType: authType
+        authType: restAuthType
     },
     restWriterConnection: {
         host:     host,
-        port:     port,
+        port:     restPort,
         user:     restWriterUser,
         password: restWriterPassword,
-        authType: authType
+        authType: restAuthType
+    },
+    bootstrapConnection: {
+        host:     host,
+        port:     managePort,
+        user:     restAdminUser,
+        password: restAdminPassword,
+        authType: manageAuthType
+    },
+    manageAdminConnection: {
+        host:     host,
+        port:     managePort,
+        user:     manageUser,
+        password: managePassword,
+        authType: manageAuthType
     }
 };

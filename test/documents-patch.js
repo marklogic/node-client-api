@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('./test-config.js');
+var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 

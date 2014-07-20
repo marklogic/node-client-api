@@ -641,6 +641,23 @@ describe('query-builder', function() {
         );
   });
 
+  it('should create a not-in-query', function(){
+    assert.deepEqual(
+        q.notIn(q.collection('foo'), q.collection('bar')),
+        {'not-in-query':{
+          'positive-query': {'collection-query': {uri:['foo']}},
+          'negative-query': {'collection-query': {uri:['bar']}}
+        }}
+        );
+    assert.deepEqual(
+        q.notIn([q.collection('foo'), q.collection('bar')]),
+        {'not-in-query':{
+          'positive-query': {'collection-query': {uri:['foo']}},
+          'negative-query': {'collection-query': {uri:['bar']}}
+        }}
+        );
+  });
+
   it('should create an or-query', function(){
     assert.deepEqual(
         q.or(q.collection('foo')),
@@ -771,6 +788,14 @@ describe('query-builder', function() {
   it('should create a range query', function(){
     assert.deepEqual(
         q.range('foo', 1),
+        {'range-query':{
+          'json-property': 'foo',
+          'range-operator': 'EQ',
+          value: [1]
+          }}
+        );
+    assert.deepEqual(
+        q.range(q.property('foo'), 1),
         {'range-query':{
           'json-property': 'foo',
           'range-operator': 'EQ',
@@ -1650,6 +1675,31 @@ describe('document query', function(){
       var built = q.slice(0);
       built.sliceClause.should.be.ok;
       built.sliceClause['page-length'].should.equal(0);
+    });
+    it('should build with all clauses', function(){
+      var built = q.where(
+          q.value('key1', 'value 1')
+      ).calculate(
+          q.facet('key2')
+      ).orderBy(
+          'key3'
+      ).slice(11, 10);
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('query');
+      built.whereClause.query.should.have.property('queries');
+      built.whereClause.query.queries.length.should.equal(1);
+      built.whereClause.query.queries[0]['value-query'].should.be.ok;
+      built.should.have.property('calculateClause');
+      built.calculateClause.should.have.property('constraint');
+      built.calculateClause.constraint.length.should.equal(1);
+      built.calculateClause.constraint[0].name.should.equal('key2');
+      built.should.have.property('orderByClause');
+      built.orderByClause['sort-order'].should.be.ok;
+      built.orderByClause['sort-order'].length.should.equal(1);
+      built.orderByClause['sort-order'][0]['json-property'].should.equal('key3');
+      built.should.have.property('sliceClause');
+      built.sliceClause['page-start'].should.equal(11);
+      built.sliceClause['page-length'].should.equal(10);
     });
     it('should initialize and modify a query', function(){
       // serialize to JSON so the seed has no functions
