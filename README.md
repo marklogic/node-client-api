@@ -4,15 +4,18 @@
 
 ### Test and example setup and teardown
 
-In the root directory for the marklogic package, execute
+To set up the test and example database and REST server, execute
+the following command in the root directory for the marklogic package:
 
     node etc/test-setup.js
 
-    node etc/test-teardown.js
-
-After a successful setup but before running the examples, execute
+To load the sample data before running the examples, execute
 
     node examples/before-load.js
+
+To tear down the test and example database and REST server, execute
+
+    node etc/test-teardown.js
 
 ### Done for early access 2 (basic document CRUD and query support)
 
