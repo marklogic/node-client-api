@@ -56,11 +56,10 @@ To tear down the test and example database and REST server, execute
 
 ### Deferred to early access 3
 
-* document.write() with Buffer or ReadableStream content in document descriptors 
-* control over JSON conversion
-* XML conversion
+* opt out of JSON conversion
+* pluggable XML conversion 
 * optional datatypes for queries and facets
-* robust error handling, logging, and request tuning
+* robust error handling, logging, and performance tuning
 * bulk conditional content
 * queryBuilder.calculate() - values()
 * queryBuilder.slice() - iterator (aka reducer)

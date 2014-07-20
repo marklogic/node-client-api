@@ -78,13 +78,12 @@ describe('document content', function(){
             }, done);
       });
     });
-/* TODO:
     describe('a JSON buffer', function(){
       before(function(done){
         db.documents.write({
           uri: '/test/write/buffer1.json',
           contentType: 'application/json',
-          content: new Buffer('{"key1":"value 1"}', 'utf8')
+          content: new Buffer('{"key1":"value 1"}')
           }).
         result(function(response){done();}, done);
       });
@@ -100,12 +99,14 @@ describe('document content', function(){
             }, done);
       });
     });
-    describe('a JSON readable stream', function(){
+    describe('a JSON descriptor with a readable stream', function(){
       before(function(done){
+        var readableString = new ValueStream('{"key1":"value 1"}');
+        readableString.pause();
         db.documents.write({
           uri: '/test/write/stream1.json',
           contentType: 'application/json',
-          content: new ReadableString('{"key1":"value 1"}')
+          content: readableString
           }).
         result(function(response){done();}, done);
       });
@@ -121,7 +122,6 @@ describe('document content', function(){
             }, done);
       });
     });
- */
     describe('an XML string', function(){
       before(function(done){
         db.documents.write({
@@ -256,6 +256,36 @@ describe('document content', function(){
             done();
           }));
         });
+      it('should write a binary descriptor with a ReadableStream', function(done){
+        this.timeout(3000);
+        var uri = '/test/write/stream1.png';
+        var readableBinary = new ValueStream(binaryValue);
+        readableBinary.pause();
+        db.documents.write({
+          uri: uri,
+          contentType: 'image/png',
+          content: readableBinary
+          }).result().
+        then(function(response){
+          valcheck.isUndefined(response).should.equal(false);
+          response.should.have.property('documents');
+          response.documents.should.have.property('length');
+          response.documents.length.should.equal(1);
+          response.documents[0].should.have.property('uri');
+          response.documents[0].uri.should.equal(uri);
+          return db.read(response.documents[0].uri).result();
+          }, done).
+        then(function(documents){
+          valcheck.isArray(documents).should.equal(true);
+          documents.should.have.property('length');
+          documents.length.should.equal(1);
+          documents[0].should.have.property('content');
+          JSON.stringify(binaryValue).should.equal(
+              JSON.stringify(documents[0].content)
+              );
+          done();
+          }, done);
+      });
       it('should write as a piped stream', function(done){
         this.timeout(3000);
         var ws = db.createWriteStream({
@@ -495,12 +525,12 @@ describe('document metadata', function(){
   });
 });
 
-function ReadableString(value) {
-  stream.Readable.call(this, {encoding: 'utf8'});
-  this.value = value;
+function ValueStream(value) {
+  stream.Readable.call(this);
+  this.value    = value;
 }
-util.inherits(ReadableString, stream.Readable);
-ReadableString.prototype._read = function() {
-  this.push(this.value, 'utf8');
+util.inherits(ValueStream, stream.Readable);
+ValueStream.prototype._read = function() {
+  this.push(this.value);
   this.push(null);
 };
