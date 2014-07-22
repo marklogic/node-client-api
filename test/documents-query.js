@@ -430,7 +430,113 @@ describe('document query', function(){
         orderBy('rangeKey1', 'rangeKey2')
         ).
       result(function(response) {
-// console.log(JSON.stringify(response));
+        response.length.should.equal(6);
+        var order = [1, 3, 2, 4, 5];
+        for (var i=0; i <= order.length; i++) {
+          var document = response[i];
+          document.should.be.ok;
+          if (i === 0) {
+            document.facets.should.be.ok;
+            document.facets.rangeKey1.should.be.ok;
+            document.facets.rangeKey1.facetValues.should.be.ok;
+            document.facets.rangeKey1.facetValues.length.should.equal(3);
+            document.facets.rangeKey2.should.be.ok;
+            document.facets.rangeKey2.facetValues.should.be.ok;
+            document.facets.rangeKey2.facetValues.length.should.equal(3);
+          } else {
+            document.content.should.be.ok;
+            document.content.id.should.be.ok;
+            document.content.id.should.equal('matchList'+order[i - 1]);
+          }
+        }
+        done();
+      }, done);
+    });
+  });
+  describe('for a structured query', function() {
+    it('should work with a simple structured search', function(done) {
+      db.query({
+        search: {
+          query: {
+            queries: [
+              {'directory-query':{uri:['/test/query/matchDir/']}}
+              ]}
+          }
+      }).
+      result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/matchDir/doc1.json');
+        document.content.should.be.ok;
+        document.content.id.should.equal('matchDoc1');
+        done();
+      }, done);
+    });
+    it('should work with combined search', function(done){
+      db.query({
+        search: {
+          query: {
+            queries: [
+              {'or-query':{queries:[
+                {'range-query': {
+                  'json-property':  'rangeKey1',
+                  type:             'xs:string',
+                  collation:        'http://marklogic.com/collation/',
+                  'range-operator': 'EQ',
+                  value:            'aa'
+                  }},
+                {'range-query': {
+                  'json-property':  'rangeKey1',
+                  type:             'xs:string',
+                  collation:        'http://marklogic.com/collation/',
+                  'range-operator': 'EQ',
+                  value:            'ab'
+                  }},
+                {'range-query': {
+                  'json-property':  'rangeKey1',
+                  type:             'xs:string',
+                  collation:        'http://marklogic.com/collation/',
+                  'range-operator': 'EQ',
+                  value:            'ac'
+                  }}
+                ]}}
+              ]},
+          options: {
+            constraint: [
+              {name: 'rangeKey1',
+                range: {
+                  'json-property': 'rangeKey1',
+                  type:            'xs:string',
+                  collation:       'http://marklogic.com/collation/',
+                  facet:           true
+                  }
+                },
+              {name: 'rangeKey2',
+                range: {
+                  'json-property': 'rangeKey2',
+                  type:            'xs:string',
+                  collation:       'http://marklogic.com/collation/',
+                  facet:           true
+                  }
+                }
+              ],
+            'sort-order': [
+              {direction:        'ascending',
+                'json-property': 'rangeKey1',
+                type:            'xs:string',
+                collation:       'http://marklogic.com/collation/'
+                },
+              {direction:        'ascending',
+                'json-property': 'rangeKey2',
+                type:            'xs:string',
+                collation:       'http://marklogic.com/collation/'
+                }],
+            'return-facets':     true
+            }
+          }
+      }).
+      result(function(response) {
         response.length.should.equal(6);
         var order = [1, 3, 2, 4, 5];
         for (var i=0; i <= order.length; i++) {

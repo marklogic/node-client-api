@@ -4,8 +4,12 @@
 
 ### Test and example setup and teardown
 
-To set up the test and example database and REST server, execute
-the following command in the root directory for the marklogic package:
+To set up the test and example database and REST server, first create
+manage-admin, rest-admin, rest-writer, and rest-reader users on the 
+database server as listed in the etc/test-config.js file.
+
+Then execute the following command in the root directory for the marklogic
+package:
 
     node etc/test-setup.js
 

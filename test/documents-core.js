@@ -434,6 +434,10 @@ describe('document metadata', function(){
             {'role-name':'app-user',    capabilities:['read']},
             {'role-name':'app-builder', capabilities:['read', 'update']}
             ],
+          properties: {
+            property1: 'property value 1',
+            property2: 'property value 2'
+            },
           quality: 1,
           content: {key1: 'value 1'}
           }).
@@ -466,6 +470,11 @@ describe('document metadata', function(){
               }
             });
             permissionsFound.should.equal(2);
+            document.should.have.property('properties');
+            document.properties.should.have.property('property1');
+            document.properties.property1.should.equal('property value 1');
+            document.properties.should.have.property('property2');
+            document.properties.property2.should.equal('property value 2');
             document.quality.should.equal(1);
             document.content.key1.should.equal('value 1');
             done();
@@ -481,6 +490,10 @@ describe('document metadata', function(){
             {'role-name':'app-user',    capabilities:['read', 'update']},
             {'role-name':'app-builder', capabilities:['execute']}
             ],
+          properties: {
+            property1: 'property value 1',
+            property2: 'property value 2'
+            },
           quality: 2
           }).
         result(function(response){done();}, done);
@@ -515,6 +528,11 @@ describe('document metadata', function(){
               }
             });
             permissionsFound.should.equal(2);
+            document.should.have.property('properties');
+            document.properties.should.have.property('property1');
+            document.properties.property1.should.equal('property value 1');
+            document.properties.should.have.property('property2');
+            document.properties.property2.should.equal('property value 2');
             document.should.have.property('quality');
             document.quality.should.equal(2);
             document.should.not.have.property('content');
