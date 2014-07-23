@@ -29,7 +29,7 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 
 describe('extension libraries', function(){
   var dbPath = '/marklogic/query/custom/directoryConstraint.xqy';
-  var fsPath = './test/data/directoryConstraint.xqy';
+  var fsPath = './test-basic/data/directoryConstraint.xqy';
   describe('when configuring', function() {
     it('should write the extension library', function(done){
       this.timeout(3000);

@@ -30,7 +30,7 @@ gulp.task('lint', function() {
 });
 
 gulp.task('test', function() {
-  gulp.src(['./test/*.js'])
+  gulp.src(['./test-basic/*.js'])
       .pipe(mocha({
         reporter: 'spec',
         globals: {

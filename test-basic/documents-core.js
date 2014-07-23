@@ -245,7 +245,7 @@ describe('document content', function(){
       });
     });
     describe('a binary', function(){
-      var binaryPath = './test/data/mlfavicon.png';
+      var binaryPath = './test-basic/data/mlfavicon.png';
       var uri = '/test/binary/test1.png';
       var binaryValue = null;
       before(function(done){

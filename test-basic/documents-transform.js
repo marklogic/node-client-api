@@ -28,7 +28,7 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 
 describe('document transform', function(){
   var transformName = 'flagParam';
-  var transformPath = './test/data/flagTransform.xqy';
+  var transformPath = './test-basic/data/flagTransform.xqy';
   describe('when configuring', function() {
     it('should write the transform', function(done){
       this.timeout(3000);
