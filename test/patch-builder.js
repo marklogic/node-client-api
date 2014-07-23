@@ -85,11 +85,27 @@ describe('patch-builder', function() {
           }}
         );
     assert.deepEqual(
-        p.replace('/the/select', 'the content', p.apply('functionName')),
+        p.replace('/the/select', p.multiplyBy(7)),
         {replace:{
           select:  '/the/select',
-          content: 'the content',
+          content: [{"$value":7}],
+          apply:   'ml.multiply'
+          }}
+        );
+    assert.deepEqual(
+        p.replace('/the/select', p.apply('functionName', 'the content')),
+        {replace:{
+          select:  '/the/select',
+          content: [{"$value":"the content"}],
           apply:   'functionName'
+          }}
+        );
+    assert.deepEqual(
+        p.replace('/the/select', p.concatBefore('the content')),
+        {replace:{
+          select:  '/the/select',
+          content: [{"$value":"the content"}],
+          apply:   'ml.concat-before'
           }}
         );
   });
@@ -141,12 +157,13 @@ describe('patch-builder', function() {
           }}
         );
     assert.deepEqual(
-        p.replaceInsert('/the/select', '/the/context', 'last-child', 'the content', p.apply('functionName')),
+        p.replaceInsert('/the/select', '/the/context', 'last-child',
+            p.apply('functionName', 'the content')),
         {'replace-insert':{
           select:   '/the/select',
           context:  '/the/context',
           position: 'last-child',
-          content:  'the content',
+          content:  [{"$value":"the content"}],
           apply:    'functionName'
           }}
         );
