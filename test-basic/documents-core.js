@@ -256,7 +256,7 @@ describe('document content', function(){
             done();
           }));
         });
-      it('should write a binary descriptor with a ReadableStream', function(done){
+      it('should write a binary descriptor with a Readable stream', function(done){
         this.timeout(3000);
         var uri = '/test/write/stream1.png';
         var readableBinary = new ValueStream(binaryValue);
@@ -440,6 +440,22 @@ describe('document metadata', function(){
             },
           quality: 1,
           content: {key1: 'value 1'}
+          },
+        {contentType: 'application/json',
+          collections: ['collectionDefault/0', 'collectionDefault/1'],
+          permissions: [
+            {'role-name':'app-user',    capabilities:['read']},
+            {'role-name':'app-builder', capabilities:['read', 'update']}
+            ],
+          properties: {
+            propertyDefault1: 'default property value 1',
+            propertyDefault2: 'default property value 2'
+            },
+          quality: 2
+          },
+        {uri: '/test/write/metaContent2.json',
+          contentType: 'application/json',
+          content: {key2: 'value 2'}
           }).
         result(function(response){done();}, done);
       });
@@ -480,6 +496,43 @@ describe('document metadata', function(){
             done();
             }, done);
       });
+      it('should read back default metadata and content', function(done){
+        db.read({uris:'/test/write/metaContent2.json', categories:['metadata', 'content']}).
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            document.collections.length.should.equal(2);
+            for (var i=0; i < 2; i++) {
+              document.collections[i].should.equal('collectionDefault/'+i);
+            }
+            var permissionsFound = 0;
+            document.permissions.forEach(function(permission){
+              switch (permission['role-name']) {
+              case 'app-user':
+                permissionsFound++;
+                permission.capabilities.length.should.equal(1);
+                permission.capabilities[0].should.equal('read');
+                break;
+              case 'app-builder':
+                permissionsFound++;
+                permission.capabilities.length.should.equal(2);
+                permission.capabilities.should.containEql('read');
+                permission.capabilities.should.containEql('update');
+                break;
+              }
+            });
+            permissionsFound.should.equal(2);
+            document.should.have.property('properties');
+            document.properties.should.have.property('propertyDefault1');
+            document.properties.propertyDefault1.should.equal('default property value 1');
+            document.properties.should.have.property('propertyDefault2');
+            document.properties.propertyDefault2.should.equal('default property value 2');
+            document.quality.should.equal(2);
+            document.content.key2.should.equal('value 2');
+            done();
+            }, done);
+      });
     });
     describe('without content', function(){
       before(function(done){
@@ -498,19 +551,19 @@ describe('document metadata', function(){
           }).
         result(function(response){done();}, done);
       });
-      it('should read back the metadata', function(done){
+      it('should read back the all of the metadata', function(done){
         db.read({uris:'/test/write/metaContent1.json', categories:'metadata'}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.collections).should.equal(false);
+            document.should.have.property('collections');
             document.collections.length.should.equal(2);
             for (var i=0; i < 2; i++) {
               document.collections[i].should.equal('collection2/'+i);
             }
-            valcheck.isUndefined(document.permissions).should.equal(false);
+            document.should.have.property('permissions');
             var permissionsFound = 0;
             document.permissions.forEach(function(permission){
               switch (permission['role-name']) {
@@ -533,6 +586,76 @@ describe('document metadata', function(){
             document.properties.property1.should.equal('property value 1');
             document.properties.should.have.property('property2');
             document.properties.property2.should.equal('property value 2');
+            document.should.have.property('quality');
+            document.quality.should.equal(2);
+            document.should.not.have.property('content');
+            done();
+            }, done);
+      });
+      it('should read back collections metadata', function(done){
+        db.read({uris:'/test/write/metaContent1.json', categories:'collections'}).
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            document.should.have.property('collections');
+            document.collections.length.should.equal(2);
+            for (var i=0; i < 2; i++) {
+              document.collections[i].should.equal('collection2/'+i);
+            }
+            document.should.not.have.property('content');
+            done();
+            }, done);
+      });
+      it('should read back permissions metadata', function(done){
+        db.read({uris:'/test/write/metaContent1.json', categories:'permissions'}).
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            document.should.have.property('permissions');
+            var permissionsFound = 0;
+            document.permissions.forEach(function(permission){
+              switch (permission['role-name']) {
+              case 'app-user':
+                permissionsFound++;
+                permission.capabilities.length.should.equal(2);
+                permission.capabilities.should.containEql('read');
+                permission.capabilities.should.containEql('update');
+                break;
+              case 'app-builder':
+                permissionsFound++;
+                permission.capabilities.length.should.equal(1);
+                permission.capabilities[0].should.equal('execute');
+                break;
+              }
+            });
+            permissionsFound.should.equal(2);
+            document.should.not.have.property('content');
+            done();
+            }, done);
+      });
+      it('should read back the properties metadata', function(done){
+        db.read({uris:'/test/write/metaContent1.json', categories:'properties'}).
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            document.should.have.property('properties');
+            document.properties.should.have.property('property1');
+            document.properties.property1.should.equal('property value 1');
+            document.properties.should.have.property('property2');
+            document.properties.property2.should.equal('property value 2');
+            document.should.not.have.property('content');
+            done();
+            }, done);
+      });
+      it('should read back the quality metadata', function(done){
+        db.read({uris:'/test/write/metaContent1.json', categories:'quality'}).
+          result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            var document = documents[0];
             document.should.have.property('quality');
             document.quality.should.equal(2);
             document.should.not.have.property('content');
