@@ -467,12 +467,12 @@ describe('query-builder', function() {
   it('should create geo-path queries', function(){
     assert.deepEqual(
         q.geoPath('foo', q.latlon(1.1, 2.2)),
-        {'geo-path-query':{'path-index':{text: 'foo'},
+        {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
         q.geoPath('foo', [1.1, 2.2]),
-        {'geo-path-query':{'path-index':{text: 'foo'},
+        {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
@@ -690,11 +690,11 @@ describe('query-builder', function() {
   it('should create a path index', function(){
     assert.deepEqual(
         q.pathIndex('foo'),
-        {'path-index': {text: 'foo'}}
+        {'path-index': {text: 'foo', namespaces: ''}}
         );
     assert.deepEqual(
         q.pathIndex(['foo']),
-        {'path-index': {text: 'foo'}}
+        {'path-index': {text: 'foo', namespaces: ''}}
         );
     assert.deepEqual(
         q.pathIndex('foo', {bar: 'baz'}),
@@ -1278,18 +1278,19 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoPath('foo', q.bind('constraint1')),
-        {'geo-path':{'path-index':{text: 'foo'}},
+        {'geo-path':{'path-index':{text: 'foo', namespaces: ''}},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.geoPath('foo', q.bind('constraint1'), q.geoOption('boundaries-included')),
-        {'geo-path':{'path-index':{text: 'foo'},
+        {'geo-path':{'path-index':{text: 'foo', namespaces: ''},
           'geo-option':['boundaries-included']},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.geoPath('foo', q.bind('constraint1'), q.fragmentScope('properties')),
-        {'geo-path':{'path-index':{text: 'foo'}, 'fragment-scope': 'properties'},
+        {'geo-path':{'path-index':{text: 'foo', namespaces: ''},
+          'fragment-scope': 'properties'},
           name:'constraint1'}
         );
     assert.deepEqual(
