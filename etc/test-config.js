@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var host = 'localhost';
+var testHost = 'localhost';
 
 var restPort     = '8015';
 var restAuthType = 'DIGEST';
@@ -38,37 +38,38 @@ var testServerName = 'unittest-nodeapi';
 // For SSL without client cert, use rejectUnauthorized: false
 module.exports = {
     testServerName: testServerName,
+    testHost:       testHost,
     restPort:       restPort,
     restAdminConnection: {
-        host:     host,
+        host:     testHost,
         port:     restPort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: restAuthType
     },
     restReaderConnection: {
-        host:     host,
+        host:     testHost,
         port:     restPort,
         user:     restReaderUser,
         password: restReaderPassword,
         authType: restAuthType
     },
     restWriterConnection: {
-        host:     host,
+        host:     testHost,
         port:     restPort,
         user:     restWriterUser,
         password: restWriterPassword,
         authType: restAuthType
     },
     bootstrapConnection: {
-        host:     host,
+        host:     testHost,
         port:     managePort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: manageAuthType
     },
     manageAdminConnection: {
-        host:     host,
+        host:     testHost,
         port:     managePort,
         user:     manageUser,
         password: managePassword,

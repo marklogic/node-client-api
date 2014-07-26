@@ -27,7 +27,6 @@ db.setLogger({console: false});
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 dbReader.setLogger({console: false});
 
-// setLogger
 describe('document negative', function(){
   it('should fail to write a document as reader', function(done){
     dbReader.documents.write({
@@ -174,7 +173,46 @@ multipart read should report a non-existent uri or up-to-date versionId
     }, done);
   });
 
+      invalidDb.probe('/test/remove/doc1.json').result(function(response) {
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+      }, function(error){
+        error.should.equal('SHOULD HAVE FAILED BEFORE REQUEST');
+        done();
+      });
+
 db.query empty
 bad authentication in test on marklogic
  */
+});
+
+describe('database client negative', function(){
+  it('should fail to create a client without a user', function(done){
+    try {
+      marklogic.createDatabaseClient({
+        host:     testconfig.testHost,
+        port:     testconfig.restPort,
+        password: testconfig.restWriterPassword,
+        authType: testconfig.restAuthType
+      }).should.equal('SHOULD HAVE FAILED');
+      done();
+    } catch(error) {
+      error.should.be.ok;
+      done();
+    }
+  });
+  it('should fail to create a client without a password', function(done){
+    try {
+      marklogic.createDatabaseClient({
+        host:     testconfig.testHost,
+        port:     testconfig.restPort,
+        user:     testconfig.restWriterUser,
+        authType: testconfig.restAuthType
+      }).should.equal('SHOULD HAVE FAILED');
+      done();
+    } catch(error) {
+      error.should.be.ok;
+      done();
+    }
+  });
 });
