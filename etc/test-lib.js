@@ -176,16 +176,17 @@ function makePath(endpoint, params) {
 
   return path;
 }
-function createManager(adminClient) {
-  var manager = {
-      client: adminClient
-  };
-  manager.get    = manageGet.bind(manager);
-  manager.post   = managePost.bind(manager);
-  manager.put    = managePut.bind(manager);
-  manager.remove = manageRemove.bind(manager);
 
-  return manager;
+function Manager(adminClient) {
+  this.client = adminClient;
+}
+Manager.prototype.get    = manageGet;
+Manager.prototype.post   = managePost;
+Manager.prototype.put    = managePut;
+Manager.prototype.remove = manageRemove;
+
+function createManager(adminClient) {
+  return new Manager(adminClient);
 };
 
 module.exports = {
