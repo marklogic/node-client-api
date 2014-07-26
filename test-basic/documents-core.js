@@ -48,8 +48,8 @@ describe('document content', function(){
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
-            valcheck.isUndefined(document.content.key1).should.equal(false);
+            document.should.have.property('content');
+            document.content.should.have.property('key1');
             document.content.key1.should.equal('value 1');
             done();
             }, done);
@@ -71,8 +71,8 @@ describe('document content', function(){
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
-            valcheck.isUndefined(document.content.key1).should.equal(false);
+            document.should.have.property('content');
+            document.content.should.have.property('key1');
             document.content.key1.should.equal('value 1');
             done();
             }, done);
@@ -138,7 +138,7 @@ describe('document content', function(){
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
+            document.should.have.property('content');
             document.content.should.containEql('<doc>content 1</doc>');
             done();
             }, done);
@@ -162,7 +162,7 @@ describe('document content', function(){
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
+            document.should.have.property('content');
             document.content.should.containEql('<doc><child>content 1</child></doc>');
             done();
             }, done);
@@ -186,7 +186,7 @@ describe('document content', function(){
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
+            document.should.have.property('content');
             document.content.should.containEql('<doc xml:lang="fr">oui</doc>');
             done();
             }, done);
@@ -208,7 +208,7 @@ describe('document content', function(){
             documents.length.should.equal(1);
             var document = documents[0];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
+            document.should.have.property('content');
             document.content.should.equal('text 1');
             done();
             }, done);
@@ -227,7 +227,7 @@ describe('document content', function(){
           documents.length.should.equal(1);
           var document = documents[0];
           valcheck.isUndefined(document).should.equal(false);
-          valcheck.isUndefined(document.uri).should.equal(false);          
+          document.should.have.property('uri');          
           return db.read(document.uri).result();
           }).
         then(function(documents){
@@ -235,7 +235,7 @@ describe('document content', function(){
           documents.length.should.equal(1);
           var document = documents[0];
           valcheck.isUndefined(document).should.equal(false);
-          valcheck.isUndefined(document.content).should.equal(false);
+          document.should.have.property('content');
           document.content.should.equal('text with assigned extension');
           return db.remove(document.uri).result();
           }).
@@ -294,10 +294,10 @@ describe('document content', function(){
           });
         ws.result(function(response) {
           valcheck.isUndefined(response).should.equal(false);
-          valcheck.isUndefined(response.documents).should.equal(false);
+          response.should.have.property('documents');
           response.documents.length.should.equal(1);
           var document = response.documents[0];
-          valcheck.isUndefined(document.uri).should.equal(false);
+          document.should.have.property('uri');
           document.uri.should.equal(uri);
           done();
           }, done);
@@ -340,8 +340,8 @@ describe('document content', function(){
           for (var i=0; i < 2; i++) {
             var document = documents[i];
             valcheck.isUndefined(document).should.equal(false);
-            valcheck.isUndefined(document.content).should.equal(false);
-            valcheck.isUndefined(document.content.key1).should.equal(false);
+            document.should.have.property('content');
+            document.content.should.have.property('key1');
             document.content.key1.should.equal('value 1');
           }
           done();
@@ -366,7 +366,7 @@ describe('document content', function(){
             valcheck.isUndefined(chunk).should.equal(false);
             var content = JSON.parse(chunk.toString());
             valcheck.isUndefined(content).should.equal(false);
-            valcheck.isUndefined(content.key1).should.equal(false);
+            content.should.have.property('key1');
             content.key1.should.equal('value 1');
             done();
             }, done);
@@ -390,7 +390,7 @@ describe('document content', function(){
               }, done).
             then(function(document) {
               valcheck.isUndefined(document).should.equal(false);
-              valcheck.isUndefined(document.exists).should.equal(false);
+              document.should.have.property('exists');
               document.exists.should.eql(false);
               done();
               }, done);
@@ -412,7 +412,7 @@ describe('document content', function(){
           db.probe('/test/check/doc1.json').
             result(function(document) {
               valcheck.isUndefined(document).should.equal(false);
-              valcheck.isUndefined(document.exists).should.equal(false);
+              document.should.have.property('exists');
               document.exists.should.eql(true);
               done();
               }, done);

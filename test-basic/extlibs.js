@@ -49,7 +49,7 @@ describe('extension libraries', function(){
     it('should list the extension libraries', function(done){
       restAdminDB.config.extlibs.list().
       result(function(response){
-        response.assets.should.be.ok;
+        response.should.have.property('assets');
         response.assets.length.should.be.greaterThan(0);
         done();
       }, done);

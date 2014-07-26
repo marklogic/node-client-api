@@ -50,8 +50,8 @@ describe('document transform', function(){
     it('should list the transform', function(done){
       db.config.transforms.list().
       result(function(response){
-        response.transforms.should.be.ok;
-        response.transforms.transform.should.be.ok;
+        response.should.have.property('transforms');
+        response.transforms.should.have.property('transform');
         response.transforms.transform.length.should.equal(1);
         response.transforms.transform[0].name.should.equal(transformName);
         done();

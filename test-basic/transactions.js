@@ -54,8 +54,8 @@ describe('transaction', function(){
         documents.length.should.equal(1);
         var document = documents[0];
         document.should.be.ok;
-        document.content.should.be.ok;
-        document.content.txKey.should.be.ok;
+        document.should.have.property('content');
+        document.content.should.have.property('txKey');
         document.content.txKey.should.equal(tid);
         return db.probe(uri).result();
         }).
@@ -71,8 +71,8 @@ describe('transaction', function(){
         documents.length.should.equal(1);
         var document = documents[0];
         document.should.be.ok;
-        document.content.should.be.ok;
-        document.content.txKey.should.be.ok;
+        document.should.have.property('content');
+        document.content.should.have.property('txKey');
         document.content.txKey.should.equal(tid);
         db.remove(uri).
           result(function(response) {done();}, done);
@@ -118,8 +118,8 @@ describe('transaction', function(){
         documents.length.should.equal(1);
         var document = documents[0];
         document.should.be.ok;
-        document.content.should.be.ok;
-        document.content.txKey.should.be.ok;
+        document.should.have.property('content');
+        document.content.should.have.property('txKey');
         document.content.txKey.should.equal(tid);
         return db.transactions.rollback(tid).result();
         }).

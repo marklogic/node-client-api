@@ -51,12 +51,12 @@ describe('document patch', function(){
         result(function(documents) {
           var document = documents[0];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.arrayParentKey.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('arrayParentKey');
           document.content.arrayParentKey.length.should.equal(2);
           document.content.arrayParentKey[1].should.equal('appended value');
-          document.content.objectParentKey.should.be.ok;
-          document.content.objectParentKey.replacementKey.should.be.ok;
+          document.content.should.have.property('objectParentKey');
+          document.content.objectParentKey.should.have.property('replacementKey');
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
           document.should.not.have.property('deletableKey');
           done();}, done);
@@ -91,12 +91,12 @@ describe('document patch', function(){
         result(function(documents) {
           var document = documents[0];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.arrayParentKey.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('arrayParentKey');
           document.content.arrayParentKey.length.should.equal(2);
           document.content.arrayParentKey[1].should.equal('appended value');
-          document.content.objectParentKey.should.be.ok;
-          document.content.objectParentKey.replacementKey.should.be.ok;
+          document.content.should.have.property('objectParentKey');
+          document.content.objectParentKey.should.have.property('replacementKey');
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
           document.should.not.have.property('deletableKey');
           done();}, done);

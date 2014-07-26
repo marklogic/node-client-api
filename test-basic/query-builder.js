@@ -1562,22 +1562,22 @@ describe('document query', function(){
       var built = q.where(
           q.value('key1', 'value 1')
       );
-      built.whereClause.should.be.ok;
-      built.whereClause.query.should.be.ok;
-      built.whereClause.query.queries.should.be.ok;
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('query');
+      built.whereClause.query.should.have.property('queries');
       built.whereClause.query.queries.length.should.equal(1);
-      built.whereClause.query.queries[0]['value-query'].should.be.ok;
+      built.whereClause.query.queries[0].should.have.property('value-query');
     });
     it('should build a where clause with fragment scope', function(){
       var built = q.where(
           q.value('key1', 'value 1'), q.fragmentScope('properties')
       );
-      built.whereClause.should.be.ok;
-      built.whereClause.query.should.be.ok;
-      built.whereClause.query.queries.should.be.ok;
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('query');
+      built.whereClause.query.should.have.property('queries');
       built.whereClause.query.queries.length.should.equal(1);
-      built.whereClause.query.queries[0]['value-query'].should.be.ok;
-      built.whereClause['fragment-scope'].should.be.ok;
+      built.whereClause.query.queries[0].should.have.property('value-query');
+      built.whereClause.should.have.property('fragment-scope');
       built.whereClause['fragment-scope'].should.equal('properties');
     });
     it('should build a where clause with QBE', function(){
@@ -1586,10 +1586,10 @@ describe('document query', function(){
             key1: {$word:'value 1'}
             })
       );
-      built.whereClause.should.be.ok;
-      built.whereClause.$query.should.be.ok;
-      built.whereClause.$query.key1.should.be.ok;
-      built.whereClause.$query.key1.$word.should.be.ok;
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('$query');
+      built.whereClause.$query.should.have.property('key1');
+      built.whereClause.$query.key1.should.have.property('$word');
     });
     it('should build a where clause with qtext', function(){
       var built = q.where(
@@ -1599,10 +1599,10 @@ describe('document query', function(){
                   q.word('key2', q.bind('constraint2'))
                   ))
       );
-      built.whereClause.should.be.ok;
-      built.whereClause.parsedQuery.should.be.ok;
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('parsedQuery');
       built.whereClause.parsedQuery.qtext.should.equal('constraint1:value1 AND constraint2:word2');
-      built.whereClause.parsedQuery.constraint.should.be.ok;
+      built.whereClause.parsedQuery.should.have.property('constraint');
       built.whereClause.parsedQuery.constraint.length.should.equal(2);
       built.whereClause.parsedQuery.constraint[0].name.should.equal('constraint1');
       built.whereClause.parsedQuery.constraint[1].name.should.equal('constraint2');
@@ -1617,27 +1617,27 @@ describe('document query', function(){
                   )),
           q.value('key1', 'value 1')
       );
-      built.whereClause.should.be.ok;
-      built.whereClause.parsedQuery.should.be.ok;
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('parsedQuery');
       built.whereClause.parsedQuery.qtext.should.equal('constraint1:word1 word2');
-      built.whereClause.parsedQuery.constraint.should.be.ok;
+      built.whereClause.parsedQuery.should.have.property('constraint');
       built.whereClause.parsedQuery.constraint.length.should.equal(1);
       built.whereClause.parsedQuery.constraint[0].name.should.equal('constraint1');
-      built.whereClause.parsedQuery.term.should.be.ok;
-      built.whereClause.parsedQuery.term['default'].should.be.ok;
-      built.whereClause.parsedQuery.term.empty.should.be.ok;
-      built.whereClause.query.should.be.ok;
-      built.whereClause.query.queries.should.be.ok;
+      built.whereClause.parsedQuery.should.have.property('term');
+      built.whereClause.parsedQuery.term.should.have.property('default');
+      built.whereClause.parsedQuery.term.should.have.property('empty');
+      built.whereClause.should.have.property('query');
+      built.whereClause.query.should.have.property('queries');
       built.whereClause.query.queries.length.should.equal(1);
-      built.whereClause.query.queries[0]['value-query'].should.be.ok;
+      built.whereClause.query.queries[0].should.have.property('value-query');
     });
     it('should build a calculate clause', function(){
       var built = q.calculate(
           q.facet('key1'),
           q.facet(q.field('field2'))
       );
-      built.calculateClause.should.be.ok;
-      built.calculateClause.constraint.should.be.ok;
+      built.should.have.property('calculateClause');
+      built.calculateClause.should.have.property('constraint');
       built.calculateClause.constraint.length.should.equal(2);
       built.calculateClause.constraint[0].name.should.equal('key1');
       built.calculateClause.constraint[1].name.should.equal('field2');
@@ -1650,8 +1650,8 @@ describe('document query', function(){
           q.score('logtf'),
           q.sort(q.score(), 'descending')
       );
-      built.orderByClause.should.be.ok;
-      built.orderByClause['sort-order'].should.be.ok;
+      built.should.have.property('orderByClause');
+      built.orderByClause.should.have.property('sort-order');
       built.orderByClause['sort-order'].length.should.equal(5);
       built.orderByClause['sort-order'][0]['json-property'].should.equal('key1');
       built.orderByClause['sort-order'][1].field.should.equal('field1');
@@ -1663,18 +1663,18 @@ describe('document query', function(){
     });
     it('should build a slice clause with start page and page length', function(){
       var built = q.slice(11, 10);
-      built.sliceClause.should.be.ok;
+      built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
     });
     it('should build a slice clause with start page', function(){
       var built = q.slice(11);
-      built.sliceClause.should.be.ok;
+      built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
     });
     it('should build a slice clause without a page', function(){
       var built = q.slice(0);
-      built.sliceClause.should.be.ok;
+      built.should.have.property('sliceClause');
       built.sliceClause['page-length'].should.equal(0);
     });
     it('should build with all clauses', function(){
@@ -1689,13 +1689,13 @@ describe('document query', function(){
       built.whereClause.should.have.property('query');
       built.whereClause.query.should.have.property('queries');
       built.whereClause.query.queries.length.should.equal(1);
-      built.whereClause.query.queries[0]['value-query'].should.be.ok;
+      built.whereClause.query.queries[0].should.have.property('value-query');
       built.should.have.property('calculateClause');
       built.calculateClause.should.have.property('constraint');
       built.calculateClause.constraint.length.should.equal(1);
       built.calculateClause.constraint[0].name.should.equal('key2');
       built.should.have.property('orderByClause');
-      built.orderByClause['sort-order'].should.be.ok;
+      built.orderByClause.should.have.property('sort-order');
       built.orderByClause['sort-order'].length.should.equal(1);
       built.orderByClause['sort-order'][0]['json-property'].should.equal('key3');
       built.should.have.property('sliceClause');
@@ -1710,12 +1710,12 @@ describe('document query', function(){
       var marshalled = JSON.stringify(seed);
       var unmarshalled = JSON.parse(marshalled);
       var built = q.copyFrom(unmarshalled).slice(11, 10);
-      built.whereClause.should.be.ok;
-      built.whereClause.query.should.be.ok;
-      built.whereClause.query.queries.should.be.ok;
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('query');
+      built.whereClause.query.should.have.property('queries');
       built.whereClause.query.queries.length.should.equal(1);
-      built.whereClause.query.queries[0]['collection-query'].should.be.ok;
-      built.sliceClause.should.be.ok;
+      built.whereClause.query.queries[0].should.have.property('collection-query');
+      built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
     });

@@ -56,7 +56,7 @@ describe('document versions', function() {
       db.probe(uri).
       result(function(response) {
         valcheck.isUndefined(response).should.equal(false);
-        valcheck.isUndefined(response.versionId).should.equal(false);
+        response.should.have.property('versionId');
         done();
         }, done);
     });
@@ -244,7 +244,7 @@ describe('document versions', function() {
         valcheck.isArray(documents).should.equal(true);
         documents.length.should.equal(1);
         var document = documents[0];
-        valcheck.isUndefined(document.versionId).should.equal(false);
+        document.should.have.property('versionId');
         done();
         }, done);
     });

@@ -110,7 +110,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -126,7 +126,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -142,7 +142,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -158,7 +158,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -185,12 +185,12 @@ describe('document query', function(){
         slice(0)
         ).
       result(function(response) {
-        response.facets.should.be.ok;
-        response.facets.rangeKey1.should.be.ok;
-        response.facets.rangeKey1.facetValues.should.be.ok;
+        response.should.have.property('facets');
+        response.facets.should.have.property('rangeKey1');
+        response.facets.rangeKey1.should.have.property('facetValues');
         response.facets.rangeKey1.facetValues.length.should.equal(3);
-        response.facets.rangeKey2.should.be.ok;
-        response.facets.rangeKey2.facetValues.should.be.ok;
+        response.facets.should.have.property('rangeKey2');
+        response.facets.rangeKey2.should.have.property('facetValues');
         response.facets.rangeKey2.facetValues.length.should.equal(3);
         done();
       }, done);
@@ -212,16 +212,16 @@ describe('document query', function(){
           var document = response[i];
           document.should.be.ok;
           if (i === 0) {
-            document.facets.should.be.ok;
-            document.facets.rangeKey1.should.be.ok;
-            document.facets.rangeKey1.facetValues.should.be.ok;
+            document.should.have.property('facets');
+            document.facets.should.have.property('rangeKey1');
+            document.facets.rangeKey1.should.have.property('facetValues');
             document.facets.rangeKey1.facetValues.length.should.equal(3);
-            document.facets.rangeKey2.should.be.ok;
-            document.facets.rangeKey2.facetValues.should.be.ok;
+            document.facets.should.have.property('rangeKey2');
+            document.facets.rangeKey2.should.have.property('facetValues');
             document.facets.rangeKey2.facetValues.length.should.equal(3);
           } else {
-            document.content.should.be.ok;
-            document.content.id.should.be.ok;
+            document.should.have.property('content');
+            document.content.should.have.property('id');
             document.content.id.should.equal('matchList'+order[i - 1]);
           }
         }
@@ -241,8 +241,8 @@ describe('document query', function(){
         for (var i=0; i < order.length; i++) {
           var document = response[i];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.id.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
           document.content.id.should.equal('matchList'+order[i]);
         }
         done();
@@ -261,8 +261,8 @@ describe('document query', function(){
         for (var i=0; i < order.length; i++) {
           var document = response[i];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.id.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
           document.content.id.should.equal('matchList'+order[i]);
         }
         done();
@@ -284,8 +284,8 @@ describe('document query', function(){
         for (var i=0; i < order.length; i++) {
           var document = response[i];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.id.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
           document.content.id.should.equal('matchList'+order[i]);
         }
         done();
@@ -303,8 +303,8 @@ describe('document query', function(){
         for (var i=0; i < 3; i++) {
           var document = response[i];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.id.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
           document.content.id.should.equal('matchList'+(4 - i));
         }
         done();
@@ -322,8 +322,8 @@ describe('document query', function(){
         for (var i=0; i < 2; i++) {
           var document = response[i];
           document.should.be.ok;
-          document.content.should.be.ok;
-          document.content.id.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
           document.content.id.should.equal('matchList'+(3 - i));
         }
         done();
@@ -344,12 +344,12 @@ describe('document query', function(){
           case 0:
             var summary = response[i];
             summary.should.be.ok;
-            summary.plan.should.be.ok;
+            summary.should.have.property('plan');
             break;
           default:
             var document = response[i];
             document.should.be.ok;
-            document.permissions.should.be.ok;
+            document.should.have.property('permissions');
             document.should.not.have.property('content');
           }
         }
@@ -372,7 +372,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -392,7 +392,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -410,7 +410,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -436,16 +436,16 @@ describe('document query', function(){
           var document = response[i];
           document.should.be.ok;
           if (i === 0) {
-            document.facets.should.be.ok;
-            document.facets.rangeKey1.should.be.ok;
-            document.facets.rangeKey1.facetValues.should.be.ok;
+            document.should.have.property('facets');
+            document.facets.should.have.property('rangeKey1');
+            document.facets.rangeKey1.should.have.property('facetValues');
             document.facets.rangeKey1.facetValues.length.should.equal(3);
-            document.facets.rangeKey2.should.be.ok;
-            document.facets.rangeKey2.facetValues.should.be.ok;
+            document.facets.should.have.property('rangeKey2');
+            document.facets.rangeKey2.should.have.property('facetValues');
             document.facets.rangeKey2.facetValues.length.should.equal(3);
           } else {
-            document.content.should.be.ok;
-            document.content.id.should.be.ok;
+            document.should.have.property('content');
+            document.content.should.have.property('id');
             document.content.id.should.equal('matchList'+order[i - 1]);
           }
         }
@@ -468,7 +468,7 @@ describe('document query', function(){
         var document = response[0];
         document.should.be.ok;
         document.uri.should.equal('/test/query/matchDir/doc1.json');
-        document.content.should.be.ok;
+        document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
       }, done);
@@ -543,16 +543,16 @@ describe('document query', function(){
           var document = response[i];
           document.should.be.ok;
           if (i === 0) {
-            document.facets.should.be.ok;
-            document.facets.rangeKey1.should.be.ok;
-            document.facets.rangeKey1.facetValues.should.be.ok;
+            document.should.have.property('facets');
+            document.facets.should.have.property('rangeKey1');
+            document.facets.rangeKey1.should.have.property('facetValues');
             document.facets.rangeKey1.facetValues.length.should.equal(3);
-            document.facets.rangeKey2.should.be.ok;
-            document.facets.rangeKey2.facetValues.should.be.ok;
+            document.facets.should.have.property('rangeKey2');
+            document.facets.rangeKey2.should.have.property('facetValues');
             document.facets.rangeKey2.facetValues.length.should.equal(3);
           } else {
-            document.content.should.be.ok;
-            document.content.id.should.be.ok;
+            document.should.have.property('content');
+            document.content.should.have.property('id');
             document.content.id.should.equal('matchList'+order[i - 1]);
           }
         }
