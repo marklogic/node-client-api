@@ -1385,6 +1385,10 @@ describe('query-builder', function() {
         {empty:{'apply': 'all-results'}}
         );
     assert.deepEqual(
+        q.bindEmptyAs('no-results'),
+        {empty:{'apply': 'no-results'}}
+        );
+    assert.deepEqual(
         q.parseFunction('module1', q.bind('constraint1')),
         {custom:{parse: {
             apply: 'parse',
