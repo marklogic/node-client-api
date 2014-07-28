@@ -377,6 +377,20 @@ describe('document query', function(){
         done();
       }, done);
     });
+    it('should match an empty query', function(done){
+      db.query(
+        q.where(
+          q.parsedFrom('',
+            q.parseBindings(
+              q.bindEmptyAs('no-results')
+              ))
+          )
+        ).
+      result(function(response) {
+        response.length.should.equal(0);
+        done();
+      }, done);
+    });
   });
   describe('for a QBE where clause', function() {
     it('should match a value query', function(done){
