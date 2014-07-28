@@ -103,5 +103,81 @@ describe('document patch', function(){
         }, done);
     });    
   });    
-  // TODO: metadata patch, patch library
+  describe('for metadata', function() {
+    before(function(done){
+      db.documents.write({
+        uri: uri1,
+        contentType: 'application/json',
+        collections: ['collection1/0', 'collection1/1'],
+        permissions: [
+          {'role-name':'app-user',    capabilities:['read']}
+          ],
+        properties: {
+          property1: 'property value 1',
+          property2: 'property value 2'
+          },
+        quality: 1,
+        content: {key1: 'value 1'}
+        }).
+      result(function(response){done();}, done);
+    });
+    it('should insert, replace, and delete', function(done) {
+      var p = marklogic.patchBuilder;
+      db.documents.patch({uri:uri1, categories:['metadata'], operations:[
+          p.insert('array-node("collections")/text()[. eq "collection1/1"]', 'before',
+              'collection1/INSERTED_BEFORE'),
+          p.insert('array-node("collections")', 'last-child',
+              'collection1/INSERTED_LAST'),
+          p.remove('array-node("collections")/text()[. eq "collection1/0"]'),
+          p.replace('array-node("permissions")/object-node()[node("role-name") eq "app-user"]',
+              {'role-name':'app-builder', capabilities:['read', 'update']}
+              ),
+          p.insert('object-node("properties")/text("property2")', 'before',
+              {propertyINSERTED_BEFORE2: 'property value INSERTED_BEFORE'}),
+          p.insert('object-node("properties")', 'last-child',
+              {propertyINSERTED_LAST: 'property value INSERTED_LAST'}),
+          p.remove('object-node("properties")/text("property1")'),
+          p.replace('node("quality")', 2)
+          ]}).
+      result(function(response){
+        db.read({uris:uri1, categories:['metadata']}).
+        result(function(documents) {
+          var document = documents[0];
+          document.should.be.ok;
+          document.collections.length.should.equal(3);
+          document.collections[0].should.equal('collection1/INSERTED_BEFORE');
+          document.collections[1].should.equal('collection1/1');
+          document.collections[2].should.equal('collection1/INSERTED_LAST');
+          document.should.have.property('permissions');
+          var foundAppUser    = false;
+          var foundAppBuilder = false;
+          document.permissions.forEach(function(permission){
+            switch (permission['role-name']) {
+            case 'app-user':
+              foundAppUser = true;
+              break;
+            case 'app-builder':
+              foundAppBuilder = true;
+              permission.capabilities.length.should.equal(2);
+              break;
+            }
+          });
+          foundAppUser.should.equal(false);
+          foundAppBuilder.should.equal(true);
+          document.should.have.property('properties');
+          document.properties.should.have.property('propertyINSERTED_BEFORE2');
+          document.properties.propertyINSERTED_BEFORE2.should.
+            equal('property value INSERTED_BEFORE');
+          document.properties.should.have.property('property2');
+          document.properties.property2.should.equal('property value 2');
+          document.properties.should.have.property('propertyINSERTED_LAST');
+          document.properties.propertyINSERTED_LAST.should.
+            equal('property value INSERTED_LAST');
+          document.should.have.property('quality');
+          document.quality.should.equal(2);
+          done();}, done);
+        }, done);
+    });    
+  });    
+  // TODO: patch library
 });
