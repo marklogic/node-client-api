@@ -45,11 +45,10 @@ gulp.task('doc', function() {
     .pipe(jsdoc.parser())
     .pipe(jsdoc.generator('./doc',
       {
-        path:              'ink-docstrap',
+        path:              './etc/marklogic-template',
         systemName:        'MarkLogic Node.js API',
-//      footer:            'link to doc',
         copyright:         'Copyright 2014 MarkLogic Corporation',
-        theme:             'simplex',
+        theme:             'marklogic',
         inverseNav:        true,
         navType:           'vertical',
         outputSourceFiles: false,
