@@ -17,102 +17,107 @@ var valcheck = require('core-util-is');
 
 var marklogic = require('../lib/marklogic.js');
 
+var promptForAdmin = require('./test-setup-prompt.js');
+var setupUsers     = require('./test-setup-users.js');
+
 var testlib    = require('./test-lib.js');
 var testconfig = require('./test-config.js');
 
-var bootstrapClient = marklogic.createDatabaseClient(testconfig.bootstrapConnection);
-var bootstrapper    = testlib.createManager(bootstrapClient);
+promptForAdmin(createManager);
 
-var manager = null;
+function createManager(adminUser, adminPassword) {
+  testconfig.manageAdminConnection.user     = adminUser;
+  testconfig.manageAdminConnection.password = adminPassword;
 
-/* TODO:
-  could prompt for admin password and set up users
-  gulp setup task
- */
+  var manageClient =
+    marklogic.createDatabaseClient(testconfig.manageAdminConnection);
+  var manager      = testlib.createManager(manageClient);
 
-console.log('checking for '+testconfig.testServerName);
-bootstrapper.get({
-  endpoint: '/v1/rest-apis/'+testconfig.testServerName
-  }).
-result(function(response) {
-  if (response.statusCode === 404) {
-    console.log('creating database and REST server for '+testconfig.testServerName);
-    bootstrapper.post({
-      endpoint: '/v1/rest-apis',
-      body: {
-        'rest-api': {
-          name:               testconfig.testServerName,
-          group:              'Default',
-          database:           testconfig.testServerName,
-          'modules-database': testconfig.testServerName+'-modules',
-          port:               testconfig.restPort
+  setupUsers(manager, setup);
+}
+function setup(manager) {
+  console.log('checking for '+testconfig.testServerName);
+  manager.get({
+    endpoint: '/v1/rest-apis/'+testconfig.testServerName
+    }).
+  result(function(response) {
+    if (response.statusCode === 404) {
+      console.log('creating database and REST server for '+testconfig.testServerName);
+      manager.post({
+        endpoint: '/v1/rest-apis',
+        body: {
+          'rest-api': {
+            name:               testconfig.testServerName,
+            group:              'Default',
+            database:           testconfig.testServerName,
+            'modules-database': testconfig.testServerName+'-modules',
+            port:               testconfig.restPort
+            }
           }
-        }
-      }).
-    result(function(response) {
-      if (response.statusCode === 201) {        
-        var manageClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
-        manager = testlib.createManager(manageClient);
-        console.log('getting default indexes for '+testconfig.testServerName);
-        manager.get({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties'
-          }).result().
-        then(function(response) {
-          var rangeElementIndex = response.data['range-element-index'];
+        }).
+      result(function(response) {
+        if (response.statusCode === 201) {
+          console.log('getting default indexes for '+testconfig.testServerName);
+          manager.get({
+            endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties'
+            }).result().
+          then(function(response) {
+            var rangeElementIndex = response.data['range-element-index'];
 
-          var rangeTest = {
-              rangeKey1: true,
-              rangeKey2: true
-              };
-          var rangers = [];
-          if (valcheck.isNullOrUndefined(rangeElementIndex)) {
-            rangeElementIndex = [];
-            rangers           = Object.keys(rangeTest);
-          } else {
-            rangeElementIndex.forEach(function(index){
-              var indexName = index.localname;
-              if (rangeTest[indexName]) {
-                rangeTest[indexName] = false;
-              }
-            });
-            rangers = Object.keys(rangeTest).filter(function(indexName){
-              return rangeTest[indexName];
-            });
-          }
-
-          for (var i=0; i < rangers.length; i++) {
-            rangeElementIndex.push({
-                'scalar-type':           'string',
-                collation:               'http://marklogic.com/collation/',
-                'namespace-uri':         '',
-                localname:               rangers[i],
-                'range-value-positions': false,
-                'invalid-values':        'ignore'
+            var rangeTest = {
+                rangeKey1: true,
+                rangeKey2: true
+                };
+            var rangers = [];
+            if (valcheck.isNullOrUndefined(rangeElementIndex)) {
+              rangeElementIndex = [];
+              rangers           = Object.keys(rangeTest);
+            } else {
+              rangeElementIndex.forEach(function(index){
+                var indexName = index.localname;
+                if (rangeTest[indexName]) {
+                  rangeTest[indexName] = false;
+                }
               });
-          }
+              rangers = Object.keys(rangeTest).filter(function(indexName){
+                return rangeTest[indexName];
+              });
+            }
 
-          console.log('adding custom indexes for '+testconfig.testServerName);
-          return manager.put({
-            endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
-            params:   {
-              format: 'json'
-              },
-            body:     {
-              'range-element-index': rangeElementIndex 
-              },
-            hasResponse: true
-            }).result();
-          }).
-        then(function(response) {
-          console.log(testconfig.testServerName+' setup succeeded');
-          });
-      } else {
-        console.log(testconfig.testServerName+' setup failed with HTTP status: '+response.statusCode);
-        console.log(response.data);        
-      }
-    });
-  } else {
-    console.log(testconfig.testServerName+' test server is available on port '+
-        JSON.parse(response.data).port);
-  }
-});
+            for (var i=0; i < rangers.length; i++) {
+              rangeElementIndex.push({
+                  'scalar-type':           'string',
+                  collation:               'http://marklogic.com/collation/',
+                  'namespace-uri':         '',
+                  localname:               rangers[i],
+                  'range-value-positions': false,
+                  'invalid-values':        'ignore'
+                });
+            }
+
+            console.log('adding custom indexes for '+testconfig.testServerName);
+            return manager.put({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+              params:   {
+                format: 'json'
+                },
+              body:     {
+                'range-element-index': rangeElementIndex 
+                },
+              hasResponse: true
+              }).result();
+            }).
+          then(function(response) {
+            console.log(testconfig.testServerName+' setup succeeded');
+            });
+        } else {
+          console.log(testconfig.testServerName+' setup failed with HTTP status: '+response.statusCode);
+          console.log(response.data);        
+        }
+      });
+    } else {
+      console.log(testconfig.testServerName+' test server is available on port '+
+          JSON.parse(response.data).port);
+    }
+  });
+}

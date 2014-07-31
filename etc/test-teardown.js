@@ -18,11 +18,12 @@ var marklogic = require('../lib/marklogic.js');
 var testlib    = require('./test-lib.js');
 var testconfig = require('./test-config.js');
 
-var bootstrapClient = marklogic.createDatabaseClient(testconfig.bootstrapConnection);
-var bootstrapper    = testlib.createManager(bootstrapClient);
+var manageClient =
+  marklogic.createDatabaseClient(testconfig.manageAdminConnection);
+var manager      = testlib.createManager(manageClient);
 
 console.log('checking for '+testconfig.testServerName);
-bootstrapper.get({
+manager.get({
   endpoint: '/v1/rest-apis/'+testconfig.testServerName
   }).
 result(function(response) {
@@ -30,7 +31,7 @@ result(function(response) {
     console.log(testconfig.testServerName+' not found - nothing to delete');
   } else {
     console.log('removing database and REST server for '+testconfig.testServerName);
-    bootstrapper.remove({
+    manager.remove({
       endpoint: '/v1/rest-apis/'+testconfig.testServerName,
       params:   {include: ['content', 'modules']}
       }).

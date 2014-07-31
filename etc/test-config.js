@@ -30,9 +30,6 @@ var restReaderPassword = 'x';
 var restWriterUser     = 'rest-writer';
 var restWriterPassword = 'x';
 
-var manageUser     = 'manage-admin';
-var managePassword = 'x';
-
 var testServerName = 'unittest-nodeapi';
 
 // For SSL without client cert, use rejectUnauthorized: false
@@ -61,18 +58,11 @@ module.exports = {
         password: restWriterPassword,
         authType: restAuthType
     },
-    bootstrapConnection: {
+    manageAdminConnection: {
         host:     testHost,
         port:     managePort,
         user:     restAdminUser,
         password: restAdminPassword,
-        authType: manageAuthType
-    },
-    manageAdminConnection: {
-        host:     testHost,
-        port:     managePort,
-        user:     manageUser,
-        password: managePassword,
         authType: manageAuthType
     }
 };

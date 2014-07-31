@@ -15,6 +15,9 @@
  */
 var testconfig = require('../etc/test-config.js');
 
+var examplePort     = 8000; // change to 8015 to use the test database
+var exampleAuthType = 'DIGEST';
+
 var listeners = {
     mode:  'waiting',
     queue: []  
@@ -50,10 +53,28 @@ function failed(error) {
 };
 
 module.exports = {
-    restAdminConnection:  testconfig.restAdminConnection,
-    restReaderConnection: testconfig.restReaderConnection,
-    restWriterConnection: testconfig.restWriterConnection,
-    addListener:          addListener,
-    succeeded:            succeeded,
-    failed:               failed
+  restAdminConnection: {
+    host:     testconfig.restAdminConnection.host,
+    port:     examplePort,
+    user:     testconfig.restAdminConnection.user,
+    password: testconfig.restAdminConnection.password,
+    authType: exampleAuthType
+  },
+  restReaderConnection: {
+    host:     testconfig.restReaderConnection.host,
+    port:     examplePort,
+    user:     testconfig.restReaderConnection.user,
+    password: testconfig.restReaderConnection.password,
+    authType: exampleAuthType
+  },
+  restWriterConnection: {
+    host:     testconfig.restWriterConnection.host,
+    port:     examplePort,
+    user:     testconfig.restWriterConnection.user,
+    password: testconfig.restWriterConnection.password,
+    authType: exampleAuthType
+  },
+  addListener: addListener,
+  succeeded:   succeeded,
+  failed:      failed
 };

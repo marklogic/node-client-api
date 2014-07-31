@@ -1,10 +1,27 @@
 Examples for MarkLogic Client for node.js
 
-* Create the users specified in the example-util.js file
+Prerequisite:
 
-* Create a REST server on the Documents database at the port
-  specified in the example-util.js file
+Install MarkLogic Server, Node.js, and the MarkLogic Node.js API and
+  its module dependencies.
 
-* Load the data by running node before-load.js
+Steps:
 
-Then, run node on any example in any order.
+Execute all commands in the parent directory that contains the examples
+  and etc subdirectories.
+
+* Set up the REST users:
+
+  node etc/users-setup.js
+
+  The script prompts for the MarkLogic admin user and password specified
+  during installation of MarkLogic.  As an alternative, you can provide
+  the -u adminUser:adminPassword command-line argument.
+
+  If the users already exist, the script reports that.
+
+* Load the example data into the database:
+
+  node examples/before-load.js
+
+* Run node on any example in any order.

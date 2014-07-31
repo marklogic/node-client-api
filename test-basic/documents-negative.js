@@ -141,10 +141,23 @@ describe('document negative', function(){
       done();
       });
   });
+  it('should fail to write a document with a mismapped extension', function(done){
+    db.documents.write({
+      uri: '/test/negative/writeInvalidFormat1.xml',
+      contentType: 'application/json',
+      content: {"key": "value"}
+      }).
+    result(function(response){
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error){
+      error.statusCode.should.equal(400);
+      done();
+      });
+  });
 
 /* TODO:
 repair for json
-lang for text
 extract for text
 multipart write should report a bad uri
 multipart read should report a non-existent uri or up-to-date versionId
