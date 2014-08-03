@@ -2,7 +2,7 @@
   "author": "MarkLogic",
   "name": "marklogic",
   "description": "Provides a node.js client interface to the MarkLogic database server",
-  "version": "0.0.1",
+  "version": "1.0.0-ea2",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "keywords": [
