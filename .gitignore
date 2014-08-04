@@ -1,4 +1,4 @@
-.project
-.settings
 node_modules
 tmp
+.project
+.settings
