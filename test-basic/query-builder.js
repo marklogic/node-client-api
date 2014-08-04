@@ -523,14 +523,14 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.geoElement('parent', 'element',
             q.heatmap(2, 3, q.southWestNorthEast(1.1, 2.2, 3.3, 4.4))),
-        {'geo-elem-query':{parent:{name:'parent'},
+        {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'},
           heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}}}
         );
     assert.deepEqual(
         q.geoElement('parent', 'element',
             q.heatmap(2, 3, 1.1, 2.2, 3.3, 4.4)),
-        {'geo-elem-query':{parent:{name:'parent'},
+        {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'},
           heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}}}
         );
