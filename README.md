@@ -11,7 +11,7 @@ The MarkLogic node.js API is currently in Early Access Release 2.
 
 Please see the instructions on the MarkLogic Early Access website:
 
-    http://ea.marklogic.com/features/node/
+http://ea.marklogic.com/features/node/
 
 The instructions describe:
 
@@ -21,7 +21,7 @@ The instructions describe:
 
 For more detail about the API, see the reference documentation:
 
-    http://docs-ea.marklogic.com:8011/jsdoc/index.html
+http://docs-ea.marklogic.com:8011/jsdoc/index.html
 
 ### Example setup
 
