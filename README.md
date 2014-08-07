@@ -1,33 +1,60 @@
-# MarkLogic Client for node.js
+# MarkLogic Client API for node.js
+
+The MarkLogic Client API for node.js provides access to the MarkLogic database
+from node.js.
 
 ## Status
 
-### Test and example setup and teardown
+The MarkLogic node.js API is currently in Early Access Release 2.
 
-To set up the test and example database and REST server, first create
-manage-admin, rest-admin, rest-writer, and rest-reader users on the 
-database server as listed in the etc/test-config.js file.
+### Getting started
 
-Then execute the following command in the root directory for the marklogic
-package:
+Please see the instructions on the MarkLogic Early Access website:
 
-    node etc/test-setup.js
+    http://ea.marklogic.com/features/node/
 
-To load the sample data before running the examples, execute
+The instructions describe:
+
+* installing the MarkLogic database and setting up an admin user
+* cloning this repository to set up the API
+* working through some initial examples to get familiar with the API
+
+For more detail about the API, see the reference documentation:
+
+    http://docs-ea.marklogic.com:8011/jsdoc/index.html
+
+### Example setup
+
+To set up the REST users for the examples, execute the following
+command in the root directory for the marklogic package:
+
+    node etc/users-setup.js
+
+Then, load the sample data:
 
     node examples/before-load.js
 
-To tear down the test and example database and REST server, execute
+You can then execute any of the examples in the examples
+subdirectory from the root directory for the marklogic package.
+
+### Test setup and teardown
+
+To set up the test database and REST server, execute the following
+command in the root directory for the marklogic package:
+
+    node etc/test-setup.js
+
+To tear down the test database and REST server, execute
 
     node etc/test-teardown.js
 
-### Done for early access 2 (basic document CRUD and query support)
+### Capabilities of the node.js Client API in Early Access 2
 
 * createDatabaseClient() including HTTPS
 * documents.query()
-    * queryBuilder.where() including builder structured query,
-      queryBuilder.byExample() QBE (Query By Example), and
-      queryBuilder.parsedFrom() string query
+    * queryBuilder.where() including structured query builder
+    * queryBuilder.byExample() for QBE (Query By Example)
+    * queryBuilder.parsedFrom() for string query
     * queryBuilder.orderBy()
     * queryBuilder.calculate()
     * queryBuilder.slice()
@@ -58,12 +85,18 @@ To tear down the test and example database and REST server, execute
 * config.extlibs.write()
 * optimistic locking
 
-### Deferred to early access 3
+### Limitations in Early Access 2
 
-* opt out of JSON conversion
-* pluggable XML conversion 
-* optional datatypes for queries and facets
-* robust error handling, logging, and performance tuning
-* bulk conditional content
-* queryBuilder.calculate() - values()
-* queryBuilder.slice() - iterator (aka reducer)
+The MarkLogic node.js Client API has not yet undergone performance or
+stress testing.  The API should not be used in production in EA2.
+
+### Candidate Features for Early Access 3
+
+* projection from result documents
+* values and tuples lists
+* resource service CRUD and invocation
+* server-side eval
+* graph CRUD
+* aggregates on facets
+* specifying the database when creating a database client
+* pluggable XML conversion
