@@ -1,1 +1,6 @@
+doc
 node_modules
+tmp
+.project
+.settings
+
