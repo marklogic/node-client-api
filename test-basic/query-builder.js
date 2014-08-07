@@ -1431,6 +1431,18 @@ describe('query-builder', function() {
         );
   });
 
+  it('should specify an aggregate', function(){
+    assert.deepEqual(
+        q.aggregates('avg', 'sum'),
+        {aggregates:[{apply:'avg'}, {apply:'sum'}]}
+        );
+    assert.deepEqual(
+        q.aggregates('avg', q.udf('plugin1', 'function1')),
+        {aggregates:[{apply:'avg'}, {apply:'function1', udf:'plugin1'}]}
+        );
+  });
+
+  // TODO: facet aggregates
   it('should specify a facet', function(){
     assert.deepEqual(
         q.facet('key1'),

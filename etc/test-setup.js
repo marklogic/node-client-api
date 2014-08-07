@@ -65,34 +65,41 @@ function setup(manager) {
             var rangeElementIndex = response.data['range-element-index'];
 
             var rangeTest = {
-                rangeKey1: true,
-                rangeKey2: true
+                rangeKey1: 'string',
+                rangeKey2: 'string',
+                rangeKey3: 'int',
+                rangeKey4: 'int'
                 };
             var rangers = [];
+            var indexName = null;
             if (valcheck.isNullOrUndefined(rangeElementIndex)) {
               rangeElementIndex = [];
               rangers           = Object.keys(rangeTest);
             } else {
               rangeElementIndex.forEach(function(index){
-                var indexName = index.localname;
-                if (rangeTest[indexName]) {
+                indexName = index.localname;
+                if (!valcheck.isUndefined(rangeTest[indexName])) {
                   rangeTest[indexName] = false;
                 }
               });
               rangers = Object.keys(rangeTest).filter(function(indexName){
-                return rangeTest[indexName];
+                return (rangeTest[indexName] !== false);
               });
             }
 
             for (var i=0; i < rangers.length; i++) {
-              rangeElementIndex.push({
-                  'scalar-type':           'string',
-                  collation:               'http://marklogic.com/collation/',
+              indexName = rangers[i];
+              var indexType = rangeTest[indexName];
+              var indexdef = {
+                  'scalar-type':           indexType,
+                  collation:               (indexType === 'string') ?
+                      'http://marklogic.com/collation/' : '',
                   'namespace-uri':         '',
-                  localname:               rangers[i],
+                  localname:               indexName,
                   'range-value-positions': false,
                   'invalid-values':        'ignore'
-                });
+                };
+              rangeElementIndex.push(indexdef);
             }
 
             console.log('adding custom indexes for '+testconfig.testServerName);
