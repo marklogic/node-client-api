@@ -22,6 +22,7 @@ var valcheck = require('core-util-is');
 var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
+var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
@@ -101,6 +102,19 @@ describe('document transform', function(){
         result(function(documents) {
           documents.length.should.equal(1);
           documents[0].content.flagParam.should.equal('tested2');
+          done();
+          }, done);
+    });
+    it('should modify during query', function(done){
+      db.query(
+          q.where(
+            q.document(uri)
+            ).
+            withOptions({transform: [transformName, {flag:'tested3'}]})
+          ).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          documents[0].content.flagParam.should.equal('tested3');
           done();
           }, done);
     });
