@@ -1431,6 +1431,73 @@ describe('query-builder', function() {
         );
   });
 
+  it('should specify a snippet transform', function(){
+    assert.deepEqual(
+        q.snippet(),
+        {'transform-results':{
+          apply: 'snippet'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('snippet'),
+        {'transform-results':{
+          apply: 'snippet'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('empty'),
+        {'transform-results':{
+          apply: 'empty-snippet'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('foo'),
+        {'transform-results':{
+          apply: 'snippet',
+          ns:    'http://marklogic.com/snippet/custom/foo',
+          at:    '/ext/marklogic/snippet/custom/foo.xqy'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet({
+          'max-matches':       5,
+          'per-match-tokens':  6,
+          'max-snippet-chars': 7
+        }),
+        {'transform-results':{
+          apply:               'snippet',
+          'max-matches':       5,
+          'per-match-tokens':  6,
+          'max-snippet-chars': 7
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('foo', {
+          'max-matches': 5,
+          'bar':         'baz'
+        }),
+        {'transform-results':{
+          apply:         'snippet',
+          ns:            'http://marklogic.com/snippet/custom/foo',
+          at:            '/ext/marklogic/snippet/custom/foo.xqy',
+          'max-matches': 5,
+          'bar':         'baz'
+          }}
+        );
+  });
+
+  it('should specify an aggregate', function(){
+    assert.deepEqual(
+        q.aggregates('avg', 'sum'),
+        {aggregates:[{apply:'avg'}, {apply:'sum'}]}
+        );
+    assert.deepEqual(
+        q.aggregates('avg', q.udf('plugin1', 'function1')),
+        {aggregates:[{apply:'avg'}, {apply:'function1', udf:'plugin1'}]}
+        );
+  });
+
+  // TODO: facet aggregates
   it('should specify a facet', function(){
     assert.deepEqual(
         q.facet('key1'),
@@ -1680,6 +1747,36 @@ describe('document query', function(){
       var built = q.slice(0);
       built.should.have.property('sliceClause');
       built.sliceClause['page-length'].should.equal(0);
+    });
+    it('should build a slice clause with a page and a snippet transform', function(){
+      var built = q.slice(11, 10,
+        q.snippet('foo', {
+          'max-matches': 5,
+          'bar':         'baz'
+          }));
+      built.should.have.property('sliceClause');
+      built.sliceClause['page-start'].should.equal(11);
+      built.sliceClause['page-length'].should.equal(10);
+      built.sliceClause['transform-results']['max-matches'].should.equal(5);
+      built.sliceClause['transform-results'].bar.should.equal('baz');
+      built.sliceClause['transform-results'].apply.should.equal('snippet');
+      built.sliceClause['transform-results'].ns.should.equal('http://marklogic.com/snippet/custom/foo');
+      built.sliceClause['transform-results'].at.should.equal('/ext/marklogic/snippet/custom/foo.xqy');
+
+    });
+    it('should build a slice clause with a default page and a snippet transform', function(){
+      var built = q.slice(
+        q.snippet('foo', {
+          'max-matches': 5,
+          'bar':         'baz'
+          }));
+      built.should.have.property('sliceClause');
+      built.sliceClause['transform-results']['max-matches'].should.equal(5);
+      built.sliceClause['transform-results'].bar.should.equal('baz');
+      built.sliceClause['transform-results'].apply.should.equal('snippet');
+      built.sliceClause['transform-results'].ns.should.equal('http://marklogic.com/snippet/custom/foo');
+      built.sliceClause['transform-results'].at.should.equal('/ext/marklogic/snippet/custom/foo.xqy');
+
     });
     it('should build with all clauses', function(){
       var built = q.where(

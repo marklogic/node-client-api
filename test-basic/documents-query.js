@@ -15,6 +15,9 @@
  */
 var should = require('should');
 
+var fs = require('fs');
+var concatStream = require('concat-stream');
+
 var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
@@ -22,11 +25,12 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document query', function(){
   before(function(done){
-    this.timeout(3000);
-// NOTE: must create a string range index on rangeKey1 and rangeKey2
+    this.timeout(5000);
+    // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -95,8 +99,17 @@ describe('document query', function(){
           rangeKey2: 'bc',
           scoreKey:  'matchList matchList matchList matchList matchList'
           }
-        }).
-    result(function(response){done();}, done);
+        }).result().
+    then(function(response) {
+      var dbPath = '/marklogic/snippet/custom/extractFirst.xqy';
+      var fsPath = './test-basic/data/extractFirst.xqy';
+      fs.createReadStream(fsPath).
+      pipe(concatStream({encoding: 'string'}, function(source) {
+        restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).
+        result(function(response){
+          done();}, done);
+      }));
+    });
   });
   describe('for a built where clause', function() {
     it('should match a directory query', function(done){
@@ -326,6 +339,20 @@ describe('document query', function(){
           document.content.should.have.property('id');
           document.content.id.should.equal('matchList'+(3 - i));
         }
+        done();
+      }, done);
+    });
+    it('should take a slice with a snippet', function(done){
+      db.query(
+        q.where(
+            q.word('wordKey', 'matchWord1')
+          ).
+        slice(1, 1, q.snippet('extractFirst'))
+        ).
+      result(function(response) {
+        response.length.should.equal(2);
+        response[0].results.length.should.equal(1);
+        response[0].results[0].snippet.should.have.property.first;
         done();
       }, done);
     });

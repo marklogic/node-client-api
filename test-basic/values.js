@@ -1,0 +1,214 @@
+/*
+ * Copyright 2014 MarkLogic Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var should   = require('should');
+var valcheck = require('core-util-is');
+
+var testconfig = require('../etc/test-config.js');
+
+var marklogic = require('../');
+var t = marklogic.valuesBuilder;
+
+var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+
+describe('values query', function(){
+  before(function(done){
+    this.timeout(3000);
+    // NOTE: must create a string range index on rangeKey1 and rangeKey2
+    dbWriter.documents.write({
+        uri: '/test/values/doc1.json',
+        collections: ['valuesCollection1'],
+        contentType: 'application/json',
+        content: {
+          id:        'valuesList1',
+          values:    [
+            {rangeKey3: 31},
+            {rangeKey3: 32},
+            {rangeKey4: 41},
+            {rangeKey4: 42}
+            ]
+          }
+      }, {
+        uri: '/test/values/doc2.json',
+        collections: ['valuesCollection1'],
+        contentType: 'application/json',
+        content: {
+          id:        'valuesList2',
+          values:    [
+            {rangeKey3: 31},
+            {rangeKey3: 32},
+            {rangeKey4: 41}
+            ]
+          }
+      }, {
+        uri: '/test/values/doc3.json',
+        collections: ['valuesCollection1'],
+        contentType: 'application/json',
+        content: {
+          id:        'valuesList3',
+          values:    [
+            {rangeKey3: 31},
+            {rangeKey4: 41},
+            {rangeKey4: 42}
+            ]
+          }
+      }, {
+        uri: '/test/values/doc4.json',
+        collections: ['valuesCollection1'],
+        contentType: 'application/json',
+        content: {
+          id:        'valuesList4',
+          values:    [
+            {rangeKey3: 33},
+            {rangeKey4: 43}
+            ]
+          }
+        }).
+    result(function(response){done();}, done);
+  });
+  describe('for a from indexes clause for values', function() {
+    it('should return all values', function(done){
+      db.values.read(
+        t.fromIndexes(
+          t.range('rangeKey3', 'xs:int')
+          ).
+        where(
+          t.collection('valuesCollection1')
+          )
+      ).
+      result(function(rawResponse) {
+        // TODO: return application/json mime type, _value
+        var values = JSON.parse(rawResponse);
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('distinct-value');
+        values['values-response']['distinct-value'].length.should.equal(3);
+        values['values-response']['distinct-value'][0].should.have.property('frequency');
+        values['values-response']['distinct-value'][0].frequency.should.equal(3);
+        values['values-response']['distinct-value'][1].should.have.property('frequency');
+        values['values-response']['distinct-value'][1].frequency.should.equal(2);
+        values['values-response']['distinct-value'][2].should.have.property('frequency');
+        values['values-response']['distinct-value'][2].frequency.should.equal(1);
+        done();
+      }, done);
+    });
+  });
+  describe('for a from indexes clause for values', function() {
+    it('should return all values', function(done){
+      db.values.read(
+        t.fromIndexes(
+          t.range('rangeKey3', 'xs:int'),
+          t.range(t.property('rangeKey4'), t.datatype('int'))
+          ).
+        where(
+          t.collection('valuesCollection1')
+          )
+      ).
+      result(function(rawResponse) {
+        // TODO: return application/json mime type, _value
+        var values = JSON.parse(rawResponse);
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('tuple');
+        values['values-response'].tuple.length.should.equal(5);
+        values['values-response'].tuple[0].should.have.property('frequency');
+        values['values-response'].tuple[0].frequency.should.equal(3);
+        values['values-response'].tuple[1].should.have.property('frequency');
+        values['values-response'].tuple[1].frequency.should.equal(2);
+        values['values-response'].tuple[2].should.have.property('frequency');
+        values['values-response'].tuple[2].frequency.should.equal(2);
+        values['values-response'].tuple[3].should.have.property('frequency');
+        values['values-response'].tuple[3].frequency.should.equal(1);
+        values['values-response'].tuple[4].should.have.property('frequency');
+        values['values-response'].tuple[4].frequency.should.equal(1);
+        done();
+      }, done);
+    });
+    it('should return a slice of values', function(done){
+      db.values.read(
+        t.fromIndexes(
+            t.range('rangeKey3', 'xs:int'),
+            t.range(t.property('rangeKey4'), t.datatype('int'))
+          ).
+        where(
+          t.collection('valuesCollection1')
+          ).
+        slice(2, 3)
+      ).
+      result(function(rawResponse) {
+        var values = JSON.parse(rawResponse);
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('tuple');
+        values['values-response'].tuple.length.should.equal(3);
+        values['values-response'].tuple[0].should.have.property('frequency');
+        values['values-response'].tuple[0].frequency.should.equal(2);
+        values['values-response'].tuple[1].should.have.property('frequency');
+        values['values-response'].tuple[1].frequency.should.equal(2);
+        values['values-response'].tuple[2].should.have.property('frequency');
+        values['values-response'].tuple[2].frequency.should.equal(1);
+        done();
+      }, done);
+    });
+    it('should return aggregates over values', function(done){
+      db.values.read(
+        t.fromIndexes(
+            t.range('rangeKey3', 'xs:int'),
+            t.range(t.property('rangeKey4'), t.datatype('int'))
+          ).
+        where(
+          t.collection('valuesCollection1')
+          ).
+        slice(0).
+        aggregates('correlation', 'covariance')
+      ).
+      result(function(rawResponse) {
+        var values = JSON.parse(rawResponse);
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('aggregate-result');
+        values['values-response']['aggregate-result'].length.should.equal(2);
+        values['values-response']['aggregate-result'][0].should.have.property('name');
+        values['values-response']['aggregate-result'][0].name.should.equal('correlation');
+        values['values-response']['aggregate-result'][1].should.have.property('name');
+        values['values-response']['aggregate-result'][1].name.should.equal('covariance');
+        done();
+      }, done);
+    });
+    it('should return values with options', function(done){
+      db.values.read(
+        t.fromIndexes(
+            t.range('rangeKey3', 'xs:int'),
+            t.range(t.property('rangeKey4'), t.datatype('int'))
+          ).
+        where(
+          t.collection('valuesCollection1')
+          ).
+        slice(2, 3).
+        withOptions({values:['descending']})
+      ).
+      result(function(rawResponse) {
+        var values = JSON.parse(rawResponse);
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('tuple');
+        values['values-response'].tuple.length.should.equal(3);
+        values['values-response'].tuple[0].should.have.property('frequency');
+        values['values-response'].tuple[0].frequency.should.equal(1);
+        values['values-response'].tuple[1].should.have.property('frequency');
+        values['values-response'].tuple[1].frequency.should.equal(2);
+        values['values-response'].tuple[2].should.have.property('frequency');
+        values['values-response'].tuple[2].frequency.should.equal(2);
+        done();
+      }, done);
+    });
+  });
+});
