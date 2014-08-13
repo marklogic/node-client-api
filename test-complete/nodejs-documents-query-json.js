@@ -158,4 +158,54 @@ describe('Document query test', function(){
       }, done);
   });
 
+  it('should do term queries with AND', function(done){
+    db.query(
+      q.where(
+        q.and(
+          q.term('Atlantic'), 
+          q.term('Monthly'),
+          q.term('Bush')
+          )
+        )
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do near query', function(done){
+    db.query(
+      q.where(
+        q.near(
+          q.term('Bush'),
+          q.term('Atlantic'),
+          6,
+          q.weight(1)
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do scope query', function(done){
+    db.query(
+      q.where(
+        q.scope(
+          'title',
+          q.term('Bush')
+        )
+      )).result(function(response) {
+        var document = response[0];
+        //response.length.should.equal(1);
+        console.log('Foo print: ');
+        console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
 });
