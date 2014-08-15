@@ -5,13 +5,29 @@ from node.js.
 
 ## Status
 
-The MarkLogic node.js API is currently in Early Access Release 2.
+This branch provides the work in progress for the Early Access Release 3 of the  MarkLogic node.js API.
 
-### Getting started
+### Checked in for EA3
 
-Please see the instructions on the MarkLogic Early Access website:
+* server-side transforms on query response summary and result documents in withOptions
+* snippets including custom snippets in slice()
+* values and tuples lists -- response will change
+* resource service CRUD and invocation for XQuery -- except JavaScript
 
-http://ea.marklogic.com/features/node/
+### Candidate features for EA3
+
+* projection from result documents
+* server-side eval
+* graph CRUD
+* aggregates on facets
+* specifying the database when creating a database client
+* pluggable XML conversion
+
+## Getting started
+
+Please register at the MarkLogic Early Access website and then follow the tutorial instructions:
+
+http://ea.marklogic.com/features/node-js-client-api/
 
 The instructions describe:
 
@@ -19,9 +35,17 @@ The instructions describe:
 * cloning this repository to set up the API
 * working through some initial examples to get familiar with the API
 
-For more detail about the API, see the reference documentation:
+For more detail about the API, use the documentation login from the Early Access to view
+the reference documentation:
 
-http://docs-ea.marklogic.com:8011/jsdoc/index.html
+http://docs-ea.marklogic.com/jsdoc/index.html
+
+After installing the dependencies including gulp, you can also build the documentation locally
+from the root directory of the marklogic package:
+
+    gulp doc
+
+The documentation should be produced in the doc subdirectory.
 
 ### Example setup
 
@@ -89,14 +113,3 @@ To tear down the test database and REST server, execute
 
 The MarkLogic node.js Client API has not yet undergone performance or
 stress testing.  The API should not be used in production in EA2.
-
-### Candidate Features for Early Access 3
-
-* projection from result documents
-* values and tuples lists
-* resource service CRUD and invocation
-* server-side eval
-* graph CRUD
-* aggregates on facets
-* specifying the database when creating a database client
-* pluggable XML conversion
