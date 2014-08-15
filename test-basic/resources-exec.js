@@ -154,5 +154,5 @@ describe('when executing resource services', function(){
       done();
     }, done);
   });
-  // TODO: single or empty response, streams, JavaScript resource services
+  // TODO: formats, multiple, single, or empty response, chunked streams, JavaScript resource services
 });
