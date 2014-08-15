@@ -9,9 +9,9 @@ The MarkLogic node.js API is currently in Early Access Release 2.
 
 ### Getting started
 
-Please see the instructions on the MarkLogic Early Access website:
+Please register at the MarkLogic Early Access website and then follow the tutorial instructions:
 
-http://ea.marklogic.com/features/node/
+http://ea.marklogic.com/features/node-js-client-api/
 
 The instructions describe:
 
@@ -19,9 +19,17 @@ The instructions describe:
 * cloning this repository to set up the API
 * working through some initial examples to get familiar with the API
 
-For more detail about the API, see the reference documentation:
+For more detail about the API, use the documentation login from the Early Access
+to view the reference documentation:
 
-http://docs-ea.marklogic.com:8011/jsdoc/index.html
+http://docs-ea.marklogic.com/jsdoc/index.html
+
+After installing the dependencies including gulp, you can also build the documentation
+locally from the root directory of the marklogic package:
+
+    gulp doc
+
+The documentation should be produced in the doc subdirectory.
 
 ### Example setup
 
