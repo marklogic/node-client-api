@@ -27,43 +27,42 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('resource services', function(){
+describe('when configuring resource services', function(){
   var serviceName = 'timeService';
   var servicePath = './test-basic/data/timeService.xqy';
-  describe('when configuring', function() {
-    it('should write the resource service', function(done){
-      this.timeout(3000);
-      fs.createReadStream(servicePath).
-      pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.resources.write(serviceName, 'xquery', source).
-        result(function(response){
-          done();
-        }, done);
-      }));
-    });
-    it('should read the resource service', function(done){
-      restAdminDB.config.resources.read(serviceName).
-      result(function(source){
-        (!valcheck.isNullOrUndefined(source)).should.equal(true);
-        done();
-      }, done);
-    });
-    it('should list the resource services', function(done){
-      db.config.resources.list().
-      result(function(response){
-        response.should.have.property('resources');
-        response.resources.should.have.property('resource');
-        response.resources.resource.length.should.equal(1);
-        response.resources.resource[0].name.should.equal(serviceName);
-        done();
-      }, done);
-    });
-    it('should delete the resource service', function(done){
-      restAdminDB.config.resources.remove(serviceName).
+  it('should write the resource service', function(done){
+    this.timeout(3000);
+    fs.createReadStream(servicePath).
+    pipe(concatStream({encoding: 'string'}, function(source) {
+      restAdminDB.config.resources.write(serviceName, 'xquery', source).
       result(function(response){
         done();
       }, done);
-    });
-    // TODO: test streaming of source and list
+    }));
   });
+  it('should read the resource service', function(done){
+    restAdminDB.config.resources.read(serviceName).
+    result(function(source){
+      (!valcheck.isNullOrUndefined(source)).should.equal(true);
+      done();
+    }, done);
+  });
+  it('should list the resource services', function(done){
+    db.config.resources.list().
+    result(function(response){
+      response.should.have.property('resources');
+      response.resources.should.have.property('resource');
+      response.resources.resource.length.should.be.above(0);
+      response.resources.resource.filter(function(item){return item.name === serviceName;}).
+          length.should.equal(1);
+      done();
+    }, done);
+  });
+  it('should delete the resource service', function(done){
+    restAdminDB.config.resources.remove(serviceName).
+    result(function(response){
+      done();
+    }, done);
+  });
+  // TODO: test streaming of source and list
 });
