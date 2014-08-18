@@ -88,9 +88,14 @@ describe('Document query test', function(){
   it('should do field query', function(done){
     db.query(
       q.where(
-        q.and(
-          q.field('bbqtext', 'Louisiana'),
-          q.field('bbqtext', 'sweet')
+        q.word('scoville', 'moderate')
+        ).
+      calculate(
+        q.facet('scoville',
+          q.bucket('mild', '<', 500),
+          q.bucket('moderate', 500, '<', 2500),
+          q.bucket('hot', 2500, '<', 8000),
+          q.bucket('extraHot', 8000, '<')
         )
       )).result(function(response) {
         //response.length.should.equal(2);
