@@ -120,7 +120,7 @@ describe('Document query test', function(){
       }, done);
   });
 
-  it('should do values on score', function(done){
+  it('should do sum aggregates', function(done){
     db.values.read(
       t.fromIndexes(
         t.range('score', 'xs:double')
@@ -130,6 +130,39 @@ describe('Document query test', function(){
         ).
       aggregates('sum')
       ).result(function(response) {
+        console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do correlation and covariance aggregates', function(done){
+    db.values.read(
+      t.fromIndexes(
+        t.range('rate', 'xs:int'),
+        t.range(t.property('popularity'), t.datatype('int'))
+        ).
+      where(
+        t.word('id', '00*', q.termOptions('wildcarded'))
+        ).
+      aggregates('correlation', 'covariance')
+      ).result(function(response) {
+        console.log('Correlation:');
+        console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do max, min, sum, average aggregates', function(done){
+    db.values.read(
+      t.fromIndexes(
+        t.range(t.property('popularity'), t.datatype('int'))
+        ).
+      where(
+        t.word('id', '00*', q.termOptions('wildcarded'))
+        ).
+      aggregates('max', 'min', 'sum', 'avg')
+      ).result(function(response) {
+        console.log('Max Min Sum Avg:');
         console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
