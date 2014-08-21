@@ -141,6 +141,7 @@ describe('Extension library test', function(){
       slice(1, 100, q.snippet('extractFirst'))
     ).result(function(response) {
         console.log(JSON.stringify(response, null, 4))
+        response[0].results[0].snippet.should.have.property.first;
         //response.length.should.equal(2);
         //response[0].content.id.should.equal('0011');
         //response[1].content.id.should.equal('0012');
