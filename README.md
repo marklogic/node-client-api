@@ -11,15 +11,15 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 
 * server-side transforms on query response summary and result documents in withOptions
 * snippets including custom snippets in slice()
+* projection from result documents (extract) -- except for namespaces
 * values and tuples lists -- response will change
 * resource service CRUD and invocation for XQuery -- except JavaScript
 
 ### Candidate features for EA3
 
-* projection from result documents
+* aggregates on facets
 * server-side eval
 * graph CRUD
-* aggregates on facets
 * specifying the database when creating a database client
 * pluggable XML conversion
 

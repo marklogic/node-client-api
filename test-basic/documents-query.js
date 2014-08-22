@@ -38,7 +38,14 @@ describe('document query', function(){
       content: {
         id:       'matchDoc1',
         valueKey: 'match value',
-        wordKey:  'matchWord1 unmatchWord2'
+        wordKey:  'matchWord1 unmatchWord2',
+        a1:{
+          skip:'skippedChild1',
+          a2:{
+            skip:'skippedChild2',
+            extractMatch:'extractedValue',
+            }
+          }
         }
       }, {
         uri: '/test/query/unmatchDir/doc2.json',
@@ -342,6 +349,28 @@ describe('document query', function(){
         done();
       }, done);
     });
+    it('should take a slice with extract', function(done){
+      db.query(
+        q.where(
+            q.word('wordKey', 'matchWord1')
+          ).
+        slice(1, 1, q.extract({
+          selected:'include-with-ancestors',
+          paths:'/node("a1")/node("a2")/node("extractMatch")'
+          }))
+        ).
+      result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.have.property('content');
+        document.content.should.have.property('a1');
+        document.content.a1.should.have.property('a2');
+        document.content.a1.should.not.have.property('skippedChild1');
+        document.content.a1.a2.should.have.property('extractMatch');
+        document.content.a1.a2.should.not.have.property('skippedChild2');
+        done();
+      }, done);
+    });
     it('should take a slice with a snippet', function(done){
       db.query(
         q.where(
@@ -352,7 +381,7 @@ describe('document query', function(){
       result(function(response) {
         response.length.should.equal(2);
         response[0].results.length.should.equal(1);
-        response[0].results[0].snippet.should.have.property.first;
+        response[0].results[0].snippet.should.have.property('first');
         done();
       }, done);
     });
