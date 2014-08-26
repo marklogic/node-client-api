@@ -94,7 +94,8 @@ describe('Document extract test', function(){
           price: {
                amt: 123.45
              },
-          p: 'The Memex, unfortunately, had no automated search feature'
+          p: 'The Memex, unfortunately, had no automated search feature',
+          category: ['history', 'america', 'president']
           }
         }).
     result(function(response){done();}, done);
@@ -166,6 +167,95 @@ describe('Document extract test', function(){
       response[0].content.should.have.property('extracted');
       response[0].content.should.not.have.property('popularity');
       response[0].content.extracted[0].id.should.equal('0026');
+      console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do extract with //', function(done){
+    db.query(
+      q.where(
+        q.word('title', 'The memex')
+      ).
+      slice(1, 10,
+        q.extract({
+          selected:'include-with-ancestors',
+          paths:[
+            '//node("amt")'
+          ]
+        })
+      )
+    ).result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.price.should.have.property('amt');
+      response[0].content.should.not.have.property('id');
+      console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do extract with deeper level', function(done){
+    db.query(
+      q.where(
+        q.word('title', 'The memex')
+      ).
+      slice(1, 10,
+        q.extract({
+          selected:'include-with-ancestors',
+          paths:[
+            '/node("price")/node("amt")'
+          ]
+        })
+      )
+    ).result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.price.should.have.property('amt');
+      response[0].content.should.not.have.property('id');
+      console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do extract with back level up', function(done){
+    db.query(
+      q.where(
+        q.word('title', 'The memex')
+      ).
+      slice(1, 10,
+        q.extract({
+          selected:'include-with-ancestors',
+          paths:[
+            '/node("price")/node("amt")/../../node("popularity")'
+          ]
+        })
+      )
+    ).result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.should.have.property('popularity');
+      response[0].content.should.not.have.property('price');
+      console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do extract on array value', function(done){
+    db.query(
+      q.where(
+        q.word('title', 'The memex')
+      ).
+      slice(1, 10,
+        q.extract({
+          selected:'include-with-ancestors',
+          paths:[
+            '/node("category")/node()[2]'
+          ]
+        })
+      )
+    ).result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.should.have.property('category');
+      response[0].content.should.not.have.property('price');
+      response[0].content.category[0].should.equal('america');
       console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
