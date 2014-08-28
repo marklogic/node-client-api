@@ -185,4 +185,24 @@ describe('document query', function(){
       }, done);
     }, done);   
   });
+
+  it('purposely failing test', function(done){
+    this.timeout(3000);
+    var uri1 = '/test/query/matchList/doc5.json';
+    var p = marklogic.patchBuilder;
+    dbWriter.documents.patch({uri: uri1,
+      categories: ['metadata'], 
+      operations: [
+        p.replace('$.quality', 45)
+      ]
+    }).
+    result(function(response){
+      db.documents.read({uris: uri1, categories: ['metadata']}).
+      result(function(documents) {
+        console.log(JSON.stringify(documents, null, 4));
+        documents[0].quality.should.equal(45); 
+        done();
+      }, done);
+    }, done);   
+  });
 });
