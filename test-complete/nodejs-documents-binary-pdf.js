@@ -50,6 +50,8 @@ describe('Binary documents test', function(){
     dbWriter.documents.write({
       uri: uri,
       contentType: 'application/pdf',
+      quality: 25,
+      properties: {prop1: 'foo'},
       content: readableBinary
     }).
     result(function(response){
@@ -67,6 +69,18 @@ describe('Binary documents test', function(){
         JSON.stringify(documents[0].content));
       done();
     }, done);   
+  });
+
+  it('should read the binary document metadata', function(done) {
+    this.timeout(3000);
+    var uri = '/test/write/somePdfFile.pdf';
+    dbReader.documents.read({uris: uri, categories:['metadata']})
+    .result(function(documents) {
+      var document = documents[0];
+      document.quality.should.equal(25);
+      document.properties.prop1.should.equal('foo');
+      done();
+    }, done);
   });
 
 });
