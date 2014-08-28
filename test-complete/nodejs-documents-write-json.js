@@ -25,8 +25,10 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 describe('Write Document Test', function() {
   
   var docuri = '/foo/bar/test1.json'; 
+  var docuri2 = '/foo/bar/test2.json'; 
  
   before(function(done) {
+    this.timeout(3000);
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -38,6 +40,17 @@ describe('Write Document Test', function() {
       ],
       properties: {prop1:'foo', prop2:25},
       content: {id:12, name:'Jason'}
+    }, {
+      uri: docuri2,
+      collections: ['coll0', 'coll1'],
+      contentType: 'application/json',
+      quality: 10,
+      permissions: [
+        {'role-name':'app-user', capabilities:['read']},
+        {'role-name':'app-builder', capabilities:['read', 'update']}
+      ],
+      properties: {prop1:'bar', prop2:33},
+      content: {id:245, name:'Paul'}
     }).result(function(response){done();}, done);
   });
 
@@ -100,6 +113,24 @@ describe('Write Document Test', function() {
         }
       });
       permissionsCount.should.equal(2);
+      done();
+    }, done);
+  });
+
+  it('should read multiple documents', function(done) {
+    db.documents.read({uris: [docuri, docuri2], categories:['content']}).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents[0].content.id.should.equal(12);
+      documents[1].content.id.should.equal(245);
+      done();
+    }, done);
+  });
+
+  it('should read multiple documents with an invalid one', function(done) {
+    db.documents.read({uris: [docuri, '/not/here/blah.json', docuri2], categories:['content']}).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents[0].content.id.should.equal(12);
+      documents[1].content.id.should.equal(245);
       done();
     }, done);
   });
