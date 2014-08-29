@@ -158,4 +158,40 @@ describe('Document parse binding test', function(){
     }, done);
   });
 
+  it('should return no result on empty string parse', function(done){
+    db.query(
+      q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.value('title', q.bind('intitle')),
+            q.bindEmptyAs('no-results')
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(0);
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should return all results on empty string parse', function(done){
+    db.query(
+      q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.value('title', q.bind('intitle')),
+            q.bindEmptyAs('all-results')
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.not.equal(0);
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
 });
