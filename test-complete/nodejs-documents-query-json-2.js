@@ -88,10 +88,11 @@ describe('Document query test', function(){
   it('should do field query', function(done){
     db.query(
       q.where(
-        q.word('scoville', 'moderate')
+        q.range('scoville', 'moderate')
         ).
       calculate(
         q.facet('scoville',
+          q.datatype('string'),
           q.bucket('mild', '<', 500),
           q.bucket('moderate', 500, '<', 2500),
           q.bucket('hot', 2500, '<', 8000),
