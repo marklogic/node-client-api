@@ -104,7 +104,10 @@ describe('Document qbe test', function(){
     db.query(
       q.where(
         q.byExample({
-          title: 'The memex'
+          title: {
+            $exact: false,
+            $value: 'the memex'
+          }
         })
       )).result(function(response) {
         response.length.should.equal(1);
@@ -148,7 +151,7 @@ describe('Document qbe test', function(){
       )).result(function(response) {
         response.length.should.equal(1);
         response[0].content.id.should.equal('0024');
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
