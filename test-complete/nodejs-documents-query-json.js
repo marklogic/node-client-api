@@ -121,7 +121,9 @@ describe('Document query test', function(){
         )
       )).result(function(response) {
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0026');
+        response[1].content.id.should.equal('0012');
         done();
       }, done);
   });
@@ -135,7 +137,9 @@ describe('Document query test', function(){
         )
       )).result(function(response) {
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0026');
+        response[1].content.id.should.equal('0012');
         done();
       }, done);
   });
@@ -153,7 +157,9 @@ describe('Document query test', function(){
       )).result(function(response) {
         var document = response[0];
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0013');
+        response[1].content.id.should.equal('0026');
         done();
       }, done);
   });
@@ -170,7 +176,8 @@ describe('Document query test', function(){
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(1);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0011');
         done();
       }, done);
   });
@@ -187,7 +194,8 @@ describe('Document query test', function(){
       )).result(function(response) {
         var document = response[0];
         response.length.should.equal(1);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0011');
         done();
       }, done);
   });
@@ -202,7 +210,9 @@ describe('Document query test', function(){
       )).result(function(response) {
         var document = response[0];
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0011');
+        response[1].content.id.should.equal('0012');
         done();
       }, done);
   });
@@ -217,8 +227,41 @@ describe('Document query test', function(){
       )).result(function(response) {
         var document = response[0];
         response.length.should.equal(1);
-        console.log('Foo print: ');
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0012');
+        done();
+      }, done);
+  });
+
+  it('should do document query', function(done){
+    db.query(
+      q.where(
+        q.document(
+          '/test/query/matchList/doc5.json'
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0026');
+        done();
+      }, done);
+  });
+
+  it('should do queries with snippet', function(done){
+    db.query(
+      q.where(
+        q.and(
+          q.term('Atlantic'), 
+          q.term('Monthly'),
+          q.term('Bush')
+          )
+        ).slice(1, 100, q.snippet())
+      ).result(function(response) {
+        var document = response[0];
+        //response.length.should.equal(1);
         console.log(JSON.stringify(response, null, 4));
+        //response[0].content.id.should.equal('0011');
         done();
       }, done);
   });
