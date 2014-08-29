@@ -43,7 +43,7 @@ describe('document query', function(){
           skip:'skippedChild1',
           a2:{
             skip:'skippedChild2',
-            extractMatch:'extractedValue',
+            extractMatch:'extractedValue'
             }
           }
         }
