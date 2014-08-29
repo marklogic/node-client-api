@@ -14,12 +14,12 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 * projection from result documents (extract) -- except for namespaces
 * values and tuples lists -- response will change
 * resource service CRUD and invocation for XQuery -- except JavaScript
+* graph CRUD and SPARQL query -- except streaming IO
 
 ### Candidate features for EA3
 
 * aggregates on facets
 * server-side eval
-* graph CRUD
 * specifying the database when creating a database client
 * pluggable XML conversion
 

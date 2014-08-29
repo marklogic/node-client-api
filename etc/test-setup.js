@@ -109,6 +109,8 @@ function setup(manager) {
                 format: 'json'
                 },
               body:     {
+                'collection-lexicon':  true,
+                'triple-index':        true,
                 'range-element-index': rangeElementIndex 
                 },
               hasResponse: true
