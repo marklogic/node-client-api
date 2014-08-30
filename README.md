@@ -9,10 +9,10 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 
 ### Checked in for EA3
 
+* values and tuples requests
 * server-side transforms on query response summary and result documents in withOptions
 * snippets including custom snippets in slice()
 * projection from result documents (extract) -- except for namespaces
-* values and tuples lists -- response will change
 * resource service CRUD and invocation for XQuery -- except JavaScript
 * graph CRUD and SPARQL query -- except streaming IO
 

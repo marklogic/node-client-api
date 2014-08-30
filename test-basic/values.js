@@ -89,24 +89,22 @@ describe('values query', function(){
           t.collection('valuesCollection1')
           )
       ).
-      result(function(rawResponse) {
-        // TODO: return application/json mime type, _value
-        var values = JSON.parse(rawResponse);
+      result(function(values) {
         values.should.have.property('values-response');
-        values['values-response'].should.have.property('distinct-value');
-        values['values-response']['distinct-value'].length.should.equal(3);
-        values['values-response']['distinct-value'][0].should.have.property('frequency');
-        values['values-response']['distinct-value'][0].frequency.should.equal(3);
-        values['values-response']['distinct-value'][1].should.have.property('frequency');
-        values['values-response']['distinct-value'][1].frequency.should.equal(2);
-        values['values-response']['distinct-value'][2].should.have.property('frequency');
-        values['values-response']['distinct-value'][2].frequency.should.equal(1);
+        values['values-response'].should.have.property('tuple');
+        values['values-response'].tuple.length.should.equal(3);
+        values['values-response'].tuple[0].should.have.property('frequency');
+        values['values-response'].tuple[0].frequency.should.equal(3);
+        values['values-response'].tuple[1].should.have.property('frequency');
+        values['values-response'].tuple[1].frequency.should.equal(2);
+        values['values-response'].tuple[2].should.have.property('frequency');
+        values['values-response'].tuple[2].frequency.should.equal(1);
         done();
       }, done);
     });
   });
-  describe('for a from indexes clause for values', function() {
-    it('should return all values', function(done){
+  describe('for a from indexes clause for tuples', function() {
+    it('should return all tuples', function(done){
       db.values.read(
         t.fromIndexes(
           t.range('rangeKey3', 'xs:int'),
@@ -116,9 +114,7 @@ describe('values query', function(){
           t.collection('valuesCollection1')
           )
       ).
-      result(function(rawResponse) {
-        // TODO: return application/json mime type, _value
-        var values = JSON.parse(rawResponse);
+      result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(5);
@@ -135,7 +131,7 @@ describe('values query', function(){
         done();
       }, done);
     });
-    it('should return a slice of values', function(done){
+    it('should return a slice of tuples', function(done){
       db.values.read(
         t.fromIndexes(
             t.range('rangeKey3', 'xs:int'),
@@ -146,8 +142,7 @@ describe('values query', function(){
           ).
         slice(2, 3)
       ).
-      result(function(rawResponse) {
-        var values = JSON.parse(rawResponse);
+      result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(3);
@@ -160,7 +155,7 @@ describe('values query', function(){
         done();
       }, done);
     });
-    it('should return aggregates over values', function(done){
+    it('should return aggregates over tuples', function(done){
       db.values.read(
         t.fromIndexes(
             t.range('rangeKey3', 'xs:int'),
@@ -172,8 +167,7 @@ describe('values query', function(){
         slice(0).
         aggregates('correlation', 'covariance')
       ).
-      result(function(rawResponse) {
-        var values = JSON.parse(rawResponse);
+      result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('aggregate-result');
         values['values-response']['aggregate-result'].length.should.equal(2);
@@ -184,7 +178,7 @@ describe('values query', function(){
         done();
       }, done);
     });
-    it('should return values with options', function(done){
+    it('should return tuples with options', function(done){
       db.values.read(
         t.fromIndexes(
             t.range('rangeKey3', 'xs:int'),
@@ -196,8 +190,7 @@ describe('values query', function(){
         slice(2, 3).
         withOptions({values:['descending']})
       ).
-      result(function(rawResponse) {
-        var values = JSON.parse(rawResponse);
+      result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(3);

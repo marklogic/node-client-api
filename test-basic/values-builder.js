@@ -33,36 +33,37 @@ describe('values query', function(){
           t.geoElementPair('parent', 'latitude', 'longitude')
       );
       built.should.have.property('fromIndexesClause');
-      built.fromIndexesClause.should.have.property('range');
-      built.fromIndexesClause.range.length.should.equal(5);
-      built.fromIndexesClause.range[0].should.have.property('json-property');
-      built.fromIndexesClause.range[0]['json-property'].should.equal('property1');
-      built.fromIndexesClause.range[1].should.have.property('json-property');
-      built.fromIndexesClause.range[1]['json-property'].should.equal('property2');
-      built.fromIndexesClause.range[2].should.have.property('element');
-      built.fromIndexesClause.range[2].element.should.have.property('name');
-      built.fromIndexesClause.range[2].element.name.should.equal('element1');
-      built.fromIndexesClause.range[3].should.have.property('json-property');
-      built.fromIndexesClause.range[3]['json-property'].should.equal('property3');
-      built.fromIndexesClause.range[4].should.have.property('json-property');
-      built.fromIndexesClause.range[4]['json-property'].should.equal('property4');
-      built.fromIndexesClause.should.have.property('collection');
-      built.fromIndexesClause.should.have.property('field');
-      built.fromIndexesClause.field.length.should.equal(1);
-      built.fromIndexesClause.field[0].should.equal('field1');
-      built.fromIndexesClause.should.have.property('uri');
-      built.fromIndexesClause.should.have.property('geospatial');
-      built.fromIndexesClause.geospatial.length.should.equal(1);
-      built.fromIndexesClause.geospatial[0].should.have.property('geo-elem-pair');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].should.have.property('parent');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].parent.should.have.property('name');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].parent.name.should.equal('parent');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].should.have.property('lat');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].lat.should.have.property('name');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].lat.name.should.equal('latitude');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].should.have.property('lon');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].lon.should.have.property('name');
-      built.fromIndexesClause.geospatial[0]['geo-elem-pair'].lon.name.should.equal('longitude');
+      built.fromIndexesClause.length.should.equal(9);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
+      built.fromIndexesClause[1].should.have.property('range');
+      built.fromIndexesClause[1].range.should.have.property('json-property');
+      built.fromIndexesClause[1].range['json-property'].should.equal('property2');
+      built.fromIndexesClause[2].should.have.property('range');
+      built.fromIndexesClause[2].range.should.have.property('element');
+      built.fromIndexesClause[2].range.element.should.have.property('name');
+      built.fromIndexesClause[2].range.element.name.should.equal('element1');
+      built.fromIndexesClause[3].should.have.property('range');
+      built.fromIndexesClause[3].range.should.have.property('json-property');
+      built.fromIndexesClause[3].range['json-property'].should.equal('property3');
+      built.fromIndexesClause[4].should.have.property('range');
+      built.fromIndexesClause[4].range.should.have.property('json-property');
+      built.fromIndexesClause[4].range['json-property'].should.equal('property4');
+      built.fromIndexesClause[5].should.have.property('collection');
+      built.fromIndexesClause[6].should.have.property('field');
+      built.fromIndexesClause[6].field.should.equal('field1');
+      built.fromIndexesClause[7].should.have.property('uri');
+      built.fromIndexesClause[8].should.have.property('geo-elem-pair');
+      built.fromIndexesClause[8]['geo-elem-pair'].should.have.property('parent');
+      built.fromIndexesClause[8]['geo-elem-pair'].parent.should.have.property('name');
+      built.fromIndexesClause[8]['geo-elem-pair'].parent.name.should.equal('parent');
+      built.fromIndexesClause[8]['geo-elem-pair'].should.have.property('lat');
+      built.fromIndexesClause[8]['geo-elem-pair'].lat.should.have.property('name');
+      built.fromIndexesClause[8]['geo-elem-pair'].lat.name.should.equal('latitude');
+      built.fromIndexesClause[8]['geo-elem-pair'].should.have.property('lon');
+      built.fromIndexesClause[8]['geo-elem-pair'].lon.should.have.property('name');
+      built.fromIndexesClause[8]['geo-elem-pair'].lon.name.should.equal('longitude');
     });
     it('should build a where clause', function(){
       var built = t.fromIndexes('property1').
@@ -70,10 +71,10 @@ describe('values query', function(){
           t.value('key1', 'value 1')
       );
       built.should.have.property('fromIndexesClause');
-      built.fromIndexesClause.should.have.property('range');
-      built.fromIndexesClause.range.length.should.equal(1);
-      built.fromIndexesClause.range[0].should.have.property('json-property');
-      built.fromIndexesClause.range[0]['json-property'].should.equal('property1');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
       built.should.have.property('whereClause');
       built.whereClause.should.have.property('query');
       built.whereClause.query.should.have.property('queries');
@@ -84,10 +85,10 @@ describe('values query', function(){
       var built = t.fromIndexes('property1').
       aggregates('avg', 'sum', t.udf('plugin1', 'function1'));
       built.should.have.property('fromIndexesClause');
-      built.fromIndexesClause.should.have.property('range');
-      built.fromIndexesClause.range.length.should.equal(1);
-      built.fromIndexesClause.range[0].should.have.property('json-property');
-      built.fromIndexesClause.range[0]['json-property'].should.equal('property1');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
       built.should.have.property('aggregatesClause');
       built.aggregatesClause.should.have.property('aggregates');
       built.aggregatesClause.aggregates.length.should.equal(3);
@@ -104,10 +105,10 @@ describe('values query', function(){
       var built = t.fromIndexes('property1').
       slice(11, 10);
       built.should.have.property('fromIndexesClause');
-      built.fromIndexesClause.should.have.property('range');
-      built.fromIndexesClause.range.length.should.equal(1);
-      built.fromIndexesClause.range[0].should.have.property('json-property');
-      built.fromIndexesClause.range[0]['json-property'].should.equal('property1');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
@@ -116,10 +117,10 @@ describe('values query', function(){
       var built = t.fromIndexes('property1').
       slice(11);
       built.should.have.property('fromIndexesClause');
-      built.fromIndexesClause.should.have.property('range');
-      built.fromIndexesClause.range.length.should.equal(1);
-      built.fromIndexesClause.range[0].should.have.property('json-property');
-      built.fromIndexesClause.range[0]['json-property'].should.equal('property1');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
     });
@@ -127,10 +128,10 @@ describe('values query', function(){
       var built = t.fromIndexes('property1').
       withOptions({values: ['proximity=5']});
       built.should.have.property('fromIndexesClause');
-      built.fromIndexesClause.should.have.property('range');
-      built.fromIndexesClause.range.length.should.equal(1);
-      built.fromIndexesClause.range[0].should.have.property('json-property');
-      built.fromIndexesClause.range[0]['json-property'].should.equal('property1');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
       built.should.have.property('withOptionsClause');
       built.withOptionsClause.should.have.property('values');
       built.withOptionsClause.values.length.should.equal(1);
