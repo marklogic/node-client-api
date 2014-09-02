@@ -25,7 +25,8 @@ console.log('Extract fragments from queried documents');
 db.query(
   q.where(
     q.collection('/countries'),
-    q.value('region', 'Africa')
+    q.value('region', 'Africa'),
+    q.word('exportPartners', 'Niger')
     ).
   slice(1, 10,
     q.extract({

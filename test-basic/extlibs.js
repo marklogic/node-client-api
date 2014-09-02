@@ -16,7 +16,6 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
@@ -33,11 +32,8 @@ describe('extension libraries', function(){
   describe('when configuring', function() {
     it('should write the extension library', function(done){
       this.timeout(3000);
-      fs.createReadStream(fsPath).
-      pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).
-        result(function(response){done();}, done);
-      }));
+      restAdminDB.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).
+      result(function(response){done();}, done);
     });
     it('should read the extension library', function(done){
       restAdminDB.config.extlibs.read(dbPath).
@@ -66,22 +62,19 @@ describe('extension libraries', function(){
   describe('when using', function() {
     before(function(done){
       this.timeout(3000);
-      fs.createReadStream(fsPath).
-      pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).result().
-        then(function(response) {
-          db.documents.write({
-            uri: '/test/extlib/queryDoc1.json',
-            collections: ['constraintList'],
-            contentType: 'application/json',
-            content: {
-              rangeKey1:         'constraintValue',
-              constraintQueryKey:'constraint query value'
-              }
-            }).
-          result(function(response){done();}, done);
-          }, done);
-      }));
+      restAdminDB.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).result().
+      then(function(response) {
+        db.documents.write({
+          uri: '/test/extlib/queryDoc1.json',
+          collections: ['constraintList'],
+          contentType: 'application/json',
+          content: {
+            rangeKey1:         'constraintValue',
+            constraintQueryKey:'constraint query value'
+            }
+          }).
+        result(function(response){done();}, done);
+        }, done);
     });
     after(function(done) {
       restAdminDB.config.extlibs.remove(dbPath).

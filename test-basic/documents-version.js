@@ -16,7 +16,7 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
+
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');

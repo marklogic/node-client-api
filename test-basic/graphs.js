@@ -16,7 +16,6 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
@@ -32,18 +31,16 @@ describe('when configuring resource services', function(){
   var sparqlPath = './test-basic/data/people.rq';
   it('should write the graph', function(done){
     this.timeout(3000);
-    fs.createReadStream(graphPath).
-    pipe(concatStream({encoding: 'string'}, function(data) {
-      db.graphs.write(graphUri, 'text/turtle', data).
-      result(function(response){
-        response.should.have.property('graph');
-        response.graph.should.equal(graphUri);
-        done();
-      }, done);
-    }));
+    db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath)).
+    result(function(response){
+      response.should.have.property('graph');
+      response.graph.should.equal(graphUri);
+      done();
+    }, done);
   });
 /* TODO:
 get output as application/rdf+json to verify, test merge, streaming write and read
+ */
   it('should write the graph as a stream', function(done){
     this.timeout(3000);
     var writer = db.graphs.createWriteStream(graphUri, 'text/turtle');
@@ -54,7 +51,6 @@ get output as application/rdf+json to verify, test merge, streaming write and re
     }, done);
     fs.createReadStream(graphPath).pipe(writer);
   });
- */
   it('should read the graph', function(done){
     db.graphs.read('text/n3', graphUri).
     result(function(data){
@@ -83,24 +79,21 @@ get output as application/rdf+json to verify, test merge, streaming write and re
   });
   it('should run a SPARQL query against the graph', function(done){
     this.timeout(3000);
-    fs.createReadStream(sparqlPath).
-    pipe(concatStream({encoding: 'string'}, function(query) {
-      db.graphs.sparql('application/sparql-results+json', query).
-      result(function(response){
-        response.should.have.property('head');
-        response.head.should.have.property('vars');
-        response.head.vars.length.should.equal(2);
-        response.head.vars[0].should.equal('personName1');
-        response.head.vars[1].should.equal('personName2');
-        response.should.have.property('results');
-        response.results.should.have.property('bindings');
-        response.results.bindings[0].should.have.property('personName1');
-        response.results.bindings[0].personName1.should.have.property('value');
-        response.results.bindings[0].should.have.property('personName2');
-        response.results.bindings[0].personName2.should.have.property('value');
-        done();
-      }, done);
-    }));
+    db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
+    result(function(response){
+      response.should.have.property('head');
+      response.head.should.have.property('vars');
+      response.head.vars.length.should.equal(2);
+      response.head.vars[0].should.equal('personName1');
+      response.head.vars[1].should.equal('personName2');
+      response.should.have.property('results');
+      response.results.should.have.property('bindings');
+      response.results.bindings[0].should.have.property('personName1');
+      response.results.bindings[0].personName1.should.have.property('value');
+      response.results.bindings[0].should.have.property('personName2');
+      response.results.bindings[0].personName2.should.have.property('value');
+      done();
+    }, done);
   });
   it('should delete the graph', function(done){
     db.graphs.remove(graphUri).

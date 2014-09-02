@@ -16,7 +16,6 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
@@ -33,13 +32,10 @@ describe('document transform', function(){
   describe('when configuring', function() {
     it('should write the transform', function(done){
       this.timeout(3000);
-      fs.createReadStream(transformPath).
-      pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.transforms.write(transformName, 'xquery', source).
-        result(function(response){
-          done();
-        }, done);
-      }));
+      restAdminDB.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
+      result(function(response){
+        done();
+      }, done);
     });
     it('should read the transform', function(done){
       restAdminDB.config.transforms.read(transformName).
@@ -70,13 +66,10 @@ describe('document transform', function(){
     var uri = '/test/write/transformContent1.json';
     before(function(done){
       this.timeout(3000);
-      fs.createReadStream(transformPath).
-      pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.transforms.write(transformName, 'xquery', source).
-        result(function(response){
-          done();
-        }, done);
-      }));
+      restAdminDB.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
+      result(function(response){
+        done();
+      }, done);
     });
     it('should modify during write', function(done){
       db.write({

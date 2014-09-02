@@ -23,6 +23,7 @@ var concatStream = require('concat-stream');
 var valcheck     = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
+var testutil   = require('./test-util.js');
 
 var marklogic = require('../');
 
@@ -101,7 +102,7 @@ describe('document content', function(){
     });
     describe('a JSON descriptor with a readable stream', function(){
       before(function(done){
-        var readableString = new ValueStream('{"key1":"value 1"}');
+        var readableString = new testutil.ValueStream('{"key1":"value 1"}');
         readableString.pause();
         db.documents.write({
           uri: '/test/write/stream1.json',
@@ -259,7 +260,7 @@ describe('document content', function(){
       it('should write a binary descriptor with a Readable stream', function(done){
         this.timeout(3000);
         var uri = '/test/write/stream1.png';
-        var readableBinary = new ValueStream(binaryValue);
+        var readableBinary = new testutil.ValueStream(binaryValue);
         readableBinary.pause();
         db.documents.write({
           uri: uri,
@@ -665,13 +666,3 @@ describe('document metadata', function(){
     });
   });
 });
-
-function ValueStream(value) {
-  stream.Readable.call(this);
-  this.value    = value;
-}
-util.inherits(ValueStream, stream.Readable);
-ValueStream.prototype._read = function() {
-  this.push(this.value);
-  this.push(null);
-};

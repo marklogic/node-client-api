@@ -16,7 +16,6 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
 
 var testconfig = require('../etc/test-config.js');
 
@@ -110,12 +109,9 @@ describe('document query', function(){
     then(function(response) {
       var dbPath = '/marklogic/snippet/custom/extractFirst.xqy';
       var fsPath = './test-basic/data/extractFirst.xqy';
-      fs.createReadStream(fsPath).
-      pipe(concatStream({encoding: 'string'}, function(source) {
-        restAdminDB.config.extlibs.write(dbPath, 'application/xquery', source).
-        result(function(response){
-          done();}, done);
-      }));
+      restAdminDB.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).
+      result(function(response){
+        done();}, done);
     });
   });
   describe('for a built where clause', function() {

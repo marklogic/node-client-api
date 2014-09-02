@@ -9,7 +9,7 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 
 ### Checked in for EA3
 
-* values and tuples requests
+* values and tuples requests -- except transforms
 * server-side transforms on query response summary and result documents in withOptions
 * snippets including custom snippets in slice()
 * projection from result documents (extract) -- except for namespaces

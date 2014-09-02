@@ -31,7 +31,9 @@ var collections = ['/countries', '/facts/geographic'];
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
   fs.readFile(fsdir+filename, function (err, content) {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
 
     buffer.push({
       uri:         dbdir+filename,

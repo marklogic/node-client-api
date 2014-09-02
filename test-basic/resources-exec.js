@@ -16,7 +16,6 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
@@ -32,13 +31,10 @@ describe('when executing resource services', function(){
   var servicePath = './test-basic/data/wrapperService.xqy';
   before(function(done){
     this.timeout(3000);
-    fs.createReadStream(servicePath).
-    pipe(concatStream({encoding: 'string'}, function(source) {
-      restAdminDB.config.resources.write(serviceName, 'xquery', source).
-      result(function(response){
-        done();
-      }, done);
-    }));
+    restAdminDB.config.resources.write(serviceName, 'xquery', fs.createReadStream(servicePath)).
+    result(function(response){
+      done();
+    }, done);
   });
   it('should get one document', function(done){
     db.resources.get({name:serviceName, format:'xquery', params:{value:'foo'}}).
