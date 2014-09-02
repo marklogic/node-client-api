@@ -14,7 +14,7 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 * snippets including custom snippets in slice()
 * projection from result documents (extract) -- except for namespaces
 * resource service CRUD and invocation for XQuery -- except JavaScript
-* graph CRUD and SPARQL query -- except streaming IO
+* graph CRUD and SPARQL query -- except streaming read
 
 ### Candidate features for EA3
 

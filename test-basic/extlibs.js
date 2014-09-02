@@ -32,7 +32,10 @@ describe('extension libraries', function(){
   describe('when configuring', function() {
     it('should write the extension library', function(done){
       this.timeout(3000);
-      restAdminDB.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).
+      restAdminDB.config.extlibs.write(dbPath, [
+          {'role-name':'app-user',    capabilities:['execute']},
+          {'role-name':'app-builder', capabilities:['execute', 'read', 'update']}
+        ], 'application/xquery', fs.createReadStream(fsPath)).
       result(function(response){done();}, done);
     });
     it('should read the extension library', function(done){
