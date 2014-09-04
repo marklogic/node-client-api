@@ -30,9 +30,24 @@ describe('document transform', function(){
   var transformName = 'flagParam';
   var transformPath = './test-basic/data/flagTransform.xqy';
   describe('when configuring', function() {
-    it('should write the transform', function(done){
+    it('should write the transform with positional parameters', function(done){
       this.timeout(3000);
       restAdminDB.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
+      result(function(response){
+        done();
+      }, done);
+    });
+    it('should write the transform with named parameters', function(done){
+      this.timeout(3000);
+      restAdminDB.config.transforms.write({
+        name:        transformName,
+        title:       'The Flag Transform',
+        description: 'Raising the flag.',
+        provider:    'Banner Business',
+        version:     0.1,
+        format:      'xquery',
+        source:      fs.createReadStream(transformPath)
+        }).
       result(function(response){
         done();
       }, done);
