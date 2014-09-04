@@ -1434,39 +1434,39 @@ describe('query-builder', function() {
   it('should specify extraction', function(){
     assert.deepEqual(
         q.extract('/path1', '/path2'),
-        {'extract-result-documents':{
+        {'extract-document-data':{
           'extract-path':['/path1', '/path2']
           }}
         );
     assert.deepEqual(
         q.extract(['/path1', '/path2']),
-        {'extract-result-documents':{
+        {'extract-document-data':{
           'extract-path':['/path1', '/path2']
           }}
         );
     assert.deepEqual(
         q.extract({paths:['/path1', '/path2']}),
-        {'extract-result-documents':{
+        {'extract-document-data':{
           'extract-path':['/path1', '/path2']
           }}
         );
     assert.deepEqual(
         q.extract({selected:'include', paths:['/path1', '/path2']}),
-        {'extract-result-documents':{
+        {'extract-document-data':{
           selected:'include',
           'extract-path':['/path1', '/path2']
           }}
         );
     assert.deepEqual(
         q.extract({selected:'include-with-ancestors', paths:['/path1', '/path2']}),
-        {'extract-result-documents':{
+        {'extract-document-data':{
           selected:'include-with-ancestors',
           'extract-path':['/path1', '/path2']
           }}
         );
     assert.deepEqual(
         q.extract({selected:'exclude', paths:['/path1', '/path2']}),
-        {'extract-result-documents':{
+        {'extract-document-data':{
           selected:'exclude',
           'extract-path':['/path1', '/path2']
           }}
