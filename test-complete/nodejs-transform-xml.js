@@ -40,7 +40,7 @@ describe('Extension library test', function(){
   });
 
   var transformName = 'employeeStylesheet';
-  var transformPath = './data/employeeStylesheet.xslt';
+  var transformPath = './test-complete/data/employeeStylesheet.xslt';
 
   it('should write the transform', function(done){
     this.timeout(3000);
