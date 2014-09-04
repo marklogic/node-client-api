@@ -28,9 +28,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 describe('merge graph test', function(){
   var graphUri   = 'marklogic.com/merge/people';
   var graphUriInv   = 'marklogic.com/invalid';
-  var graphPath1  = './data/people3.ttl';
-  var graphPath2  = './data/people4.ttl';
-  var sparqlPath = './data/people.rq';
+  var graphPath1  = './test-complete/data/people3.ttl';
+  var graphPath2  = './test-complete/data/people4.ttl';
+  var sparqlPath = './test-complete/data/people.rq';
 
   it('should write the first graph', function(done){
     this.timeout(3000);
