@@ -30,7 +30,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Binary documents test', function(){
-  var binaryPath = './data/somePdfFile.pdf';
+  var binaryPath = './test-complete/data/somePdfFile.pdf';
   var uri = '/test/binary/somePdfFile.pdf';
   var binaryValue = null;
   before(function(done){
