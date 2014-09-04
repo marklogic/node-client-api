@@ -27,8 +27,8 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('repair graph test', function(){
   var graphUri   = 'marklogic.com/repair/people';
-  var graphPath  = './data/people2.ttl';
-  var sparqlPath = './data/people.rq';
+  var graphPath  = './test-complete/data/people2.ttl';
+  var sparqlPath = './test-complete/data/people.rq';
 
   it('should write the graph with repair is true', function(done){
     this.timeout(3000);
