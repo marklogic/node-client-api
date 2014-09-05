@@ -86,6 +86,15 @@ describe('overwrite graph test', function(){
     }, done);
   });
 
+  it('should list the overwritten graph', function(done){
+    this.timeout(3000);
+    db.graphs.list('foo/bar'). 
+    result(function(response){
+      console.log(JSON.stringify(response, null, 4))
+      done();
+    }, done);
+  });
+
   it('should run a SPARQL query against the overwritten graph', function(done){
     this.timeout(3000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
