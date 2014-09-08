@@ -21,6 +21,7 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 * aggregates on facets
 * server-side eval
 * specifying the database when creating a database client
+* search suggest
 * pluggable XML conversion
 
 ## Getting started
