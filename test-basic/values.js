@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 var should   = require('should');
+
+var fs = require('fs');
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
@@ -23,6 +25,7 @@ var t = marklogic.valuesBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('values query', function(){
   before(function(done){
@@ -202,6 +205,56 @@ describe('values query', function(){
         values['values-response'].tuple[2].frequency.should.equal(2);
         done();
       }, done);
+    });
+  });
+  describe('with a transform', function() {
+    var transformName = 'flagParam';
+    var transformPath = './test-basic/data/flagTransform.xqy';
+    before(function(done){
+      this.timeout(3000);
+      dbAdmin.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
+      result(function(response){
+        done();
+      }, done);
+    });
+    it('should transform values', function(done){
+      db.values.read(
+          t.fromIndexes(
+            t.range('rangeKey3', 'xs:int')
+            ).
+          where(
+            t.collection('valuesCollection1')
+            ).
+          slice(1, 1000,
+            t.transform(transformName, {flag:'valuesTest'})
+            )
+        ).
+        result(function(response) {
+          response.flagParam.should.equal('valuesTest');
+          response.should.have.property('content');
+          response.content.should.have.property('values-response');
+          done();
+          }, done);
+    });
+    it('should transform tuples', function(done){
+      db.values.read(
+          t.fromIndexes(
+            t.range('rangeKey3', 'xs:int'),
+            t.range(t.property('rangeKey4'), t.datatype('int'))
+            ).
+          where(
+            t.collection('valuesCollection1')
+            ).
+          slice(1, 1000,
+            t.transform(transformName, {flag:'valuesTest'})
+            )
+        ).
+        result(function(response) {
+          response.flagParam.should.equal('valuesTest');
+          response.should.have.property('content');
+          response.content.should.have.property('values-response');
+          done();
+          }, done);
     });
   });
 });

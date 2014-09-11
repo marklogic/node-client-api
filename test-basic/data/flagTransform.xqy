@@ -2,6 +2,14 @@ xquery version "1.0-ml";
 
 module namespace flagParam = "http://marklogic.com/rest-api/transform/flagParam";
 
+import module namespace json="http://marklogic.com/xdmp/json"
+    at "/MarkLogic/json/json.xqy";
+
+import module namespace sut = "http://marklogic.com/rest-api/lib/search-util"
+    at "/MarkLogic/rest-api/lib/search-util.xqy";
+
+declare namespace search= "http://marklogic.com/appservices/search";
+
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 declare option xdmp:mapping "false";
 
@@ -14,9 +22,20 @@ declare function flagParam:transform(
     $content as document-node()
 ) as document-node()
 {
-    document{xdmp:unquote(concat(
-        "{",
-          '"flagParam": "', map:get($params,"flag"), '", ',
-          '"content": ',    xdmp:quote($content),    "}"
-        ))}
+    let $wrapper := json:object()
+    let $root    := $content/node()
+    return (
+        map:put($wrapper, "flagParam", map:get($params,"flag")),
+        map:put($wrapper, "content",   xdmp:from-json(
+            typeswitch($root)
+            case element(search:values-response)
+                return json:transform-to-json(
+                    $root, sut:build-val-results-config()
+                    )
+            default
+                return $content
+            )),
+
+        xdmp:to-json($wrapper)
+        )
 };

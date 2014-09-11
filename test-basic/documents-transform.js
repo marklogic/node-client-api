@@ -118,7 +118,9 @@ describe('document transform', function(){
           q.where(
             q.document(uri)
             ).
-            withOptions({transform: [transformName, {flag:'tested3'}]})
+          slice(1, 10,
+            q.transform(transformName, {flag:'tested3'})
+            )
           ).
         result(function(documents) {
           documents.length.should.equal(1);

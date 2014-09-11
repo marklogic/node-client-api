@@ -25,7 +25,7 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
-describe('when configuring resource services', function(){
+describe('graph operations', function(){
   var graphUri   = 'marklogic.com/people';
   var graphPath  = './test-basic/data/people.ttl';
   var sparqlPath = './test-basic/data/people.rq';
