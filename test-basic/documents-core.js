@@ -305,7 +305,7 @@ describe('document content', function(){
         fs.createReadStream(binaryPath).pipe(ws);
       });
       it('should read as a stream', function(done){
-        db.createReadStream(uri).on('error', done).
+        db.read(uri).stream('chunked').on('error', done).
           pipe(
             concatStream({encoding: 'buffer'}, function(value) {
               valcheck.isUndefined(value).should.equal(false);
@@ -362,7 +362,7 @@ describe('document content', function(){
         writeStream.end();
       });
       it('should read back the value', function(done){
-        db.createReadStream('/test/write/writable1.json').
+        db.read('/test/write/writable1.json').stream('chunked').
           on('data', function(chunk) {
             valcheck.isUndefined(chunk).should.equal(false);
             var content = JSON.parse(chunk.toString());
