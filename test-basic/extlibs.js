@@ -27,9 +27,11 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('extension libraries', function(){
-  var dbPath = '/marklogic/query/custom/directoryConstraint.xqy';
-  var fsPath = './test-basic/data/directoryConstraint.xqy';
-  describe('when configuring', function() {
+  var dbDir    = '/marklogic/query/custom/';
+  var dbModule = 'directoryConstraint.xqy';
+  var dbPath   = dbDir+dbModule;
+  var fsPath   = './test-basic/data/directoryConstraint.xqy';
+  describe('when configuring an extension library', function() {
     it('should write the extension library', function(done){
       this.timeout(3000);
       restAdminDB.config.extlibs.write(dbPath, [
@@ -46,7 +48,7 @@ describe('extension libraries', function(){
       }, done);
     });
     it('should list the extension libraries', function(done){
-      restAdminDB.config.extlibs.list().
+      restAdminDB.config.extlibs.list(dbDir).
       result(function(response){
         response.should.have.property('assets');
         response.assets.length.should.be.greaterThan(0);
@@ -62,10 +64,42 @@ describe('extension libraries', function(){
     // TODO: test streaming of source and list
   });
 
+  describe('when configuring a custom query', function() {
+    it('should write the custom query', function(done){
+      this.timeout(3000);
+      restAdminDB.config.query.custom.write(dbModule, [
+          {'role-name':'app-user',    capabilities:['execute']},
+          {'role-name':'app-builder', capabilities:['execute', 'read', 'update']}
+        ], fs.createReadStream(fsPath)).
+      result(function(response){done();}, done);
+    });
+    it('should read the custom query', function(done){
+      restAdminDB.config.query.custom.read(dbModule).
+      result(function(source){
+        (!valcheck.isNullOrUndefined(source)).should.equal(true);
+        done();
+      }, done);
+    });
+    it('should list the custom queries', function(done){
+      restAdminDB.config.query.custom.list().
+      result(function(response){
+        response.should.have.property('assets');
+        response.assets.length.should.be.greaterThan(0);
+        done();
+      }, done);
+    });
+    it('should delete the custom query', function(done) {
+      restAdminDB.config.query.custom.remove(dbModule).
+      result(function(response){
+        done();
+      }, done);
+    });
+  });
+
   describe('when using', function() {
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).result().
+      restAdminDB.config.query.custom.write(dbModule, fs.createReadStream(fsPath)).result().
       then(function(response) {
         db.documents.write({
           uri: '/test/extlib/queryDoc1.json',
@@ -80,7 +114,7 @@ describe('extension libraries', function(){
         }, done);
     });
     after(function(done) {
-      restAdminDB.config.extlibs.remove(dbPath).
+      restAdminDB.config.query.custom.remove(dbModule).
       result(function(response){done();}, done);
     });
     it('a custom constraint to parse', function(done){

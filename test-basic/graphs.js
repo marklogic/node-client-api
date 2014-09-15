@@ -16,7 +16,9 @@
 var should = require('should');
 
 var fs = require('fs');
-var valcheck = require('core-util-is');
+
+var concatStream = require('concat-stream');
+var valcheck     = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
 
@@ -29,19 +31,32 @@ describe('graph operations', function(){
   var graphUri   = 'marklogic.com/people';
   var graphPath  = './test-basic/data/people.ttl';
   var sparqlPath = './test-basic/data/people.rq';
-  it('should write the graph', function(done){
+  it('should write the default graph', function(done){
     this.timeout(3000);
-    db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath)).
+    db.graphs.write('text/turtle', fs.createReadStream(graphPath)).
     result(function(response){
-      response.should.have.property('graph');
-      response.graph.should.equal(graphUri);
+      response.should.have.property('defaultGraph');
+      response.defaultGraph.should.equal(true);
+      done();
+    }, done);
+  });
+  it('should read the default graph', function(done){
+    db.graphs.read('text/n3').
+    result(function(data){
+      (!valcheck.isNullOrUndefined(data)).should.equal(true);
+      done();
+    }, done);
+  });
+  it('should delete the default graph', function(done){
+    db.graphs.remove().
+    result(function(response){
       done();
     }, done);
   });
 /* TODO:
-get output as application/rdf+json to verify, test merge, streaming write and read
+   get output as application/rdf+json to verify, test merge
  */
-  it('should write the graph as a stream', function(done){
+  it('should write a named graph as a stream', function(done){
     this.timeout(3000);
     var writer = db.graphs.createWriteStream(graphUri, 'text/turtle');
     writer.result(function(response){
@@ -51,14 +66,17 @@ get output as application/rdf+json to verify, test merge, streaming write and re
     }, done);
     fs.createReadStream(graphPath).pipe(writer);
   });
-  it('should read the graph', function(done){
-    db.graphs.read('text/n3', graphUri).
-    result(function(data){
+  it('should read the named graph as a stream', function(done){
+    var graphReadStream  = db.graphs.read(graphUri, 'text/n3').stream('chunked');
+    var graphAccumulator = concatStream({encoding: 'string'}, function(data) {
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       done();
-    }, done);
+    });
+    graphReadStream.on('error', done);
+    graphAccumulator.on('error', done);
+    graphReadStream.pipe(graphAccumulator);
   });
-  it('should check the graph', function(done){
+  it('should check the named graph', function(done){
     db.graphs.probe(graphUri).
     result(function(response){
       response.should.have.property('graph');
@@ -68,7 +86,7 @@ get output as application/rdf+json to verify, test merge, streaming write and re
       done();
     }, done);
   });
-  it('should list the graph', function(done){
+  it('should list the named graph', function(done){
     db.graphs.list(). 
     result(function(collections){
       collections.some(function(collection){
@@ -77,7 +95,7 @@ get output as application/rdf+json to verify, test merge, streaming write and re
       done();
     }, done);
   });
-  it('should run a SPARQL query against the graph', function(done){
+  it('should run a SPARQL query', function(done){
     this.timeout(3000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
@@ -95,7 +113,7 @@ get output as application/rdf+json to verify, test merge, streaming write and re
       done();
     }, done);
   });
-  it('should delete the graph', function(done){
+  it('should delete the named graph', function(done){
     db.graphs.remove(graphUri).
     result(function(response){
       done();

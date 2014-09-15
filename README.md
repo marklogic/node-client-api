@@ -114,11 +114,3 @@ To tear down the test database and REST server, execute
 
 The MarkLogic node.js Client API has not yet undergone performance or
 stress testing.  The API should not be used in production in EA2.
-
-# Contributing
-
-We welcome contributions from the community. If you have a patch
-that you'd like us to consider, please send it to us in the
-form of a pull request. Before we can consider your request, you
-must provide a signed Contributor License Agreement (which can
-be found in [./etc/CLA.adoc]).
