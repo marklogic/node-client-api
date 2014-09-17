@@ -119,7 +119,7 @@ describe('Document extract test', function(){
       response[0].content.id.should.equal('0011');
       response[1].content.id.should.equal('0012');
       response[0].content.should.not.have.property('popularity');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -143,7 +143,7 @@ describe('Document extract test', function(){
       response[1].content.popularity.should.equal(4);
       response[0].content.should.not.have.property('id');
       response[1].content.should.not.have.property('name');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -167,7 +167,7 @@ describe('Document extract test', function(){
       response[0].content.should.have.property('extracted');
       response[0].content.should.not.have.property('popularity');
       response[0].content.extracted[0].id.should.equal('0026');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -189,7 +189,7 @@ describe('Document extract test', function(){
       response.length.should.equal(1);
       response[0].content.price.should.have.property('amt');
       response[0].content.should.not.have.property('id');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -211,7 +211,7 @@ describe('Document extract test', function(){
       response.length.should.equal(1);
       response[0].content.price.should.have.property('amt');
       response[0].content.should.not.have.property('id');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -233,7 +233,7 @@ describe('Document extract test', function(){
       response.length.should.equal(1);
       response[0].content.should.have.property('popularity');
       response[0].content.should.not.have.property('price');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -256,7 +256,7 @@ describe('Document extract test', function(){
       response[0].content.should.have.property('category');
       response[0].content.should.not.have.property('price');
       response[0].content.category[0].should.equal('america');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
