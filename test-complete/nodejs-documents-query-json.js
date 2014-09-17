@@ -260,7 +260,7 @@ describe('Document query test', function(){
       ).result(function(response) {
         var document = response[0];
         //response.length.should.equal(1);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         //response[0].content.id.should.equal('0011');
         done();
       }, done);
