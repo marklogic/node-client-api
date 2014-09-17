@@ -115,7 +115,7 @@ describe('Document query test', function(){
         t.word('title', 'bush')
         )
       ).result(function(response) {
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
@@ -130,7 +130,7 @@ describe('Document query test', function(){
         ).
       aggregates('sum')
       ).result(function(response) {
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
@@ -146,8 +146,8 @@ describe('Document query test', function(){
         ).
       aggregates('correlation', 'covariance')
       ).result(function(response) {
-        console.log('Correlation:');
-        console.log(JSON.stringify(response, null, 4));
+        //console.log('Correlation:');
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
@@ -162,8 +162,8 @@ describe('Document query test', function(){
         ).
       aggregates('max', 'min', 'sum', 'avg')
       ).result(function(response) {
-        console.log('Max Min Sum Avg:');
-        console.log(JSON.stringify(response, null, 4));
+        //console.log('Max Min Sum Avg:');
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
