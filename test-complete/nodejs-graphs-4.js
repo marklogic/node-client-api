@@ -35,7 +35,7 @@ describe('overwrite graph test', function(){
     this.timeout(3000);
     db.graphs.write({uri: graphUri, repair: false, contentType: 'text/turtle', data: fs.createReadStream(graphPath1)}).
     result(function(response){
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       response.should.have.property('graph');
       response.graph.should.equal(graphUri);
       done();
@@ -46,7 +46,7 @@ describe('overwrite graph test', function(){
     this.timeout(3000);
     db.graphs.write({uri: graphUri, repair: false, contentType: 'text/turtle', data: fs.createReadStream(graphPath2)}).
     result(function(response){
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       response.should.have.property('graph');
       response.graph.should.equal(graphUri);
       done();
@@ -58,7 +58,7 @@ describe('overwrite graph test', function(){
     db.graphs.read({contentType: 'application/json', uri: graphUri}).
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
-      console.log(JSON.stringify(data, null, 4))
+      //console.log(JSON.stringify(data, null, 4))
       done();
     }, done);
   });
@@ -90,7 +90,7 @@ describe('overwrite graph test', function(){
     this.timeout(3000);
     db.graphs.list('foo/bar'). 
     result(function(response){
-      console.log(JSON.stringify(response, null, 4))
+      //console.log(JSON.stringify(response, null, 4))
       done();
     }, done);
   });
@@ -112,7 +112,7 @@ describe('overwrite graph test', function(){
       response.results.bindings[0].should.have.property('personName2');
       response.results.bindings[0].personName2.should.have.property('value');
       response.results.bindings[0].personName2.value.should.equal('Person 12');
-      console.log(JSON.stringify(response, null, 4))
+      //console.log(JSON.stringify(response, null, 4))
       done();
     }, done);
   });
