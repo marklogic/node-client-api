@@ -104,7 +104,7 @@ describe('document query', function(){
     db.read('/test/query/matchList/doc5.json').
       result(function(documents) {
         var document = documents[0];
-        console.log(JSON.stringify(document, null, 4));
+        //console.log(JSON.stringify(document, null, 4));
         var p = marklogic.patchBuilder;
         return dbWriter.documents.patch('/test/query/matchList/doc5.json',
             p.pathLanguage('jsonpath'),
@@ -116,12 +116,12 @@ describe('document query', function(){
           ).result();
       }).
     then(function(response){
-      console.log('Patch result: ');
+      //console.log('Patch result: ');
       return db.read('/test/query/matchList/doc5.json').result();
       }).
     then(function(documents){	      
         var document = documents[0];
-        console.log(JSON.stringify(document, null, 4));
+        //console.log(JSON.stringify(document, null, 4));
         document.content.newKey.should.equal('newChild');
         document.content.foo.should.equal('bar');
         document.content.popularity.should.equal(1);
