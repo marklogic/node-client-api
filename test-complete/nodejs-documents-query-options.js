@@ -105,8 +105,8 @@ describe('document query', function(){
       result(function(documents) {
         var document = documents[0];
         document.content.id.should.equal('0026');
-        console.log('Document result: ');
-        console.log(JSON.stringify(document, null, 4));
+        //console.log('Document result: ');
+        //console.log(JSON.stringify(document, null, 4));
         return db.query(
                  q.where(
                    q.directory('/test/query/matchDir/')
@@ -119,8 +119,8 @@ describe('document query', function(){
                  ).result();
       }).
     then(function(response){
-      console.log('Search result: ');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log('Search result: ');
+      //console.log(JSON.stringify(response, null, 4));
       response.length.should.equal(5);
       var option = response[0];
       option.plan.should.be.ok;
