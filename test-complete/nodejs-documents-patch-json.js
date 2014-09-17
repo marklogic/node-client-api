@@ -116,7 +116,7 @@ describe('document query', function(){
     result(function(response){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
+        //console.log(JSON.stringify(documents, null, 4));
         documents[0].quality.should.equal(33); 
         done();
       }, done);
@@ -137,7 +137,7 @@ describe('document query', function(){
     result(function(response){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
+        //console.log(JSON.stringify(documents, null, 4));
         documents[0].quality.should.equal(45); 
         done();
       }, done);
@@ -158,7 +158,7 @@ describe('document query', function(){
     result(function(response){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
+        //console.log(JSON.stringify(documents, null, 4));
         documents[0].properties.prop2.should.equal('world'); 
         done();
       }, done);
@@ -179,7 +179,7 @@ describe('document query', function(){
     result(function(response){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
+        //console.log(JSON.stringify(documents, null, 4));
         documents[0].properties.prop1.should.equal('hi'); 
         done();
       }, done);
@@ -199,7 +199,7 @@ describe('document query', function(){
     result(function(response){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
+        //console.log(JSON.stringify(documents, null, 4));
         documents[0].quality.should.equal(45); 
         done();
       }, done);
