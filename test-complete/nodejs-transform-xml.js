@@ -75,7 +75,7 @@ describe('Extension library test', function(){
       transform: [transformName]
     }).
     result(function(response) {
-      console.log(response)
+      //console.log(response)
       response[0].content.should.containEql('<firstname>');
       done();
     }, done);
@@ -89,7 +89,7 @@ describe('Extension library test', function(){
       withOptions({transform: [transformName]})
     ).
     result(function(response) {
-      console.log(response)
+      //console.log(response)
       response[0].content.should.containEql('<firstname>');
       done();
     }, done);
