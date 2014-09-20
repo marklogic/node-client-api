@@ -118,7 +118,7 @@ describe('extension libraries', function(){
       result(function(response){done();}, done);
     });
     it('a custom constraint to parse', function(done){
-      db.query(
+      db.documents.query(
         q.where(
           q.parsedFrom('dirs:/test/',
             q.parseBindings(
@@ -133,7 +133,7 @@ describe('extension libraries', function(){
       }, done);
     });
     it('a custom constraint for facet calculation', function(done){
-      db.query(
+      db.documents.query(
           q.where().
           calculate(
               q.facet('directories', q.calculateFunction('directoryConstraint'))
@@ -149,7 +149,7 @@ describe('extension libraries', function(){
           }, done);
     });
     it('should merge constraints', function(done) {
-      db.query(
+      db.documents.query(
           q.where(
               q.parsedFrom('range:constraintValue dirs:/test/',
                 q.parseBindings(

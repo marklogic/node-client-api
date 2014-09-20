@@ -22,7 +22,7 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Query documents with Query By Example');
 
-db.query(
+db.documents.query(
   q.where(
     q.byExample({
       region:     'Africa',

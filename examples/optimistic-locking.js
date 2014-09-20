@@ -42,7 +42,7 @@ dbAdmin.config.serverprops.write({
         timestamp+'\n    without passing the document version id');
     // suppress the error for this demo
     db.setLogger({console:false});
-    db.patch({
+    db.documents.patch({
       uri:        uri,
       operations: operations
       // versionId not specified
@@ -55,11 +55,11 @@ dbAdmin.config.serverprops.write({
           db.setLogger({console:true});
 
           console.log('get the current version id for the document');
-          db.probe(uri).result().
+          db.documents.probe(uri).result().
           then(function(document){
             console.log(
                 'try to update the document passing the version id '+document.versionId);
-            return db.patch({
+            return db.documents.patch({
               uri:        uri,
               operations: operations,
               versionId:  document.versionId
@@ -69,7 +69,7 @@ dbAdmin.config.serverprops.write({
             console.log('update succeeded with the version id');
 
             console.log('get the new version id for the updated document');
-            return db.read(uri).result();
+            return db.documents.read(uri).result();
             }).
           then(function(documents) {
             var document = documents[0];

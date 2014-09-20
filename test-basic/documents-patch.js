@@ -47,7 +47,7 @@ describe('document patch', function(){
           p.remove('$.deletableKey')
           ).
       result(function(response){
-        db.read(uri1).
+        db.documents.read(uri1).
         result(function(documents) {
           var document = documents[0];
           document.should.be.ok;
@@ -87,7 +87,7 @@ describe('document patch', function(){
           p.remove('/node("deletableKey")')
           ).
       result(function(response){
-        db.read(uri1).
+        db.documents.read(uri1).
         result(function(documents) {
           var document = documents[0];
           document.should.be.ok;
@@ -140,7 +140,7 @@ describe('document patch', function(){
           p.replace('node("quality")', 2)
           ]}).
       result(function(response){
-        db.read({uris:uri1, categories:['metadata']}).
+        db.documents.read({uris:uri1, categories:['metadata']}).
         result(function(documents) {
           var document = documents[0];
           document.should.be.ok;

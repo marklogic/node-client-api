@@ -87,14 +87,14 @@ describe('document transform', function(){
       }, done);
     });
     it('should modify during write', function(done){
-      db.write({
+      db.documents.write({
         uri: uri,
         contentType: 'application/json',
         content: {key1: 'value 1'},
         transform: [transformName, {flag:'tested1'}]
         }).
         result(function(response) {
-          db.read(uri).
+          db.documents.read(uri).
           result(function(documents) {
             documents.length.should.equal(1);
             documents[0].content.flagParam.should.equal('tested1');
@@ -103,7 +103,7 @@ describe('document transform', function(){
         }, done);
     });
     it('should modify during read', function(done){
-      db.read({
+      db.documents.read({
         uris: uri,
         transform: [transformName, {flag:'tested2'}]
         }).
@@ -114,7 +114,7 @@ describe('document transform', function(){
           }, done);
     });
     it('should modify during query', function(done){
-      db.query(
+      db.documents.query(
           q.where(
             q.document(uri)
             ).

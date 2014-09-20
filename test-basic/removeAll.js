@@ -44,14 +44,14 @@ describe('document remove all', function(){
   });
   it('should remove the collection', function(done){
     this.timeout(5000);
-    db.removeAll({collections:'/removeAll/collection'}).
+    db.documents.removeAll({collections:'/removeAll/collection'}).
     result(function(result) {
-      return db.probe('/removeAll/collection/doc'+1+'.txt').result();
+      return db.documents.probe('/removeAll/collection/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
       document.should.be.ok;
       document.exists.should.eql(false);
-      return db.probe('/removeAll/collection/doc'+2+'.txt').result();
+      return db.documents.probe('/removeAll/collection/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
       document.should.be.ok;
@@ -61,14 +61,14 @@ describe('document remove all', function(){
   });
   it('should remove the directory', function(done){
     this.timeout(5000);
-    db.removeAll({directory:'/removeAll/directory'}).
+    db.documents.removeAll({directory:'/removeAll/directory'}).
     result(function(result) {
-      return db.probe('/removeAll/directory/doc'+1+'.txt').result();
+      return db.documents.probe('/removeAll/directory/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
       document.should.be.ok;
       document.exists.should.eql(false);
-      return db.probe('/removeAll/directory/doc'+2+'.txt').result();
+      return db.documents.probe('/removeAll/directory/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
       document.should.be.ok;
@@ -78,14 +78,14 @@ describe('document remove all', function(){
   });
   it('should remove all', function(done){
     this.timeout(9000);
-    restAdminDB.removeAll({all:true}).
+    restAdminDB.documents.removeAll({all:true}).
     result(function(result) {
-      return db.probe('/removeAll/all/doc'+1+'.txt').result();
+      return db.documents.probe('/removeAll/all/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
       document.should.be.ok;
       document.exists.should.eql(false);
-      return db.probe('/removeAll/all/doc'+2+'.txt').result();
+      return db.documents.probe('/removeAll/all/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
       document.should.be.ok;

@@ -25,14 +25,14 @@ var timestamp = (new Date()).toISOString();
 
 console.log('Update a document with a patch');
 
-db.patch('/countries/uv.json',
+db.documents.patch('/countries/uv.json',
     p.pathLanguage('jsonpath'),
     p.replaceInsert('$.timestamp', '$.name', 'after', {timestamp: timestamp})
   ).result().
   then(function(response) {
     var uri = response.uri;
     console.log('updated: '+uri);
-    return db.read(uri).result();
+    return db.documents.read(uri).result();
   }).
   then(function(documents) {
     var documentAfter = documents[0];

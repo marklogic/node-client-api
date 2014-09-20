@@ -177,7 +177,7 @@ multipart read should report a non-existent uri or up-to-date versionId
   });
 
   it('should fail to read a non-existent document', function(done){
-    db.read('/not/a/real/document.txt').
+    db.documents.read('/not/a/real/document.txt').
     result(function(documents) {
       valcheck.isUndefined(documents).should.equal(false);
       documents.length.should.equal(1);
@@ -186,7 +186,7 @@ multipart read should report a non-existent uri or up-to-date versionId
     }, done);
   });
 
-      invalidDb.probe('/test/remove/doc1.json').result(function(response) {
+      invalidDb.documents.probe('/test/remove/doc1.json').result(function(response) {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error){

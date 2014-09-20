@@ -45,7 +45,7 @@ function readFile(filenames, i, buffer, isLast) {
 
     if (isLast) {
       console.log('loading batch from '+buffer[0].uri+' to '+filename);
-      db.write(buffer).result(function(response) {
+      db.documents.write(buffer).result(function(response) {
         console.log(
             'done loading:\n'+
             response.documents.map(function(document) {
@@ -81,7 +81,7 @@ fs.readdir(fsdir, function(err, filenames) {
 });
 
 var imageFile = 'uv_flag_2004.gif';
-var ws = db.createWriteStream({
+var ws = db.documents.createWriteStream({
   uri:         dbdir+imageFile,
   contentType: 'image/gif',
   collections: collections

@@ -22,7 +22,7 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Extract fragments from queried documents');
 
-db.query(
+db.documents.query(
   q.where(
     q.collection('/countries'),
     q.value('region', 'Africa'),

@@ -43,7 +43,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the value', function(done){
-        db.read('/test/write/string1.json').
+        db.documents.read('/test/write/string1.json').
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -66,7 +66,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the value', function(done){
-        db.read('/test/write/object1.json').
+        db.documents.read('/test/write/object1.json').
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -89,7 +89,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the value', function(done){
-        db.read('/test/write/buffer1.json').
+        db.documents.read('/test/write/buffer1.json').
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -112,7 +112,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the value', function(done){
-        db.read('/test/write/stream1.json').
+        db.documents.read('/test/write/stream1.json').
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -133,7 +133,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the content', function(done){
-        db.read('/test/write/string1.xml').
+        db.documents.read('/test/write/string1.xml').
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -157,7 +157,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the content', function(done){
-        db.read(uri).
+        db.documents.read(uri).
           result(function(documents) {
             valcheck.isArray(documents).should.equal(true);
             documents.length.should.equal(1);
@@ -181,7 +181,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the content', function(done){
-        db.read(uri).
+        db.documents.read(uri).
           result(function(documents) {
             valcheck.isArray(documents).should.equal(true);
             documents.length.should.equal(1);
@@ -203,7 +203,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the content', function(done){
-        db.read('/test/write/string1.txt').
+        db.documents.read('/test/write/string1.txt').
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -229,7 +229,7 @@ describe('document content', function(){
           var document = documents[0];
           valcheck.isUndefined(document).should.equal(false);
           document.should.have.property('uri');          
-          return db.read(document.uri).result();
+          return db.documents.read(document.uri).result();
           }).
         then(function(documents){
           valcheck.isArray(documents).should.equal(true);
@@ -238,7 +238,7 @@ describe('document content', function(){
           valcheck.isUndefined(document).should.equal(false);
           document.should.have.property('content');
           document.content.should.equal('text with assigned extension');
-          return db.remove(document.uri).result();
+          return db.documents.remove(document.uri).result();
           }).
         then(function(documents){
           done();
@@ -274,7 +274,7 @@ describe('document content', function(){
           response.documents.length.should.equal(1);
           response.documents[0].should.have.property('uri');
           response.documents[0].uri.should.equal(uri);
-          return db.read(response.documents[0].uri).result();
+          return db.documents.read(response.documents[0].uri).result();
           }, done).
         then(function(documents){
           valcheck.isArray(documents).should.equal(true);
@@ -289,7 +289,7 @@ describe('document content', function(){
       });
       it('should write as a piped stream', function(done){
         this.timeout(3000);
-        var ws = db.createWriteStream({
+        var ws = db.documents.createWriteStream({
           uri:uri,
           contentType:'image/png'
           });
@@ -305,7 +305,7 @@ describe('document content', function(){
         fs.createReadStream(binaryPath).pipe(ws);
       });
       it('should read as a stream', function(done){
-        db.read(uri).stream('chunked').on('error', done).
+        db.documents.read(uri).stream('chunked').on('error', done).
           pipe(
             concatStream({encoding: 'buffer'}, function(value) {
               valcheck.isUndefined(value).should.equal(false);
@@ -331,7 +331,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back both values', function(done){
-        db.read(
+        db.documents.read(
             '/test/write/arrayString1.json',
             '/test/write/arrayObject2.json'
             ).
@@ -362,7 +362,7 @@ describe('document content', function(){
         writeStream.end();
       });
       it('should read back the value', function(done){
-        db.read('/test/write/writable1.json').stream('chunked').
+        db.documents.read('/test/write/writable1.json').stream('chunked').
           on('data', function(chunk) {
             valcheck.isUndefined(chunk).should.equal(false);
             var content = JSON.parse(chunk.toString());
@@ -385,9 +385,9 @@ describe('document content', function(){
           result(function(response){done();}, done);
         });
         it('should not exist', function(done){
-          db.remove('/test/remove/doc1.json').
+          db.documents.remove('/test/remove/doc1.json').
             result(function(result) {
-              return db.probe('/test/remove/doc1.json').result();
+              return db.documents.probe('/test/remove/doc1.json').result();
               }, done).
             then(function(document) {
               valcheck.isUndefined(document).should.equal(false);
@@ -410,7 +410,7 @@ describe('document content', function(){
             result(function(response){done();}, done);
         });
         it('should exist', function(done){
-          db.probe('/test/check/doc1.json').
+          db.documents.probe('/test/check/doc1.json').
             result(function(document) {
               valcheck.isUndefined(document).should.equal(false);
               document.should.have.property('exists');
@@ -461,7 +461,7 @@ describe('document metadata', function(){
         result(function(response){done();}, done);
       });
       it('should read back the metadata and content', function(done){
-        db.read({uris:'/test/write/metaContent1.json', categories:['metadata', 'content']}).
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:['metadata', 'content']}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -498,7 +498,7 @@ describe('document metadata', function(){
             }, done);
       });
       it('should read back default metadata and content', function(done){
-        db.read({uris:'/test/write/metaContent2.json', categories:['metadata', 'content']}).
+        db.documents.read({uris:'/test/write/metaContent2.json', categories:['metadata', 'content']}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -553,7 +553,7 @@ describe('document metadata', function(){
         result(function(response){done();}, done);
       });
       it('should read back the all of the metadata', function(done){
-        db.read({uris:'/test/write/metaContent1.json', categories:'metadata'}).
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'metadata'}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -594,7 +594,7 @@ describe('document metadata', function(){
             }, done);
       });
       it('should read back collections metadata', function(done){
-        db.read({uris:'/test/write/metaContent1.json', categories:'collections'}).
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'collections'}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -609,7 +609,7 @@ describe('document metadata', function(){
             }, done);
       });
       it('should read back permissions metadata', function(done){
-        db.read({uris:'/test/write/metaContent1.json', categories:'permissions'}).
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'permissions'}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -637,7 +637,7 @@ describe('document metadata', function(){
             }, done);
       });
       it('should read back the properties metadata', function(done){
-        db.read({uris:'/test/write/metaContent1.json', categories:'properties'}).
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'properties'}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
@@ -652,7 +652,7 @@ describe('document metadata', function(){
             }, done);
       });
       it('should read back the quality metadata', function(done){
-        db.read({uris:'/test/write/metaContent1.json', categories:'quality'}).
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'quality'}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);

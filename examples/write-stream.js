@@ -23,7 +23,7 @@ var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
 console.log('Write a document from a stream');
 
-var writableStream = db.createWriteStream({
+var writableStream = db.documents.createWriteStream({
   uri:         '/countries/uv_flag_2004.gif',
   contentType: 'image/gif',
   collections: ['/countries', '/facts/geographic']
