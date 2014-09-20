@@ -107,11 +107,6 @@ describe('document query', function(){
           }
         }).result().
     then(function(response) {
-/* TODO: DELETE
-      var dbPath = '/marklogic/snippet/custom/extractFirst.xqy';
-      var fsPath = './test-basic/data/extractFirst.xqy';
-      restAdminDB.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).
- */
       var dbModule = 'extractFirst.xqy';
       var fsPath   = './test-basic/data/extractFirst.xqy';
       restAdminDB.config.query.snippet.write(dbModule, fs.createReadStream(fsPath)).

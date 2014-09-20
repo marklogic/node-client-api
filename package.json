@@ -16,15 +16,16 @@
     "xml"
   ],
   "dependencies": {
-    "dicer": "^0.2.3",
-    "www-authenticate": "^0.6.2",
     "bluebird": "^1.2.4",
-    "multipart": "^0.1.5",
-    "deepcopy": "^0.3.3",
-    "winston": "^0.7.3",
     "concat-stream": "^1.4.6",
     "core-util-is": "^1.0.1",
+    "deepcopy": "^0.3.3",
+    "dicer": "^0.2.3",
+    "multipart": "^0.1.5",
+    "qs": "~2.2.3",
     "through2": "^0.5.1",
+    "winston": "^0.7.3",
+    "www-authenticate": "^0.6.2",
     "yakaa": "^1.0.0"
   },
   "repository": {
@@ -36,14 +37,14 @@
   },
   "devDependencies": {
     "gulp": "^3.6.1",
-    "jshint": "^2.5.1",
+    "gulp-intercept": "^0.1.0",
+    "gulp-jsdoc": "^0.1.4",
     "gulp-jshint": "^1.5.3",
-    "mocha": "^1.18.2",
-    "should": "^4.0.4",
     "gulp-mocha": "^0.4.1",
     "jsdoc": "^3.3.0-alpha5",
-    "gulp-jsdoc": "^0.1.4",
-    "gulp-intercept": "^0.1.0",
-    "read": "^1.0.5"
+    "jshint": "^2.5.1",
+    "mocha": "^1.18.2",
+    "read": "^1.0.5",
+    "should": "^4.0.4"
   }
 }

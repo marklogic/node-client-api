@@ -18,7 +18,6 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 
 ### Candidate features for EA3
 
-* aggregates on facets
 * server-side eval
 * specifying the database when creating a database client
 * search suggest

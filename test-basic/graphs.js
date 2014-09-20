@@ -87,7 +87,7 @@ describe('graph operations', function(){
     }, done);
   });
   it('should list the named graph', function(done){
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       collections.some(function(collection){
         return collection === graphUri;
