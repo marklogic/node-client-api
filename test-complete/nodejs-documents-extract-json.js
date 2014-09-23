@@ -102,7 +102,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with include-with-ancestors', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'bush')
       ).
@@ -125,7 +125,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with exclude', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'bush')
       ).
@@ -149,7 +149,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with include', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('id', '**26', q.termOptions('wildcarded'))
       ).
@@ -173,7 +173,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with //', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'The memex')
       ).
@@ -195,7 +195,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with deeper level', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'The memex')
       ).
@@ -217,7 +217,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with back level up', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'The memex')
       ).
@@ -239,7 +239,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract on array value', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'The memex')
       ).
