@@ -48,7 +48,7 @@ describe('document content', function(){
         result(function(response){done();}, done);
       });
       it('should read back the value', function(done){
-        db.read({uris:'/test/write/string1.json', categories:['metadata', 'content']}).
+        db.documents.read({uris:'/test/write/string1.json', categories:['metadata', 'content']}).
           result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);

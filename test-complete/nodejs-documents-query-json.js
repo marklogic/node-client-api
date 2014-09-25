@@ -101,7 +101,7 @@ describe('Document query test', function(){
   });
 
   it('should do word query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.word('title', 'bush')
       )).result(function(response) {
@@ -113,7 +113,7 @@ describe('Document query test', function(){
   });
 
   it('should do term query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.or(
           q.term('memex'),
@@ -129,7 +129,7 @@ describe('Document query test', function(){
   });
 
   it('should do value query with wildcards', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.or(
           q.value('id', '0??6', q.termOptions('wildcarded')), 
@@ -145,7 +145,7 @@ describe('Document query test', function(){
   });
 
   it('should do value query with google style grammar', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.or(
           q.value('title', 'The memex'), 
@@ -165,7 +165,7 @@ describe('Document query test', function(){
   });
 
   it('should do term queries with AND', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.and(
           q.term('Atlantic'), 
@@ -183,7 +183,7 @@ describe('Document query test', function(){
   });
 
   it('should do near query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.near(
           q.term('Bush'),
@@ -201,7 +201,7 @@ describe('Document query test', function(){
   });
 
   it('should do scope query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.scope(
           'title',
@@ -218,7 +218,7 @@ describe('Document query test', function(){
   });
 
   it('should do not-in query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.notIn(
           q.term('Bush'),
@@ -234,7 +234,7 @@ describe('Document query test', function(){
   });
 
   it('should do document query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.document(
           '/test/query/matchList/doc5.json'
@@ -249,7 +249,7 @@ describe('Document query test', function(){
   });
 
   it('should do queries with snippet', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.and(
           q.term('Atlantic'), 

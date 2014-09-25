@@ -101,7 +101,7 @@ describe('document query', function(){
     result(function(response){done();}, done);
   });
   it('should read, query, and remove the doc', function(done){
-    db.read('/test/query/matchList/doc5.json').
+    db.documents.read('/test/query/matchList/doc5.json').
       result(function(documents) {
         var document = documents[0];
         //console.log(JSON.stringify(document, null, 4));
@@ -117,7 +117,7 @@ describe('document query', function(){
       }).
     then(function(response){
       //console.log('Patch result: ');
-      return db.read('/test/query/matchList/doc5.json').result();
+      return db.documents.read('/test/query/matchList/doc5.json').result();
       }).
     then(function(documents){	      
         var document = documents[0];
@@ -126,7 +126,7 @@ describe('document query', function(){
         document.content.foo.should.equal('bar');
         document.content.popularity.should.equal(1);
         document.should.not.have.property('p');
-        return dbWriter.remove('/test/query/matchList/doc5.json').result();
+        return dbWriter.documents.remove('/test/query/matchList/doc5.json').result();
       }).
     then(function(document) {
       document.exists.should.eql(false);

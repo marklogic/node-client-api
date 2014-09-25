@@ -101,7 +101,7 @@ describe('document query', function(){
     result(function(response){done();}, done);
   });
   it('should read, query, and remove the doc', function(done){
-    db.read('/test/query/matchList/doc5.json').
+    db.documents.read('/test/query/matchList/doc5.json').
       result(function(documents) {
         var document = documents[0];
         document.content.id.should.equal('0026');
@@ -120,7 +120,7 @@ describe('document query', function(){
       var document = response[0];
       response.length.should.equal(4);
       document.content.id.should.equal('0013');
-      return dbWriter.remove('/test/query/matchList/doc5.json').result();
+      return dbWriter.documents.remove('/test/query/matchList/doc5.json').result();
       }).
     then(function(document) {
       document.exists.should.eql(false);

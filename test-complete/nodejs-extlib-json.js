@@ -134,7 +134,7 @@ describe('Extension library test', function(){
   });
 
   it('should do word query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.term('memex')
       ).

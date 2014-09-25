@@ -101,7 +101,7 @@ describe('Document parse binding test', function(){
   });
 
   it('should do simple parse', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.parsedFrom('intitle:"The memex"',
           q.parseBindings(
@@ -113,13 +113,13 @@ describe('Document parse binding test', function(){
     result(function(response) {
       response.length.should.equal(1);
       response[0].content.id.should.equal('0026');
-      //console.log(JSON.stringify(response, null, 4));
+      console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
   
   it('should do complex parse', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.parsedFrom('"Vannevar" AND theId:0024 OR (pop LT 4)',
           q.parseBindings(
@@ -134,13 +134,13 @@ describe('Document parse binding test', function(){
       response.length.should.equal(2);
       response[0].content.id.should.equal('0024');
       response[1].content.id.should.equal('0013');
-      //console.log(JSON.stringify(response, null, 4));
+      console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
 
   it('should do parse on range', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.parsedFrom('amount1 GE 10 AND amount2 LE 100',
           q.parseBindings(
@@ -153,13 +153,13 @@ describe('Document parse binding test', function(){
     result(function(response) {
       response.length.should.equal(1);
       response[0].content.id.should.equal('0024');
-      //console.log(JSON.stringify(response, null, 4));
+      console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
 
   it('should return no result on empty string parse', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -171,13 +171,13 @@ describe('Document parse binding test', function(){
     ).
     result(function(response) {
       response.length.should.equal(0);
-      //console.log(JSON.stringify(response, null, 4));
+      console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
 
   it('should return all results on empty string parse', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -189,7 +189,7 @@ describe('Document parse binding test', function(){
     ).
     result(function(response) {
       response.length.should.not.equal(0);
-      //console.log(JSON.stringify(response, null, 4));
+      console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });

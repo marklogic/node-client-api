@@ -100,8 +100,8 @@ describe('Document query test', function(){
     result(function(response){done();}, done);
   });
 
-  it('should do term queries with and-not', function(done){
-    db.query(
+   it('should do term queries with and-not', function(done){
+    db.documents.query(
       q.where(
         q.andNot(
           q.term('Bush'), 
@@ -111,12 +111,12 @@ describe('Document query test', function(){
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   }); 	
 it('should do term query with andNot and orderby id',function(done){
- db.query(
+ db.documents.query(
 	q.where(
 		q.orderBy('id'),
         q.andNot(
@@ -131,13 +131,13 @@ it('should do term query with andNot and orderby id',function(done){
 		response[0].content.id.should.equal('0011');
 		response[1].content.id.should.equal('0012');
 		response[2].content.id.should.equal('0024');
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
 	});
 	
  it('should do collection query and term query with or', function(done){
-    db.query(
+    db.documents.query(
       q.where(
 		q.and(
 			q.collection('matchCollection1'),
@@ -149,13 +149,13 @@ it('should do term query with andNot and orderby id',function(done){
 		)
 	  ).result(function(response) {
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
 
  it('should do term query with directory', function(done){
-    db.query(
+    db.documents.query(
       q.where(
 	    q.directory('/test/query/matchDir/'),
         q.term('memex')
@@ -168,7 +168,7 @@ it('should do term query with andNot and orderby id',function(done){
   });
 
   it('should do term query with or and not', function(done){
-    db.query(
+    db.documents.query(
       q.where(
 		q.and(
 			q.not(q.value('id', '0011')),
@@ -180,32 +180,32 @@ it('should do term query with andNot and orderby id',function(done){
 		)
 	  ).result(function(response) {
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });
 
  it('should slice results from middle', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.term('memex')
         ).
         slice(2, 3)
       ).result(function(response) {
         response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   }); 
 it('should slice results from end', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.term('memex')
         ).
         slice(3)
       ).result(function(response) {
         response.length.should.equal(1);
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });  
@@ -219,7 +219,7 @@ it('should slice results with a snippet', function(done){
 		).result(function(response) {
         response.length.should.equal(2);
 		response[0].results[0].snippet.should.have.property.first;
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);
   });    

@@ -86,7 +86,7 @@ describe('Document query test', function(){
   });
 
   it('should do field query', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.range('scoville', 'moderate')
         ).

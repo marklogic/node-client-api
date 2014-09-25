@@ -101,7 +101,7 @@ describe('Document qbe test', function(){
   });
 
   it('should do simple qbe', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.byExample({
           title: {
@@ -118,7 +118,7 @@ describe('Document qbe test', function(){
   });
 
   it('should do complex qbe', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.byExample({
           $or: [
@@ -129,8 +129,8 @@ describe('Document qbe test', function(){
         })
       )).result(function(response) {
         response.length.should.equal(3);
-        response[0].content.id.should.equal('0026');
-        response[1].content.id.should.equal('0024');
+        response[0].content.id.should.equal('0024');
+        response[1].content.id.should.equal('0026');
         response[2].content.id.should.equal('0013');
         //console.log(JSON.stringify(response, null, 4));
         done();
@@ -138,7 +138,7 @@ describe('Document qbe test', function(){
   });
 
   it('should do qbe on child', function(done){
-    db.query(
+    db.documents.query(
       q.where(
         q.byExample({
           $query: {
