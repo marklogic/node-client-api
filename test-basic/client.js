@@ -21,21 +21,31 @@ var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+// TODO: setup should create user with eval-in role
+var connection = {
+    user:     'admin',
+    password: 'admin'
+    };
+Object.keys(testconfig.restWriterConnection).forEach(function(key){
+  if (connection[key] === undefined) {
+    connection[key] = testconfig.restWriterConnection[key];
+  }
+  });
+var db = marklogic.createDatabaseClient(connection);
 
 var otherConnection = {
   database: 'unittest-nodeapi',
   port:     '8000'
   };
-Object.keys(testconfig.restWriterConnection).forEach(function(key){
-  if (key !== 'port') {
-    otherConnection[key] = testconfig.restWriterConnection[key];
+Object.keys(connection).forEach(function(key){
+  if (otherConnection[key] === undefined) {
+    otherConnection[key] = connection[key];
   }
 });
 var otherDb = marklogic.createDatabaseClient(otherConnection);
-
+    
 describe('database clients', function() {
-  it('should write in a default db and read in a specified db', function() {
+  it('should write in a default db and read in a specified db', function(done) {
     db.documents.write({
       uri: '/test/database/doc1.json',
       contentType: 'application/json',
@@ -48,9 +58,10 @@ describe('database clients', function() {
       }).
     then(function(document) {
       document.exists.should.equal(true);
-    });
+      done();
+      }, done);
   });
-  it('should write in a specified db and read in a default db', function() {
+  it('should write in a specified db and read in a default db', function(done) {
     otherDb.documents.write({
       uri: '/test/database/doc2.json',
       contentType: 'application/json',
@@ -63,6 +74,7 @@ describe('database clients', function() {
       }).
     then(function(document) {
       document.exists.should.equal(true);
-    });
+      done();
+      }, done);
   });
 });

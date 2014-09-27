@@ -49,20 +49,22 @@ describe('suggest', function() {
       result(function(response){
         done();}, done);
   });
-  it('should handle default criteria', function(){
+  it('should handle default criteria', function(done) {
     db.documents.suggest('aSuggest', q.parseBindings(q.word('defaultWordKey', q.bindDefault()))).
     result(function(list) {
       list.length.should.equal(2);
       list[0].should.equal('aSuggestOne');
-      list[0].should.equal('aSuggestTwo');
-    });
+      list[1].should.equal('aSuggestTwo');
+      done();
+      }, done);
   });
-  it('should handle tagged criteria', function(){
+  it('should handle tagged criteria', function(done) {
     db.documents.suggest('tag:bSuggest', q.parseBindings(q.word('taggedWordKey', q.bind('tag')))).
     result(function(list) {
       list.length.should.equal(2);
-      list[0].should.equal('bSuggestOne');
-      list[0].should.equal('bSuggestTwo');
-    });
+      list[0].should.equal('tag:bSuggestOne');
+      list[1].should.equal('tag:bSuggestTwo');
+      done();
+      }, done);
   });
 });
