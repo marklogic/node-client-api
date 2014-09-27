@@ -81,12 +81,12 @@ fs.readdir(fsdir, function(err, filenames) {
 });
 
 var imageFile = 'uv_flag_2004.gif';
-var ws = db.documents.createWriteStream({
+var ws = db.documents.write({
   uri:         dbdir+imageFile,
   contentType: 'image/gif',
-  collections: collections
-  });
-ws.result(function(response) {
+  collections: collections,
+  content:     fs.createReadStream(fsdir+imageFile)
+  }).
+result(function(response) {
   console.log('wrote '+imageFile);
   });
-fs.createReadStream(fsdir+imageFile).pipe(ws);
