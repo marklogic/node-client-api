@@ -44,17 +44,15 @@ describe('document remove all', function(){
   });
   it('should remove the collection', function(done){
     this.timeout(5000);
-    db.documents.removeAll({collections:'/removeAll/collection'}).
+    db.documents.removeAll({collection:'/removeAll/collection'}).
     result(function(result) {
       return db.documents.probe('/removeAll/collection/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
-      document.should.be.ok;
       document.exists.should.eql(false);
       return db.documents.probe('/removeAll/collection/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
-      document.should.be.ok;
       document.exists.should.eql(false);
       done();
       }, done);
@@ -66,12 +64,10 @@ describe('document remove all', function(){
       return db.documents.probe('/removeAll/directory/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
-      document.should.be.ok;
       document.exists.should.eql(false);
       return db.documents.probe('/removeAll/directory/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
-      document.should.be.ok;
       document.exists.should.eql(false);
       done();
       }, done);
@@ -83,12 +79,10 @@ describe('document remove all', function(){
       return db.documents.probe('/removeAll/all/doc'+1+'.txt').result();
       }, done).
     then(function(document) {
-      document.should.be.ok;
       document.exists.should.eql(false);
       return db.documents.probe('/removeAll/all/doc'+2+'.txt').result();
     }, done).
     then(function(document) {
-      document.should.be.ok;
       document.exists.should.eql(false);
       done();
       }, done);
