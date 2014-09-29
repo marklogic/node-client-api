@@ -304,6 +304,23 @@ describe('document content', function(){
           }, done);
         fs.createReadStream(binaryPath).pipe(ws);
       });
+      it('should write as a readable stream', function(done){
+        this.timeout(3000);
+        db.documents.write({
+          uri:         uri,
+          contentType: 'image/png',
+          content:     fs.createReadStream(binaryPath)
+          }).
+        result(function(response) {
+          valcheck.isUndefined(response).should.equal(false);
+          response.should.have.property('documents');
+          response.documents.length.should.equal(1);
+          var document = response.documents[0];
+          document.should.have.property('uri');
+          document.uri.should.equal(uri);
+          done();
+          }, done);
+      });
       it('should read as a stream', function(done){
         db.documents.read(uri).stream('chunked').on('error', done).
           pipe(

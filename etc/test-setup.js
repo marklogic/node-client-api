@@ -62,6 +62,43 @@ function setup(manager) {
             endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties'
             }).result().
           then(function(response) {
+            var indexName = null;
+            var indexType = null;
+            var indexdef  = null;
+            var i         = null;
+
+            var elementWordLexicon = response.data['element-word-lexicon'];
+            var lexiconTest = {
+                defaultWordKey: true,
+                taggedWordKey:  true
+                };
+
+            var lexers = [];
+            if (valcheck.isNullOrUndefined(elementWordLexicon)) {
+              elementWordLexicon = [];
+              lexers             = Object.keys(lexiconTest);
+            } else {
+              elementWordLexicon.forEach(function(index){
+                indexName = index.localname;
+                if (!valcheck.isUndefined(lexiconTest[indexName])) {
+                  lexiconTest[indexName] = false;
+                }
+              });
+              lexers = Object.keys(lexiconTest).filter(function(indexName){
+                return (lexiconTest[indexName] !== false);
+              });
+            }
+
+            for (i=0; i < lexers.length; i++) {
+              indexName = lexers[i];
+              indexdef  = {
+                  collation:       'http://marklogic.com/collation/',
+                  'namespace-uri': '',
+                  localname:       indexName,
+                };
+              elementWordLexicon.push(indexdef);
+            }
+
             var rangeElementIndex = response.data['range-element-index'];
 
             var rangeTest = {
@@ -71,7 +108,6 @@ function setup(manager) {
                 rangeKey4: 'int'
                 };
             var rangers = [];
-            var indexName = null;
             if (valcheck.isNullOrUndefined(rangeElementIndex)) {
               rangeElementIndex = [];
               rangers           = Object.keys(rangeTest);
@@ -87,10 +123,10 @@ function setup(manager) {
               });
             }
 
-            for (var i=0; i < rangers.length; i++) {
+            for (i=0; i < rangers.length; i++) {
               indexName = rangers[i];
-              var indexType = rangeTest[indexName];
-              var indexdef = {
+              indexType = rangeTest[indexName];
+              indexdef = {
                   'scalar-type':           indexType,
                   collation:               (indexType === 'string') ?
                       'http://marklogic.com/collation/' : '',
@@ -101,6 +137,16 @@ function setup(manager) {
                 };
               rangeElementIndex.push(indexdef);
             }
+            var body = {
+                'collection-lexicon':   true,
+                'triple-index':         true,
+                };
+            if (valcheck.isArray(elementWordLexicon) && elementWordLexicon.length > 0) {
+              body['element-word-lexicon'] = elementWordLexicon;
+            }
+            if (valcheck.isArray(rangeElementIndex) && rangeElementIndex.length > 0) {
+              body['range-element-index'] = rangeElementIndex;
+            }
 
             console.log('adding custom indexes for '+testconfig.testServerName);
             return manager.put({
@@ -108,11 +154,7 @@ function setup(manager) {
               params:   {
                 format: 'json'
                 },
-              body:     {
-                'collection-lexicon':  true,
-                'triple-index':        true,
-                'range-element-index': rangeElementIndex 
-                },
+              body:        body,
               hasResponse: true
               }).result();
             }).

@@ -9,18 +9,19 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 
 ### Checked in for EA3
 
+* quick path for simple JavaScript object CRUD and query
 * values and tuples requests
 * server-side transforms on query response summary and result documents in slice() clause
 * snippets including custom snippets in slice() clause
 * projection from result documents (extract)
 * resource service CRUD and invocation for XQuery -- except JavaScript
 * graph CRUD and SPARQL query
+* specifying the database when creating a database client
+* search suggest
 
 ### Candidate features for EA3
 
 * server-side eval
-* specifying the database when creating a database client
-* search suggest
 * pluggable XML conversion
 
 ## Getting started
