@@ -12,15 +12,15 @@ be found in etc/CLA.adoc).
   earliest version that exhibits the problem. For an enhancement, make sure
   you have basic agreement about the fix or enhancement.
 
-* Fork the API repository in your repository on GitHub.
+* [Fork the API repository](https://github.com/marklogic/node-client-api/fork) in your repository on GitHub.
 
-* Create a branch based on the master branch or (if you are in the early
-access program) on the develop branch.
+* Create a branch based on the `master` branch or (if you are in the Early
+Access program) on the `develop` branch.
 
 * Implement the fix or enhancement.
 
   As with other projects, you should include unit tests using the same test
-  harness (at present, Mocha and should). Follow the same style conventions
+  harness (at present, [Mocha](http://visionmedia.github.io/mocha/) and [should](https://github.com/visionmedia/should.js/)). Follow the same style conventions
   as existing code. Run jshint on the changes. Create jsdoc for any new
   interfaces.  (See the gulp tasks for a convenient way to run jshint.)
   Run all of the tests to make sure the change doesn't have side effects.
