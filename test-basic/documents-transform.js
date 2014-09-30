@@ -27,12 +27,12 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document transform', function(){
-  var transformName = 'flagParam';
-  var transformPath = './test-basic/data/flagTransform.xqy';
+  var xqyTransformName = 'flagParam';
+  var xqyTransformPath = './test-basic/data/flagTransform.xqy';
   describe('when configuring', function() {
     it('should write the transform with positional parameters', function(done){
       this.timeout(3000);
-      restAdminDB.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
+      restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath)).
       result(function(response){
         done();
       }, done);
@@ -40,20 +40,20 @@ describe('document transform', function(){
     it('should write the transform with named parameters', function(done){
       this.timeout(3000);
       restAdminDB.config.transforms.write({
-        name:        transformName,
+        name:        xqyTransformName,
         title:       'The Flag Transform',
         description: 'Raising the flag.',
         provider:    'Banner Business',
         version:     0.1,
         format:      'xquery',
-        source:      fs.createReadStream(transformPath)
+        source:      fs.createReadStream(xqyTransformPath)
         }).
       result(function(response){
         done();
       }, done);
     });
     it('should read the transform', function(done){
-      restAdminDB.config.transforms.read(transformName).
+      restAdminDB.config.transforms.read(xqyTransformName).
       result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
         done();
@@ -64,24 +64,26 @@ describe('document transform', function(){
       result(function(response){
         response.should.have.property('transforms');
         response.transforms.should.have.property('transform');
-        response.transforms.transform.length.should.equal(1);
-        response.transforms.transform[0].name.should.equal(transformName);
+        response.transforms.transform.length.should.be.greaterThan(1);
+        response.transforms.transform.some(function(item){
+          return item.name === xqyTransformName;
+          }).should.equal(true);
         done();
       }, done);
     });
     it('should delete the transform', function(done){
-      restAdminDB.config.transforms.remove(transformName).
+      restAdminDB.config.transforms.remove(xqyTransformName).
       result(function(response){
         done();
       }, done);
     });
     // TODO: test streaming of source and list
   });
-  describe('when using', function() {
+  describe('when using XQuery', function() {
     var uri = '/test/write/transformContent1.json';
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
+      restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath)).
       result(function(response){
         done();
       }, done);
@@ -91,7 +93,7 @@ describe('document transform', function(){
         uri: uri,
         contentType: 'application/json',
         content: {key1: 'value 1'},
-        transform: [transformName, {flag:'tested1'}]
+        transform: [xqyTransformName, {flag:'tested1'}]
         }).
         result(function(response) {
           db.documents.read(uri).
@@ -105,7 +107,7 @@ describe('document transform', function(){
     it('should modify during read', function(done){
       db.documents.read({
         uris: uri,
-        transform: [transformName, {flag:'tested2'}]
+        transform: [xqyTransformName, {flag:'tested2'}]
         }).
         result(function(documents) {
           documents.length.should.equal(1);
@@ -119,12 +121,80 @@ describe('document transform', function(){
             q.document(uri)
             ).
           slice(1, 10,
-            q.transform(transformName, {flag:'tested3'})
+            q.transform(xqyTransformName, {flag:'tested3'})
             )
           ).
         result(function(documents) {
           documents.length.should.equal(1);
           documents[0].content.flagParam.should.equal('tested3');
+          done();
+          }, done);
+    });
+  });
+  describe('when using JavaScript', function() {
+    var jsTransformName = 'timestamp';
+    var jsTransformPath = './test-basic/data/timestampTransform.js';
+    var readUri  = '/test/write/readTransform.json';
+    var writeUri = '/test/write/writeTransform.json';
+    before(function(done){
+      this.timeout(3000);
+      restAdminDB.config.transforms.write(jsTransformName, 'javascript', fs.createReadStream(jsTransformPath)).
+      result(function(response){
+        return db.documents.write({
+          uri: readUri,
+          contentType: 'application/json',
+          content: {readKey: 'read value'}
+          }).result();
+        }).
+      then(function(response){done();}, done);
+    });
+/* TODO: CURRENTLY BLOCKED
+    it('should modify during write', function(done){
+      db.documents.write({
+        uri: writeUri,
+        contentType: 'application/json',
+        content: {writeKey: 'write value'},
+        transform: jsTransformName
+        }).
+        result(function(response) {
+          db.documents.read(writeUri).
+          result(function(documents) {
+            documents.length.should.equal(1);
+            documents[0].content.should.have.property('timestamp');
+            documents[0].content.should.have.property('userName');
+            documents[0].content.userName.should.eql('rest-writer');
+          done();
+          }, done);
+        }, done);
+    });
+ */
+    it('should modify during read', function(done){
+      db.documents.read({
+        uris: readUri,
+        transform: jsTransformName
+        }).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          documents[0].content.should.have.property('timestamp');
+          documents[0].content.should.have.property('userName');
+          documents[0].content.userName.should.eql('rest-writer');
+          done();
+          }, done);
+    });
+    it('should modify during query', function(done){
+      db.documents.query(
+          q.where(
+            q.document(readUri)
+            ).
+          slice(1, 10,
+            q.transform(jsTransformName)
+            )
+          ).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          documents[0].content.should.have.property('timestamp');
+          documents[0].content.should.have.property('userName');
+          documents[0].content.userName.should.eql('rest-writer');
           done();
           }, done);
     });
