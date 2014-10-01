@@ -403,8 +403,9 @@ describe('document content', function(){
         });
         it('should not exist', function(done){
           db.documents.remove('/test/remove/doc1.json').
-            result(function(result) {
-              return db.documents.probe('/test/remove/doc1.json').result();
+            result(function(document) {
+              document.should.have.property('uri');
+              return db.documents.probe(document.uri).result();
               }, done).
             then(function(document) {
               valcheck.isUndefined(document).should.equal(false);

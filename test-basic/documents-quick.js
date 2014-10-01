@@ -94,10 +94,12 @@ describe('quick path', function(){
       done();
       }, done);
   });
-  it('should remove', function(done){
-    db.remove('/test/quick/object1.json').
-    result(function(result) {
-      return db.probe('/test/quick/object1.json').result();
+  it('should remove a document', function(done) {
+    var docUri = '/test/quick/object1.json';
+    db.remove(docUri).
+    result(function(uri) {
+      docUri.should.eql(uri);
+      return db.probe(docUri).result();
       }, done).
     then(function(exists) {
       exists.should.eql(false);
@@ -111,10 +113,12 @@ describe('quick path', function(){
       done();
       }, done);
   });
-  it('should remove collections', function(done){
+  it('should remove a collection', function(done){
+    var collectionUri = '/quickdocs';
     this.timeout(3000);
-    db.removeCollection('/quickdocs').
-    result(function(result) {
+    db.removeCollection(collectionUri).
+    result(function(collection) {
+      collectionUri.should.eql(collection);
       return db.probe('/test/quick/object2.json').result();
       }, done).
     then(function(exists) {
