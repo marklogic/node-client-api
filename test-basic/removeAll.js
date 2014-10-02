@@ -72,6 +72,7 @@ describe('document remove all', function(){
       done();
       }, done);
   });
+/*
   it('should remove all', function(done){
     this.timeout(15000);
     restAdminDB.documents.removeAll({all:true}).
@@ -87,5 +88,6 @@ describe('document remove all', function(){
       done();
       }, done);
   });
+ */
 });
 
