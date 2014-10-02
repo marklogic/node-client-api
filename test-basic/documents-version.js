@@ -94,7 +94,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTNOVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
         done();
       });
     });
@@ -107,7 +107,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTWRONGVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
         done();
       });
     });
@@ -156,7 +156,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTNOVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
         done();
       });
     });
@@ -174,7 +174,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTWRONGVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
         done();
       });
     });

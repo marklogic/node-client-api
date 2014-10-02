@@ -183,4 +183,13 @@ describe('patch-builder', function() {
           }}
         );
   });
+  it('should declare a library', function(){
+    assert.deepEqual(
+        p.library('replaceLib.xqy'),
+        {'replace-library':{
+          ns: '/ext/marklogic/patch/apply/replaceLib',
+          at: '/ext/marklogic/patch/apply/replaceLib.xqy'
+          }}
+        );
+  });
 });

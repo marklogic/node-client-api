@@ -122,7 +122,7 @@ describe('extension libraries', function(){
         q.where(
           q.parsedFrom('dirs:/test/',
             q.parseBindings(
-              q.parseFunction('directoryConstraint', q.bind('dirs'))
+              q.parseFunction('directoryConstraint.xqy', q.bind('dirs'))
               ))
           )
         ).
@@ -136,7 +136,7 @@ describe('extension libraries', function(){
       db.documents.query(
           q.where().
           calculate(
-              q.facet('directories', q.calculateFunction('directoryConstraint'))
+              q.facet('directories', q.calculateFunction('directoryConstraint.xqy'))
               ).
           slice(0)
           ).
@@ -155,12 +155,12 @@ describe('extension libraries', function(){
                 q.parseBindings(
                   q.range('rangeKey1', q.bind('range'),
                       q.rangeOptions('max-occurs=10')),
-                  q.parseFunction('directoryConstraint', q.bind('dirs'))
+                  q.parseFunction('directoryConstraint.xqy', q.bind('dirs'))
                   ))
               ).
           calculate(
               q.facet('range', 'rangeKey1', q.facetOptions('item-frequency')),
-              q.facet('dirs', q.calculateFunction('directoryConstraint'))
+              q.facet('dirs', q.calculateFunction('directoryConstraint.xqy'))
               ).
           slice(0)
           ).

@@ -64,7 +64,7 @@ describe('document transform', function(){
       result(function(response){
         response.should.have.property('transforms');
         response.transforms.should.have.property('transform');
-        response.transforms.transform.length.should.be.greaterThan(1);
+        response.transforms.transform.length.should.be.greaterThan(0);
         response.transforms.transform.some(function(item){
           return item.name === xqyTransformName;
           }).should.equal(true);

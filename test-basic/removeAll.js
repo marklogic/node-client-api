@@ -73,7 +73,7 @@ describe('document remove all', function(){
       }, done);
   });
   it('should remove all', function(done){
-    this.timeout(9000);
+    this.timeout(15000);
     restAdminDB.documents.removeAll({all:true}).
     result(function(result) {
       return db.documents.probe('/removeAll/all/doc'+1+'.txt').result();
