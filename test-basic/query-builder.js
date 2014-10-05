@@ -380,7 +380,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoAttributePair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
-            q.fragmentScope('documents'), q.geoOption('boundaries-included')),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}],
@@ -416,7 +416,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElement('parent', 'element', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}],
@@ -455,7 +455,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElementPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
-            q.fragmentScope('documents'), q.geoOption('boundaries-included')),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}],
@@ -492,7 +492,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoPath(q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2),
-            q.fragmentScope('documents'), q.geoOption('boundaries-included')),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
           point:[{latitude:1.1, longitude:2.2}],
           'fragment-scope': 'documents',
@@ -502,19 +502,19 @@ describe('query-builder', function() {
 
   it('should create geo options', function(){
     assert.deepEqual(
-        q.geoOption('boundaries-included'),
+        q.geoOptions('boundaries-included'),
         {'geo-option':['boundaries-included']}
         );
     assert.deepEqual(
-        q.geoOption(['boundaries-included']),
+        q.geoOptions(['boundaries-included']),
         {'geo-option':['boundaries-included']}
         );
     assert.deepEqual(
-        q.geoOption('boundaries-included', 'boundaries-latitude-excluded'),
+        q.geoOptions('boundaries-included', 'boundaries-latitude-excluded'),
         {'geo-option':['boundaries-included', 'boundaries-latitude-excluded']}
         );
     assert.deepEqual(
-        q.geoOption(['boundaries-included', 'boundaries-latitude-excluded']),
+        q.geoOptions(['boundaries-included', 'boundaries-latitude-excluded']),
         {'geo-option':['boundaries-included', 'boundaries-latitude-excluded']}
         );
   });
@@ -782,6 +782,132 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.qname(['foo', 'bar']),
         {qname:{ns: 'foo', name: 'bar'}}
+        );
+  });
+
+  it('should create a current time query', function(){
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection'),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection'}}
+        );
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection', '2014-09-05T00:00:00.000Z'),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection',
+         timestamp: '2014-09-05T00:00:00.000Z'}}
+        );
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection', new Date('2014-09-05T00:00:00.000Z')),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection',
+         timestamp: '2014-09-05T00:00:00.000Z'}}
+        );
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection', q.weight(2)),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection',
+         weight: 2}}
+        );
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection', 2),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection',
+         weight: 2}}
+        );
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection',
+            q.temporalOptions('cached')),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection',
+         'query-option':['cached']}}
+        );
+    assert.deepEqual(
+        q.currentTime('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
+            q.temporalOptions('cached')),
+        {'current-query':{
+         'temporal-collection': 'bitemporalCollection',
+         timestamp: '2014-09-05T00:00:00.000Z',
+         weight: 2,
+         'query-option':['cached']}}
+        );
+  });
+  it('should create a period compare query', function(){
+    assert.deepEqual(
+        q.periodCompare('axis1', 'ALN_CONTAINS', 'axis2'),
+        {'period-compare-query':{
+          axis1:    'axis1',
+          operator: 'ALN_CONTAINS',
+          axis2:    'axis2'}}
+        );
+    assert.deepEqual(
+        q.periodCompare('axis1', 'ALN_CONTAINS', 'axis2',
+            q.temporalOptions('cached')),
+        {'period-compare-query':{
+          axis1:    'axis1',
+          operator: 'ALN_CONTAINS',
+          axis2:    'axis2',
+          'query-option':['cached']}}
+        );
+  });
+  it('should create a period range query', function(){
+    assert.deepEqual(
+        q.periodRange('axis1', 'ALN_CONTAINS',
+            q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z')),
+        {'period-range-query':{
+          axis:     'axis1',
+          operator: 'ALN_CONTAINS',
+          period:   {
+            'period-start': '2014-09-05T00:00:00.000Z',
+            'period-end':   '2014-10-05T00:00:00.000Z'
+            }}}
+        );
+    assert.deepEqual(
+        q.periodRange('axis1', 'ALN_CONTAINS',
+            q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z'),
+            q.temporalOptions('cached')),
+        {'period-range-query':{
+          axis:     'axis1',
+          operator: 'ALN_CONTAINS',
+          period:   {
+            'period-start': '2014-09-05T00:00:00.000Z',
+            'period-end':   '2014-10-05T00:00:00.000Z'
+            },
+          'query-option':['cached']}}
+        );
+  });
+  it('should specify a period', function(){
+    assert.deepEqual(
+        q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z'),
+        {period:{
+          'period-start': '2014-09-05T00:00:00.000Z',
+          'period-end':   '2014-10-05T00:00:00.000Z'
+          }}
+        );
+    assert.deepEqual(
+        q.period(new Date('2014-09-05'), new Date('2014-10-05')),
+        {period:{
+          'period-start': '2014-09-05T00:00:00.000Z',
+          'period-end':   '2014-10-05T00:00:00.000Z'
+          }}
+        );
+  });
+  it('should specify temporal options', function(){
+    assert.deepEqual(
+        q.temporalOptions('cached'),
+        {'temporal-option':['cached']}
+        );
+    assert.deepEqual(
+        q.temporalOptions(['cached']),
+        {'temporal-option':['cached']}
+        );
+    assert.deepEqual(
+        q.temporalOptions('cached', 'score-function=linear'),
+        {'temporal-option':['cached', 'score-function=linear']}
+        );
+    assert.deepEqual(
+        q.temporalOptions(['cached', 'score-function=linear']),
+        {'temporal-option':['cached', 'score-function=linear']}
         );
   });
 
@@ -1218,7 +1344,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-attr-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           'geo-option':['boundaries-included']},
@@ -1240,7 +1366,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElement('parent', 'element', q.bind('constraint1'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'},
           'geo-option':['boundaries-included']},
@@ -1262,7 +1388,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-elem-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           'geo-option':['boundaries-included']},
@@ -1282,7 +1408,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoPath('foo', q.bind('constraint1'), q.geoOption('boundaries-included')),
+        q.geoPath('foo', q.bind('constraint1'), q.geoOptions('boundaries-included')),
         {'geo-path':{'path-index':{text: 'foo', namespaces: ''},
           'geo-option':['boundaries-included']},
           name:'constraint1'}

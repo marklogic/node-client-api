@@ -484,6 +484,7 @@ describe('document metadata', function(){
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
+            document.should.have.property('collections');
             document.collections.length.should.equal(2);
             for (var i=0; i < 2; i++) {
               document.collections[i].should.equal('collection1/'+i);
@@ -521,6 +522,7 @@ describe('document metadata', function(){
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
+            document.should.have.property('collections');
             document.collections.length.should.equal(2);
             for (var i=0; i < 2; i++) {
               document.collections[i].should.equal('collectionDefault/'+i);
@@ -576,7 +578,6 @@ describe('document metadata', function(){
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
-            valcheck.isUndefined(document).should.equal(false);
             document.should.have.property('collections');
             document.collections.length.should.equal(2);
             for (var i=0; i < 2; i++) {

@@ -33,7 +33,7 @@ db.documents.query(
       selected:'include-with-ancestors',
       paths:[
         '/node("name")',
-        '//node()[node("unit") eq "years"]'
+        '//node("total")[node("unit") eq "years"]'
         ]
       })
     )
