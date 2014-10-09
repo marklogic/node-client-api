@@ -13,15 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function getVersionService(context, params) {
-  return {
-    architecture: xdmp.architecture(),
-    edition:      xdmp.productEdition(),
-    platform:     xdmp.platform(),
-    version:      xdmp.version()
-  };
-}
+var test;
+var extra;
 
-module.exports = {
-    GET: getVersionService
-};
+switch(test) {
+case  1:
+  xdmp.toJSON({k:'v'});
+  break;
+case  2:
+  xdmp.unquote('<a>element</a>');
+  break;
+case  3:
+  xdmp.xqueryEval('binary{xdmp:integer-to-hex(255)}');
+  break;
+case  4:
+  xdmp.xqueryEval('text{"text value"}');
+  break;
+case  5:
+  "string value";
+  break;
+case  6:
+  true;
+  break;
+case  7:
+  3;
+  break;
+case  8:
+  4.4;
+  break;
+case  9:
+  new Date("2010-10-08T10:17:15.125Z");
+  break;
+default:
+  extra;
+  break;
+}

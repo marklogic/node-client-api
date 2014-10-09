@@ -42,7 +42,7 @@ describe('document patch', function(){
       var p = marklogic.patchBuilder;
       db.documents.patch(uri1,
           p.pathLanguage('jsonpath'),
-          p.insert('$.arrayParentKey', 'last-child', 'appended value'),
+          p.insert('$["arrayParentKey"]', 'last-child', 'appended value'),
           p.replace('$.objectParentKey.replacementKey', 'replacement value'),
           p.remove('$.deletableKey')
           ).
@@ -82,9 +82,9 @@ describe('document patch', function(){
       var p = marklogic.patchBuilder;
       db.documents.patch(uri1,
           p.insert('/node("arrayParentKey")', 'last-child', 'appended value'),
-          p.replace('/node("objectParentKey")/node("replacementKey")',
+          p.replace('/objectParentKey/replacementKey',
               'replacement value'),
-          p.remove('/node("deletableKey")')
+          p.remove('/deletableKey')
           ).
       result(function(response){
         db.documents.read(uri1).
@@ -124,34 +124,30 @@ describe('document patch', function(){
     it('should insert, replace, and delete', function(done) {
       var p = marklogic.patchBuilder;
       db.documents.patch({uri:uri1, categories:['metadata'], operations:[
-// TODO:
-//        p.insert('node("collections")[text() eq "collection1/1"]', 'before',
-//            'collection1/INSERTED_BEFORE'),
+          p.insert('collections[. eq "collection1/1"]', 'before',
+              'collection1/INSERTED_BEFORE'),
           p.insert('array-node("collections")', 'last-child',
               'collection1/INSERTED_LAST'),
-// TODO:
-//        p.remove('node("collections")[text() eq "collection1/0"]'),
-          p.replace('node("permissions")[node("role-name") eq "app-user"]',
+          p.remove('collections[. eq "collection1/0"]'),
+          p.replace('permissions[role-name eq "app-user"]',
               {'role-name':'app-builder', capabilities:['read', 'update']}
               ),
-          p.insert('node("properties")/node("property2")', 'before',
+          p.insert('properties/property2', 'before',
               {propertyINSERTED_BEFORE2: 'property value INSERTED_BEFORE'}),
           p.insert('node("properties")', 'last-child',
               {propertyINSERTED_LAST: 'property value INSERTED_LAST'}),
-          p.remove('node("properties")/node("property1")'),
-          p.replace('node("quality")', 2)
+          p.remove('properties/property1'),
+          p.replace('quality', 2)
           ]}).
       result(function(response){
         db.documents.read({uris:uri1, categories:['metadata']}).
         result(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
-/* TODO:
           document.collections.length.should.equal(3);
           document.collections[0].should.equal('collection1/INSERTED_BEFORE');
           document.collections[1].should.equal('collection1/1');
           document.collections[2].should.equal('collection1/INSERTED_LAST');
- */
           document.collections[document.collections.length - 1].should.equal('collection1/INSERTED_LAST');
           document.should.have.property('permissions');
           var foundAppUser    = false;
@@ -209,7 +205,7 @@ describe('document patch', function(){
           {pathlang:'jsonpath',
            patch:[
              {insert:{
-               context:  '$.arrayParentKey',
+               context:  '$["arrayParentKey"]',
                position: 'last-child',
                content:  'appended value'
                }},
@@ -288,7 +284,7 @@ describe('document patch', function(){
           operations:{pathlang:'jsonpath',
            patch:[
              {insert:{
-               context:  '$.arrayParentKey',
+               context:  '$["arrayParentKey"]',
                position: 'last-child',
                content:  'appended value'
                }},

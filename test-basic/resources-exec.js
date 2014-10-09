@@ -176,5 +176,6 @@ describe('when executing resource services', function(){
         done();
       }, done);
     });
+    // TODO: other services for JavaScript
   });
 });

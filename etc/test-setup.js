@@ -35,6 +35,28 @@ function createManager(adminUser, adminPassword) {
 
   setupUsers(manager, setup);
 }
+function createAxis(manager, name) {
+  return manager.post({
+    endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes',
+    body: {
+      'axis-name': name+'time',
+      'axis-start': {
+        'element-reference': {
+          'namespace-uri': '',
+          'localname': name+'StartTime',
+          'scalar-type': 'dateTime'
+          }
+        },
+      'axis-end': {
+        'element-reference': {
+          'namespace-uri': '',
+          'localname': name+'EndTime',
+          'scalar-type': 'dateTime'
+          }
+        }
+      }
+    }).result();
+}
 function setup(manager) {
   console.log('checking for '+testconfig.testServerName);
   manager.get({
@@ -102,10 +124,14 @@ function setup(manager) {
             var rangeElementIndex = response.data['range-element-index'];
 
             var rangeTest = {
-                rangeKey1: 'string',
-                rangeKey2: 'string',
-                rangeKey3: 'int',
-                rangeKey4: 'int'
+                rangeKey1:       'string',
+                rangeKey2:       'string',
+                rangeKey3:       'int',
+                rangeKey4:       'int',
+                systemStartTime: 'dateTime',
+                systemEndTime:   'dateTime',
+                validStartTime:  'dateTime',
+                validEndTime:    'dateTime'
                 };
             var rangers = [];
             if (valcheck.isNullOrUndefined(rangeElementIndex)) {
@@ -156,6 +182,47 @@ function setup(manager) {
                 },
               body:        body,
               hasResponse: true
+              }).result();
+            }).
+          then(function(response) {
+            return manager.get({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemtime'
+              }).result();
+          }).
+          then(function(response) {
+            if (response.statusCode < 400) {
+              return this;
+            }
+            return createAxis(manager, 'system');
+          }).
+          then(function(response) {
+            return manager.get({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validtime'
+              }).result();
+          }).
+          then(function(response) {
+            if (response.statusCode < 400) {
+              return this;
+            }
+            return createAxis(manager, 'valid');
+            }).
+          then(function(response) {
+            return manager.get({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+
+                '/temporal/collections/temporalCollection'
+              }).result();
+            }).
+          then(function(response) {
+            if (response.statusCode < 400) {
+              return this;
+            }
+            return manager.post({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections',
+              body: {
+                'collection-name': 'temporalCollection',
+                'system-axis': 'systemtime',
+                'valid-axis': 'validtime'
+                }
               }).result();
             }).
           then(function(response) {

@@ -21,12 +21,12 @@ var mlutil    = require('../lib/mlutil.js');
 //CAUTION: the functions in this module are not part of the supported API and
 //may change or may be removed at any time.
 
-function responseOutputTransform(data) {
+function responseOutputTransform(headers, data) {
   var operation = this;
 
   var response = {
       statusCode: operation.responseStatusCode,
-      headers:    operation.responseHeaders
+      headers:    headers
   };
   if (!valcheck.isNullOrUndefined(data)) {
     response.data = data;
