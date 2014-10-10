@@ -61,7 +61,7 @@ describe('document content', function(){
         db.documents.write({
           uri: '/test/write/object1.json',
           contentType: 'application/json',
-          content: {key1: "value 1"}
+          content: {key1: 'value 1'}
           }).
         result(function(response){done();}, done);
       });

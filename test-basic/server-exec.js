@@ -172,7 +172,6 @@ describe('server-side call', function() {
     boundary conditions on numbers
  */
   });
-/* BLOCKING ON http://bugtrack.marklogic.com/29739
   describe('to invoke JavaScript', function() {
     var fsPath     = './test-basic/data/echoModule.js';
     var invokePath = '/ext/invokeTest/echoModule.sjs';
@@ -262,7 +261,6 @@ describe('server-side call', function() {
     });
     // TODO: multiple values
   });
- */
   describe('to invoke XQuery', function() {
     var fsPath     = './test-basic/data/echoModule.xqy';
     var dbPath     = '/invokeTest/echoModule.xqy';

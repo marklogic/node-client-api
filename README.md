@@ -14,11 +14,11 @@ This branch provides the work in progress for the Early Access Release 3 of the 
 * server-side transforms on query response summary and result documents in slice() clause
 * snippets including custom snippets in slice() clause
 * projection from result documents (extract)
-* resource service CRUD and invocation for XQuery -- except JavaScript services
+* resource service CRUD and invocation for XQuery
 * graph CRUD and SPARQL query
 * specifying the database when creating a database client
 * search suggest
-* server-side eval -- except JavaScript invoke
+* server-side eval
 
 ## Getting started
 
