@@ -820,7 +820,7 @@ describe('query-builder', function() {
             q.temporalOptions('cached')),
         {'current-query':{
          'temporal-collection': 'bitemporalCollection',
-         'query-option':['cached']}}
+         'temporal-option':['cached']}}
         );
     assert.deepEqual(
         q.currentTime('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
@@ -829,7 +829,7 @@ describe('query-builder', function() {
          'temporal-collection': 'bitemporalCollection',
          timestamp: '2014-09-05T00:00:00.000Z',
          weight: 2,
-         'query-option':['cached']}}
+         'temporal-option':['cached']}}
         );
   });
   it('should create a period compare query', function(){
@@ -847,7 +847,7 @@ describe('query-builder', function() {
           axis1:               'axis1',
           'temporal-operator': 'ALN_CONTAINS',
           axis2:               'axis2',
-          'query-option':['cached']}}
+          'temporal-option':['cached']}}
         );
   });
   it('should create a period range query', function(){
@@ -873,7 +873,7 @@ describe('query-builder', function() {
             'period-start': '2014-09-05T00:00:00.000Z',
             'period-end':   '2014-10-05T00:00:00.000Z'
             },
-          'query-option':['cached']}}
+          'temporal-option':['cached']}}
         );
   });
   it('should specify a period', function(){

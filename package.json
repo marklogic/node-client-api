@@ -2,6 +2,7 @@
   "author": "MarkLogic",
   "name": "marklogic",
   "description": "Provides a Node.js client interface to the MarkLogic database server",
+  "homepage": "http://github.com/marklogic/node-client-api",
   "version": "1.0.0-ea3",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
@@ -33,7 +34,7 @@
     "url": "http://github.com/marklogic/node-client-api.git"
   },
   "engines": {
-    "node": "*"
+    "node": ">=0.10.28 <0.11"
   },
   "devDependencies": {
     "gulp": "^3.6.1",
