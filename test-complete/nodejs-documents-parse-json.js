@@ -113,7 +113,7 @@ describe('Document parse binding test', function(){
     result(function(response) {
       response.length.should.equal(1);
       response[0].content.id.should.equal('0026');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -134,7 +134,7 @@ describe('Document parse binding test', function(){
       response.length.should.equal(2);
       response[0].content.id.should.equal('0024');
       response[1].content.id.should.equal('0013');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -153,7 +153,7 @@ describe('Document parse binding test', function(){
     result(function(response) {
       response.length.should.equal(1);
       response[0].content.id.should.equal('0024');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -171,7 +171,7 @@ describe('Document parse binding test', function(){
     ).
     result(function(response) {
       response.length.should.equal(0);
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
@@ -189,7 +189,7 @@ describe('Document parse binding test', function(){
     ).
     result(function(response) {
       response.length.should.not.equal(0);
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
   });
