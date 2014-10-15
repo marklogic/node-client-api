@@ -75,8 +75,8 @@ describe('Extension library test', function(){
       transform: [transformName]
     }).
     result(function(response) {
-      //console.log(response)
-      response[0].content.should.containEql('<firstname>');
+      //console.log(JSON.stringify(response, null, 4));
+      response[0].should.containEql('<firstname>');
       done();
     }, done);
   });
@@ -89,8 +89,9 @@ describe('Extension library test', function(){
       withOptions({transform: [transformName]})
     ).
     result(function(response) {
-      //console.log(response)
-      response[0].content.should.containEql('<firstname>');
+      console.log(response);
+	  console.log(JSON.stringify(response, null, 4));
+      //response[0].content.should.containEql('<firstname>');
       done();
     }, done);
   });
