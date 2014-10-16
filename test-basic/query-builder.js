@@ -391,6 +391,24 @@ describe('query-builder', function() {
 
   it('should create geo-element queries', function(){
     assert.deepEqual(
+        q.geoElement('element', q.latlon(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoElement(q.qname('element'), q.point(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoElement(q.element('element'), q.point(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
         q.geoElement('parent', 'element', q.latlon(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
@@ -494,6 +512,80 @@ describe('query-builder', function() {
         q.geoPath(q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2),
             q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
+          point:[{latitude:1.1, longitude:2.2}],
+          'fragment-scope': 'documents',
+          'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-json-property queries', function(){
+    assert.deepEqual(
+        q.geoProperty('property1', q.latlon(1.1, 2.2)),
+        {'geo-json-property-query':{
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty(q.property('property1'), q.point(1.1, 2.2)),
+        {'geo-json-property-query':{
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2)),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty(q.property('parent'), q.property('property1'), q.point(1.1, 2.2)),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty([q.property('parent'), q.property('property1'), q.point(1.1, 2.2)]),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
+            q.geoOptions('boundaries-included')),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}],
+          'fragment-scope': 'documents',
+          'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-json-property-pair queries', function(){
+    assert.deepEqual(
+        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2)),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair(q.property('parent'), q.property('latitude'), q.property('longitude'),
+            q.point(1.1, 2.2)),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair([q.property('parent'), q.property('latitude'), q.property('longitude'),
+                          q.point(1.1, 2.2)]),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
           point:[{latitude:1.1, longitude:2.2}],
           'fragment-scope': 'documents',
           'geo-option':['boundaries-included']}}
