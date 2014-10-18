@@ -27,25 +27,26 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
+/* ASSUMPTION: this test will not be run more frequently
+ * than once every 10 seconds. To run more frequently,
+ * adjust the temporal intervals accordingly.
+ */
 describe('temporal document', function() {
-  var stamp = Math.random().toString();
-
-  var startNow = Date.now();
-
   var uri1 = '/test/temporal/doc1.json';
   var uri2 = '/test/temporal/doc2.json';
 
-  var validStart = new Date(startNow);
-  validStart.setFullYear(validStart.getFullYear() - 3);
+  var rangeStart = new Date();
+  var baseSeconds = getBaseSeconds(rangeStart);
+  rangeStart.setSeconds(baseSeconds);
 
-  var validEnd = new Date(startNow);
-  validEnd.setFullYear(validEnd.getFullYear() - 2);
+  var validStart = new Date(rangeStart.getTime());
+  validStart.setSeconds(baseSeconds + 1);
 
-  var rangeStart = new Date(validStart.getTime());
-  rangeStart.setFullYear(validStart.getFullYear() - 1);
+  var validEnd = new Date(rangeStart.getTime());
+  validEnd.setSeconds(baseSeconds + 5);
 
-  var rangeEnd = new Date(validEnd.getTime());
-  rangeEnd.setFullYear(validEnd.getFullYear() + 1);
+  var rangeEnd = new Date(rangeStart.getTime());
+  rangeEnd.setSeconds(baseSeconds + 6);
 
   it('should write and read temporal documents', function(done) {
     db.documents.write({
@@ -55,7 +56,6 @@ describe('temporal document', function() {
           contentType: 'application/json',
           content: {
             property1:       'belief 1',
-            stamp:           stamp,
             systemStartTime: '1111-11-11T11:11:11Z',
             systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
@@ -66,7 +66,6 @@ describe('temporal document', function() {
           contentType: 'application/json',
           content: {
             property1:       'belief 2',
-            stamp:           stamp,
             systemStartTime: '1111-11-11T11:11:11Z',
             systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
@@ -93,10 +92,9 @@ describe('temporal document', function() {
       }
       done();}, done);
   });
-/*
+/* TODO: depends on a REST interface to temporal:advance-lsqt()
   it('should query current temporal documents', function(done) {
     db.documents.query(q.where(
-        q.value('stamp', stamp),
         q.currentTime('temporalCollection')
       )).
     result(function(documents) {
@@ -113,7 +111,6 @@ describe('temporal document', function() {
  */
   it('should query a range of temporal documents', function(done) {
     db.documents.query(q.where(
-      q.value('stamp', stamp),
       q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
       )).
     result(function(documents) {
@@ -136,7 +133,6 @@ describe('temporal document', function() {
           contentType: 'application/json',
           content: {
             property1:       'deletable belief',
-            stamp:           stamp,
             systemStartTime: '1111-11-11T11:11:11Z',
             systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
@@ -152,7 +148,6 @@ describe('temporal document', function() {
     then(function(response) {
       return db.documents.query(q.where(
           q.document(delUri1),
-          q.value('stamp', stamp),
           q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
         )).result();
       }, done).
@@ -169,3 +164,19 @@ describe('temporal document', function() {
       }, done);
   });
 });
+
+function getBaseSeconds(date) {
+  var seconds = date.getSeconds();
+
+  var floor=0;
+  while (floor < 50) {
+    var ceiling = floor + 10;
+    if (seconds < ceiling) {
+      break;
+    }
+    floor=ceiling;
+  }
+  seconds = floor;
+
+  return seconds;
+}
