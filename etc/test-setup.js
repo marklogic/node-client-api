@@ -39,7 +39,7 @@ function createAxis(manager, name) {
   return manager.post({
     endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes',
     body: {
-      'axis-name': name+'time',
+      'axis-name': name+'Time',
       'axis-start': {
         'element-reference': {
           'namespace-uri': '',
@@ -166,6 +166,7 @@ function setup(manager) {
             var body = {
                 'collection-lexicon':   true,
                 'triple-index':         true,
+                'schema-database':      testconfig.testServerName+'-modules',
                 };
             if (valcheck.isArray(elementWordLexicon) && elementWordLexicon.length > 0) {
               body['element-word-lexicon'] = elementWordLexicon;
@@ -186,7 +187,7 @@ function setup(manager) {
             }).
           then(function(response) {
             return manager.get({
-              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemtime'
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
               }).result();
           }).
           then(function(response) {
@@ -197,7 +198,7 @@ function setup(manager) {
           }).
           then(function(response) {
             return manager.get({
-              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validtime'
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
               }).result();
           }).
           then(function(response) {
@@ -220,8 +221,30 @@ function setup(manager) {
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections',
               body: {
                 'collection-name': 'temporalCollection',
-                'system-axis': 'systemtime',
-                'valid-axis': 'validtime'
+                'system-axis': 'systemTime',
+                'valid-axis': 'validTime',
+                option: ['updates-admin-override']
+                }
+              }).result();
+            }).
+          then(function(response) {
+            return manager.get({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+
+              '/temporal/collections/LSQT/properties?collection=temporalCollection'
+              }).result();
+            }).
+          then(function(response) {
+            if (response.statusCode < 400) {
+              return this;
+            }
+            return manager.put({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+
+                '/temporal/collections/LSQT/properties?collection=temporalCollection',
+              body: {
+                'LSQT-enabled': true,
+                automation: {
+                  enabled: false
+                  }
                 }
               }).result();
             }).

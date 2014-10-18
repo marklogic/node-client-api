@@ -56,8 +56,8 @@ describe('temporal document', function() {
           content: {
             property1:       'belief 1',
             stamp:           stamp,
-            systemStartTime: startNow,
-            systemEndTime:   startNow,
+            systemStartTime: '1111-11-11T11:11:11Z',
+            systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
             validEndTime:    validEnd
           }
@@ -67,8 +67,8 @@ describe('temporal document', function() {
           content: {
             property1:       'belief 2',
             stamp:           stamp,
-            systemStartTime: startNow,
-            systemEndTime:   startNow,
+            systemStartTime: '1111-11-11T11:11:11Z',
+            systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
             validEndTime:    validEnd
             }
@@ -93,6 +93,7 @@ describe('temporal document', function() {
       }
       done();}, done);
   });
+/*
   it('should query current temporal documents', function(done) {
     db.documents.query(q.where(
         q.value('stamp', stamp),
@@ -109,10 +110,11 @@ describe('temporal document', function() {
       done();
     }, done);
   });
+ */
   it('should query a range of temporal documents', function(done) {
     db.documents.query(q.where(
-        q.value('stamp', stamp),
-        q.periodRange('validtime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
+      q.value('stamp', stamp),
+      q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
       )).
     result(function(documents) {
       documents.should.have.property('length');
@@ -125,35 +127,45 @@ describe('temporal document', function() {
       done();
     }, done);
   });
-/* TODO: repeatable test, query for deleted
   it('should remove temporal documents', function(done) {
-    db.documents.remove({
+    var delUri1 = '/test/temporal/deletableDoc1.json';
+    db.documents.write({
       temporalCollection: 'temporalCollection',
-      uri: uri1
-      }).
-    result(function(response) {
+      documents:[{
+          uri: delUri1,
+          contentType: 'application/json',
+          content: {
+            property1:       'deletable belief',
+            stamp:           stamp,
+            systemStartTime: '1111-11-11T11:11:11Z',
+            systemEndTime:   '9999-12-31T23:59:59Z',
+            validStartTime:  validStart,
+            validEndTime:    validEnd
+          }
+        }]}).result().
+    then(function(response) {
       return db.documents.remove({
         temporalCollection: 'temporalCollection',
-        uri: uri2
+        uri: delUri1
         }).result();
       }, done).
     then(function(response) {
       return db.documents.query(q.where(
+          q.document(delUri1),
           q.value('stamp', stamp),
-          q.periodRange('validtime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
+          q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
         )).result();
       }, done).
     then(function(documents) {
       documents.should.have.property('length');
-      documents.length.should.equal(2);
+      documents.length.should.equal(1);
       var latestNow = Date.now();      
-      documents.forEach(function(document){
-        document.should.have.property('content');
-        document.content.should.have.property('systemEndTime');
-        var documentEnd = new Date(document.content.systemEndTime).getTime();
-        latestNow.should.be.greaterThan(documentEnd);
-        });
+      var document = documents[0];
+      document.should.have.property('content');
+      document.content.should.have.property('systemEndTime');
+      var documentEnd = new Date(document.content.systemEndTime).getTime();
+      latestNow.should.be.greaterThan(documentEnd);
+      done();
       }, done);
   });
-  */
 });
