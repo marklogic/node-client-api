@@ -1763,8 +1763,7 @@ describe('query-builder', function() {
         q.facet('key1'),
         {range:{
           'json-property': 'key1',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'key1'}
         );
@@ -1772,8 +1771,7 @@ describe('query-builder', function() {
         q.facet(q.field('field2')),
         {range:{
           field: 'field2',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'field2'}
         );
@@ -1781,8 +1779,7 @@ describe('query-builder', function() {
         q.facet('facet3', 'key3'),
         {range:{
           'json-property': 'key3',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'facet3'}
         );
@@ -1790,8 +1787,7 @@ describe('query-builder', function() {
         q.facet('facet4', q.field('field4')),
         {range:{
           field: 'field4',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'facet4'}
         );
@@ -1800,7 +1796,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key5',
           facet: true,
-          type: 'xs:string',
           'facet-option': ['item-frequency', 'descending']
           },
           name:'key5'}
@@ -1813,7 +1808,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key6',
           facet: true,
-          type: 'xs:string',
           bucket:[
               {name: 'bucket6A', label: 'bucket6A', lt: 60},
               {name: 'bucket6B', label: 'bucket6B', ge: 60, lt: 65},
@@ -1829,7 +1823,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key7',
           facet: true,
-          type: 'xs:string',
           'computed-bucket':[
               {name: 'bucket7A', label: 'bucket7A', anchor: 'now',
                 ge:  'P0D', lt: 'P1D'},
@@ -1848,7 +1841,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key8',
           facet: true,
-          type: 'xs:string',
           'computed-bucket':[
               {name: 'bucket8A', label: 'bucket8A',
                   'ge-anchor': '-P30D', ge:  'P0H',
