@@ -391,6 +391,24 @@ describe('query-builder', function() {
 
   it('should create geo-element queries', function(){
     assert.deepEqual(
+        q.geoElement('element', q.latlon(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoElement(q.qname('element'), q.point(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoElement(q.element('element'), q.point(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
         q.geoElement('parent', 'element', q.latlon(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
@@ -494,6 +512,80 @@ describe('query-builder', function() {
         q.geoPath(q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2),
             q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
+          point:[{latitude:1.1, longitude:2.2}],
+          'fragment-scope': 'documents',
+          'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-json-property queries', function(){
+    assert.deepEqual(
+        q.geoProperty('property1', q.latlon(1.1, 2.2)),
+        {'geo-json-property-query':{
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty(q.property('property1'), q.point(1.1, 2.2)),
+        {'geo-json-property-query':{
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2)),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty(q.property('parent'), q.property('property1'), q.point(1.1, 2.2)),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty([q.property('parent'), q.property('property1'), q.point(1.1, 2.2)]),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
+            q.geoOptions('boundaries-included')),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}],
+          'fragment-scope': 'documents',
+          'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-json-property-pair queries', function(){
+    assert.deepEqual(
+        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2)),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair(q.property('parent'), q.property('latitude'), q.property('longitude'),
+            q.point(1.1, 2.2)),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair([q.property('parent'), q.property('latitude'), q.property('longitude'),
+                          q.point(1.1, 2.2)]),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
           point:[{latitude:1.1, longitude:2.2}],
           'fragment-scope': 'documents',
           'geo-option':['boundaries-included']}}
@@ -1671,8 +1763,7 @@ describe('query-builder', function() {
         q.facet('key1'),
         {range:{
           'json-property': 'key1',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'key1'}
         );
@@ -1680,8 +1771,7 @@ describe('query-builder', function() {
         q.facet(q.field('field2')),
         {range:{
           field: 'field2',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'field2'}
         );
@@ -1689,8 +1779,7 @@ describe('query-builder', function() {
         q.facet('facet3', 'key3'),
         {range:{
           'json-property': 'key3',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'facet3'}
         );
@@ -1698,8 +1787,7 @@ describe('query-builder', function() {
         q.facet('facet4', q.field('field4')),
         {range:{
           field: 'field4',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'facet4'}
         );
@@ -1708,7 +1796,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key5',
           facet: true,
-          type: 'xs:string',
           'facet-option': ['item-frequency', 'descending']
           },
           name:'key5'}
@@ -1721,7 +1808,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key6',
           facet: true,
-          type: 'xs:string',
           bucket:[
               {name: 'bucket6A', label: 'bucket6A', lt: 60},
               {name: 'bucket6B', label: 'bucket6B', ge: 60, lt: 65},
@@ -1737,7 +1823,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key7',
           facet: true,
-          type: 'xs:string',
           'computed-bucket':[
               {name: 'bucket7A', label: 'bucket7A', anchor: 'now',
                 ge:  'P0D', lt: 'P1D'},
@@ -1756,7 +1841,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key8',
           facet: true,
-          type: 'xs:string',
           'computed-bucket':[
               {name: 'bucket8A', label: 'bucket8A',
                   'ge-anchor': '-P30D', ge:  'P0H',

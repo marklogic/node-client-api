@@ -27,25 +27,26 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
+/* ASSUMPTION: this test will not be run more frequently
+ * than once every 10 seconds. To run more frequently,
+ * adjust the temporal intervals accordingly.
+ */
 describe('temporal document', function() {
-  var stamp = Math.random().toString();
-
-  var startNow = Date.now();
-
   var uri1 = '/test/temporal/doc1.json';
   var uri2 = '/test/temporal/doc2.json';
 
-  var validStart = new Date(startNow);
-  validStart.setFullYear(validStart.getFullYear() - 3);
+  var rangeStart = new Date();
+  var baseSeconds = getBaseSeconds(rangeStart);
+  rangeStart.setSeconds(baseSeconds);
 
-  var validEnd = new Date(startNow);
-  validEnd.setFullYear(validEnd.getFullYear() - 2);
+  var validStart = new Date(rangeStart.getTime());
+  validStart.setSeconds(baseSeconds + 1);
 
-  var rangeStart = new Date(validStart.getTime());
-  rangeStart.setFullYear(validStart.getFullYear() - 1);
+  var validEnd = new Date(rangeStart.getTime());
+  validEnd.setSeconds(baseSeconds + 5);
 
-  var rangeEnd = new Date(validEnd.getTime());
-  rangeEnd.setFullYear(validEnd.getFullYear() + 1);
+  var rangeEnd = new Date(rangeStart.getTime());
+  rangeEnd.setSeconds(baseSeconds + 6);
 
   it('should write and read temporal documents', function(done) {
     db.documents.write({
@@ -55,9 +56,8 @@ describe('temporal document', function() {
           contentType: 'application/json',
           content: {
             property1:       'belief 1',
-            stamp:           stamp,
-            systemStartTime: startNow,
-            systemEndTime:   startNow,
+            systemStartTime: '1111-11-11T11:11:11Z',
+            systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
             validEndTime:    validEnd
           }
@@ -66,9 +66,8 @@ describe('temporal document', function() {
           contentType: 'application/json',
           content: {
             property1:       'belief 2',
-            stamp:           stamp,
-            systemStartTime: startNow,
-            systemEndTime:   startNow,
+            systemStartTime: '1111-11-11T11:11:11Z',
+            systemEndTime:   '9999-12-31T23:59:59Z',
             validStartTime:  validStart,
             validEndTime:    validEnd
             }
@@ -93,9 +92,9 @@ describe('temporal document', function() {
       }
       done();}, done);
   });
+/* TODO: requires a REST interface to temporal:advance-lsqt() to create the collection LSQT document
   it('should query current temporal documents', function(done) {
     db.documents.query(q.where(
-        q.value('stamp', stamp),
         q.currentTime('temporalCollection')
       )).
     result(function(documents) {
@@ -109,10 +108,10 @@ describe('temporal document', function() {
       done();
     }, done);
   });
+ */
   it('should query a range of temporal documents', function(done) {
     db.documents.query(q.where(
-        q.value('stamp', stamp),
-        q.periodRange('validtime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
+      q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
       )).
     result(function(documents) {
       documents.should.have.property('length');
@@ -125,35 +124,59 @@ describe('temporal document', function() {
       done();
     }, done);
   });
-/* TODO: repeatable test, query for deleted
   it('should remove temporal documents', function(done) {
-    db.documents.remove({
+    var delUri1 = '/test/temporal/deletableDoc1.json';
+    db.documents.write({
       temporalCollection: 'temporalCollection',
-      uri: uri1
-      }).
-    result(function(response) {
+      documents:[{
+          uri: delUri1,
+          contentType: 'application/json',
+          content: {
+            property1:       'deletable belief',
+            systemStartTime: '1111-11-11T11:11:11Z',
+            systemEndTime:   '9999-12-31T23:59:59Z',
+            validStartTime:  validStart,
+            validEndTime:    validEnd
+          }
+        }]}).result().
+    then(function(response) {
       return db.documents.remove({
         temporalCollection: 'temporalCollection',
-        uri: uri2
+        uri: delUri1
         }).result();
       }, done).
     then(function(response) {
       return db.documents.query(q.where(
-          q.value('stamp', stamp),
-          q.periodRange('validtime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
+          q.document(delUri1),
+          q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
         )).result();
       }, done).
     then(function(documents) {
       documents.should.have.property('length');
-      documents.length.should.equal(2);
+      documents.length.should.equal(1);
       var latestNow = Date.now();      
-      documents.forEach(function(document){
-        document.should.have.property('content');
-        document.content.should.have.property('systemEndTime');
-        var documentEnd = new Date(document.content.systemEndTime).getTime();
-        latestNow.should.be.greaterThan(documentEnd);
-        });
+      var document = documents[0];
+      document.should.have.property('content');
+      document.content.should.have.property('systemEndTime');
+      var documentEnd = new Date(document.content.systemEndTime).getTime();
+      latestNow.should.be.greaterThan(documentEnd);
+      done();
       }, done);
   });
-  */
 });
+
+function getBaseSeconds(date) {
+  var seconds = date.getSeconds();
+
+  var floor=0;
+  while (floor < 50) {
+    var ceiling = floor + 10;
+    if (seconds < ceiling) {
+      break;
+    }
+    floor=ceiling;
+  }
+  seconds = floor;
+
+  return seconds;
+}

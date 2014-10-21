@@ -110,8 +110,8 @@ describe('values query', function(){
     it('should return all tuples', function(done){
       db.values.read(
         t.fromIndexes(
-          t.range('rangeKey3', 'xs:int'),
-          t.range(t.property('rangeKey4'), t.datatype('int'))
+          t.range('rangeKey3'),
+          t.range(t.property('rangeKey4'))
           ).
         where(
           t.collection('valuesCollection1')

@@ -15,34 +15,59 @@
  */
 var marklogic = require('../lib/marklogic.js');
 
-var testlib    = require('./test-lib.js');
-var testconfig = require('./test-config.js');
+var testlib        = require('./test-lib.js');
+var promptForAdmin = require('./test-setup-prompt.js');
+var testconfig     = require('./test-config.js');
 
-var manageClient =
-  marklogic.createDatabaseClient(testconfig.manageAdminConnection);
-var manager      = testlib.createManager(manageClient);
+promptForAdmin(createManager);
 
-console.log('checking for '+testconfig.testServerName);
-manager.get({
-  endpoint: '/v1/rest-apis/'+testconfig.testServerName
-  }).
-result(function(response) {
-  if (response.statusCode === 404) {
-    console.log(testconfig.testServerName+' not found - nothing to delete');
-  } else {
-    console.log('removing database and REST server for '+testconfig.testServerName);
-    manager.remove({
-      endpoint: '/v1/rest-apis/'+testconfig.testServerName,
-      params:   {include: ['content', 'modules']}
-      }).
-    result(function(response) {
-      if (response.statusCode < 400) {
+function createManager(adminUser, adminPassword) {
+  testconfig.manageAdminConnection.user     = adminUser;
+  testconfig.manageAdminConnection.password = adminPassword;
+
+  var manageClient =
+    marklogic.createDatabaseClient(testconfig.manageAdminConnection);
+  var manager      = testlib.createManager(manageClient);
+
+  setup(manager);
+}
+function setup(manager) {
+  console.log('checking for '+testconfig.testServerName);
+  manager.get({
+    endpoint: '/v1/rest-apis/'+testconfig.testServerName
+    }).
+  result(function(response) {
+    if (response.statusCode === 404) {
+      console.log(testconfig.testServerName+' not found - nothing to delete');
+    } else {
+      console.log('removing database and REST server for '+testconfig.testServerName);
+      manager.remove({
+        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
+        }).result().
+      then(function(response) {
+        return manager.remove({
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
+          }).result();
+        }).
+      then(function(response) {
+        return manager.remove({
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
+          }).result();
+        }).
+      then(function(response) {
+        return       manager.remove({
+          endpoint: '/v1/rest-apis/'+testconfig.testServerName,
+          params:   {include: ['content', 'modules']}
+          }).result();
+        }).
+      then(function(response) {
         console.log('teardown succeeded - restart the server');
-      } else {
-        console.log('failed to tear down '+testconfig.testServerName+' server:\n'+
-            JSON.parse(response.data));
-      }
-    });
-  }
-});
+        },
+        function(error) {
+          console.log('failed to tear down '+testconfig.testServerName+' server:\n'+
+              JSON.stringify(error));
+        });
+    }
+  });
+}
 
