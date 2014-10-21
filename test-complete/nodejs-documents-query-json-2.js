@@ -27,81 +27,97 @@ describe('Document query test', function(){
   before(function(done){
     this.timeout(3000);
     dbWriter.documents.write({
-      uri: '/test/query/bbq/bbq1.json',
-      collections: ['bbq'],
+      uri: '/test/query/matchDir/doc1.json',
+      collections: ['matchCollection1'],
       contentType: 'application/json',
       content: {
-        title: 'Sally\'s Southern BBQ',
-        abstract: 'A classic southern recipe',
-        flavorDescriptor: ['cayanne', 'molasses', 'smoky'],
-        scoville: 800,
-        rating: 3.0 
+        title: 'Vannevar Bush',
+        popularity: 5,
+        id: '0011',
+        date: '2005-01-01',
+        price: {
+             amt: 0.1
+           },
+        p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
       }, { 
-      uri: '/test/query/bbq/bbq2.json',
-      collections: ['bbq'],
+      uri: '/test/query/matchDir/doc2.json',
+      collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
       content: {
-        title: 'Red, Hot, and Blue',
-        abstract: 'Texas-style sauce with extra heat',
-        flavorDescriptor: ['habanero', 'black pepper', 'smoky'],
-        scoville: 72000,
-        rating: 4.0 
+        title: 'The Bush article',
+        popularity: 4,
+        id: '0012',
+        date: '2006-02-02',
+        price: {
+             amt: 0.12
+           },
+        p: 'The Bush article described a device called a Memex'
         }
       }, { 
-      uri: '/test/query/bbq/bbq3.json',
-      collections: ['bbq'],
+      uri: '/test/query/matchDir/doc3.json',
+      collections: ['matchCollection2'],
       contentType: 'application/json',
       content: {
-        title: 'Lousiana Bayou Mild',
-        abstract: 'Straight from New Orleans, mild and sweet',
-        flavorDescriptor: ['sweet', 'vinegar'],
-        scoville: 750,
-        rating: 5.0 
+        title: 'For 1945',
+        popularity: 3,
+        id: '0013',
+        date: '2007-03-03',
+        price: {
+             amt: 1.23
+           },
+        p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
       }, { 
-      uri: '/test/query/bbq/bbq4.json',
-      collections: ['bbq'],
+      uri: '/test/query/matchDir/doc4.json',
+      collections: [],
       contentType: 'application/json',
       content: {
-        title: 'Four little pigs',
-        abstract: 'Southern Texas-style sauce with extreme heat',
-        flavorDescriptor: ['habanero', 'black pepper', 'smoky', 'brown sugar'],
-        scoville: 88000,
-        rating: 5.0 
+        title: 'Vannevar served',
+        popularity: 5,
+        id: '0024',
+        date: '2008-04-04',
+        price: {
+             amt: 12.34
+           },
+        p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
       }, { 
-      uri: '/test/query/bbq/bbq5.json',
-      collections: ['bbq'],
-      contentType: 'application/json',
-      content: {
-        title: 'Kansas City Apple Cinnamon',
-        abstract: 'Specialty recipe made with real fruit and spices',
-        flavorDescriptor: ['apple', 'cinnamon', 'brown sugar'],
-        scoville: 1000,
-        rating: 2.0 
-        }
-        }).
+        uri: '/test/query/matchList/doc5.json',
+        collections: ['matchList'],
+        contentType: 'application/json',
+        content: {
+          title: 'The memex',
+          popularity: 5,
+          id: '0026',
+          date: '2009-05-05',
+          price: {
+               amt: 123.45
+             },
+          p: 'The Memex, unfortunately, had no automated search feature'
+          }
+      }, {
+         uri: '/test/query/matchList/doc6.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee><name>John</name></Employee>'
+      }).
     result(function(response){done();}, done);
   });
 
-  it('should do field query', function(done){
+  it('should do word query', function(done){
     db.documents.query(
       q.where(
-        q.range('scoville', 'moderate')
-        ).
-      calculate(
-        q.facet('scoville',
-          q.datatype('string'),
-          q.bucket('mild', '<', 500),
-          q.bucket('moderate', 500, '<', 2500),
-          q.bucket('hot', 2500, '<', 8000),
-          q.bucket('extraHot', 8000, '<')
-        )
+        q.document('/test/query/matchDir/doc4.json',
+                   '/something/invalid/bla.json', 
+                   '/test/query/matchList/doc5.json',
+                   '/test/query/matchList/doc6.xml')
       )).result(function(response) {
-        //response.length.should.equal(2);
-        console.log(JSON.stringify(response, null, 4));
+        response.length.should.equal(3);
+        //response[0].content.id.should.equal('0011');
+        //response[1].content.id.should.equal('0012');
         done();
       }, done);
   });
+
 });
