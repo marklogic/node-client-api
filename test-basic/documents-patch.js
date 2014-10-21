@@ -339,5 +339,5 @@ describe('document patch', function(){
       }, done);
     });    
   });    
-  // TODO: patch library
+  // NOTE: patch library tested in extlibs.js 
 });

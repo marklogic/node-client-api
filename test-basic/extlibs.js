@@ -177,4 +177,80 @@ describe('extension libraries', function(){
       // TODO: mix of implicit bindings for facets and explicit bindings
     });
   });
+
+  var replaceModuleXQY = 'objectify.xqy';
+  var replaceFSPathXQY = './test-basic/data/objectify.xqy';
+  describe('when configuring a replacement library', function() {
+    it('should write the replacement library', function(done){
+      this.timeout(3000);
+      restAdminDB.config.patch.replace.write(replaceModuleXQY, [
+          {'role-name':'app-user',    capabilities:['execute']},
+          {'role-name':'app-builder', capabilities:['execute', 'read', 'update']}
+        ], fs.createReadStream(replaceFSPathXQY)).
+      result(function(response){done();}, done);
+    });
+    it('should read the replacement library', function(done){
+      restAdminDB.config.patch.replace.read(replaceModuleXQY).
+      result(function(source){
+        (!valcheck.isNullOrUndefined(source)).should.equal(true);
+        done();
+      }, done);
+    });
+    it('should list the replacement libraries', function(done){
+      restAdminDB.config.patch.replace.list().
+      result(function(response){
+        response.should.have.property('assets');
+        response.assets.length.should.be.greaterThan(0);
+        done();
+      }, done);
+    });
+    it('should delete the replacement library', function(done) {
+      restAdminDB.config.patch.replace.remove(replaceModuleXQY).
+      result(function(response){
+        done();
+      }, done);
+    });
+  });
+
+  var patchDoc = '/test/extlib/patchDoc1.json';
+  describe('when using an XQuery replacement library', function() {
+    before(function(done){
+      this.timeout(3000);
+      restAdminDB.config.patch.replace.write(replaceModuleXQY, fs.createReadStream(replaceFSPathXQY)).result().
+      then(function(response) {
+        db.documents.write({
+          uri: patchDoc,
+          contentType: 'application/json',
+          content: {
+            targetKey:'existing value'
+            }
+          }).
+        result(function(response){done();}, done);
+        }, done);
+    });
+    after(function(done) {
+      restAdminDB.config.query.custom.remove(replaceModuleXQY).
+      result(function(response){done();}, done);
+    });
+    it('should apply', function(done){
+      var p = marklogic.patchBuilder;
+      db.documents.patch(patchDoc,
+          p.library(replaceModuleXQY),
+          p.replace('/targetKey', p.apply('value', {paramKey: 'parameter value'}))
+          ).
+      result(function(response){
+        db.documents.read(patchDoc).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('content');
+          document.content.should.have.property('targetKey');
+          document.content.targetKey.should.have.property('value');
+          document.content.targetKey.value.should.equal('existing value');
+          document.content.targetKey.should.have.property('paramKey');
+          document.content.targetKey.paramKey.should.equal('parameter value');
+          done();}, done);
+        }, done);
+    });
+  });
 });
