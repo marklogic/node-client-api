@@ -54,15 +54,19 @@ describe('quick path', function(){
     then(function(uris){
       valcheck.isUndefined(uris).should.equal(false);
       uris.length.should.equal(2);
-      return db.documents.read(uris).result();
+      return db.documents.read({uris:uris, categories:['content', 'collections']}).result();
       }, done).
     then(function(documents) {
         valcheck.isUndefined(documents).should.equal(false);
         documents.length.should.equal(2);
         documents[0].should.have.property('content');
         documents[0].content.should.have.property('quickKey');
+        documents[0].should.have.property('collections');
+        documents[0].collections[0].should.equal('/quickdocs');
         documents[1].should.have.property('content');
         documents[1].content.should.have.property('quickKey');
+        documents[1].should.have.property('collections');
+        documents[1].collections[0].should.equal('/quickdocs');
         done();
         }, done);
   });
