@@ -93,14 +93,14 @@ describe('Document CRUD negative test', function(){
   });
 
   it('should fail to remove all document with invalid user role', function(done){
-    db.documents.removeAll({collection:'/invalid'}).
+    dbWriter.documents.removeAll({all:true}).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
       //console.log(error.body);
-      error.body.errorResponse.messageCode.should.equal('REST-FAILEDAUTH');
-      error.statusCode.should.equal(403);
+      //error.body.errorResponse.messageCode.should.equal('REST-FAILEDAUTH');
+      error.statusCode.should.equal(400);
       done();
       });
   });
