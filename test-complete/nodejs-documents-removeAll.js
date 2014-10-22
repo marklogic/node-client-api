@@ -100,6 +100,18 @@ describe('Document query test', function(){
     result(function(response){done();}, done);
   });
 
+  /*it('should remove the collection and directory', function(done){
+    this.timeout(5000);
+    dbWriter.documents.removeAll({collection:'matchList', directory:'/test/query/matchDir'}).
+    result(function(result) {
+      return db.documents.probe('/test/query/matchList/doc5.json').result();
+      }, done).
+    then(function(document) {
+      document.exists.should.eql(false);
+      done();
+      }, done);
+  });*/
+
   it('should remove the collection', function(done){
     this.timeout(5000);
     dbWriter.documents.removeAll({collection:'matchList'}).
