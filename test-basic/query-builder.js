@@ -947,41 +947,41 @@ describe('query-builder', function() {
         q.periodRange('axis1', 'ALN_CONTAINS',
             q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z')),
         {'period-range-query':{
-          axis:                'axis1',
+          axis: ['axis1'],
           'temporal-operator': 'ALN_CONTAINS',
-          period:{
+          period: [{
             'period-start': '2014-09-05T00:00:00.000Z',
             'period-end':   '2014-10-05T00:00:00.000Z'
-            }}}
+            }]}}
         );
     assert.deepEqual(
         q.periodRange('axis1', 'ALN_CONTAINS',
             q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z'),
             q.temporalOptions('cached')),
         {'period-range-query':{
-          axis:                'axis1',
+          axis: ['axis1'],
           'temporal-operator': 'ALN_CONTAINS',
-          period:{
+          period:[{
             'period-start': '2014-09-05T00:00:00.000Z',
             'period-end':   '2014-10-05T00:00:00.000Z'
-            },
+            }],
           'temporal-option':['cached']}}
         );
   });
   it('should specify a period', function(){
     assert.deepEqual(
         q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z'),
-        {period:{
+        {
           'period-start': '2014-09-05T00:00:00.000Z',
           'period-end':   '2014-10-05T00:00:00.000Z'
-          }}
+          }
         );
     assert.deepEqual(
         q.period(new Date('2014-09-05'), new Date('2014-10-05')),
-        {period:{
+        {
           'period-start': '2014-09-05T00:00:00.000Z',
           'period-end':   '2014-10-05T00:00:00.000Z'
-          }}
+          }
         );
   });
   it('should specify temporal options', function(){
