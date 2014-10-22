@@ -144,6 +144,27 @@ describe('Document tuples negative test', function(){
       });
   });
 
+  it('should fail with non matching aggregates', function(done){
+    db.values.read(
+      t.fromIndexes(
+        t.range('rate', 'xs:int'),
+        t.range(t.property('popularity'), t.datatype('int'))
+        ).
+      where(
+        t.word('id', '00*', q.termOptions('wildcarded'))
+        ).
+      aggregates('correlation', 'sum')
+      ).result(function(response) {
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+      }, function(error) {
+        //console.log(error.body);
+        error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
+        error.statusCode.should.equal(400);
+        done();
+      });
+  });
+
   /*it('should do sum aggregates', function(done){
     db.values.read(
       t.fromIndexes(
