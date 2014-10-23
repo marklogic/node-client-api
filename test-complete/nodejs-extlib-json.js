@@ -133,20 +133,12 @@ describe('Extension library test', function(){
     }, done);
   });
 
-  it('should do word query', function(done){
-    db.documents.query(
-      q.where(
-        q.term('memex')
-      ).
-      slice(1, 100, q.snippet('extractFirst'))
-    ).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4))
-        response[0].results[0].snippet.should.have.property.first;
-        //response.length.should.equal(2);
-        //response[0].content.id.should.equal('0011');
-        //response[1].content.id.should.equal('0012');
-        done();
-      }, done);
+  it('should remove the extension libraries', function(done){
+    dbAdmin.config.extlibs.remove(dbPath).
+    result(function(response){
+      (valcheck.isNullOrUndefined(response)).should.equal(true);
+      done();
+    }, done);
   });
 
 });
