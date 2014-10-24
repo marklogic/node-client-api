@@ -877,47 +877,47 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a current time query', function(){
+  it('should create an lsqt query', function(){
     assert.deepEqual(
-        q.currentTime('bitemporalCollection'),
-        {'current-query':{
+        q.lsqtQuery('bitemporalCollection'),
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection'}}
         );
     assert.deepEqual(
-        q.currentTime('bitemporalCollection', '2014-09-05T00:00:00.000Z'),
-        {'current-query':{
+        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z'),
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
          timestamp: '2014-09-05T00:00:00.000Z'}}
         );
     assert.deepEqual(
-        q.currentTime('bitemporalCollection', new Date('2014-09-05T00:00:00.000Z')),
-        {'current-query':{
+        q.lsqtQuery('bitemporalCollection', new Date('2014-09-05T00:00:00.000Z')),
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
          timestamp: '2014-09-05T00:00:00.000Z'}}
         );
     assert.deepEqual(
-        q.currentTime('bitemporalCollection', q.weight(2)),
-        {'current-query':{
+        q.lsqtQuery('bitemporalCollection', q.weight(2)),
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
          weight: 2}}
         );
     assert.deepEqual(
-        q.currentTime('bitemporalCollection', 2),
-        {'current-query':{
+        q.lsqtQuery('bitemporalCollection', 2),
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
          weight: 2}}
         );
     assert.deepEqual(
-        q.currentTime('bitemporalCollection',
+        q.lsqtQuery('bitemporalCollection',
             q.temporalOptions('cached')),
-        {'current-query':{
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
          'temporal-option':['cached']}}
         );
     assert.deepEqual(
-        q.currentTime('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
+        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
             q.temporalOptions('cached')),
-        {'current-query':{
+        {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
          timestamp: '2014-09-05T00:00:00.000Z',
          weight: 2,

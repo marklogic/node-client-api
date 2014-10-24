@@ -93,9 +93,9 @@ describe('temporal document', function() {
       done();}, done);
   });
 /* TODO: requires a REST interface to temporal:advance-lsqt() to create the collection LSQT document
-  it('should query current temporal documents', function(done) {
+  it('should query temporal documents relative to lsqt', function(done) {
     db.documents.query(q.where(
-        q.currentTime('temporalCollection')
+        q.lsqtQuery('temporalCollection')
       )).
     result(function(documents) {
       documents.should.have.property('length');
