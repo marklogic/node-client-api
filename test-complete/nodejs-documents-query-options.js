@@ -22,6 +22,7 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document query options test', function(){
   before(function(done){
@@ -100,43 +101,97 @@ describe('document query options test', function(){
         }).
     result(function(response){done();}, done);
   });
-  it('should read, query, and remove the doc', function(done){
-    db.documents.read('/test/query/matchList/doc5.json').
-      result(function(documents) {
-        var document = documents[0];
-        document.content.id.should.equal('0026');
-        //console.log('Document result: ');
-        //console.log(JSON.stringify(document, null, 4));
-        return db.documents.query(
-                 q.where(
-                   q.directory('/test/query/matchDir/')
-                   ).
-                 withOptions({queryPlan:true, 
-                              metrics:false, 
-                              debug:true, 
-                              categories:['collections', 'content']}
-                            )
-                 ).result();
-      }).
-    then(function(response){
-      //console.log('Search result: ');
-      //console.log(JSON.stringify(response, null, 4));
-      response.length.should.equal(5);
-      var option = response[0];
-      option.plan.should.be.ok;
-      option.report.should.be.ok;
-      option.report.should.containEql('cts:search(fn:collection(), cts:directory-query');
-      var document = response[1];
-      document.content.should.be.ok;
-      document.content.id.should.equal('0011');
-      document.collections[0].should.equal('matchCollection1');
-      return dbWriter.documents.remove('/test/query/matchList/doc5.json').result();
-      }).
-    then(function(document) {
-      document.exists.should.eql(false);
-      }).
-    then(function(documents){
-      done();
+
+  it('should do document query with options', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      withOptions({queryPlan: true,
+                   metrics: false,
+                   debug: true,
+                   categories: ['collections', 'content']})).
+      result(function(response) {
+        response.length.should.equal(5);
+        response[0].plan.should.be.ok;
+        response[0].report.should.be.ok;
+        response[0].report.should.containEql('cts:search(fn:collection(), cts:directory-query');
+        //console.log(JSON.stringify(response, null, 4));
+        done();
       }, done);
+  });
+
+  it('should do document query with options: content only and other options', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      withOptions({queryPlan: true,
+                   metrics: true,
+                   debug: true,
+                   weight: 2.3,
+                   similarDocs: true,
+                   categories: ['content']})).
+      result(function(response) {
+        response.length.should.equal(5);
+        response[0].plan.should.be.ok;
+        response[0].metrics.should.be.ok;
+        response[0].report.should.be.ok;
+        response[0].report.should.containEql('cts:search(fn:collection(), cts:directory-query');
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do document query with options: categories = permissions and similarDocs = true', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      withOptions({queryPlan: true,
+                   metrics: true,
+                   debug: true,
+                   weight: 2.3,
+                   similarDocs: true,
+                   view: "none",
+                   categories: ['permissions']})).
+      result(function(response) {
+        response.length.should.equal(5);
+        response[1].permissions.should.be.ok;
+        response[0].results[0].content.should.containEql('similar');
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do document query with invalid options', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      withOptions({queryPlan: true,
+                   metrics: true,
+                   debug: true,
+                   weight: "five",
+                   similarDocs: true,
+                   view: "none",
+                   categories: ['permissions']})).
+      result(function(response) {
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+      }, function(error) {
+        //console.log(error);
+        error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
+        error.statusCode.should.equal(400);
+        done();
+      });
+  });
+
+  it('should remove all documents', function(done){
+    dbAdmin.documents.removeAll({all:true}).
+    result(function(response) {
+    response.should.be.ok;
+    done();
+    }, done);
   });
 });
