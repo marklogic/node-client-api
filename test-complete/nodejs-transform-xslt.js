@@ -101,7 +101,7 @@ describe('Transform test', function(){
       uri: '/test/transform/write/xslttransform.xml',
       contentType: 'application/xml',
       collections: ['employee'],
-      content: '<Company><Employee><name>John</name></Employee></Company>' 
+      content: '<Company><Employee><name>John</name></Employee></Company>', 
       transform: transformName
     }).
     result(function(response) {
