@@ -125,4 +125,20 @@ describe('Transform test', function(){
     }, done);
   });
 
+  it('should remove the transform', function(done){
+    dbAdmin.config.transforms.remove(transformName).
+    result(function(response){
+      response.should.be.ok;
+      done();
+    }, done);
+  });
+
+  /*it('should not be able to read the removed transform', function(done){
+    dbAdmin.config.transforms.read(transformName).
+    result(function(source){
+      source.should;
+      done();
+    }, done);
+  });*/
+
 });
