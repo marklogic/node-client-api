@@ -107,12 +107,12 @@ describe('document query sort test', function(){
       q.where(
         q.directory('/test/query/matchDir/')
         ).
-      orderBy('title', q.sort('popularity', 'descending'))
+      orderBy('popularity', q.sort('popularity', 'descending'))
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(4);
-        //console.log(JSON.stringify(response, null, 4));
-        //document.content.id.should.equal('0013');
+        console.log(JSON.stringify(response, null, 4));
+        document.content.id.should.equal('0013');
         done();
       }, done);
   });
@@ -126,8 +126,8 @@ describe('document query sort test', function(){
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(4);
-        //console.log(JSON.stringify(response, null, 4));
-        //document.content.id.should.equal('0013');
+        console.log(JSON.stringify(response, null, 4));
+        document.content.id.should.equal('0013');
         done();
       }, done);
   });
