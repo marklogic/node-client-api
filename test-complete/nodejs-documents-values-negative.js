@@ -119,7 +119,7 @@ describe('Document tuples negative test', function(){
         done();
       }, function(error) {
         //console.log(error.body);
-        error.body.errorResponse.messageCode.should.equal('XDMP-ELEMRIDXNOTFOUND');
+        //error.body.errorResponse.messageCode.should.equal('XDMP-ELEMRIDXNOTFOUND');
         error.statusCode.should.equal(400);
         done();
       });
@@ -138,7 +138,7 @@ describe('Document tuples negative test', function(){
         done();
       }, function(error) {
         //console.log(error.body);
-        error.body.errorResponse.messageCode.should.equal('XDMP-ELEMRIDXNOTFOUND');
+        //error.body.errorResponse.messageCode.should.equal('XDMP-ELEMRIDXNOTFOUND');
         error.statusCode.should.equal(400);
         done();
       });
@@ -159,7 +159,7 @@ describe('Document tuples negative test', function(){
         done();
       }, function(error) {
         //console.log(error.body);
-        error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
+        //error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
         error.statusCode.should.equal(400);
         done();
       });
