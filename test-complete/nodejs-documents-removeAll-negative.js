@@ -101,14 +101,26 @@ describe('Document remove all negative test', function(){
     result(function(response){done();}, done);
   });
 
-  it('should fail by omitting collection', function(done) {
+  /*it('should fail by omitting collection', function(done) {
     dbWriter.documents.removeAll({collection:null}).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
     },
     function(error) {
-      console.log(error);
+      //console.log(error);
+      error.should.be.ok;
+      done();
+    });
+  });*/
+
+  it('should fail by omitting collection', function(done) {
+    dbAdmin.documents.removeAll({all: true}).
+    result(function(response) {
+      done();
+    },
+    function(error) {
+      //console.log(error);
       done();
     });
   });
