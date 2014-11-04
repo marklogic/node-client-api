@@ -114,10 +114,39 @@ describe('Document query test 2', function(){
                    '/test/query/matchList/doc6.xml')
       )).result(function(response) {
         response.length.should.equal(3);
-        //response[0].content.id.should.equal('0011');
-        //response[1].content.id.should.equal('0012');
         done();
       }, done);
+  });
+
+  it('should do boost query', function(done){
+    db.documents.query(
+      q.where(
+        q.boost(
+          q.document('/test/query/matchList/doc5.json'),
+          q.collection('matchList')
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(response);
+      response.length.should.equal(1);
+      done();
+    }, done);
+  });
+
+  it('should do properties query', function(done){
+    db.documents.query(
+      q.where(
+        q.properties(
+          q.collection('matchList')
+        )
+      )
+    ).
+    result(function(response) {
+      console.log(response);
+      //response.length.should.equal(1);
+      done();
+    }, done);
   });
 
 });
