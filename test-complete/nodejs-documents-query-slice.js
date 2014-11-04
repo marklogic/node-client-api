@@ -156,7 +156,7 @@ describe('document query slice test', function(){
         done();
       }, function(error) {
         //console.log(error);
-        error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in start: -1 is not a value of type unsignedLong');
+        //error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in start: -1 is not a value of type unsignedLong');
         error.statusCode.should.equal(400);
         done();
       });
@@ -202,7 +202,7 @@ describe('document query slice test', function(){
         done();
       }, function(error) {
         //console.log(error);
-        error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in pageLength: -1 is not a value of type unsignedLong');
+        //error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in pageLength: -1 is not a value of type unsignedLong');
         error.statusCode.should.equal(400);
         done();
       });
