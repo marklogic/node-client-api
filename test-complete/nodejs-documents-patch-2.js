@@ -19,11 +19,13 @@ var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
+var p = marklogic.patchBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('document query', function(){
+describe('document patch test 2', function(){
   before(function(done){
     this.timeout(3000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
@@ -100,50 +102,43 @@ describe('document query', function(){
         }).
     result(function(response){done();}, done);
   });
-  it('should read, query, and remove the doc', function(done){
-    db.documents.read('/test/query/matchList/doc5.json').
-      result(function(documents) {
-        var document = documents[0];
-        console.log(JSON.stringify(document, null, 4));
-        var p = marklogic.patchBuilder;
-        return dbWriter.documents.patch('/test/query/matchList/doc5.json',
-            p.pathLanguage('jsonpath'),
-            p.insert('$', 'last-child', {foo:'bar'}),
-            p.insert('$.title', 'after', {newKey:'newChild'}),
-            p.insert('$.price.amt', 'after', {numberKey:1234.456}),
-            p.replace('$.popularity', 1),
-            p.remove('$.p'),
-			p.replaceInsert('$.date1','$.popularity', 'before',{relativeReplaceInesrt:'2014-08-26'}),
-			p.replaceInsert('$.date','$.popularity', 'before',{absoluteReplaceInsert:'2014-08-26'})
-          ).result();
-      }).
-    then(function(response){
-      console.log('Patch result: ');
-      return db.documents.read('/test/query/matchList/doc5.json').result();
-      }).
-    then(function(documents){	      
-        var document = documents[0];
-        console.log(JSON.stringify(document, null, 4));
-        document.content.newKey.should.equal('newChild');
-        document.content.foo.should.equal('bar');
-        document.content.popularity.should.equal(1);
-        document.should.not.have.property('p');
-        return dbWriter.documents.remove('/test/query/matchList/doc5.json').result(),
-		dbWriter.documents.remove('/test/query/matchDir/doc4.json').result(),
-		dbWriter.documents.remove('/test/query/matchDir/doc3.json').result(),
-		dbWriter.documents.remove('/test/query/matchDir/doc2.json').result(),
-		dbWriter.documents.remove('/test/query/matchDir/doc1.json').result();
-      }).
-    then(function(document) {
-      document.exists.should.eql(false);
-      }).
-    then(function(documents){
-      done();
-      }, done);
+
+  it('should apply patch', function(done){
+    dbWriter.documents.patch('/test/query/matchList/doc5.json',
+      p.pathLanguage('jsonpath'),
+      //p.insert('$', 'last-child', {foo:'bar'}),
+      p.insert('$.title', 'after', {newKey:'newChild'}),
+      p.insert('$.price.amt', 'after', {numberKey:1234.456}),
+      p.replace('$.popularity', 1),
+      p.remove('$.p'),
+      p.replaceInsert('$.date1','$.popularity', 'before',{relativeReplaceInsert:'2014-08-26'}),
+      p.replaceInsert('$.date','$.popularity', 'before',{absoluteReplaceInsert:'2014-08-27'})
+    ).result(function(response) {
+        //console.log(response);
+        response.uri.should.equal('/test/query/matchList/doc5.json');
+        done();
+    }, done);
   });
 
-  
-  
-  
-  
+  it('should read the patch', function(done){
+    db.documents.read('/test/query/matchList/doc5.json').
+    result(function(response) {
+      var document = response[0];
+      //console.log(JSON.stringify(response, null, 4));
+      document.content.relativeReplaceInsert.should.equal('2014-08-26');
+      document.content.date.absoluteReplaceInsert.should.equal('2014-08-27');
+      done();
+    }, done);
   });
+
+  it('should remove the documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      response.should.be.ok;
+      done();
+    }, done);
+  });
+  
+});
