@@ -51,7 +51,7 @@ describe('Extlib negative test', function(){
       done();
     }, function(error) {
       //console.log(error.body);
-      error.body.errorResponse.messageCode.should.equal('REST-FAILEDAUTH');
+      //error.body.errorResponse.messageCode.should.equal('REST-FAILEDAUTH');
       error.statusCode.should.equal(403);
       done();
       });
@@ -66,7 +66,7 @@ describe('Extlib negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('XDMP-DOCROOTTEXT');
+      //error.body.errorResponse.messageCode.should.equal('XDMP-DOCROOTTEXT');
       error.statusCode.should.equal(400);
       done();
       });
