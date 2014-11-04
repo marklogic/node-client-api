@@ -29,21 +29,24 @@ describe('Server eval test', function(){
 
   it('should do javascript eval on json', function(done){
     dbEval.eval('xdmp.toJSON({k:"v"});').result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.k.should.equal('v');
       done();
     }, done);
   });
 
   it('should do javascript eval on text', function(done){
     dbEval.eval('fn.lowerCase("MarkLogic");').result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal('marklogic');
       done();
     }, done);
   });
 
   it('should do javascript eval on string manipulation', function(done){
     dbEval.eval('fn.contains("this is a string", "s a s");').result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal(true);
       done();
     }, done);
   });
@@ -53,14 +56,16 @@ describe('Server eval test', function(){
               'fn.distinctValues(mycars);' 
     dbEval.eval(src).
     result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values.length.should.equal(4);
       done();
     }, done);
   });
 
   it('should do more javascript eval to xml', function(done){
     dbEval.eval('xdmp.fromJsonString(\'["a", null, false]\');').result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value[0].should.equal('a');
       done();
     }, done);
   });
