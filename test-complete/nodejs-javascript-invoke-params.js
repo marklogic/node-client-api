@@ -45,7 +45,8 @@ describe('Javascript invoke test', function(){
 
   it('should do javascript invoke with params', function(done){
     dbEval.invoke(invokePath, {num1:2, num2:3}).result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal(5);
       done();
     }, done);
   });
