@@ -19,16 +19,18 @@ var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
+var p = marklogic.patchBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('document query', function(){
+describe('document patch test', function(){
   before(function(done){
     this.timeout(3000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
-      uri: '/test/query/matchDir/doc1.json',
+      uri: '/test/patch/doc1.json',
       collections: ['matchCollection1'],
       contentType: 'application/json',
       content: {
@@ -42,7 +44,7 @@ describe('document query', function(){
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
       }, { 
-      uri: '/test/query/matchDir/doc2.json',
+      uri: '/test/patch/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
       content: {
@@ -56,7 +58,7 @@ describe('document query', function(){
         p: 'The Bush article described a device called a Memex'
         }
       }, { 
-      uri: '/test/query/matchDir/doc3.json',
+      uri: '/test/patch/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
       content: {
@@ -70,7 +72,7 @@ describe('document query', function(){
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
       }, { 
-      uri: '/test/query/matchDir/doc4.json',
+      uri: '/test/patch/doc4.json',
       collections: [],
       contentType: 'application/json',
       content: {
@@ -84,7 +86,7 @@ describe('document query', function(){
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
       }, { 
-        uri: '/test/query/matchList/doc5.json',
+        uri: '/test/patch/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
         content: {
@@ -100,39 +102,120 @@ describe('document query', function(){
         }).
     result(function(response){done();}, done);
   });
-  it('should read, query, and remove the doc', function(done){
-    db.documents.read('/test/query/matchList/doc5.json').
-      result(function(documents) {
-        var document = documents[0];
-        //console.log(JSON.stringify(document, null, 4));
-        var p = marklogic.patchBuilder;
-        return dbWriter.documents.patch('/test/query/matchList/doc5.json',
-            p.pathLanguage('jsonpath'),
-            p.insert('$', 'last-child', {foo:'bar'}),
-            p.insert('$.title', 'after', {newKey:'newChild'}),
-            p.insert('$.price.amt', 'before', {numberKey:1234.456}),
-            p.replace('$.popularity', 1),
-            p.remove('$.p')
-          ).result();
-      }).
-    then(function(response){
-      //console.log('Patch result: ');
-      return db.documents.read('/test/query/matchList/doc5.json').result();
-      }).
-    then(function(documents){	      
-        var document = documents[0];
-        //console.log(JSON.stringify(document, null, 4));
-        document.content.newKey.should.equal('newChild');
-        document.content.foo.should.equal('bar');
-        document.content.popularity.should.equal(1);
-        document.should.not.have.property('p');
-        return dbWriter.documents.remove('/test/query/matchList/doc5.json').result();
-      }).
-    then(function(document) {
-      document.exists.should.eql(false);
-      }).
-    then(function(documents){
-      done();
-      }, done);
+
+  var uri1 = '/test/patch/doc5.json';
+  var uri2 = '/test/patch/doc4.json';
+
+  it('should apply the patch', function(done){
+    dbWriter.documents.patch('/test/patch/doc5.json',
+      p.pathLanguage('jsonpath'),
+      p.insert('$.title', 'after', {newKey:'newChild'}),
+      p.insert('$.price.amt', 'before', {numberKey:1234.456}),
+      p.replace('$.popularity', 1),
+      p.remove('$.p')
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response.uri.should.equal(uri1);
+        done();
+    }, done);
   });
+
+  it('should read the patch', function(done){
+    db.documents.read('/test/patch/doc5.json').
+    result(function(response) {
+      var document = response[0];
+      //console.log(JSON.stringify(response, null, 4));
+      document.content.newKey.should.equal('newChild');
+      document.content.popularity.should.equal(1);
+      document.should.not.have.property('p');
+      done();
+    }, done);
+  });
+
+  it('should apply the patch on metadata', function(done){
+    dbWriter.documents.patch({
+      uri: '/test/patch/doc4.json',
+      categories: ['metadata'],
+      operations: [
+        p.insert('array-node("collections")', 'last-child', 'addedCollection'),
+        p.insert('properties', 'last-child', {newPropKey: 'newPropValue'}),
+        p.replace('quality', 24),
+        p.insert('array-node("permissions")', 'last-child', {'role-name': 'app-builder', capabilities: ['read', 'update']}) 
+      ]
+    }).result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response.uri.should.equal(uri2);
+        done();
+    }, done);
+  });
+
+  it('should read the metadata patch', function(done){
+    db.documents.read({uris: '/test/patch/doc4.json', categories: ['metadata']}).
+    result(function(response) {
+      var document = response[0];
+      //console.log(JSON.stringify(response, null, 4));
+      document.collections[0].should.equal('addedCollection');
+      document.quality.should.equal(24);
+      document.properties.newPropKey.should.equal('newPropValue');
+      var foundAppBuilder = false;
+      document.permissions.forEach(function(permission) {
+        switch(permission['role-name']) {
+          case 'app-builder':
+            foundAppBuilder = true;
+            break;
+        }
+      });
+      foundAppBuilder.should.equal(true);
+      done();
+    }, done);
+  });
+      
+  it('should modify the patch on metadata', function(done){
+    dbWriter.documents.patch({
+      uri: '/test/patch/doc4.json',
+      categories: ['metadata'],
+      operations: [
+        p.replace('collections[. eq "addedCollection"]', 'modifiedCollection'),
+        p.insert('properties/newPropKey', 'after', {anotherPropKey: 'anotherPropValue'}),
+        p.replace('quality', 42),
+        p.remove('permissions[role-name eq "app-builder"]') 
+      ]
+    }).result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response.uri.should.equal(uri2);
+        done();
+    }, done);
+  });
+
+  it('should read the metadata patch after modified', function(done){
+    db.documents.read({uris: '/test/patch/doc4.json', categories: ['metadata']}).
+    result(function(response) {
+      var document = response[0];
+      //console.log(JSON.stringify(response, null, 4));
+      document.collections[0].should.equal('modifiedCollection');
+      document.quality.should.equal(42);
+      document.properties.anotherPropKey.should.equal('anotherPropValue');
+      var foundAppBuilder = false;
+      document.permissions.forEach(function(permission) {
+        switch(permission['role-name']) {
+          case 'app-builder':
+            foundAppBuilder = true;
+            break;
+        }
+      });
+      foundAppBuilder.should.equal(false);
+      done();
+    }, done);
+  });
+
+  it('should remove the documents', function(done){
+    dbAdmin.documents.removeAll({
+      directory: '/test/patch/'
+    }).
+    result(function(response) {
+      response.should.be.ok;
+      done();
+    }, done);
+  });
+
 });
