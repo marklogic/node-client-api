@@ -33,7 +33,8 @@ describe('Javascript eval params test', function(){
                 'num1 + num2;',
                 {num1:2, num2:3} 
                ).result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal(5);
       done();
     }, done);
   });
