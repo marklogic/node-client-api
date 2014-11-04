@@ -29,7 +29,8 @@ describe('Server xquery eval test', function(){
 
   it('should do simple xquery eval', function(done){
     dbEval.xqueryEval('fn:true()').result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal(true);
       done();
     }, done);
   });
@@ -39,7 +40,8 @@ describe('Server xquery eval test', function(){
                       'let $t := "world"' +
                       'return fn:concat($s, " ", $t)')
     .result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal('hello world');
       done();
     }, done);
   });
@@ -48,7 +50,8 @@ describe('Server xquery eval test', function(){
     dbEval.xqueryEval('for $i in (1, 2), $j in ("a", "b")' + 
                       'return <oneEval>i is {$i} and js is {$j}</oneEval>')
     .result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values.length.should.equal(4);
       done();
     }, done);
   });
@@ -58,7 +61,8 @@ describe('Server xquery eval test', function(){
                       'let $_ := map:put($object, "a", 111)' +
                       'return xdmp:to-json($object)')
     .result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.a.should.equal(111);
       done();
     }, done);
   });
