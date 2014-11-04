@@ -136,7 +136,7 @@ describe('Document parse binding test 2', function(){
     }, done);
   });
   
-  it('should do function parse', function(done){
+  /*it('should do function parse', function(done){
     db.documents.query(
       q.where(
         q.parsedFrom('/dirs:/test/',
@@ -151,7 +151,14 @@ describe('Document parse binding test 2', function(){
       //response.length.should.equal(2);
       //response[0].content.id.should.equal('0024');
       //response[1].content.id.should.equal('0013');
-      console.log(JSON.stringify(documents, null, 4));
+      //console.log(JSON.stringify(documents, null, 4));
+      done();
+    }, done);
+  });*/
+
+  it('should remove the extension libraries', function(done){
+    dbAdmin.config.extlibs.remove(dbPath).
+    result(function(response){
       done();
     }, done);
   });
