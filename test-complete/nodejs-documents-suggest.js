@@ -22,6 +22,7 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document suggest test', function(){
   before(function(done){
@@ -176,6 +177,16 @@ describe('Document suggest test', function(){
       //response.length.should.equal(2);
       //response[0].should.equal('tag1:apple');
       //response[1].should.equal('tag1:application');
+      done();
+    }, done);
+  });
+
+  it('should remove the documents', function(done){
+    dbAdmin.documents.removeAll({
+      directory: '/test/query/suggest/'
+    }).
+    result(function(response) {
+      response.should.be.ok;
       done();
     }, done);
   });
