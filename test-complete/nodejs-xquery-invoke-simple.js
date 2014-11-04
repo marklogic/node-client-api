@@ -45,7 +45,8 @@ describe('Xquery invoke test', function(){
 
   it('should do simple xquery invoke', function(done){
     dbEval.invoke(invokePath).result(function(values) {
-      console.log(values);
+      //console.log(values);
+      values[0].value.should.equal('hello world');
       done();
     }, done);
   });
