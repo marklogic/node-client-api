@@ -173,7 +173,7 @@ describe('Document suggest test', function(){
                                 q.word('otherKey', q.bind('other1')))
     }).
     result(function(response) {
-      console.log(response);
+      //console.log(response);
       //response.length.should.equal(2);
       //response[0].should.equal('tag1:apple');
       //response[1].should.equal('tag1:application');
