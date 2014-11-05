@@ -136,4 +136,11 @@ describe('Config query test', function(){
     }, done);
   });
 
+  it('should remove the document', function(done){
+    dbAdmin.documents.removeAll({directory: '/test/custom/query/'}).
+    result(function(response){
+      done();
+    }, done);
+  });
+
 });
