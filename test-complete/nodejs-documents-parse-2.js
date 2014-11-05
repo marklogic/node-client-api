@@ -28,7 +28,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document parse binding test 2', function(){
 
-  var dbDir = '/marklogic/query/custom/';
+  var dbDir = '/marklogic/query/custom/constaint/';
   var dbModule = 'directoryConstraint.xqy';
   var dbPath = dbDir+dbModule;
   var fsPath = './test-complete/data/directoryConstraint.xqy';
@@ -109,14 +109,20 @@ describe('Document parse binding test 2', function(){
     result(function(response){done();}, done);
   });
 
-  it('should write the custom module', function(done){
+  /*it('should write the custom module', function(done){
     dbAdmin.config.extlibs.write(dbPath, 'application/xquery', fs.createReadStream(fsPath)).
-    result(function(response){done();}, done);
-  });
+    result(function(response){console.log(response); done();}, done);
+  });*/
 
-  it('should write the custom constraint', function(done){
-    dbAdmin.config.query.custom.write(dbModule, fs.createReadStream(fsPath)).
-    result(function(response){done();}, done);
+  it('should write the custom query for test', function(done){
+    this.timeout(3000);
+    dbAdmin.config.query.custom.write(
+      dbModule, 
+      [{'role-name':'app-user', capabilities:['execute']}], 
+      fs.createReadStream(fsPath)).
+    result(function(response){
+      done();
+    }, done);
   });
 
   it('should return empty with invalid constraint', function(done){
@@ -136,28 +142,32 @@ describe('Document parse binding test 2', function(){
     }, done);
   });
   
-  /*it('should do function parse', function(done){
-    db.documents.query(
+  it('should do function parse', function(done){
+    dbWriter.documents.query(
       q.where(
-        q.parsedFrom('/dirs:/test/',
+        q.parsedFrom('dirs:/test/query/matchList/',
           q.parseBindings(
             q.parseFunction('directoryConstraint.xqy', q.bind('dirs'))
           )
         )
       )
     ).
-    result(function(documents) {
-      documents.length.should.be.greaterThan(0);
-      //response.length.should.equal(2);
-      //response[0].content.id.should.equal('0024');
-      //response[1].content.id.should.equal('0013');
-      //console.log(JSON.stringify(documents, null, 4));
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].uri.should.equal('/test/query/matchList/doc5.json');
       done();
     }, done);
-  });*/
+  });
 
   it('should remove the extension libraries', function(done){
     dbAdmin.config.extlibs.remove(dbPath).
+    result(function(response){
+      done();
+    }, done);
+  });
+
+  it('should remove the documents', function(done){
+    dbAdmin.documents.removeAll({all: true}).
     result(function(response){
       done();
     }, done);
