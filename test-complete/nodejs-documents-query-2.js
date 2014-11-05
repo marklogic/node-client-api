@@ -138,12 +138,25 @@ describe('Document query test 2', function(){
     db.documents.query(
       q.where(
         q.properties(
-          q.collection('matchList')
+          q.term('bush')
         )
       )
     ).
     result(function(response) {
-      console.log(response);
+      //console.log(response);
+      //response.length.should.equal(1);
+      done();
+    }, done);
+  });
+
+  it('should do element query', function(done){
+    db.documents.query(
+      q.where(
+        q.element('title', 'memex')
+      )
+    ).
+    result(function(response) {
+      //console.log(response);
       //response.length.should.equal(1);
       done();
     }, done);
