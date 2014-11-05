@@ -101,7 +101,7 @@ describe('Document facet query test', function(){
     result(function(response){done();}, done);
   });
 
-  it('should do word query', function(done){
+  it('should query with facet', function(done){
     db.documents.query(
       q.where(
         q.directory('/test/query/facet/')
@@ -114,6 +114,25 @@ describe('Document facet query test', function(){
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.facets.popularity.facetValues.length.should.equal(3);  
+      response.facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+
+  it('should query with descending facet', function(done){
+    db.documents.query(
+      q.where(
+        q.collection('facetCollection')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency', 'descending'))
+      ).
+      slice(0)
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.facets.popularity.facetValues.length.should.equal(3);  
+      response.facets.popularity.facetValues[0].name.should.equal('5');  
       done();
     }, done);
   });
