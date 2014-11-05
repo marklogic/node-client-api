@@ -27,7 +27,7 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Config query test', function(){
+describe('Config query negative test', function(){
 
   var dbDir = '/marklogic/query/invalid/custom/';
   var dbModule = 'directoryConstraintInvalid.xqy';
