@@ -255,38 +255,40 @@ describe('Optimistic locking test', function() {
     }, done);
   })
 
-  /*it('should commit the write document', function(done) {
-    var tid = null;
-    db.transactions.open().result().
-    then(function(response) {
-      tid = response.txid;
-      return db.documents.write({
-        txid: tid,
-        uri: '/test/transaction/doc1.json',
-        contentType: 'application/json',
-        content: {firstname: "John", lastname: "Doe", txKey: tid}
-      }).result();
+  /*it('should write document for test', function(done) {
+    dbWriter.documents.write({
+      uri: '/test/optlock/doc7.json',
+      contentType: 'application/json',
+      content: {
+        title: 'overwrite the version id'
+      }
     }).
-    then(function(response) {
-      return db.transactions.commit(tid).
-      result(function(response) {done();}, done);
-    });  
+    result(function(response) {
+      done();
+    }, done);
   });
 
-  it('should read the commited document', function(done) {
-      db.documents.read({uris:'/test/transaction/doc1.json'}).result().
-      then(function(documents) {
-        var document = documents[0];
-        console.log(document.content.txKey);
-        var tid = document.content.txKey;
-        return db.documents.read({uris:'/test/transaction/doc1.json', txid:tid}).result();
+  it('should fail to overwrite the document with incorrect version id', function(done){
+    dbWriter.documents.probe('/test/optlock/doc7.json').result().
+    then(function(response) {
+      dbWriter.documents.write({
+        uri: '/test/optlock/doc7.json',
+        versionId: 123456,
+        contentType: 'application/json',
+        content: {
+          title: 'this doc is overwritten'
+        }
       }).
-      then(function(documents) {
-        var document = documents[0];
-        console.log(document.content.txKey);
+      result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response.should.equal('SHOULD HAVE FAILED');
         done();
-      }, done);
-
+      }, function(error) {
+        console.log(error);
+        //error.statusCode.should.equal(403);
+        done();
+      });
+    });
   });*/
 
   it('should change back the update policy', function(done) {
