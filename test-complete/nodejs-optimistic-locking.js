@@ -120,11 +120,20 @@ describe('Optimistic locking test', function() {
     }, done);
   });
 
-  it('should contain version id', function(done) {
+  it('should contain version id on probe', function(done) {
     dbWriter.documents.probe('/test/optlock/doc5.json').
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.versionId.should.not.equal(null);
+      done();
+    }, done);
+  });
+
+  it('should contain version id on read', function(done) {
+    dbWriter.documents.read('/test/optlock/doc5.json').
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].versionId.should.not.equal(null);
       done();
     }, done);
   });
@@ -255,7 +264,15 @@ describe('Optimistic locking test', function() {
     }, done);
   })
 
-  /*it('should write document for test', function(done) {
+  it('should change the update policy', function(done) {
+    dbAdmin.config.serverprops.write({'update-policy': 'version-required'}).
+    result(function(response) {
+      response.should.be.ok;
+      done();
+    }, done);
+  });
+
+  it('should write document for test', function(done) {
     dbWriter.documents.write({
       uri: '/test/optlock/doc7.json',
       contentType: 'application/json',
@@ -268,12 +285,11 @@ describe('Optimistic locking test', function() {
     }, done);
   });
 
-  it('should fail to overwrite the document with incorrect version id', function(done){
+  it('should fail to overwrite the document with no version id', function(done){
     dbWriter.documents.probe('/test/optlock/doc7.json').result().
     then(function(response) {
       dbWriter.documents.write({
         uri: '/test/optlock/doc7.json',
-        versionId: 123456,
         contentType: 'application/json',
         content: {
           title: 'this doc is overwritten'
@@ -284,12 +300,82 @@ describe('Optimistic locking test', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        console.log(error);
-        //error.statusCode.should.equal(403);
+        //console.log(error);
+        error.statusCode.should.equal(403);
         done();
       });
     });
+  });
+
+  it('should fail to overwrite the document with incorrect version id', function(done){
+    dbWriter.documents.probe('/test/optlock/doc7.json').result().
+    then(function(response) {
+      dbWriter.documents.write({
+        uri: '/test/optlock/doc7.json',
+        contentType: 'application/json',
+        versionId: 1234567,
+        content: {
+          title: 'this doc is overwritten'
+        }
+      }).
+      result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+      }, function(error) {
+        //console.log(error);
+        error.statusCode.should.equal(412);
+        done();
+      });
+    });
+  });
+
+  it('should overwrite the document with the correct version id', function(done){
+    dbWriter.documents.probe('/test/optlock/doc7.json').result().
+    then(function(response) {
+      dbWriter.documents.write({
+        uri: '/test/optlock/doc7.json',
+        contentType: 'application/json',
+        versionId: response.versionId,
+        content: {
+          title: 'this doc is overwritten'
+        }
+      }).
+      result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done); 
+    });
+  });
+
+  /*it('should fail to read the overwritten the document without the version id', function(done){
+    dbWriter.documents.probe('/test/optlock/doc7.json').result().
+    then(function(response) {
+      dbWriter.documents.read({
+        uris: '/test/optlock/doc7.json'
+      }).
+      result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.should.equal('this doc is overwritten');
+        done();
+      }, done); 
+    });
   });*/
+
+  it('should read the overwritten the document with the version id', function(done){
+    dbWriter.documents.probe('/test/optlock/doc7.json').result().
+    then(function(response) {
+      dbWriter.documents.read({
+        uris: '/test/optlock/doc7.json',
+        versionId: response.versionId
+      }).
+      result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.title.should.equal('this doc is overwritten');
+        done();
+      }, done); 
+    });
+  });
 
   it('should change back the update policy', function(done) {
     dbAdmin.config.serverprops.write({'update-policy': 'merge-metadata'}).
