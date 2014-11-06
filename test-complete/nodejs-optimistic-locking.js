@@ -128,8 +128,48 @@ describe('Optimistic locking test', function() {
       done();
     }, done);
   });
+
+  it('should write document for test', function(done) {
+    dbWriter.documents.write({
+      uri: '/test/optlock/doc6.json',
+      contentType: 'application/json',
+      content: {
+        title: 'with the version'
+      }
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should fail to remove doc without the version id', function(done) {
+    dbWriter.documents.remove('/test/optlock/doc6.json').
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      error.statusCode.should.equal(403)
+      done();
+    });
+  });
+
+  it('should remove the document with the version id', function(done){
+    dbWriter.documents.probe('/test/optlock/doc6.json').result().
+    then(function(response) {
+      dbWriter.documents.remove({
+        uri: '/test/optlock/doc6.json',
+        versionId: response.versionId
+      }).
+      result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        response.exists.should.equal(false);
+        done();
+      }, done);
+    });
+  });
   
-  it('should apply the patch without version id', function(done){
+  it('should fail to apply the patch without version id', function(done){
     dbWriter.documents.patch('/test/optlock/doc5.json',
       p.pathLanguage('jsonpath'),
       p.insert('$.title', 'after', {newKey:'newChild'}),
