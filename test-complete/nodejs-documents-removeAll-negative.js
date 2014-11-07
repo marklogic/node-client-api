@@ -101,10 +101,10 @@ describe('Document remove all negative test', function(){
     result(function(response){done();}, done);
   });
 
-  /*it('should fail by omitting collection', function(done) {
-    dbWriter.documents.removeAll({collection:null}).
+  it('should fail by omitting collection', function(done) {
+    dbWriter.documents.removeAll({collection:['matchCollection1', 'matchCollection2']}).
     result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
+      //response.should.equal('SHOULD HAVE FAILED');
       done();
     },
     function(error) {
@@ -112,7 +112,7 @@ describe('Document remove all negative test', function(){
       error.should.be.ok;
       done();
     });
-  });*/
+  });
 
   it('should fail by omitting collection', function(done) {
     dbAdmin.documents.removeAll({all: true}).
