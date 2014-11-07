@@ -163,6 +163,29 @@ describe('Write Document Test', function() {
     }, done);
   });
 
+  it('should write document without contentType', function(done) {
+    db.documents.write({
+      uri: '/test/crud/withoutContentType1.json',
+      content: {name:'no content type'}
+      }).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.documents[0].uri.should.equal('/test/crud/withoutContentType1.json');
+      done();
+    }, done);
+  });
+
+  it('should read document without contentType', function(done) {
+    db.documents.read({
+      uris: '/test/crud/withoutContentType1.json',
+      }).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].content.name.should.equal('no content type');
+      done();
+    }, done);
+  });
+
   it('should delete the document', function(done) {
     db.documents.remove(docuri).result(function(document) {
       document.exists.should.eql(false);
@@ -172,6 +195,13 @@ describe('Write Document Test', function() {
 
   it('should delete the document', function(done) {
     db.documents.remove(docuri2).result(function(document) {
+      document.exists.should.eql(false);
+      done();
+    }, done);
+  });
+
+  it('should delete the document', function(done) {
+    db.documents.remove('/test/crud/withoutContentType1.json').result(function(document) {
       document.exists.should.eql(false);
       done();
     }, done);
