@@ -86,13 +86,13 @@ describe('quick path', function(){
       {title: 'quick value 2'}
       ).result().
     then(function(uris){
-		console.log(JSON.stringify(uris, null, 4));
+		//console.log(JSON.stringify(uris, null, 4));
       valcheck.isUndefined(uris).should.equal(false);
    //   uris.length.should.equal(2);
       return dbWriter.documents.read(uris).result();
       }, done).
     then(function(documents) {
-	console.log(JSON.stringify(documents, null, 4));
+	//console.log(JSON.stringify(documents, null, 4));
         valcheck.isUndefined(documents).should.equal(false);
         documents.length.should.equal(2);
         documents[0].should.have.property('content');
@@ -147,7 +147,7 @@ describe('quick path', function(){
           title: 'quick value 1'
         }))).
     result(function(objects) {
-	  console.log(JSON.stringify(objects, null, 4));
+	  //console.log(JSON.stringify(objects, null, 4));
       valcheck.isUndefined(objects).should.equal(false);
       objects.length.should.equal(1);
       objects[0].should.have.property('title');
@@ -162,12 +162,12 @@ describe('quick path', function(){
           title: 'bla'
         }))).
    result(function(response){
-	console.log('Responce');
-   console.log(JSON.stringify(response, null, 4));
+	//console.log('Responce');
+   //console.log(JSON.stringify(response, null, 4));
 	(!valcheck.isNullOrUndefined(response)).should.equal(true);
      done();
     }, function(error){
-	console.log(JSON.stringify(error, null, 4));
+	//console.log(JSON.stringify(error, null, 4));
       error.statusCode.should.equal(403);
       done();
       });
