@@ -52,11 +52,11 @@ describe('when executing resource services', function(){
  it('should get one document with transaction', function(done){
 		this.timeout(5000);
 		var tid = null;
-		console.log('Started');
+		//console.log('Started');
 		db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.get({name:xqyServiceName, format:'xquery',params:{value:'foo'}}).
@@ -70,10 +70,10 @@ describe('when executing resource services', function(){
         response[0].content.readDoc.should.have.property('param');
         response[0].content.readDoc.param.should.equal('foo');
 		return db.transactions.commit(tid).result();
-		console.log('Transaction Closed');
+		//console.log('Transaction Closed');
         });
     }).	then(function(response) {
-		console.log(JSON.stringify(response, null, 4));
+		//console.log(JSON.stringify(response, null, 4));
         response.should.be.ok;
         done();
         }, done);
@@ -101,8 +101,8 @@ describe('when executing resource services', function(){
       var tid = null;
 	  db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.get({
@@ -122,7 +122,7 @@ describe('when executing resource services', function(){
         return db.transactions.commit(tid).result();
 		 }).
 		then(function(response) {
-			console.log(JSON.stringify(response, null, 4));
+			//console.log(JSON.stringify(response, null, 4));
 			response.should.be.ok;
         done();
         }, done);
@@ -147,8 +147,8 @@ describe('when executing resource services', function(){
 	  var tid = null;
 	  db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.put({
@@ -156,7 +156,7 @@ describe('when executing resource services', function(){
           {contentType:'application/json', content:{one:'typed document'}}
         ]}).
       result(function(response){
-	  console.log(JSON.stringify(response, null, 4));
+	  //console.log(JSON.stringify(response, null, 4));
         response.should.have.property('wroteDoc');
         response.wroteDoc.should.have.property('param');
         response.wroteDoc.param.should.equal('foo');
@@ -166,7 +166,7 @@ describe('when executing resource services', function(){
 		return db.transactions.commit(tid).result();
 		 }).
 		then(function(response) {
-			console.log(JSON.stringify(response, null, 4));
+			//console.log(JSON.stringify(response, null, 4));
 			response.should.be.ok;
         done();
         }, done);
@@ -193,8 +193,8 @@ it('should put one untyped document', function(done){
       var tid = null;
 	  db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.put({
@@ -202,7 +202,7 @@ it('should put one untyped document', function(done){
           {one:'untyped document'}
         ]}).
       result(function(response){
-		console.log(JSON.stringify(response, null, 4));
+		//console.log(JSON.stringify(response, null, 4));
         response.should.have.property('wroteDoc');
         response.wroteDoc.should.have.property('param');
         response.wroteDoc.param.should.equal('foo');
@@ -212,7 +212,7 @@ it('should put one untyped document', function(done){
 		return db.transactions.commit(tid).result();
 	 }).
 	then(function(response) {
-		console.log(JSON.stringify(response, null, 4));
+		//console.log(JSON.stringify(response, null, 4));
 		response.should.be.ok;
         done();
         }, done);
@@ -241,8 +241,8 @@ it('should put one untyped document', function(done){
       var tid = null;
 		db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.put({
@@ -251,7 +251,7 @@ it('should put one untyped document', function(done){
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
       result(function(response){
-		console.log(JSON.stringify(response, null, 4));
+		//console.log(JSON.stringify(response, null, 4));
         response.should.have.property('wroteDoc');
         response.wroteDoc.should.have.property('param');
         response.wroteDoc.param.should.equal('foo');
@@ -264,7 +264,7 @@ it('should put one untyped document', function(done){
          return db.transactions.commit(tid).result();
 		}).
 		then(function(response) {
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
 		response.should.be.ok;
         done();
         }, done);
@@ -300,8 +300,8 @@ it('should put one untyped document', function(done){
 	    var tid = null;
 		db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.post({
@@ -310,7 +310,7 @@ it('should put one untyped document', function(done){
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
       result(function(response){
-		console.log(JSON.stringify(response, null, 4));
+		//console.log(JSON.stringify(response, null, 4));
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(2);
         response[0].should.have.property('content');
@@ -329,7 +329,7 @@ it('should put one untyped document', function(done){
         response[1].content.appliedMultiDoc.multiParam.should.equal('foo');
 		return db.transactions.commit(tid).result();
 	 }).	then(function(response) {
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
 		response.should.be.ok;
         done();
         }, done);
@@ -340,20 +340,20 @@ it('should put one untyped document', function(done){
 	  var tid = null;
 		db.transactions.open().result().
 		then(function(response) {
-		console.log('Tranc Open');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Tranc Open');
+		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.remove({name:xqyServiceName, format:'xquery', params:{value:'foo'}}).
       result(function(response){
-		console.log(JSON.stringify(response, null, 4));
+		//console.log(JSON.stringify(response, null, 4));
         response.should.have.property('deletedDoc');
         response.deletedDoc.should.have.property('param');
         response.deletedDoc.param.should.equal('foo');
 		return db.transactions.commit(tid).result();
 	   }).
 	   then(function(response) {
-        console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 4));
 		response.should.be.ok;
         done();
         }, done);
