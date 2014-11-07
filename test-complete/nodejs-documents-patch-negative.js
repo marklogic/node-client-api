@@ -23,6 +23,7 @@ var p = marklogic.patchBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document patch negative test', function(){
   before(function(done){
@@ -157,66 +158,50 @@ describe('document patch negative test', function(){
     });   
   });
 
-
-  /*it('should appply patch on metadata properties', function(done){
-    this.timeout(3000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
-      operations: [
-        p.pathLanguage('jsonpath'),
-        p.insert('$.properties.prop1', 'after', {prop2: 'world'})
-      ]
+  it('should write document for test', function(done){
+    var uri2 = '/test/patch/replaceInsert.json';
+    dbWriter.documents.write({
+      uri: uri2,
+      contentType: 'application/json',
+      content: {
+        theTop: {
+          child1: {grandchild: 'gcv'},
+          child2: 'c2v',
+          child3a: ['c3av1', 'c3av2'],
+          child3b: ['c3bv1', 'c3bv2'],
+          child4a: ['c4av1', 'c4av2'],
+          child4b: ['c4bv1', 'c4bv2'],
+          child5: [{c5a: 'c5v1'}, {c5b: 'c5v2'}]
+        }
+      }
     }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].properties.prop2.should.equal('world'); 
-        done();
-      }, done);
-    }, done);   
+    result(function(response) {
+      done();
+    }, done);
   });
 
-  it('should replace metadata properties', function(done){
-    this.timeout(3000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
-      operations: [
-        p.pathLanguage('jsonpath'),
-        p.replace('$.properties.prop1', {prop1: 'hi'})
-      ]
-    }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].properties.prop1.should.equal('hi'); 
-        done();
-      }, done);
-    }, done);   
+  it('should fail to patch with invalid xpath', function(done){
+    var uri2 = '/test/patch/replaceInsert.json';
+    dbWriter.documents.patch(
+      uri2,
+      p.replaceInsert('node()/[. = "c4bv2"]',
+        '/theTop/node("child4b")', 'last-child', 'REPLACED4')
+    ).
+    result(function(response) {
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(400);
+      done();
+    });   
   });
 
-  it('purposely failing test', function(done){
-    this.timeout(3000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
-      operations: [
-        p.replace('$.quality', 45)
-      ]
-    }).
+  it('should remvoe documents', function(done){
+    dbAdmin.documents.removeAll({all: true}).
     result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(45); 
-        done();
-      }, done);
-    }, done);   
-  });*/
+      done();
+    }, done);  
+  });
+
 });
