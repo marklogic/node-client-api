@@ -107,6 +107,7 @@ describe('document patch test', function(){
   var uri2 = '/test/patch/doc4.json';
 
   it('should apply the patch', function(done){
+  
     dbWriter.documents.patch('/test/patch/doc5.json',
       p.pathLanguage('jsonpath'),
       p.insert('$.title', 'after', {newKey:'newChild'}),
@@ -119,6 +120,32 @@ describe('document patch test', function(){
         done();
     }, done);
   });
+ // Possibly unhandled ReferenceError: txid is not defined (Need to work on this error)
+ /*  it('should apply the patchwith transaction', function(done){
+	var tid = null;
+	  dbWriter.transactions.open().result().
+	  then(function(response) {
+	  console.log('Tranc Open');
+	  console.log(JSON.stringify(response, null, 4));
+	  tid = response.txid;
+	  return dbWriter.documents.patch('/test/patch/doc5.json',
+      p.pathLanguage('jsonpath'),
+      p.insert('$.title', 'after', {newKey:'newChild'}),
+      p.insert('$.price.amt', 'before', {numberKey:1234.456}),
+      p.replace('$.popularity', 1),
+      p.remove('$.p'),
+	  txid('tid')
+    ).result(function(response) {
+        console.log(JSON.stringify(response, null, 4));
+        response.uri.should.equal(uri1);
+        return dbWriter.transactions.commit(tid).result();
+	 }).then(function(response) {
+        console.log(JSON.stringify(response, null, 4));
+		response.should.be.ok;
+        done();
+        }, done);
+	});
+  }); */
 
   it('should read the patch', function(done){
     db.documents.read('/test/patch/doc5.json').
