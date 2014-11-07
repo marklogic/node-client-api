@@ -138,28 +138,27 @@ describe('document patch negative test', function(){
        });   
   });
 
-  /*it('should appply patch on metadata with jsonpath', function(done){
-    this.timeout(3000);
+  it('should fail to appply patch without pathLanguange', function(done){
     var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
+    dbWriter.documents.patch({
+      uri: uri1,
+      categories: ['content'],
       operations: [
-        p.pathLanguage('jsonpath'),
-        p.replace('$.quality', 45)
+        p.replace('$.popularity', 15)
       ]
     }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(45); 
-        done();
-      }, done);
-    }, done);   
+    result(function(response) {
+      response.uri.should.equal(uri1);
+      //console.log(response);
+      done();
+    }, function(error) {
+      //console.log(error);
+      done();
+    });   
   });
 
-  it('should appply patch on metadata properties', function(done){
+
+  /*it('should appply patch on metadata properties', function(done){
     this.timeout(3000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
