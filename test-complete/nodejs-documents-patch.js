@@ -235,6 +235,42 @@ describe('document patch test', function(){
     }, done);
   });
 
+  it('should write xml doc for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/patch/xmlDoc1.xml',
+      contentType: 'application/xml',
+      content: '<parent><firstname>John</firstname><lastname>Doe</lastname><id>5</id></parent>'
+    }).result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+    }, done);
+  });
+
+  it('should apply patch on xml doc', function(done){
+    dbWriter.documents.patch(
+      '/test/patch/xmlDoc1.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/parent" position="last-child">' +
+      '    <job>engineer</job>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.uri.should.equal('/test/patch/xmlDoc1.xml');
+        done();
+    }, done);
+  });
+
+  it('should read the patch from xml doc', function(done){
+    db.documents.read('/test/patch/xmlDoc1.xml').
+    result(function(response) {
+      var document = response[0];
+      strResult = JSON.stringify(document, null, 2);
+      strResult.should.containEql('<job>engineer</job>');
+      done();
+    }, done);
+  });
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({
       directory: '/test/patch/'
