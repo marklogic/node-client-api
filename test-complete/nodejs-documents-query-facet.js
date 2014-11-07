@@ -137,6 +137,29 @@ describe('Document facet query test', function(){
     }, done);
   });
 
+  it('should query with absolute bucket', function(done){
+    db.documents.query(
+      q.where(
+        q.word('popularity', 'high')
+      ).
+      calculate(
+        q.facet(
+          'popularity',
+          q.datatype('int'),
+          q.bucket('low', '<', 2),
+          q.bucket('moderate', 2, '<', 4),
+          q.bucket('high', 4, '<')
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      //response.facets.popularity.facetValues.length.should.equal(3);  
+      //response.facets.popularity.facetValues[0].name.should.equal('5');  
+      done();
+    }, done);
+  });
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({collection: 'facetCollection'}).
     result(function(response) {
