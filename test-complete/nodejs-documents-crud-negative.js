@@ -121,6 +121,20 @@ describe('Document CRUD negative test', function(){
       });
   });
 
+  it('should fail to read metadata from non-existent document', function(done){
+    db.documents.read({
+      uris: '/doc/nonExistent.json',
+      categories: ['metadata']
+      }).
+    result(function(response) {
+      response.length.should.equal(0);
+      done();
+    }, function(error) {
+      //console.log(error);
+      done();
+      });
+  });
+
 
   /*it('should fail to write with invalid content type', function(done){
     dbWriter.documents.write({

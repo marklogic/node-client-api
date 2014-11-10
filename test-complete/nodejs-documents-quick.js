@@ -76,7 +76,7 @@ describe('quick path', function(){
         }
       }).
     result(function(response){
-	console.log(JSON.stringify(response, null, 4));
+//	console.log(JSON.stringify(response, null, 4));
 	done();}, done);
   });
     it('should write objects', function(done){
@@ -86,13 +86,13 @@ describe('quick path', function(){
       {title: 'quick value 2'}
       ).result().
     then(function(uris){
-		console.log(JSON.stringify(uris, null, 4));
+		//console.log(JSON.stringify(uris, null, 4));
       valcheck.isUndefined(uris).should.equal(false);
    //   uris.length.should.equal(2);
       return dbWriter.documents.read(uris).result();
       }, done).
     then(function(documents) {
-	console.log(JSON.stringify(documents, null, 4));
+	//console.log(JSON.stringify(documents, null, 4));
         valcheck.isUndefined(documents).should.equal(false);
         documents.length.should.equal(2);
         documents[0].should.have.property('content');
@@ -102,6 +102,20 @@ describe('quick path', function(){
         done();
         }, done);
   }); 
+/*   it('should fail in writing objects to wrong collection', function(done){
+    dbWriter.writeCollection(
+      '/matchCollection3',
+      {title: 'quick value 1'},
+      {title: 'quick value 2'}
+      ).
+	result(function(response){
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error){
+      error.statusCode.should.equal(403);
+      done();
+      });
+  }); */
    it('should read objects', function(done){
     dbWriter.read('/test/query/matchDir/doc1.json', '/test/query/matchDir/doc2.json','/test/query/matchDir/doc3.json').
     result(function(objects) {
@@ -115,7 +129,17 @@ describe('quick path', function(){
       objects[2].title.should.equal('For 1945');
       done();
       }, done);
-  })
+  });
+  it('should fail in reading objects because of wrong URI', function(done){
+    dbWriter.read('/test/query/match/doc1.json', '/test/query/Dir/doc2.json','/test/query/tchD/doc3.json').
+	result(function(response){
+	(!valcheck.isNullOrUndefined(response)).should.equal(true);
+     done();
+    }, function(error){
+      error.statusCode.should.equal(403);
+      done();
+      });
+  }); 
    it('should query objects', function(done){
     dbWriter.queryCollection(
         '/matchCollection1',
@@ -123,7 +147,7 @@ describe('quick path', function(){
           title: 'quick value 1'
         }))).
     result(function(objects) {
-	  console.log(JSON.stringify(objects, null, 4));
+	  //console.log(JSON.stringify(objects, null, 4));
       valcheck.isUndefined(objects).should.equal(false);
       objects.length.should.equal(1);
       objects[0].should.have.property('title');
@@ -131,6 +155,23 @@ describe('quick path', function(){
       done();
       }, done);
   });
+     it('should query unknown objects', function(done){
+    dbWriter.queryCollection(
+        '/matchCollection1',
+        q.where(q.byExample({
+          title: 'bla'
+        }))).
+   result(function(response){
+	//console.log('Responce');
+   //console.log(JSON.stringify(response, null, 4));
+	(!valcheck.isNullOrUndefined(response)).should.equal(true);
+     done();
+    }, function(error){
+	//console.log(JSON.stringify(error, null, 4));
+      error.statusCode.should.equal(403);
+      done();
+      });
+  }); 
   it('should remove a document', function(done) {
     var docUri = '/test/query/matchDir/doc3.json';
     dbWriter.remove(docUri).
