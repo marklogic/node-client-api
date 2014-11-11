@@ -197,6 +197,66 @@ describe('document patch negative test', function(){
     });   
   });
 
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/negative/patch/cardinality1.xml',
+      contentType: 'application/xml',
+      content: '<root><foo>one</foo><foo>two</foo></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should fail to apply patch with exactly one cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/negative/patch/cardinality1.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality=".">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(400);
+      done();
+    });
+  });
+
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/negative/patch/cardinality2.xml',
+      contentType: 'application/xml',
+      content: '<root><baz>one</baz></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should fail to apply patch with one or more cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/negative/patch/cardinality2.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality="+">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(400);
+      done();
+    });
+  });
+
   it('should remvoe documents', function(done){
     dbAdmin.documents.removeAll({all: true}).
     result(function(response){
