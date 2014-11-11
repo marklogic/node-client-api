@@ -93,6 +93,44 @@ describe('Document transaction test', function() {
         done();
       }, done);
   });
+
+  it('should rollback the overwritten document', function(done) {
+    this.timeout(5000);
+    var tid = null;
+    db.transactions.open().result().
+    then(function(response) {
+      tid = response.txid;
+      return db.documents.write({
+        txid: tid,
+        uri: '/test/transaction/doc3.json',
+        contentType: 'application/json',
+        content: {firstname: "Bob", lastname: "Sang", txKey: tid}
+      }).result();
+    }).
+    then(function(response) {
+      return db.documents.write({
+        txid: tid,
+        uri: '/test/transaction/doc3.json', 
+        contentType: 'application/json',
+        content: {firstname: "Chuck", lastname: "Sang", txKey: tid}
+      }).result();
+    }).
+    then(function(response) {
+      return db.transactions.rollback(tid).
+      result(function(response) {done();}, done);
+    });  
+  });
+
+  it('should be able to read the original document', function(done) {
+      this.timeout(5000);
+      db.documents.read({uris:'/test/transaction/doc3.json'}).
+      result(function(response) {
+        //console.log(response);
+        var document = response[0];
+        document.content.firstname.should.equal('Bob');
+        done();
+      }, done);
+  });
  
   it('should remove all documents', function(done) {
       this.timeout(5000);
