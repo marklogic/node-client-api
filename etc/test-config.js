@@ -74,5 +74,13 @@ module.exports = {
         user:     restAdminUser,
         password: restAdminPassword,
         authType: manageAuthType
+    },
+    restSslConnection: {
+        host:     testHost,
+        port:     restPort,
+        user:     restAdminUser,
+        password: restAdminPassword,
+        authType: restAuthType,
+        ssl:      true
     }
 };
