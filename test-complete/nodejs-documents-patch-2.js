@@ -131,6 +131,166 @@ describe('document patch test 2', function(){
     }, done);
   });
 
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/patch/cardinality1.xml',
+      contentType: 'application/xml',
+      content: '<root><foo>one</foo></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should apply patch with one cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/patch/cardinality1.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality=".">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.uri.should.equal('/test/query/patch/cardinality1.xml');
+        done();
+    }, done);
+  });
+
+  it('should read the document patch', function(done){
+    db.documents.read({
+      uris: '/test/query/patch/cardinality1.xml',
+      }
+    ).
+    result(function(response) {
+      //console.log(response);
+      var document = response[0];
+      var strDoc = JSON.stringify(document);
+      strDoc.should.containEql('<foo>one</foo>    <bar>added</bar>');
+      done();
+    }, done);
+  });
+
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/patch/cardinality2.xml',
+      contentType: 'application/xml',
+      content: '<root><foo>one</foo><foo>two</foo><foo>three</foo></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should apply patch with one or more cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/patch/cardinality2.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality="+">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.uri.should.equal('/test/query/patch/cardinality2.xml');
+        done();
+    }, done);
+  });
+
+  it('should read the document patch', function(done){
+    db.documents.read({
+      uris: '/test/query/patch/cardinality2.xml',
+      }
+    ).
+    result(function(response) {
+      //console.log(response);
+      var document = response[0];
+      var strDoc = JSON.stringify(document);
+      strDoc.should.containEql('<foo>two</foo>    <bar>added</bar>');
+      done();
+    }, done);
+  });
+
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/patch/cardinality3.xml',
+      contentType: 'application/xml',
+      content: '<root><foo>one</foo></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should apply patch with zero or one cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/patch/cardinality3.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality="?">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.uri.should.equal('/test/query/patch/cardinality3.xml');
+        done();
+    }, done);
+  });
+
+  it('should read the document patch', function(done){
+    db.documents.read({
+      uris: '/test/query/patch/cardinality3.xml',
+      }
+    ).
+    result(function(response) {
+      //console.log(response);
+      var document = response[0];
+      var strDoc = JSON.stringify(document);
+      strDoc.should.containEql('<foo>one</foo>    <bar>added</bar>');
+      done();
+    }, done);
+  });
+
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/patch/cardinality4.xml',
+      contentType: 'application/xml',
+      content: '<root><baz>one</baz></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should apply patch with zero or one cardinality -- with zero', function(done){
+    dbWriter.documents.patch(
+      '/test/query/patch/cardinality4.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality="?">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.uri.should.equal('/test/query/patch/cardinality4.xml');
+        done();
+    }, done);
+  });
+
+  it('should read the document patch', function(done){
+    db.documents.read({
+      uris: '/test/query/patch/cardinality4.xml',
+      }
+    ).
+    result(function(response) {
+      //console.log(response);
+      var document = response[0];
+      var strDoc = JSON.stringify(document);
+      strDoc.should.containEql('<bar>added</bar>');
+      done();
+    }, done);
+  });
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
