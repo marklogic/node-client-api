@@ -40,7 +40,16 @@ describe('graph operations', function(){
       done();
     }, done);
   });
-  it('should read the default graph', function(done){
+  it('should read the default graph as JSON', function(done){
+    db.graphs.read('application/rdf+json').
+    result(function(data){
+      (!valcheck.isNullOrUndefined(data)).should.equal(true);
+      var personIds = Object.keys(data);
+      personIds.length.should.equal(20);
+      done();
+    }, done);
+  });
+  it('should read the default graph as n3', function(done){
     db.graphs.read('text/n3').
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
