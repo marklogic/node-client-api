@@ -42,16 +42,16 @@ function setup(manager) {
     } else {
       console.log('removing database and REST server for '+testconfig.testServerName);
       manager.remove({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
+        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
         }).result().
       then(function(response) {
         return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
           }).result();
         }).
       then(function(response) {
         return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
           }).result();
         }).
       then(function(response) {

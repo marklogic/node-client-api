@@ -239,9 +239,9 @@ function setup(manager) {
             }
             return manager.put({
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+
-                '/temporal/collections/LSQT/properties?collection=temporalCollection',
+                '/temporal/collections/lsqt/properties?collection=temporalCollection',
               body: {
-                'LSQT-enabled': true,
+                'lsqt-enabled': true,
                 automation: {
                   enabled: false
                   }

@@ -30,7 +30,7 @@ function setupUsers(manager, done) {
     return manager.post({
       endpoint: '/manage/v2/roles',
       body: {
-        name: 'rest-evaluator',
+        'role-name': 'rest-evaluator',
         description: 'REST writer who can eval, invoke, or set a dynamic databases',
         role: [
           'rest-writer'
@@ -82,28 +82,28 @@ function setupUsers(manager, done) {
     userName = testconfig.restAdminConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-admin',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-admin user',
       password:    testconfig.restAdminConnection.password
       };
     userName = testconfig.restReaderConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-reader',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-reader user',
       password:    testconfig.restReaderConnection.password
       };
     userName = testconfig.restWriterConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-writer',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-writer user',
       password:    testconfig.restWriterConnection.password
       };
     userName = testconfig.restEvaluatorConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-evaluator',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-writer user with evaluate privileges',
       password:    testconfig.restEvaluatorConnection.password
       };
@@ -151,7 +151,7 @@ function addUser(manager, users, next, done) {
   manager.post({
     endpoint: '/manage/v2/users',
     body: {
-      name:        userdef.name,
+      'user-name': userdef['user-name'],
       password:    userdef.password,
       description: userdef.description,
       role:        [
