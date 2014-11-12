@@ -292,7 +292,7 @@ describe('document query', function(){
                 q.word('scoreKey', 'matchList')
                 )
           ).
-        orderBy('rangeKey1', q.score())
+        orderBy('rangeKey1', q.sort(q.score(), 'descending'))
         ).
       result(function(response) {
         response.length.should.equal(5);
