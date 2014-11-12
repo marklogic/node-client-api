@@ -30,7 +30,7 @@ case  4:
   xdmp.xqueryEval('text{"text value"}');
   break;
 case  5:
-  "string value";
+  'string value';
   break;
 case  6:
   true;
@@ -42,7 +42,10 @@ case  8:
   4.4;
   break;
 case  9:
-  new Date("2010-10-08T10:17:15.125Z");
+  new Date('2010-10-08T10:17:15.125Z');
+  break;
+case  10:
+  xdmp.arrayValues([1, 'two', {i:3}, [4], xdmp.unquote('<i>5</i>')]);
   break;
 default:
   extra;

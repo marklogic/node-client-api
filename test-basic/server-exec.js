@@ -101,7 +101,25 @@ describe('server-side call', function() {
         done();
       }, done);
     });
-    // TODO: multiple values
+    it('should generate a list of values', function(done) {
+      db.eval('xdmp.arrayValues([1, "two", {i:3}, [4], xdmp.unquote("<i>5</i>")]);').result(function(values) {
+        values.length.should.equal(5);
+        checkValue(values[0], 'text', 'integer');
+        values[0].value.should.equal(1);
+        checkValue(values[1], 'text', 'string');
+        values[1].value.should.equal('two');
+        checkValue(values[2], 'json', 'node()');
+        values[2].value.should.have.property('i');
+        values[2].value.i.should.equal(3);
+        checkValue(values[3], 'json', 'node()');
+        values[3].value.should.have.property('length');
+        values[3].value.length.should.equal(1);
+        values[3].value[0].should.equal(4);
+        checkValue(values[4], 'xml', 'node()');
+        /\<i\>5\<\/i\>/.test(values[4].value).should.equal(true);
+        done();
+      }, done);
+    });
   });
   describe('to eval XQuery', function() {
     it('should generate nodes of different formats', function(done) {
@@ -158,7 +176,7 @@ describe('server-side call', function() {
       db.xqueryEval('(attribute att {"attribute value"})').
       result(function(values) {
         values.length.should.equal(1);
-        checkValue(values[0], 'text', 'node()');
+        checkValue(values[0], 'text', 'attribute()');
         values[0].value.should.equal('attribute value');
         done();
       }, done);
@@ -259,7 +277,25 @@ describe('server-side call', function() {
         done();
       }, done);
     });
-    // TODO: multiple values
+    it('should return a list of values', function(done) {
+      db.invoke(invokePath, {test:10}).result(function(values) {
+        values.length.should.equal(5);
+        checkValue(values[0], 'text', 'integer');
+        values[0].value.should.equal(1);
+        checkValue(values[1], 'text', 'string');
+        values[1].value.should.equal('two');
+        checkValue(values[2], 'json', 'node()');
+        values[2].value.should.have.property('i');
+        values[2].value.i.should.equal(3);
+        checkValue(values[3], 'json', 'node()');
+        values[3].value.should.have.property('length');
+        values[3].value.length.should.equal(1);
+        values[3].value[0].should.equal(4);
+        checkValue(values[4], 'xml', 'node()');
+        /\<i\>5\<\/i\>/.test(values[4].value).should.equal(true);
+        done();
+      }, done);
+    });
   });
   describe('to invoke XQuery', function() {
     var fsPath     = './test-basic/data/echoModule.xqy';
@@ -321,7 +357,7 @@ describe('server-side call', function() {
     it('should return a miscellaneous value', function(done) {
       db.invoke(invokePath, {test:[11]}).result(function(values) {
         values.length.should.equal(1);
-        checkValue(values[0], 'text', 'node()');
+        checkValue(values[0], 'text', 'attribute()');
         values[0].value.should.equal('attribute value');
         done();
       }, done);

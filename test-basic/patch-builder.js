@@ -187,7 +187,7 @@ describe('patch-builder', function() {
     assert.deepEqual(
         p.library('replaceLib.xqy'),
         {'replace-library':{
-          ns: '/ext/marklogic/patch/apply/replaceLib',
+          ns: 'http://marklogic.com/patch/apply/replaceLib',
           at: '/ext/marklogic/patch/apply/replaceLib.xqy'
           }}
         );
