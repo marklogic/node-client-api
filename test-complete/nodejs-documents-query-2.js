@@ -22,6 +22,7 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document query test 2', function(){
   before(function(done){
@@ -158,6 +159,28 @@ describe('Document query test 2', function(){
     result(function(response) {
       //console.log(response);
       //response.length.should.equal(1);
+      done();
+    }, done);
+  });
+
+  it('should do path index query', function(done){
+    db.documents.query(
+      q.where(
+        q.range(q.pathIndex('price/amt'), q.datatype('decimal'), '>', 10)
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(2);
+      done();
+    }, done);
+  });
+
+  it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
       done();
     }, done);
   });
