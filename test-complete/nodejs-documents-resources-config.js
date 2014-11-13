@@ -55,7 +55,7 @@ describe('when configuring resource services', function(){
    it('should read the resource service', function(done){
     restAdminDB.config.resources.read(serviceName).
     result(function(source){
-      console.log(JSON.stringify(source, null, 4));
+      //console.log(JSON.stringify(source, null, 4));
 	  (valcheck.isNullOrUndefined(source)).should.equal(false);
       done();
     }, done);
@@ -63,7 +63,7 @@ describe('when configuring resource services', function(){
   it('should try to read the resource service via invalid name', function(done){
     restAdminDB.config.resources.read(serviceNameInvalid).
     result(function(source){
-	  console.log(JSON.stringify(source, null, 4));
+	 //console.log(JSON.stringify(source, null, 4));
 	  //output should be null, need to put a check on it
 	  (!valcheck.isNullOrUndefined(source)).should.equal(true);
       done();
@@ -73,7 +73,7 @@ describe('when configuring resource services', function(){
     db.config.resources.list().
     result(function(response){
       //Need to verify content
-	  console.log(JSON.stringify(response, null, 4));
+	  //console.log(JSON.stringify(response, null, 4));
       response.should.have.property('resources');
 	  response.resources.should.have.property('resource');
 	  response.resources.resource.length.should.be.above(0);
@@ -97,18 +97,7 @@ describe('when configuring resource services', function(){
       done();
     }, done);
   }); 
-  it('should list the resource services', function(done){
-    db.config.resources.list().
-    result(function(response){
-      console.log(JSON.stringify(response, null, 4));
-      response.should.have.property('resources');
-	  response.resources.should.have.property('resource');
-	  response.resources.resource.length.should.be.equal(1);
-      response.resources.resource.filter(function(item){return item.name === serviceName;}).
-          length.should.equal(1);
-      done();
-    }, done);
-  }); 
+  
 /*   //Need to get to the content first
 	it('should delete specified resource config ', function(done){
     restAdminDB.config.resources.resource.remove(serviceName).
@@ -125,7 +114,7 @@ describe('when configuring resource services', function(){
     it('should try read the resource service after remove', function(done){
     restAdminDB.config.resources.read(serviceName).
     result(function(source){
-	   console.log(JSON.stringify(source, null, 4));
+	   //console.log(JSON.stringify(source, null, 4));
       (!valcheck.isNullOrUndefined(source)).should.equal(true);
       done();
     }, done);
