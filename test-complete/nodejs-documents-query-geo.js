@@ -46,15 +46,16 @@ describe('Document geo query test', function(){
     result(function(response){done();}, done);
   });
 
-  it('should do geo query', function(done){
+  it('should do geo query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoElementPair('gElemPair', 'latitude', 'longitude', q.latlon(12, 5))
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.latlon(12, 5))
       )
     ).
     result(function(response) {
-      console.log(JSON.stringify(response, null, 2));
-      //response.length.should.equal(2);
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
       done();
     }, done);
   });
