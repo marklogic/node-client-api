@@ -42,11 +42,44 @@ describe('Document geo query test', function(){
           longitude: 5
         }
       } 
-    }).
+    },
+    {
+      uri: '/test/query/geo/doc2.json',
+      collections: ['geoCollection'],
+      contentType: 'application/json',
+      content: {
+        title: 'bob_long',
+        gElemPoint: '34,88',
+        gElemChildParent: {
+          gElemChildPoint: '34,88'
+        },
+        gElemPair: {
+          latitude: 34,
+          longitude: 88
+        }
+      } 
+    },
+    {
+      uri: '/test/query/geo/doc3.json',
+      collections: ['geoCollection'],
+      contentType: 'application/json',
+      content: {
+        title: 'sam_sung',
+        gElemPoint: '101,4',
+        gElemChildParent: {
+          gElemChildPoint: '101,4'
+        },
+        gElemPair: {
+          latitude: 101,
+          longitude: 4
+        }
+      } 
+    }
+    ).
     result(function(response){done();}, done);
   });
 
-  it('should do geo query in json doc', function(done){
+  it('should do geo property pair query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
         q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.latlon(12, 5))
@@ -56,6 +89,51 @@ describe('Document geo query test', function(){
       //console.log(JSON.stringify(response, null, 2));
       response.length.should.equal(1);
       response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo property point query in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoProperty('gElemPoint', q.point(34, 88))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('bob_long');
+      done();
+    }, done);
+  });
+
+  it('should do geo property child point query in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoProperty(q.property('gElemChildParent'), q.property('gElemChildPoint'), q.latlon(34, 88))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('bob_long');
+      done();
+    }, done);
+  });
+
+  it('should do combination geo and word query in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.or(
+          q.geoProperty(q.property('gElemChildParent'), q.property('gElemChildPoint'), q.latlon(34, 88)),
+          q.word('title', 'karl_kara')
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(2);
+      //response[0].content.title.should.equal('bob_long');
       done();
     }, done);
   });
