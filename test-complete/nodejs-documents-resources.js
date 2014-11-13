@@ -61,8 +61,8 @@ describe('when executing resource services', function(){
 		//console.log(tid, null, 4);
 		return db.resources.get({name:xqyServiceName, format:'xquery',params:{value:'foo'}}).
       result(function(response){
-		console.log('Responce of Get');
-		console.log(JSON.stringify(response, null, 4));
+		//console.log('Responce of Get');
+		//console.log(JSON.stringify(response, null, 4));
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(1);
         response[0].should.have.property('content');
