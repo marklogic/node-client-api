@@ -140,7 +140,7 @@ describe('Document facet query test', function(){
   it('should query with absolute bucket', function(done){
     db.documents.query(
       q.where(
-        q.word('popularity', 'high')
+        q.directory('/test/query/facet/')
       ).
       calculate(
         q.facet(
@@ -154,8 +154,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      //response.facets.popularity.facetValues.length.should.equal(3);  
-      //response.facets.popularity.facetValues[0].name.should.equal('5');  
+      response[0].facets.popularity.facetValues[0].name.should.equal('moderate'); 
+      response[0].facets.popularity.facetValues[0].count.should.equal(1); 
       done();
     }, done);
   });
