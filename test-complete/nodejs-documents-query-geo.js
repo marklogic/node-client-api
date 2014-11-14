@@ -138,6 +138,34 @@ describe('Document geo query test', function(){
     }, done);
   });
 
+  it('should do geo property pair query with circle in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.circle(100, 11, 5))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo property pair query with box in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(11, 4, 20, 10))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
