@@ -74,6 +74,41 @@ describe('Document geo query test', function(){
           longitude: 4
         }
       } 
+    },
+    {
+      uri: '/test/query/geo/doc4.xml',
+      collections: ['geoCollection'],
+      contentType: 'application/xml',
+      content: 
+        '<root>' + 
+        '  <title>ben_red</title>' +
+        '  <gElemPoint>50,44</gElemPoint>' +
+        '  <gElemChildParent>' +
+        '    <gElemChildPoint>50,44</gElemChildPoint>' +
+        '  </gElemChildParent>' +
+        '  <gElemPair>' +
+        '    <latitude>50</latitude>' +
+        '    <longitude>44</longitude>' +
+        '  </gElemPair>' +
+        '</root>'
+    },
+    {
+      uri: '/test/query/geo/doc5.xml',
+      collections: ['geoCollection'],
+      contentType: 'application/xml',
+      content: 
+        '<root>' + 
+        '  <title>george_blue</title>' +
+        '  <gElemPoint>250,144</gElemPoint>' +
+        '  <gElemChildParent>' +
+        '    <gElemChildPoint>250,144</gElemChildPoint>' +
+        '  </gElemChildParent>' +
+        '  <gElemPair>' +
+        '    <latitude>250</latitude>' +
+        '    <longitude>144</longitude>' +
+        '  </gElemPair>' +
+        '  <gAttrPair latitude="250" longitude="144"/>' + 
+        '</root>'
     }
     ).
     result(function(response){done();}, done);
@@ -162,6 +197,76 @@ describe('Document geo query test', function(){
       //console.log(JSON.stringify(response, null, 2));
       response.length.should.equal(1);
       response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo path query in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPath('gElemChildParent/gElemChildPoint', q.latlon(12, 5))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo path query with pathIndex in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPath(q.pathIndex('gElemChildParent/gElemChildPoint'), q.point(12, 5))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo element pair query in xml doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoElementPair('gElemPair', 'latitude', 'longitude', q.latlon(50, 44))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].uri.should.equal('/test/query/geo/doc4.xml');
+      done();
+    }, done);
+  });
+
+  it('should do geo element query in xml doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoElement('gElemPoint', q.latlon(50, 44))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].uri.should.equal('/test/query/geo/doc4.xml');
+      done();
+    }, done);
+  });
+
+  it('should do geo attribute pair query in xml doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoAttributePair('gAttrPair', 'latitude', 'longitude', q.circle(100, 240, 144))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].uri.should.equal('/test/query/geo/doc5.xml');
       done();
     }, done);
   });
