@@ -153,7 +153,7 @@ describe('Document query test 2', function(){
   it('should do element query', function(done){
     db.documents.query(
       q.where(
-        q.element('title', 'memex')
+        q.element(q.qname('Employee'))
       )
     ).
     result(function(response) {
