@@ -107,12 +107,12 @@ describe('document query sort test', function(){
       q.where(
         q.directory('/test/query/matchDir/')
         ).
-      orderBy('popularity', q.sort('popularity', 'descending'))
+      orderBy(q.sort('popularity', 'descending'))
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(4);
         //console.log(JSON.stringify(response, null, 4));
-        document.content.id.should.equal('0013');
+        document.content.popularity.should.equal(5);
         done();
       }, done);
   });
@@ -122,12 +122,12 @@ describe('document query sort test', function(){
       q.where(
         q.directory('/test/query/matchDir/')
         ).
-      orderBy('popularity', q.sort('popularity', 'ascending'))
+      orderBy(q.sort('popularity', 'ascending'))
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(4);
         //console.log(JSON.stringify(response, null, 4));
-        document.content.id.should.equal('0013');
+        document.content.popularity.should.equal(3);
         done();
       }, done);
   });
