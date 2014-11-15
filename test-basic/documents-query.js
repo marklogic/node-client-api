@@ -570,22 +570,22 @@ describe('document query', function(){
                   'json-property':  'rangeKey1',
                   type:             'xs:string',
                   collation:        'http://marklogic.com/collation/',
-                  'range-operator': 'EQ',
-                  value:            'aa'
+                  value:            'aa',
+                  'range-operator': 'EQ'
                   }},
                 {'range-query': {
                   'json-property':  'rangeKey1',
                   type:             'xs:string',
                   collation:        'http://marklogic.com/collation/',
-                  'range-operator': 'EQ',
-                  value:            'ab'
+                  value:            'ab',
+                  'range-operator': 'EQ'
                   }},
                 {'range-query': {
                   'json-property':  'rangeKey1',
                   type:             'xs:string',
                   collation:        'http://marklogic.com/collation/',
-                  'range-operator': 'EQ',
-                  value:            'ac'
+                  value:            'ac',
+                  'range-operator': 'EQ'
                   }}
                 ]}}
               ]},

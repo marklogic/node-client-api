@@ -1008,48 +1008,48 @@ describe('query-builder', function() {
         q.range('foo', 1),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1]
+          value: [1],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range(q.property('foo'), 1),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1]
+          value: [1],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', 1, 2),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1, 2]
+          value: [1, 2],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', [1, 2]),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1, 2]
+          value: [1, 2],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range(['foo', 1, 2]),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1, 2]
+          value: [1, 2],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', '>', 1),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'GT',
-          value: [1]
+          value: [1],
+          'range-operator': 'GT'
           }}
         );
     assert.deepEqual(
@@ -1057,8 +1057,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:int',
-          'range-operator': 'GE',
-          value: [1]
+          value: [1],
+          'range-operator': 'GE'
           }}
         );
     assert.deepEqual(
@@ -1066,8 +1066,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:int',
-          'range-operator': 'GE',
-          value: [1]
+          value: [1],
+          'range-operator': 'GE'
           }}
         );
     assert.deepEqual(
@@ -1075,8 +1075,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
@@ -1084,8 +1084,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
@@ -1093,8 +1093,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
@@ -1102,16 +1102,16 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', 1, q.fragmentScope('properties')),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
           value: [1],
+          'range-operator': 'EQ',
           'fragment-scope': 'properties'
           }}
         );
@@ -1119,8 +1119,8 @@ describe('query-builder', function() {
         q.range('foo', 1, q.rangeOptions('cached')),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
           value: [1],
+          'range-operator': 'EQ',
           'range-option':['cached']
           }}
         );
