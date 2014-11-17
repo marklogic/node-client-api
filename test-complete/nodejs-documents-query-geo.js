@@ -201,6 +201,20 @@ describe('Document geo query test', function(){
     }, done);
   });
 
+  it('should do geo property pair query with polygon in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.polygon([12, 5], [20, 10], [34, 22]))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
   it('should do geo path query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
