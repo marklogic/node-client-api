@@ -628,14 +628,14 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a locks-query', function(){
+  it('should create a locks-fragment-query', function(){
     assert.deepEqual(
-        q.locks(q.collection('foo')),
-        {'locks-query':{'collection-query': {uri:['foo']}}}
+        q.locksFragment(q.collection('foo')),
+        {'locks-fragment-query':{'collection-query': {uri:['foo']}}}
         );
     assert.deepEqual(
-        q.locks([q.collection('foo')]),
-        {'locks-query':{'collection-query': {uri:['foo']}}}
+        q.locksFragment([q.collection('foo')]),
+        {'locks-fragment-query':{'collection-query': {uri:['foo']}}}
         );
   });
 
