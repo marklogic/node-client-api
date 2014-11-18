@@ -225,6 +225,19 @@ describe('Document query test 2', function(){
     }, done);
   });
 
+  it('should do document fragment', function(done){
+    db.documents.query(
+      q.where(
+        q.documentFragment(q.word('title', 'bush'))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(2);
+      done();
+    }, done);
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
