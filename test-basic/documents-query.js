@@ -292,7 +292,7 @@ describe('document query', function(){
                 q.word('scoreKey', 'matchList')
                 )
           ).
-        orderBy('rangeKey1', q.score())
+        orderBy('rangeKey1', q.sort(q.score(), 'descending'))
         ).
       result(function(response) {
         response.length.should.equal(5);
@@ -367,6 +367,26 @@ describe('document query', function(){
         done();
       }, done);
     });
+    it('should take a slice with a standard snippet', function(done){
+      db.documents.query(
+        q.where(
+            q.word('wordKey', 'matchWord1')
+          ).
+        slice(1, 1, q.snippet())
+        ).
+      result(function(response) {
+        response.length.should.equal(2);
+        response[0].results.length.should.equal(1);
+        response[0].results[0].should.have.property('matches');
+        response[0].results[0].matches.length.should.equal(1);
+        response[0].results[0].matches[0].should.have.property('match-text');
+        response[0].results[0].matches[0]['match-text'].length.should.equal(2);
+        response[0].results[0].matches[0]['match-text'][0].should.have.property('highlight');
+        response[0].results[0].matches[0]['match-text'][0].highlight.should.equal('matchWord1');
+        done();
+      }, done);
+    });
+/* TODO: reenable custom snippeter after Bug 30345 is fixed
     it('should take a slice with a snippet', function(done){
       db.documents.query(
         q.where(
@@ -381,6 +401,7 @@ describe('document query', function(){
         done();
       }, done);
     });
+ */
     it('should get the query plan and permissions', function(done){
       db.documents.query(
         q.where(
@@ -549,22 +570,22 @@ describe('document query', function(){
                   'json-property':  'rangeKey1',
                   type:             'xs:string',
                   collation:        'http://marklogic.com/collation/',
-                  'range-operator': 'EQ',
-                  value:            'aa'
+                  value:            'aa',
+                  'range-operator': 'EQ'
                   }},
                 {'range-query': {
                   'json-property':  'rangeKey1',
                   type:             'xs:string',
                   collation:        'http://marklogic.com/collation/',
-                  'range-operator': 'EQ',
-                  value:            'ab'
+                  value:            'ab',
+                  'range-operator': 'EQ'
                   }},
                 {'range-query': {
                   'json-property':  'rangeKey1',
                   type:             'xs:string',
                   collation:        'http://marklogic.com/collation/',
-                  'range-operator': 'EQ',
-                  value:            'ac'
+                  value:            'ac',
+                  'range-operator': 'EQ'
                   }}
                 ]}}
               ]},

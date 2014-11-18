@@ -153,7 +153,7 @@ describe('Document query test 2', function(){
   it('should do element query', function(done){
     db.documents.query(
       q.where(
-        q.element('title', 'memex')
+        q.element(q.qname('Employee'))
       )
     ).
     result(function(response) {
@@ -167,6 +167,19 @@ describe('Document query test 2', function(){
     db.documents.query(
       q.where(
         q.range(q.pathIndex('price/amt'), q.datatype('decimal'), '>', 10)
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(2);
+      done();
+    }, done);
+  });
+
+  it('should do path index query without datatype', function(done){
+    db.documents.query(
+      q.where(
+        q.range(q.pathIndex('price/amt'), '>', 10)
       )
     ).
     result(function(response) {

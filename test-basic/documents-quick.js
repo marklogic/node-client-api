@@ -45,8 +45,8 @@ describe('quick path', function(){
       }).
     result(function(response){done();}, done);
   });
-  it('should write objects', function(done){
-    db.writeCollection(
+  it('should create objects', function(done){
+    db.createCollection(
       '/quickdocs',
       {quickKey: 'quick value 1'},
       {quickKey: 'quick value 2'}
@@ -67,6 +67,33 @@ describe('quick path', function(){
         documents[1].content.should.have.property('quickKey');
         documents[1].should.have.property('collections');
         documents[1].collections[0].should.equal('/quickdocs');
+        done();
+        }, done);
+  });
+  it('should write a mapping', function(done){
+    db.writeCollection(
+      '/quickmapped',
+      {
+        '/quickmapped/doc1.json': {mappedKey: 'quick value 1'},
+        '/quickmapped/doc2.xml':  '<quickDoc>quick content 2</quickDoc>'
+      }
+      ).result().
+    then(function(uris){
+      valcheck.isUndefined(uris).should.equal(false);
+      uris.length.should.equal(2);
+      return db.documents.read({uris:uris, categories:['content', 'collections']}).result();
+      }, done).
+    then(function(documents) {
+        valcheck.isUndefined(documents).should.equal(false);
+        documents.length.should.equal(2);
+        documents[0].should.have.property('content');
+        documents[0].content.should.have.property('mappedKey');
+        documents[0].should.have.property('collections');
+        documents[0].collections[0].should.equal('/quickmapped');
+        documents[1].should.have.property('content');
+        documents[1].content.should.containEql('<quickDoc>quick content 2</quickDoc>');
+        documents[1].should.have.property('collections');
+        documents[1].collections[0].should.equal('/quickmapped');
         done();
         }, done);
   });
@@ -130,5 +157,4 @@ describe('quick path', function(){
       done();
       }, done);
   });
-  // TODO: patch?
 });
