@@ -286,7 +286,7 @@ describe('document patch test 2', function(){
       //console.log(response);
       var document = response[0];
       var strDoc = JSON.stringify(document);
-      strDoc.should.containEql('<bar>added</bar>');
+      strDoc.should.not.containEql('<bar>added</bar>');
       done();
     }, done);
   });
