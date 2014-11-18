@@ -189,6 +189,42 @@ describe('Document query test 2', function(){
     }, done);
   });
 
+  it('should set validate-queries to true', function(done){
+    dbAdmin.config.serverprops.write({'validate-queries': true}).
+    result(function(response) {
+      //console.log(response);
+      done();
+    }, done);
+  });
+
+  it('should do range query with validate-queries=true', function(done){
+    db.documents.query(
+      q.where(
+        q.range('amt', '>', 10)
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(2);
+      done();
+    }, done);
+  });
+
+  it('should set validate-queries to false', function(done){
+    dbAdmin.config.serverprops.write({'validate-queries': false}).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should verify validate-queries to false', function(done){
+    dbAdmin.config.serverprops.read().
+    result(function(response) {
+      //console.log(response);
+      done();
+    }, done);
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
