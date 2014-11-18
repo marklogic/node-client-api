@@ -241,7 +241,18 @@ describe('Write Document Test', function() {
   var docuri2 = 'nonTemporalDoc.json';
  
   before(function(done) {
-    this.timeout(3000);
+   adminManager.put({
+      endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
+      body: {
+        "lsqt-enabled": true,
+        "automation": {
+          "enabled": true
+        }
+      }
+    }).result(function(response){done();}, done);
+  });
+
+  it('should write the document content name', function(done) {
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -273,7 +284,7 @@ describe('Write Document Test', function() {
   });
 
 
-  it('should read the document content name', function(done) {
+  it('should update the document content name', function(done) {
    db.documents.write({
       uri: docuri,
       collections: [updateCollectionName],
@@ -375,7 +386,6 @@ describe('Write Document Test', function() {
 
   it('should read multiple documents', function(done) {
     db.documents.read({uris: [docuri], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(12);
       done();
     }, done);
@@ -383,7 +393,6 @@ describe('Write Document Test', function() {
 
   it('should read multiple documents with an invalid one', function(done) {
     db.documents.read({uris: [docuri, '/not/here/blah.json'], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(12);
       done();
     }, done);
@@ -485,7 +494,6 @@ describe('Write Document Test', function() {
       uri: docuri,
       temporalCollection: temporalCollectionName
     }).result(function(document) {
-      // console.log("Document = " + JSON.stringify(document));
 
       done();
     }, done);
@@ -504,27 +512,7 @@ describe('Write Document Test', function() {
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result().then(function(response) {
-      console.log("Before setting LSQT in response");
-
-      return adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result(), done();
-    }, function(err) {
-      console.log("Before setting LSQT in error");
-
-      adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result();
-      done();
-    },
-    done);
+    }).result(function(response){done();}, done);
   });
 
   /***

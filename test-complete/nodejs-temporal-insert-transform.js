@@ -44,7 +44,6 @@ describe('Write Document Test', function() {
   var transformPath2 = './data/timestampTransform.js';
 
   before(function(done) {
-    this.timeout(3000);
     fs.createReadStream(transformPath1).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName1, 'xquery', source).
@@ -53,7 +52,6 @@ describe('Write Document Test', function() {
   });
 
   before(function(done) {
-    this.timeout(3000);
     fs.createReadStream(transformPath2).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName2, 'javascript', source).
@@ -62,7 +60,6 @@ describe('Write Document Test', function() {
   });
 
   before(function(done) {
-    this.timeout(3000);
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -94,7 +91,6 @@ describe('Write Document Test', function() {
   });
 
   before(function(done) {
-    this.timeout(3000);
     db.documents.write({
       uri: docuri2,
       collections: ['coll0', 'coll1'],
@@ -232,34 +228,13 @@ describe('Write Document Test', function() {
     }, done);
   });
 
-
   after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result().then(function(response) {
-      console.log("Before setting LSQT in response");
-
-      return adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result(), done();
-    }, function(err) {
-      console.log("Before setting LSQT in error");
-
-      adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result();
-      done();
-    },
-    done);
+    }).result(function(response){done();}, done);
   });
   
 });

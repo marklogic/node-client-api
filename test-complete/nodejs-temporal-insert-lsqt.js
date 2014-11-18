@@ -37,7 +37,18 @@ describe('Write Document Test', function() {
   var docuri = 'temporalDoc.json'; 
 
   before(function(done) {
-    this.timeout(3000);
+    adminManager.put({
+      endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
+      body: {
+        "lsqt-enabled": true,
+        "automation": {
+          "enabled": true
+        }
+      }
+    }).result(function(response){done();}, done);
+  });
+
+   it('should write the document content', function(done) {
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -153,34 +164,13 @@ describe('Write Document Test', function() {
     }, done);
   });
 
-
   after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result().then(function(response) {
-      console.log("Before setting LSQT in response");
-
-      return adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result(), done();
-    }, function(err) {
-      console.log("Before setting LSQT in error");
-
-      adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result();
-      done();
-    },
-    done);
+    }).result(function(response){done();}, done);
   });
 
 });

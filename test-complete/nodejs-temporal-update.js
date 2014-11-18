@@ -261,33 +261,25 @@ describe('Write Document Test', function() {
     }, done);
   });
 
+  // There should be no documents in latest collection
+  it('should do collection query after delete: latest', function(done) {
+    db.documents.query(
+      q.where(
+        q.collection('latest')
+        )
+      ).result(function(response) {
+        response.length.should.equal(0);
+        done();
+      }, done);
+  });
+
   after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result().then(function(response) {
-      console.log("Before setting LSQT in response");
-
-      return adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result(), done();
-    }, function(err) {
-      console.log("Before setting LSQT in error");
-
-      adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result();
-      done();
-    },
-    done);
+    }).result(function(response){done();}, done);
   });
 
 });

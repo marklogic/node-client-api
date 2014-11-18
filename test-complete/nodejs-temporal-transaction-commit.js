@@ -15,10 +15,15 @@
  */
 var should = require('should');
 
+var testlib    = require('../etc/test-lib.js');
 var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 
+testconfig.manageAdminConnection.user     = "admin";
+testconfig.manageAdminConnection.password = "admin";
+var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
+var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
@@ -131,6 +136,15 @@ describe('Document transaction test', function() {
         response.length.should.equal(docCount + 1);
         done();
       }, done);
+  });
+  
+  after(function(done) {
+   return adminManager.post({
+      endpoint: '/manage/v2/databases/' + testconfig.testServerName,
+      contentType: 'application/json',
+      accept: 'application/json',
+      body:   {'operation': 'clear-database'}
+    }).result(function(response){done();}, done);
   });
 
 });

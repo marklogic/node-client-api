@@ -34,7 +34,18 @@ describe('Write Document Test', function() {
   var docuri = 'temporalDoc.json'; 
  
   before(function(done) {
-    this.timeout(3000);
+   adminManager.put({
+      endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
+      body: {
+        "lsqt-enabled": true,
+        "automation": {
+          "enabled": true
+        }
+      }
+    }).result(function(response){done();}, done);
+  });
+
+  it('should update the document content', function(done) { 
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -95,10 +106,19 @@ describe('Write Document Test', function() {
     }).result(function(response){done();}, done);
   });
 
-  it('should do period range query using aln_contains', function(done) {    
+
+  it('should wait for lsqt advancement', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 3000);
+  });
+
+
+  it('should do lsqt query', function(done) { 
     db.documents.query(q.where(
       q.lsqtQuery(temporalCollectionName, '2007-01-01T00:00:01')
-      )).result(function(response) {
+      ).withOptions({debug:true})).result(function(response) {
+        console.log(response);
         response.length.should.equal(1);
         done();
       }, done);
@@ -110,27 +130,7 @@ describe('Write Document Test', function() {
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result().then(function(response) {
-      console.log("Before setting LSQT in response");
-
-      return adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result(), done();
-    }, function(err) {
-      console.log("Before setting LSQT in error");
-
-      adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result();
-      done();
-    },
-    done);
+    }).result(function(response){done();}, done);
   });
 
 });

@@ -255,7 +255,10 @@ function setup(manager) {
             return manager.put({
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
               body: {
-                "lsqt-enabled": true
+                "lsqt-enabled": true,
+                "automation": {
+                  "enabled": true
+                }
               }
               }).result();
             }).
