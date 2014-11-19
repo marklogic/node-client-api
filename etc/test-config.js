@@ -80,7 +80,8 @@ module.exports = {
         port:     restPort,
         user:     restAdminUser,
         password: restAdminPassword,
-        authType: restAuthType,
+        authType: 'BASIC',
+        rejectUnauthorized: false,
         ssl:      true
     }
 };
