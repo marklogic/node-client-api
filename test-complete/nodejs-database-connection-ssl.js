@@ -23,7 +23,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbSsl = marklogic.createDatabaseClient(testconfig.restSslConnection);
 
-describe('Write Document Test', function() {
+describe('SSL Test', function() {
   
   var docuri = '/foo/bar/test1.json'; 
   var docuri2 = '/foo/bar/test2.json'; 
