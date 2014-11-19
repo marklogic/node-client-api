@@ -154,9 +154,8 @@ describe('transaction', function(){
       then(function(response) {
         // TODO: pre-parse based on accept header
         var status = JSON.parse(response)['transaction-status'];
-        var hostId        = status.host['host-id'];
         var transactionId = status['transaction-id'];
-        tid.should.equal(hostId+'_'+transactionId);
+        tid.should.equal(transactionId);
         return db.transactions.rollback(tid).result();
         }).
       then(function(response) {
