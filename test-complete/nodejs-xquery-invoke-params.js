@@ -51,4 +51,28 @@ describe('Xquery invoke test', function(){
     }, done);
   });
 
+  it('should fail to do xquery invoke with wrong params value', function(done){
+    dbEval.invoke(invokePath, {num1:'a', num2:3}).result(function(values) {
+      //console.log(values);
+      values.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(500);
+      error.body.errorResponse.messageCode.should.equal('XDMP-EXPR');
+      done();
+    });
+  });
+
+  it('should do xquery invoke with wrong number of params', function(done){
+    dbEval.invoke(invokePath, {num1:2, num2:3, num3:5}).result(function(values) {
+      //console.log(values);
+      values[0].value.should.equal(5);
+      done();
+    }, function(error) {
+      console.log(error);
+      done();
+    });
+  });
+
 });
