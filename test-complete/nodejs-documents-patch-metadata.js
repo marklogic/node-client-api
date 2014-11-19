@@ -22,6 +22,7 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document patch metadata test', function(){
   before(function(done){
@@ -165,44 +166,10 @@ describe('document patch metadata test', function(){
     }, done);   
   });
 
-  it('should replace metadata properties', function(done){
-    this.timeout(3000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
-      operations: [
-        p.pathLanguage('jsonpath'),
-        p.replace('$.properties.prop1', 'hi')
-      ]
-    }).
+  it('should remove the document', function(done){
+    dbAdmin.documents.removeAll({all: true}).
     result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
-        //documents[0].properties.prop1.should.equal('hi'); 
-        done();
-      }, done);
-    }, done);   
-  });
-
-  it('purposely failing test', function(done){
-    this.timeout(3000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
-      operations: [
-        p.replace('$.quality', 45)
-      ]
-    }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(45); 
-        done();
-      }, done);
-    }, done);   
+      done();
+    }, done);
   });
 });
