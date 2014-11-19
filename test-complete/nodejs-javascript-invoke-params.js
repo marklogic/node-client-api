@@ -51,4 +51,26 @@ describe('Javascript invoke test', function(){
     }, done);
   });
 
+  it('should do javascript invoke with wrong params', function(done){
+    dbEval.invoke(invokePath, {numa:2, num2:3}).result(function(values) {
+      //console.log(values);
+      values[0].value.should.equal('NaN');
+      done();
+    }, function(error) {
+      console.log(error);
+      done();
+    });
+  });
+
+  it('should do javascript invoke with wrong numbers of params', function(done){
+    dbEval.invoke(invokePath, {num1:2, num2:3, num3:5}).result(function(values) {
+      //console.log(values);
+      values[0].value.should.equal(5);
+      done();
+    }, function(error) {
+      console.log(error);
+      done();
+    });
+  });
+
 });
