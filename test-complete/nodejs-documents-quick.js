@@ -80,7 +80,7 @@ describe('quick path', function(){
 	done();}, done);
   });
     it('should write objects', function(done){
-    dbWriter.writeCollection(
+    dbWriter.createCollection(
       '/matchCollection1',
       {title: 'quick value 1'},
       {title: 'quick value 2'}
@@ -103,7 +103,7 @@ describe('quick path', function(){
         }, done);
   }); 
 /*   it('should fail in writing objects to wrong collection', function(done){
-    dbWriter.writeCollection(
+    dbWriter.createCollection(
       '/matchCollection3',
       {title: 'quick value 1'},
       {title: 'quick value 2'}
