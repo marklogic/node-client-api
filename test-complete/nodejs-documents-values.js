@@ -23,6 +23,7 @@ var t = marklogic.valuesBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document tuples test', function(){
   before(function(done){
@@ -179,6 +180,15 @@ describe('Document tuples test', function(){
         strData.should.containEql('"aggregate-result":[{"name":"max","_value":"5"},{"name":"min","_value":"3"},{"name":"sum","_value":"22"},{"name":"avg","_value":"4.4"}]');
         done();
       }, done);
+  });
+
+  it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
 
 });

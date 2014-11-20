@@ -23,6 +23,7 @@ var t = marklogic.valuesBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document tuples negative test', function(){
   before(function(done){
@@ -165,52 +166,13 @@ describe('Document tuples negative test', function(){
       });
   });
 
-  /*it('should do sum aggregates', function(done){
-    db.values.read(
-      t.fromIndexes(
-        t.range('score', 'xs:double')
-        ).
-      where(
-        t.word('title', 'bush')
-        ).
-      aggregates('sum')
-      ).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
-        done();
-      }, done);
+  it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
-
-  it('should do correlation and covariance aggregates', function(done){
-    db.values.read(
-      t.fromIndexes(
-        t.range('rate', 'xs:int'),
-        t.range(t.property('popularity'), t.datatype('int'))
-        ).
-      where(
-        t.word('id', '00*', q.termOptions('wildcarded'))
-        ).
-      aggregates('correlation', 'covariance')
-      ).result(function(response) {
-        //console.log('Correlation:');
-        //console.log(JSON.stringify(response, null, 4));
-        done();
-      }, done);
-  });
-
-  it('should do max, min, sum, average aggregates', function(done){
-    db.values.read(
-      t.fromIndexes(
-        t.range(t.property('popularity'), t.datatype('int'))
-        ).
-      where(
-        t.word('id', '00*', q.termOptions('wildcarded'))
-        ).
-      aggregates('max', 'min', 'sum', 'avg')
-      ).result(function(response) {
-        //console.log('Max Min Sum Avg:');
-        //console.log(JSON.stringify(response, null, 4));
-        done();
-      }, done);
-  });*/
 
 });
