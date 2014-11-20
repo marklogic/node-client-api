@@ -92,6 +92,15 @@ describe('Config query negative test', function(){
       done();
     });
   });
-    
+
+  it('should remove the custom query', function(done){
+    dbAdmin.config.query.custom.remove('directoryConstraint.xqy').
+    result(function(response) {
+      done();
+    }, function(error) {
+      console.log(error);
+      done();
+    });
+  });
 
 });
