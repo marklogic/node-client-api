@@ -3,8 +3,8 @@
 We welcome contributions from the community. If you have a patch that you'd
 like us to consider, please do the following: 
 
-* Provide a signed Contributor License Agreement (which can
-be found in etc/CLA.adoc).
+* Provide a signed 
+[Contributor License Agreement](http://developer.marklogic.com/products/cla).
 
 * Create an issue for the fix or enhancement. 
 
