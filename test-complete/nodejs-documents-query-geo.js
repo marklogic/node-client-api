@@ -128,6 +128,22 @@ describe('Document geo query test', function(){
     }, done);
   });
 
+  it('should do geo property pair query in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.latlon(12, 5),
+        q.geoOptions('boundaries-latitude-excluded')
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
   it('should do geo property point query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
@@ -190,13 +206,43 @@ describe('Document geo query test', function(){
   it('should do geo property pair query with box in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(11, 4, 20, 10))
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(11, 4, 20, 10),
+        q.geoOptions('boundaries-included'))
       )
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.length.should.equal(1);
       response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo property pair query with box boundaries included in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(12, 5, 20, 10),
+        q.geoOptions('boundaries-included'))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo property pair query with box boundaries excluded in json doc', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(12, 5, 20, 10),
+        q.geoOptions('boundaries-excluded'))
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
       done();
     }, done);
   });
