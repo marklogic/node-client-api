@@ -121,6 +121,17 @@ describe('server-side call', function() {
       }, done);
     });
   });
+  describe('to pass variables to JavaScript', function() {
+    it('should interpolate a Script variable', function(done) {
+      db.eval('var you;"hello, "+you;', {you:'world'}).
+      result(function(values) {
+        values.length.should.equal(1);
+        checkValue(values[0], 'text', 'string');
+        values[0].value.should.equal('hello, world');
+        done();
+      }, done);
+    });
+  });
   describe('to eval XQuery', function() {
     it('should generate nodes of different formats', function(done) {
       var src = '('+
@@ -189,6 +200,17 @@ describe('server-side call', function() {
     empty response
     boundary conditions on numbers
  */
+  });
+  describe('to pass variables to XQuery', function() {
+    it('should interpolate an XQuery variable', function(done) {
+      db.xqueryEval('declare variable $you external;fn:concat("hello, ",$you)', {you:'world'}).
+      result(function(values) {
+        values.length.should.equal(1);
+        checkValue(values[0], 'text', 'string');
+        values[0].value.should.equal('hello, world');
+        done();
+      }, done);
+    });
   });
   describe('to invoke JavaScript', function() {
     var fsPath     = './test-basic/data/echoModule.js';

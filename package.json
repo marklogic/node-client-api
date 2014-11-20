@@ -1,7 +1,7 @@
 {
   "author": "MarkLogic",
   "name": "marklogic",
-  "description": "Provides a Node.js client interface to the MarkLogic database server",
+  "description": "The official MarkLogic Node.js client.",
   "homepage": "http://github.com/marklogic/node-client-api",
   "version": "1.0.0-ea3",
   "license": "Apache-2.0",
@@ -9,12 +9,15 @@
   "keywords": [
     "marklogic",
     "nosql",
-    "bigdata",
     "database",
+    "dbms",
     "search",
     "query",
     "json",
-    "xml"
+    "xml",
+    "http",
+    "xquery",
+    "xpath"
   ],
   "dependencies": {
     "bluebird": "^1.2.4",
