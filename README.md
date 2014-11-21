@@ -5,20 +5,7 @@ from node.js.
 
 ## Status
 
-This branch provides the work in progress for the Early Access Release 3 of the  MarkLogic node.js API.
-
-### Checked in for EA3
-
-* quick path for simple JavaScript object CRUD and query
-* values and tuples requests
-* server-side transforms on query response summary and result documents in slice() clause
-* snippets including custom snippets in slice() clause
-* projection from result documents (extract)
-* resource service CRUD and invocation for XQuery
-* graph CRUD and SPARQL query
-* specifying the database when creating a database client
-* search suggest
-* server-side eval
+This branch provides the work in progress for the Early Access Release 3 of the MarkLogic node.js API.
 
 ## Getting started
 
@@ -69,6 +56,20 @@ To tear down the test database and REST server, execute
 
     node etc/test-teardown.js
 
+### Capabilities added to the node.js Client API in Early Access 3
+
+* quick path for simple CRUD and query on the database client
+* values and tuples requests
+* server-side transforms on query response summary and result documents in slice() clause
+* snippets including custom snippets in slice() clause
+* extract from result documents (projection)
+* resource service CRUD and invocation
+* graph CRUD and SPARQL query
+* bitemporal document CRUD and query
+* specifying the database when creating a database client
+* server-side eval and invoke
+* search suggest
+
 ### Capabilities of the node.js Client API in Early Access 2
 
 * createDatabaseClient() including HTTPS
@@ -106,10 +107,21 @@ To tear down the test database and REST server, execute
 * config.extlibs.write()
 * optimistic locking
 
-### Limitations in Early Access 2
+### Limitations in Early Access 3
 
 The MarkLogic node.js Client API has not yet undergone performance or
-stress testing.  The API should not be used in production in EA2.
+stress testing.  The API should not be used in production in EA3.  The
+interface may change before the initial release.
 
 ## Support
-The MarkLogic Node.js Client API is maintained by MarkLogic Engineering. It is designed for use in production applications with MarkLogic Server. Everyone is encouraged to file bug reports, feature requests, and pull requests through GitHub. This input is critical and will be carefully considered, but we can’t promise a specific resolution or timeframe for any request. In addition, MarkLogic provides technical support for [release tags](https://github.com/marklogic/node-client-api/releases) of the Node Client API to licensed customers under the terms outlined in the [Support Handbook](http://www.marklogic.com/files/Mark_Logic_Support_Handbook.pdf). For more information or to sign up for support, visit [help.marklogic.com](help.marklogic.com).
+
+The MarkLogic Node.js Client API is maintained by MarkLogic Engineering.
+It is designed for use in production applications with MarkLogic Server.
+Everyone is encouraged to file bug reports, feature requests, and pull
+requests through GitHub. This input is critical and will be carefully
+considered, but we can’t promise a specific resolution or timeframe for
+any request. In addition, MarkLogic provides technical support
+for [release tags](https://github.com/marklogic/node-client-api/releases)
+of the Node Client API to licensed customers under the terms outlined
+in the [Support Handbook](http://www.marklogic.com/files/Mark_Logic_Support_Handbook.pdf).
+For more information or to sign up for support, visit [help.marklogic.com](help.marklogic.com).
