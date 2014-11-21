@@ -71,7 +71,7 @@ describe('Extension library test', function(){
     result(function(response){
       //console.log(response);
       //response.should.have.property('assets');
-      response.assets.length.should.equal(0);
+      response.assets.length.should.be.empty;
       done();
     }, done);
   });
