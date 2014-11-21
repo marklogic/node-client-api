@@ -1711,7 +1711,7 @@ describe('query-builder', function() {
           }}
         );
     assert.deepEqual(
-        q.snippet('foo'),
+        q.snippet('foo.xqy'),
         {'transform-results':{
           apply: 'snippet',
           ns:    'http://marklogic.com/snippet/custom/foo',
@@ -1732,7 +1732,7 @@ describe('query-builder', function() {
           }}
         );
     assert.deepEqual(
-        q.snippet('foo', {
+        q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'
         }),
@@ -1746,18 +1746,6 @@ describe('query-builder', function() {
         );
   });
 
-  it('should specify an aggregate', function(){
-    assert.deepEqual(
-        q.aggregates('avg', 'sum'),
-        {aggregates:[{apply:'avg'}, {apply:'sum'}]}
-        );
-    assert.deepEqual(
-        q.aggregates('avg', q.udf('plugin1', 'function1')),
-        {aggregates:[{apply:'avg'}, {apply:'function1', udf:'plugin1'}]}
-        );
-  });
-
-  // TODO: facet aggregates
   it('should specify a facet', function(){
     assert.deepEqual(
         q.facet('key1'),
@@ -2002,7 +1990,7 @@ describe('document query', function(){
     });
     it('should build a slice clause with a page and a snippet transform', function(){
       var built = q.slice(11, 10,
-        q.snippet('foo', {
+        q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'
           }));
@@ -2018,7 +2006,7 @@ describe('document query', function(){
     });
     it('should build a slice clause with a default page and a snippet transform', function(){
       var built = q.slice(
-        q.snippet('foo', {
+        q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'
           }));
