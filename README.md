@@ -1,11 +1,11 @@
-# MarkLogic Client API for node.js
+# MarkLogic Client API for Node.js
 
-The MarkLogic Client API for node.js provides access to the MarkLogic database
-from node.js.
+The MarkLogic Client API for Node.js provides access to the MarkLogic database
+from Node.js.
 
 ## Status
 
-This branch provides the work in progress for the Early Access Release 3 of the MarkLogic node.js API.
+This branch provides the work in progress for the Early Access Release 3 of the MarkLogic Node.js API.
 
 ## Getting started
 
@@ -56,7 +56,7 @@ To tear down the test database and REST server, execute
 
     node etc/test-teardown.js
 
-### Capabilities added to the node.js Client API in Early Access 3
+### Capabilities added to the Node.js Client API in Early Access 3
 
 * quick path for simple CRUD and query on the database client
 * values and tuples requests
@@ -70,7 +70,7 @@ To tear down the test database and REST server, execute
 * server-side eval and invoke
 * search suggest
 
-### Capabilities of the node.js Client API in Early Access 2
+### Capabilities of the Node.js Client API in Early Access 2
 
 * createDatabaseClient() including HTTPS
 * documents.query()
@@ -109,7 +109,7 @@ To tear down the test database and REST server, execute
 
 ### Limitations in Early Access 3
 
-The MarkLogic node.js Client API has not yet undergone performance or
+The MarkLogic Node.js Client API has not yet undergone performance or
 stress testing.  The API should not be used in production in EA3.  The
 interface may change before the initial release.
 
