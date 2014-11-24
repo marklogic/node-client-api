@@ -21,32 +21,91 @@ var testconfig = require('./test-config.js');
 function setupUsers(manager, done) {
   console.log('checking for REST users');
   manager.get({
-    endpoint: '/manage/v2/users'
-    }).
-  result(function(response) {
+    endpoint: '/manage/v2/roles/'+encodeURIComponent('rest-evaluator')
+    }).result().
+  then(function(response) {
+    if (response.statusCode < 400) {
+      return this;
+    }
+    return manager.post({
+      endpoint: '/manage/v2/roles',
+      body: {
+        'role-name': 'rest-evaluator',
+        description: 'REST writer who can eval, invoke, or set a dynamic databases',
+        role: [
+          'rest-writer'
+        ],
+        privilege: [
+          {
+            'privilege-name': 'xdmp-eval',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-eval',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdmp-eval-in',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-eval-in',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdmp-invoke',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-invoke',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdbc-eval',
+            action: 'http://marklogic.com/xdmp/privileges/xdbc-eval',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdbc-eval-in',
+            action: 'http://marklogic.com/xdmp/privileges/xdbc-eval-in',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdbc-invoke',
+            action: 'http://marklogic.com/xdmp/privileges/xdbc-invoke',
+            kind: 'execute'
+          }
+        ]
+      }
+      }).result();      
+  }).
+  then(function(response) {
+    return manager.get({
+      endpoint: '/manage/v2/users'
+      }).result();
+  }).
+  then(function(response) {
     var userName = null;
 
     var requiredUsers = {};
     userName = testconfig.restAdminConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-admin',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-admin user',
       password:    testconfig.restAdminConnection.password
       };
     userName = testconfig.restReaderConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-reader',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-reader user',
       password:    testconfig.restReaderConnection.password
       };
     userName = testconfig.restWriterConnection.user;
     requiredUsers[userName]  = {
       role:        'rest-writer',
-      name:        userName,
+      'user-name': userName,
       description: 'rest-writer user',
       password:    testconfig.restWriterConnection.password
+      };
+    userName = testconfig.restEvaluatorConnection.user;
+    requiredUsers[userName]  = {
+      role:        'rest-evaluator',
+      'user-name': userName,
+      description: 'rest-writer user with evaluate privileges',
+      password:    testconfig.restEvaluatorConnection.password
       };
 
     response.data['user-default-list']['list-items']['list-item'].
@@ -92,7 +151,7 @@ function addUser(manager, users, next, done) {
   manager.post({
     endpoint: '/manage/v2/users',
     body: {
-      name:        userdef.name,
+      'user-name': userdef['user-name'],
       password:    userdef.password,
       description: userdef.description,
       role:        [

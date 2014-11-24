@@ -16,7 +16,7 @@
 var should = require('should');
 
 var fs = require('fs');
-var concatStream = require('concat-stream');
+
 var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
@@ -38,7 +38,7 @@ describe('document versions', function() {
   describe('probe', function() {
     var uri = '/test/version/probe1.json';
     before(function(done){
-      db.probe(uri).result().
+      db.documents.probe(uri).result().
       then(function(response) {
         if (response.exists === false) {
           db.documents.write({
@@ -53,7 +53,7 @@ describe('document versions', function() {
       }, done);
     });
     it('should return the versionId', function(done) {
-      db.probe(uri).
+      db.documents.probe(uri).
       result(function(response) {
         valcheck.isUndefined(response).should.equal(false);
         response.should.have.property('versionId');
@@ -65,7 +65,7 @@ describe('document versions', function() {
     var uri       = '/test/version/del1.json';
     var versionId = null;
     before(function(done){
-      db.probe(uri).result(function(response){
+      db.documents.probe(uri).result(function(response){
         if (response.exists === true) {
           versionId = response.versionId;
           done();
@@ -76,7 +76,7 @@ describe('document versions', function() {
             content: {key1: 'value 1'}
             }).result().
           then(function(response){
-              return db.probe(uri).result();
+              return db.documents.probe(uri).result();
             }).
           then(function(response){
             versionId = response.versionId;
@@ -94,7 +94,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTNOVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
         done();
       });
     });
@@ -107,7 +107,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTWRONGVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
         done();
       });
     });
@@ -123,7 +123,7 @@ describe('document versions', function() {
     var overwriteUri = '/test/version/write1.json';
     var versionId    = null;
     before(function(done){
-      db.probe(overwriteUri).result(function(response){
+      db.documents.probe(overwriteUri).result(function(response){
         if (response.exists === true) {
           versionId = response.versionId;
           done();
@@ -134,7 +134,7 @@ describe('document versions', function() {
             content: {key1: 'value 1'}
             }).result().
           then(function(response){
-              return db.probe(overwriteUri).result();
+              return db.documents.probe(overwriteUri).result();
             }).
           then(function(response){
             versionId = response.versionId;
@@ -156,7 +156,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTNOVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
         done();
       });
     });
@@ -174,7 +174,7 @@ describe('document versions', function() {
         done();
       }, function(error) {
         db.setLogger({console: true});
-        error.body.error['message-code'].should.equal('RESTAPI-CONTENTWRONGVERSION');
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
         done();
       });
     });
@@ -194,9 +194,9 @@ describe('document versions', function() {
   describe('create', function() {
     var createUri = '/test/version/create1.json';
     before(function(done){
-      db.probe(createUri).result(function(response){
+      db.documents.probe(createUri).result(function(response){
         if (response.exists === true) {
-          db.remove({uri: createUri, versionId: response.versionId}).
+          db.documents.remove({uri: createUri, versionId: response.versionId}).
           result(function(response) {done();}, done);
         } else {
           done();
@@ -204,8 +204,8 @@ describe('document versions', function() {
       }, done);
     });
     after(function(done) {
-      db.probe(createUri).result(function(response){
-        db.remove({uri: createUri, versionId: response.versionId}).
+      db.documents.probe(createUri).result(function(response){
+        db.documents.remove({uri: createUri, versionId: response.versionId}).
         result(function(response) {done();}, done);
       });
     });
@@ -224,7 +224,7 @@ describe('document versions', function() {
   describe('read', function() {
     var uri = '/test/version/read1.json';
     before(function(done){
-      db.probe(uri).result().
+      db.documents.probe(uri).result().
       then(function(response) {
         if (response.exists === false) {
           db.documents.write({
@@ -239,7 +239,7 @@ describe('document versions', function() {
       }, done);
     });
     it('should return the versionId', function(done) {
-      db.read(uri).
+      db.documents.read(uri).
       result(function(documents) {
         valcheck.isArray(documents).should.equal(true);
         documents.length.should.equal(1);

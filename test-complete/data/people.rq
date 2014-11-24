@@ -1,0 +1,9 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX ppl:  <http://people.org/>
+
+SELECT ?personName1 ?personName2
+WHERE {
+    ?personUri1 foaf:name  ?personName1 ;
+                foaf:knows ?personUri2 .
+    ?personUri2 foaf:name  ?personName2 .
+    }

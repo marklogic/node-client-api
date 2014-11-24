@@ -21,7 +21,7 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Read document content and metadata');
 
-db.read({
+db.documents.read({
     uris:['/countries/ml.json', '/countries/uv.json'],
     categories:['content', 'metadata']
     }).

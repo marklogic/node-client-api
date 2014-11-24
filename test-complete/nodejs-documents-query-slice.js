@@ -22,8 +22,9 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('document query', function(){
+describe('document query slice test', function(){
   before(function(done){
     this.timeout(3000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
@@ -100,33 +101,118 @@ describe('document query', function(){
         }).
     result(function(response){done();}, done);
   });
-  it('should read, query, and remove the doc', function(done){
-    db.read('/test/query/matchList/doc5.json').
-      result(function(documents) {
-        var document = documents[0];
-        document.content.id.should.equal('0026');
-        console.log('Document result: ');
-        console.log(JSON.stringify(document, null, 4));
-        return db.query(
-                 q.where(
-                   q.directory('/test/query/matchDir/')
-                   ).
-                 slice(3, 2)
-                 ).result();
-      }).
-    then(function(response){
-      console.log('Search result: ');
-      console.log(JSON.stringify(response, null, 4));
-      var document = response[0];
-      response.length.should.equal(2);
-      document.content.id.should.equal('0013');
-      return dbWriter.removeAll({directory:'/test/query/matchDir/'}).result();
-      }).
-    then(function(document) {
-      document.exists.should.eql(false);
-      }).
-    then(function(documents){
-      done();
+
+  it('should do document query with slice with index 1 and page 10', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(1, 10)
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(4);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
       }, done);
+  });
+
+  it('should do document query with slice with index 3 and page 10', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(3, 10)
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do document query with slice with index 5 and page 10', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(5, 10)
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(0);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do document query with slice with negative index', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(-1, 10)
+      ).
+      result(function(response) {
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+      }, function(error) {
+        //console.log(error);
+        //error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in start: -1 is not a value of type unsignedLong');
+        error.statusCode.should.equal(400);
+        done();
+      });
+  });
+
+  it('should do document query with slice with index 1 and page 1', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(1, 1)
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do document query with slice with index 3 and page 2', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(3, 2)
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do document query with slice with negative page', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(1, -1)
+      ).
+      result(function(response) {
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+      }, function(error) {
+        //console.log(error);
+        //error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in pageLength: -1 is not a value of type unsignedLong');
+        error.statusCode.should.equal(400);
+        done();
+      });
+  });
+
+  it('should remove all documents', function(done){
+    dbAdmin.documents.removeAll({all:true}).
+    result(function(response) {
+    response.should.be.ok;
+    done();
+    }, done);
   });
 });

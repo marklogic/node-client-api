@@ -22,7 +22,7 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Query documents with the Query Builder');
 
-db.query(
+db.documents.query(
   q.where(
     q.collection('/countries'),
     q.value('region', 'Africa'),

@@ -1,0 +1,9 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ppl:  <http://people.org/> .
+
+ppl:person9 foaf:knows ppl:person12 .
+
+ppl:person9 a ppl:Person ;
+    foaf:name "Person 9" .
+ppl:person12 a ppl:Person ;
+    foaf:name "Person 12" .

@@ -30,6 +30,9 @@ var restReaderPassword = 'x';
 var restWriterUser     = 'rest-writer';
 var restWriterPassword = 'x';
 
+var restEvaluatorUser     = 'rest-evaluator';
+var restEvaluatorPassword = 'x';
+
 var testServerName = 'unittest-nodeapi';
 
 // For SSL without client cert, use rejectUnauthorized: false
@@ -58,11 +61,27 @@ module.exports = {
         password: restWriterPassword,
         authType: restAuthType
     },
+    restEvaluatorConnection: {
+      host:     testHost,
+      port:     restPort,
+      user:     restEvaluatorUser,
+      password: restEvaluatorPassword,
+      authType: restAuthType
+    },
     manageAdminConnection: {
         host:     testHost,
         port:     managePort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: manageAuthType
+    },
+    restSslConnection: {
+        host:     testHost,
+        port:     restPort,
+        user:     restAdminUser,
+        password: restAdminPassword,
+        authType: 'BASIC',
+        rejectUnauthorized: false,
+        ssl:      true
     }
 };

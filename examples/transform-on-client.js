@@ -23,7 +23,7 @@ var timestamp = (new Date()).toISOString();
 
 console.log('Transform a document on the client');
 
-db.read('/countries/uv.json').result().
+db.documents.read('/countries/uv.json').result().
   then(function(documents) {
     var documentBefore = documents[0];
     console.log('before: '+
@@ -31,12 +31,12 @@ db.read('/countries/uv.json').result().
         documentBefore.content.timestamp
         );
     documentBefore.content.timestamp = timestamp;
-    return db.write(documentBefore).result();
+    return db.documents.write(documentBefore).result();
     }).
   then(function(response) {
     var uri = response.documents[0].uri;
     console.log('modified: '+uri);
-    return db.read(uri).result();
+    return db.documents.read(uri).result();
   }).
   then(function(documents) {
     var documentAfter = documents[0];

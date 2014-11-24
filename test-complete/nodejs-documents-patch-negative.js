@@ -1,0 +1,267 @@
+/*
+ * Copyright 2014 MarkLogic Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var should = require('should');
+
+var testconfig = require('../etc/test-config.js');
+
+var marklogic = require('../');
+var q = marklogic.queryBuilder;
+var p = marklogic.patchBuilder;
+
+var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
+
+describe('document patch negative test', function(){
+  before(function(done){
+    this.timeout(3000);
+// NOTE: must create a string range index on rangeKey1 and rangeKey2
+    dbWriter.documents.write({
+      uri: '/test/query/matchDir/doc1.json',
+      collections: ['matchCollection1'],
+      contentType: 'application/json',
+      content: {
+        title: 'Vannevar Bush',
+        popularity: 5,
+        id: '0011',
+        date: '2005-01-01',
+        price: {
+             amt: 0.1
+           },
+        p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
+        }
+      }, { 
+      uri: '/test/query/matchDir/doc2.json',
+      collections: ['matchCollection1', 'matchCollection2'],
+      contentType: 'application/json',
+      content: {
+        title: 'The Bush article',
+        popularity: 4,
+        id: '0012',
+        date: '2006-02-02',
+        price: {
+             amt: 0.12
+           },
+        p: 'The Bush article described a device called a Memex'
+        }
+      }, { 
+      uri: '/test/query/matchDir/doc3.json',
+      collections: ['matchCollection2'],
+      contentType: 'application/json',
+      content: {
+        title: 'For 1945',
+        popularity: 3,
+        id: '0013',
+        date: '2007-03-03',
+        price: {
+             amt: 1.23
+           },
+        p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
+        }
+      }, { 
+      uri: '/test/query/matchDir/doc4.json',
+      collections: [],
+      contentType: 'application/json',
+      content: {
+        title: 'Vannevar served',
+        popularity: 5,
+        id: '0024',
+        date: '2008-04-04',
+        price: {
+             amt: 12.34
+           },
+        p: 'Vannevar served as a prominent policymaker and public intellectual'
+        }
+      }, { 
+        uri: '/test/query/matchList/doc5.json',
+        collections: ['matchList'],
+        contentType: 'application/json',
+        quality: 10,
+        properties: {prop1: 'hello'},
+        content: {
+          title: 'The memex',
+          popularity: 5,
+          id: '0026',
+          date: '2009-05-05',
+          price: {
+               amt: 123.45
+             },
+          p: 'The Memex, unfortunately, had no automated search feature'
+          }
+        }).
+    result(function(response){done();}, done);
+  });
+
+  /*it('should fail to appply patch without document uri', function(done){
+    var uri1 = '/test/query/matchList/doc5.json';
+    dbWriter.documents.patch({
+      categories: ['metadata'], 
+      operations: [
+        p.replace('node("quality")', 33)
+      ]
+    }).
+    result(function(response){
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+         //console.log(error);
+         done();
+       });   
+  });*/
+
+  it('should fail to appply patch without categories', function(done){
+    var uri1 = '/test/query/matchList/doc5.json';
+    dbWriter.documents.patch({
+      uri: uri1,
+      operations: [
+        p.replace('node("quality")', 33)
+      ]
+    }).
+    result(function(response){
+      response.uri.should.equal(uri1);
+      done();
+    }, function(error) {
+         //console.log(error);
+         done();
+       });   
+  });
+
+  it('should fail to appply patch without pathLanguange', function(done){
+    var uri1 = '/test/query/matchList/doc5.json';
+    dbWriter.documents.patch({
+      uri: uri1,
+      categories: ['content'],
+      operations: [
+        p.replace('$.popularity', 15)
+      ]
+    }).
+    result(function(response) {
+      response.uri.should.equal(uri1);
+      //console.log(response);
+      done();
+    }, function(error) {
+      //console.log(error);
+      done();
+    });   
+  });
+
+  it('should write document for test', function(done){
+    var uri2 = '/test/patch/replaceInsert.json';
+    dbWriter.documents.write({
+      uri: uri2,
+      contentType: 'application/json',
+      content: {
+        theTop: {
+          child1: {grandchild: 'gcv'},
+          child2: 'c2v',
+          child3a: ['c3av1', 'c3av2'],
+          child3b: ['c3bv1', 'c3bv2'],
+          child4a: ['c4av1', 'c4av2'],
+          child4b: ['c4bv1', 'c4bv2'],
+          child5: [{c5a: 'c5v1'}, {c5b: 'c5v2'}]
+        }
+      }
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should fail to patch with invalid xpath', function(done){
+    var uri2 = '/test/patch/replaceInsert.json';
+    dbWriter.documents.patch(
+      uri2,
+      p.replaceInsert('node()/[. = "c4bv2"]',
+        '/theTop/node("child4b")', 'last-child', 'REPLACED4')
+    ).
+    result(function(response) {
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(400);
+      done();
+    });   
+  });
+
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/negative/patch/cardinality1.xml',
+      contentType: 'application/xml',
+      content: '<root><foo>one</foo><foo>two</foo></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should fail to apply patch with exactly one cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/negative/patch/cardinality1.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality=".">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(400);
+      done();
+    });
+  });
+
+  it('should write document for test', function(done){
+    dbWriter.documents.write({
+      uri: '/test/query/negative/patch/cardinality2.xml',
+      contentType: 'application/xml',
+      content: '<root><baz>one</baz></root>'
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should fail to apply patch with one or more cardinality', function(done){
+    dbWriter.documents.patch(
+      '/test/query/negative/patch/cardinality2.xml',
+      '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">' +
+      '  <rapi:insert context="/root/foo" position="after" cardinality="+">' +
+      '    <bar>added</bar>' +
+      '  </rapi:insert>' +
+      '</rapi:patch>'
+    ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 2));
+        response.should.equal('SHOULD HAVE FAILED');
+        done();
+    }, function(error) {
+      //console.log(error);
+      error.statusCode.should.equal(400);
+      done();
+    });
+  });
+
+  it('should remvoe documents', function(done){
+    dbAdmin.documents.removeAll({all: true}).
+    result(function(response){
+      done();
+    }, done);  
+  });
+
+});

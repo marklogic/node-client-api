@@ -23,10 +23,9 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
-describe('document query', function(){
+describe('Document query test', function(){
   before(function(done){
     this.timeout(3000);
-// NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -100,33 +99,171 @@ describe('document query', function(){
         }).
     result(function(response){done();}, done);
   });
-  it('should read, query, and remove the doc', function(done){
-    db.read('/test/query/matchList/doc5.json').
-      result(function(documents) {
-        var document = documents[0];
-        document.content.id.should.equal('0026');
-        console.log('Document result: ');
-        console.log(JSON.stringify(document, null, 4));
-        return db.query(
-                 q.where(
-                   q.word('title', 'bush')
-                   ).
-                 orderBy('title', q.sort('popularity', 'ascending'))
-                 ).result();
-      }).
-    then(function(response){
-      console.log('Search result: ');
-      console.log(JSON.stringify(response, null, 4));
-      var document = response[0];
-      response.length.should.equal(2);
-      document.content.id.should.equal('0012');
-      return dbWriter.remove('/test/query/matchList/doc5.json').result();
-      }).
-    then(function(document) {
-      document.exists.should.eql(false);
-      }).
-    then(function(documents){
-      done();
+
+  it('should do word query', function(done){
+    db.documents.query(
+      q.where(
+        q.word('title', 'bush')
+      )).result(function(response) {
+        response.length.should.equal(2);
+        response[0].content.id.should.equal('0011');
+        response[1].content.id.should.equal('0012');
+        done();
       }, done);
   });
+
+  it('should do term query', function(done){
+    db.documents.query(
+      q.where(
+        q.or(
+          q.term('memex'),
+          q.word('id', '0026')
+        )
+      )).result(function(response) {
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0026');
+        response[1].content.id.should.equal('0012');
+        done();
+      }, done);
+  });
+
+  it('should do value query with wildcards', function(done){
+    db.documents.query(
+      q.where(
+        q.or(
+          q.value('id', '0??6', q.termOptions('wildcarded')), 
+          q.word('id', '00*2', q.termOptions('wildcarded'))
+        )
+      )).result(function(response) {
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0026');
+        response[1].content.id.should.equal('0012');
+        done();
+      }, done);
+  });
+
+  it('should do value query with google style grammar', function(done){
+    db.documents.query(
+      q.where(
+        q.or(
+          q.value('title', 'The memex'), 
+          q.and(
+            q.value('id', '0013'),
+            q.value('date', '2007-03-03')
+          )
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0013');
+        response[1].content.id.should.equal('0026');
+        done();
+      }, done);
+  });
+
+  it('should do term queries with AND', function(done){
+    db.documents.query(
+      q.where(
+        q.and(
+          q.term('Atlantic'), 
+          q.term('Monthly'),
+          q.term('Bush')
+          )
+        )
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0011');
+        done();
+      }, done);
+  });
+
+  it('should do near query', function(done){
+    db.documents.query(
+      q.where(
+        q.near(
+          q.term('Bush'),
+          q.term('Atlantic'),
+          6,
+          q.weight(1)
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0011');
+        done();
+      }, done);
+  });
+
+  it('should do scope query', function(done){
+    db.documents.query(
+      q.where(
+        q.scope(
+          'title',
+          q.term('Bush')
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0011');
+        response[1].content.id.should.equal('0012');
+        done();
+      }, done);
+  });
+
+  it('should do not-in query', function(done){
+    db.documents.query(
+      q.where(
+        q.notIn(
+          q.term('Bush'),
+          q.term('Vannevar Bush')
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0012');
+        done();
+      }, done);
+  });
+
+  it('should do document query', function(done){
+    db.documents.query(
+      q.where(
+        q.document(
+          '/test/query/matchList/doc5.json'
+        )
+      )).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        response[0].content.id.should.equal('0026');
+        done();
+      }, done);
+  });
+
+  it('should do queries with snippet', function(done){
+    db.documents.query(
+      q.where(
+        q.and(
+          q.term('Atlantic'), 
+          q.term('Monthly'),
+          q.term('Bush')
+          )
+        ).slice(1, 100, q.snippet())
+      ).result(function(response) {
+        var document = response[0];
+        //response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        //response[0].content.id.should.equal('0011');
+        done();
+      }, done);
+  });
+
 });

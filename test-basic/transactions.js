@@ -26,9 +26,9 @@ describe('transaction', function(){
     this.timeout(5000);
     var uri = '/test/txn/commit1.json';
     before(function(done){
-      db.probe(uri).result(function(document){
+      db.documents.probe(uri).result(function(document){
         if (document.exists) {
-          db.remove(uri).
+          db.documents.remove(uri).
             result(function(response) {done();}, done);          
         } else {
           done();
@@ -48,7 +48,7 @@ describe('transaction', function(){
           }).result();
         }).
       then(function(response) {
-        return db.read({uris:uri, txid:tid}).result();
+        return db.documents.read({uris:uri, txid:tid}).result();
         }).
       then(function(documents) {
         documents.length.should.equal(1);
@@ -57,7 +57,7 @@ describe('transaction', function(){
         document.should.have.property('content');
         document.content.should.have.property('txKey');
         document.content.txKey.should.equal(tid);
-        return db.probe(uri).result();
+        return db.documents.probe(uri).result();
         }).
       then(function(response) {
         response.should.be.ok;
@@ -65,7 +65,7 @@ describe('transaction', function(){
         return db.transactions.commit(tid).result();
         }).
       then(function(response) {
-        return db.read(uri).result();
+        return db.documents.read(uri).result();
         }).
       then(function(documents) {
         documents.length.should.equal(1);
@@ -74,7 +74,7 @@ describe('transaction', function(){
         document.should.have.property('content');
         document.content.should.have.property('txKey');
         document.content.txKey.should.equal(tid);
-        db.remove(uri).
+        db.documents.remove(uri).
           result(function(response) {done();}, done);
         },
         function(primaryError){
@@ -90,9 +90,9 @@ describe('transaction', function(){
     this.timeout(5000);
     var uri = '/test/txn/rollback1.json';
     before(function(done){
-      db.probe(uri).result(function(document){
+      db.documents.probe(uri).result(function(document){
         if (document.exists) {
-          db.remove(uri).
+          db.documents.remove(uri).
             result(function(response) {done();}, done);          
         } else {
           done();
@@ -112,7 +112,7 @@ describe('transaction', function(){
           }).result();
         }).
       then(function(response) {
-        return db.read({uris:uri, txid:tid}).result();
+        return db.documents.read({uris:uri, txid:tid}).result();
         }).
       then(function(documents) {
         documents.length.should.equal(1);
@@ -124,7 +124,7 @@ describe('transaction', function(){
         return db.transactions.rollback(tid).result();
         }).
       then(function(response) {
-        return db.probe(uri).result();
+        return db.documents.probe(uri).result();
         }).
       then(function(response) {
         response.should.be.ok;
@@ -154,9 +154,8 @@ describe('transaction', function(){
       then(function(response) {
         // TODO: pre-parse based on accept header
         var status = JSON.parse(response)['transaction-status'];
-        var hostId        = status.host['host-id'];
         var transactionId = status['transaction-id'];
-        tid.should.equal(hostId+'_'+transactionId);
+        tid.should.equal(transactionId);
         return db.transactions.rollback(tid).result();
         }).
       then(function(response) {

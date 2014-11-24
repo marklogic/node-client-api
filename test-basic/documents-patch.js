@@ -42,15 +42,15 @@ describe('document patch', function(){
       var p = marklogic.patchBuilder;
       db.documents.patch(uri1,
           p.pathLanguage('jsonpath'),
-          p.insert('$.arrayParentKey', 'last-child', 'appended value'),
+          p.insert('$["arrayParentKey"]', 'last-child', 'appended value'),
           p.replace('$.objectParentKey.replacementKey', 'replacement value'),
           p.remove('$.deletableKey')
           ).
       result(function(response){
-        db.read(uri1).
+        db.documents.read(uri1).
         result(function(documents) {
+          documents.length.should.equal(1);
           var document = documents[0];
-          document.should.be.ok;
           document.should.have.property('content');
           document.content.should.have.property('arrayParentKey');
           document.content.arrayParentKey.length.should.equal(2);
@@ -82,15 +82,15 @@ describe('document patch', function(){
       var p = marklogic.patchBuilder;
       db.documents.patch(uri1,
           p.insert('/node("arrayParentKey")', 'last-child', 'appended value'),
-          p.replace('/node("objectParentKey")/node("replacementKey")',
+          p.replace('/objectParentKey/replacementKey',
               'replacement value'),
-          p.remove('/node("deletableKey")')
+          p.remove('/deletableKey')
           ).
       result(function(response){
-        db.read(uri1).
+        db.documents.read(uri1).
         result(function(documents) {
+          documents.length.should.equal(1);
           var document = documents[0];
-          document.should.be.ok;
           document.should.have.property('content');
           document.content.should.have.property('arrayParentKey');
           document.content.arrayParentKey.length.should.equal(2);
@@ -124,30 +124,31 @@ describe('document patch', function(){
     it('should insert, replace, and delete', function(done) {
       var p = marklogic.patchBuilder;
       db.documents.patch({uri:uri1, categories:['metadata'], operations:[
-          p.insert('array-node("collections")/text()[. eq "collection1/1"]', 'before',
+          p.insert('collections[. eq "collection1/1"]', 'before',
               'collection1/INSERTED_BEFORE'),
           p.insert('array-node("collections")', 'last-child',
               'collection1/INSERTED_LAST'),
-          p.remove('array-node("collections")/text()[. eq "collection1/0"]'),
-          p.replace('array-node("permissions")/object-node()[node("role-name") eq "app-user"]',
+          p.remove('collections[. eq "collection1/0"]'),
+          p.replace('permissions[role-name eq "app-user"]',
               {'role-name':'app-builder', capabilities:['read', 'update']}
               ),
-          p.insert('object-node("properties")/text("property2")', 'before',
+          p.insert('properties/property2', 'before',
               {propertyINSERTED_BEFORE2: 'property value INSERTED_BEFORE'}),
-          p.insert('object-node("properties")', 'last-child',
+          p.insert('node("properties")', 'last-child',
               {propertyINSERTED_LAST: 'property value INSERTED_LAST'}),
-          p.remove('object-node("properties")/text("property1")'),
-          p.replace('node("quality")', 2)
+          p.remove('properties/property1'),
+          p.replace('quality', 2)
           ]}).
       result(function(response){
-        db.read({uris:uri1, categories:['metadata']}).
+        db.documents.read({uris:uri1, categories:['metadata']}).
         result(function(documents) {
+          documents.length.should.equal(1);
           var document = documents[0];
-          document.should.be.ok;
           document.collections.length.should.equal(3);
           document.collections[0].should.equal('collection1/INSERTED_BEFORE');
           document.collections[1].should.equal('collection1/1');
           document.collections[2].should.equal('collection1/INSERTED_LAST');
+          document.collections[document.collections.length - 1].should.equal('collection1/INSERTED_LAST');
           document.should.have.property('permissions');
           var foundAppUser    = false;
           var foundAppBuilder = false;
@@ -179,5 +180,164 @@ describe('document patch', function(){
         }, done);
     });    
   });    
-  // TODO: patch library
+  describe('as raw positional params', function() {
+    var jsonUri = '/test/patch/raw1.json';
+    var xmlUri  = '/test/patch/raw1.xml';
+    before(function(done){
+      db.documents.write({
+          uri: jsonUri,
+          contentType: 'application/json',
+          content: {
+            id:              'patchDoc1',
+            arrayParentKey:  ['existing value'],
+            objectParentKey: {replacementKey: 'replaceable value'},
+            deletableKey:    'deletable value'
+            }
+        },{
+          uri: xmlUri,
+          contentType: 'application/xml',
+          content:     '<doc><appendable/><replaceable/><removable/></doc>'
+          }).
+      result(function(response){done();}, done);
+    });
+    it('for positional JSON', function(done) {
+      db.documents.patch(jsonUri,
+          {pathlang:'jsonpath',
+           patch:[
+             {insert:{
+               context:  '$["arrayParentKey"]',
+               position: 'last-child',
+               content:  'appended value'
+               }},
+             {replace:{
+               select:   '$.objectParentKey.replacementKey',
+               content:  'replacement value'
+               }},
+             {'delete':{
+               select:   '$.deletableKey'
+               }}
+             ]}
+          ).
+      result(function(response){
+        db.documents.read(jsonUri).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('content');
+          document.content.should.have.property('arrayParentKey');
+          document.content.arrayParentKey.length.should.equal(2);
+          document.content.arrayParentKey[1].should.equal('appended value');
+          document.content.should.have.property('objectParentKey');
+          document.content.objectParentKey.should.have.property('replacementKey');
+          document.content.objectParentKey.replacementKey.should.equal('replacement value');
+          document.should.not.have.property('deletableKey');
+          done();}, done);
+        }, done);
+    });
+    it('for positional XML', function(done) {
+      db.documents.patch(xmlUri,
+          '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">'+
+          '<rapi:insert context="/doc/appendable" position="last-child"><appended/></rapi:insert>'+
+          '<rapi:replace select="/doc/replaceable"><replaced/></rapi:replace>'+
+          '<rapi:delete select="/doc/removable"/>'+
+          '</rapi:patch>'
+      ).
+      result(function(response){
+        db.documents.read(xmlUri).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('content');
+          var content = document.content.trim();
+          var startPos = content.indexOf('<doc>');
+          startPos.should.not.equal(-1);
+          content.substring(startPos).should.equal(
+              '<doc><appendable><appended/></appendable><replaced/></doc>'
+              );
+          done();}, done);
+      }, done);
+    });    
+  });    
+  describe('as raw named params', function() {
+    var jsonUri = '/test/patch/raw2.json';
+    var xmlUri  = '/test/patch/raw2.xml';
+    before(function(done){
+      db.documents.write({
+          uri: jsonUri,
+          contentType: 'application/json',
+          content: {
+            id:              'patchDoc2',
+            arrayParentKey:  ['existing value'],
+            objectParentKey: {replacementKey: 'replaceable value'},
+            deletableKey:    'deletable value'
+            }
+        },{
+          uri: xmlUri,
+          contentType: 'application/xml',
+          content:     '<doc><appendable/><replaceable/><removable/></doc>'
+          }).
+      result(function(response){done();}, done);
+    });
+    it('for named JSON', function(done) {
+      db.documents.patch({uri:jsonUri,
+          format:'json',
+          operations:{pathlang:'jsonpath',
+           patch:[
+             {insert:{
+               context:  '$["arrayParentKey"]',
+               position: 'last-child',
+               content:  'appended value'
+               }},
+             {replace:{
+               select:   '$.objectParentKey.replacementKey',
+               content:  'replacement value'
+               }},
+             {'delete':{
+               select:   '$.deletableKey'
+               }}
+             ]}
+        }).
+      result(function(response){
+        db.documents.read(jsonUri).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('content');
+          document.content.should.have.property('arrayParentKey');
+          document.content.arrayParentKey.length.should.equal(2);
+          document.content.arrayParentKey[1].should.equal('appended value');
+          document.content.should.have.property('objectParentKey');
+          document.content.objectParentKey.should.have.property('replacementKey');
+          document.content.objectParentKey.replacementKey.should.equal('replacement value');
+          document.should.not.have.property('deletableKey');
+          done();}, done);
+        }, done);
+    });
+    it('for named XML', function(done) {
+      db.documents.patch({uri:xmlUri,
+        format:'xml',
+        operations:
+          '<rapi:patch xmlns:rapi="http://marklogic.com/rest-api">'+
+          '<rapi:insert context="/doc/appendable" position="last-child"><appended/></rapi:insert>'+
+          '<rapi:replace select="/doc/replaceable"><replaced/></rapi:replace>'+
+          '<rapi:delete select="/doc/removable"/>'+
+          '</rapi:patch>'
+      }).
+      result(function(response){
+        db.documents.read(xmlUri).
+        result(function(documents) {
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('content');
+          var content = document.content.trim();
+          var startPos = content.indexOf('<doc>');
+          startPos.should.not.equal(-1);
+          content.substring(startPos).should.equal(
+              '<doc><appendable><appended/></appendable><replaced/></doc>'
+              );
+          done();}, done);
+      }, done);
+    });    
+  });    
+  // NOTE: patch library tested in extlibs.js 
 });

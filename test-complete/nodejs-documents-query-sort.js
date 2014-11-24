@@ -22,13 +22,14 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('document query', function(){
+describe('document query sort test', function(){
   before(function(done){
     this.timeout(3000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
-      uri: '/test/query/matchDir/doc1.json',
+      uri: '/test/query/sort/doc1.json',
       collections: ['matchCollection1'],
       contentType: 'application/json',
       content: {
@@ -42,7 +43,7 @@ describe('document query', function(){
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
       }, { 
-      uri: '/test/query/matchDir/doc2.json',
+      uri: '/test/query/sort/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
       content: {
@@ -56,7 +57,7 @@ describe('document query', function(){
         p: 'The Bush article described a device called a Memex'
         }
       }, { 
-      uri: '/test/query/matchDir/doc3.json',
+      uri: '/test/query/sort/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
       content: {
@@ -70,7 +71,7 @@ describe('document query', function(){
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
       }, { 
-      uri: '/test/query/matchDir/doc4.json',
+      uri: '/test/query/sort/doc4.json',
       collections: [],
       contentType: 'application/json',
       content: {
@@ -84,7 +85,7 @@ describe('document query', function(){
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
       }, { 
-        uri: '/test/query/matchList/doc5.json',
+        uri: '/test/query/sort/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
         content: {
@@ -100,33 +101,43 @@ describe('document query', function(){
         }).
     result(function(response){done();}, done);
   });
-  it('should read, query, and remove the doc', function(done){
-    db.read('/test/query/matchList/doc5.json').
-      result(function(documents) {
-        var document = documents[0];
-        document.content.id.should.equal('0026');
-        console.log('Document result: ');
-        console.log(JSON.stringify(document, null, 4));
-        return db.query(
-                 q.where(
-                   q.directory('/test/query/matchDir/')
-                   ).
-                 orderBy('title', q.sort('popularity', 'descending'))
-                 ).result();
-      }).
-    then(function(response){
-      console.log('Search result: ');
-      console.log(JSON.stringify(response, null, 4));
-      var document = response[0];
-      response.length.should.equal(4);
-      document.content.id.should.equal('0013');
-      return dbWriter.remove('/test/query/matchList/doc5.json').result();
-      }).
-    then(function(document) {
-      document.exists.should.eql(false);
-      }).
-    then(function(documents){
-      done();
+
+  it('should do document query with descending order', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/sort/')
+        ).
+      orderBy(q.sort('popularity', 'descending'))
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(5);
+        //console.log(JSON.stringify(response, null, 4));
+        document.content.popularity.should.equal(5);
+        done();
       }, done);
   });
+
+  it('should do document query with ascending order', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/sort/')
+        ).
+      orderBy(q.sort('popularity', 'ascending'))
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(5);
+        //console.log(JSON.stringify(response, null, 4));
+        document.content.popularity.should.equal(3);
+        done();
+      }, done);
+  });
+
+  it('should remove all documents', function(done){
+    dbAdmin.documents.removeAll({all:true}).
+    result(function(response) {
+    response.should.be.ok;
+    done();
+    }, done);
+  });
+
 });

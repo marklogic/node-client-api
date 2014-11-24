@@ -380,7 +380,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoAttributePair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
-            q.fragmentScope('documents'), q.geoOption('boundaries-included')),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}],
@@ -390,6 +390,24 @@ describe('query-builder', function() {
   });
 
   it('should create geo-element queries', function(){
+    assert.deepEqual(
+        q.geoElement('element', q.latlon(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoElement(q.qname('element'), q.point(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoElement(q.element('element'), q.point(1.1, 2.2)),
+        {'geo-elem-query':{
+          element:{name:'element'},
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
     assert.deepEqual(
         q.geoElement('parent', 'element', q.latlon(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
@@ -416,7 +434,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElement('parent', 'element', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}],
@@ -455,7 +473,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElementPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
-            q.fragmentScope('documents'), q.geoOption('boundaries-included')),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}],
@@ -492,8 +510,82 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoPath(q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2),
-            q.fragmentScope('documents'), q.geoOption('boundaries-included')),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
+          point:[{latitude:1.1, longitude:2.2}],
+          'fragment-scope': 'documents',
+          'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-json-property queries', function(){
+    assert.deepEqual(
+        q.geoProperty('property1', q.latlon(1.1, 2.2)),
+        {'geo-json-property-query':{
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty(q.property('property1'), q.point(1.1, 2.2)),
+        {'geo-json-property-query':{
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2)),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty(q.property('parent'), q.property('property1'), q.point(1.1, 2.2)),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty([q.property('parent'), q.property('property1'), q.point(1.1, 2.2)]),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
+            q.geoOptions('boundaries-included')),
+        {'geo-json-property-query':{'parent-property':'parent',
+          'json-property':'property1',
+          point:[{latitude:1.1, longitude:2.2}],
+          'fragment-scope': 'documents',
+          'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-json-property-pair queries', function(){
+    assert.deepEqual(
+        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2)),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair(q.property('parent'), q.property('latitude'), q.property('longitude'),
+            q.point(1.1, 2.2)),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair([q.property('parent'), q.property('latitude'), q.property('longitude'),
+                          q.point(1.1, 2.2)]),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
+          point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
+        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
+            q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
+        {'geo-json-property-pair-query':{'parent-property':'parent',
+          'lat-property':'latitude', 'lon-property':'longitude',
           point:[{latitude:1.1, longitude:2.2}],
           'fragment-scope': 'documents',
           'geo-option':['boundaries-included']}}
@@ -502,19 +594,19 @@ describe('query-builder', function() {
 
   it('should create geo options', function(){
     assert.deepEqual(
-        q.geoOption('boundaries-included'),
+        q.geoOptions('boundaries-included'),
         {'geo-option':['boundaries-included']}
         );
     assert.deepEqual(
-        q.geoOption(['boundaries-included']),
+        q.geoOptions(['boundaries-included']),
         {'geo-option':['boundaries-included']}
         );
     assert.deepEqual(
-        q.geoOption('boundaries-included', 'boundaries-latitude-excluded'),
+        q.geoOptions('boundaries-included', 'boundaries-latitude-excluded'),
         {'geo-option':['boundaries-included', 'boundaries-latitude-excluded']}
         );
     assert.deepEqual(
-        q.geoOption(['boundaries-included', 'boundaries-latitude-excluded']),
+        q.geoOptions(['boundaries-included', 'boundaries-latitude-excluded']),
         {'geo-option':['boundaries-included', 'boundaries-latitude-excluded']}
         );
   });
@@ -536,14 +628,14 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a locks-query', function(){
+  it('should create a locks-fragment-query', function(){
     assert.deepEqual(
-        q.locks(q.collection('foo')),
-        {'locks-query':{'collection-query': {uri:['foo']}}}
+        q.locksFragment(q.collection('foo')),
+        {'locks-fragment-query':{'collection-query': {uri:['foo']}}}
         );
     assert.deepEqual(
-        q.locks([q.collection('foo')]),
-        {'locks-query':{'collection-query': {uri:['foo']}}}
+        q.locksFragment([q.collection('foo')]),
+        {'locks-fragment-query':{'collection-query': {uri:['foo']}}}
         );
   });
 
@@ -785,53 +877,179 @@ describe('query-builder', function() {
         );
   });
 
+  it('should create an lsqt query', function(){
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection'),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection'}}
+        );
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z'),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection',
+         timestamp: '2014-09-05T00:00:00.000Z'}}
+        );
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection', new Date('2014-09-05T00:00:00.000Z')),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection',
+         timestamp: '2014-09-05T00:00:00.000Z'}}
+        );
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection', q.weight(2)),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection',
+         weight: 2}}
+        );
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection', 2),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection',
+         weight: 2}}
+        );
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection',
+            q.temporalOptions('cached')),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection',
+         'temporal-option':['cached']}}
+        );
+    assert.deepEqual(
+        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
+            q.temporalOptions('cached')),
+        {'lsqt-query':{
+         'temporal-collection': 'bitemporalCollection',
+         timestamp: '2014-09-05T00:00:00.000Z',
+         weight: 2,
+         'temporal-option':['cached']}}
+        );
+  });
+  it('should create a period compare query', function(){
+    assert.deepEqual(
+        q.periodCompare('axis1', 'ALN_CONTAINS', 'axis2'),
+        {'period-compare-query':{
+          axis1:               'axis1',
+          'temporal-operator': 'ALN_CONTAINS',
+          axis2:               'axis2'}}
+        );
+    assert.deepEqual(
+        q.periodCompare('axis1', 'ALN_CONTAINS', 'axis2',
+            q.temporalOptions('cached')),
+        {'period-compare-query':{
+          axis1:               'axis1',
+          'temporal-operator': 'ALN_CONTAINS',
+          axis2:               'axis2',
+          'temporal-option':['cached']}}
+        );
+  });
+  it('should create a period range query', function(){
+    assert.deepEqual(
+        q.periodRange('axis1', 'ALN_CONTAINS',
+            q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z')),
+        {'period-range-query':{
+          axis: ['axis1'],
+          'temporal-operator': 'ALN_CONTAINS',
+          period: [{
+            'period-start': '2014-09-05T00:00:00.000Z',
+            'period-end':   '2014-10-05T00:00:00.000Z'
+            }]}}
+        );
+    assert.deepEqual(
+        q.periodRange('axis1', 'ALN_CONTAINS',
+            q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z'),
+            q.temporalOptions('cached')),
+        {'period-range-query':{
+          axis: ['axis1'],
+          'temporal-operator': 'ALN_CONTAINS',
+          period:[{
+            'period-start': '2014-09-05T00:00:00.000Z',
+            'period-end':   '2014-10-05T00:00:00.000Z'
+            }],
+          'temporal-option':['cached']}}
+        );
+  });
+  it('should specify a period', function(){
+    assert.deepEqual(
+        q.period('2014-09-05T00:00:00.000Z', '2014-10-05T00:00:00.000Z'),
+        {
+          'period-start': '2014-09-05T00:00:00.000Z',
+          'period-end':   '2014-10-05T00:00:00.000Z'
+          }
+        );
+    assert.deepEqual(
+        q.period(new Date('2014-09-05'), new Date('2014-10-05')),
+        {
+          'period-start': '2014-09-05T00:00:00.000Z',
+          'period-end':   '2014-10-05T00:00:00.000Z'
+          }
+        );
+  });
+  it('should specify temporal options', function(){
+    assert.deepEqual(
+        q.temporalOptions('cached'),
+        {'temporal-option':['cached']}
+        );
+    assert.deepEqual(
+        q.temporalOptions(['cached']),
+        {'temporal-option':['cached']}
+        );
+    assert.deepEqual(
+        q.temporalOptions('cached', 'score-function=linear'),
+        {'temporal-option':['cached', 'score-function=linear']}
+        );
+    assert.deepEqual(
+        q.temporalOptions(['cached', 'score-function=linear']),
+        {'temporal-option':['cached', 'score-function=linear']}
+        );
+  });
+
   it('should create a range query', function(){
     assert.deepEqual(
         q.range('foo', 1),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1]
+          value: [1],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range(q.property('foo'), 1),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1]
+          value: [1],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', 1, 2),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1, 2]
+          value: [1, 2],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', [1, 2]),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1, 2]
+          value: [1, 2],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range(['foo', 1, 2]),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
-          value: [1, 2]
+          value: [1, 2],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', '>', 1),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'GT',
-          value: [1]
+          value: [1],
+          'range-operator': 'GT'
           }}
         );
     assert.deepEqual(
@@ -839,8 +1057,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:int',
-          'range-operator': 'GE',
-          value: [1]
+          value: [1],
+          'range-operator': 'GE'
           }}
         );
     assert.deepEqual(
@@ -848,8 +1066,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:int',
-          'range-operator': 'GE',
-          value: [1]
+          value: [1],
+          'range-operator': 'GE'
           }}
         );
     assert.deepEqual(
@@ -857,8 +1075,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
@@ -866,8 +1084,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
@@ -875,8 +1093,8 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
@@ -884,16 +1102,16 @@ describe('query-builder', function() {
         {'range-query':{
           'json-property': 'foo',
           type: 'xs:string',
-          'range-operator': 'EQ',
-          value: ['one', 'two']
+          value: ['one', 'two'],
+          'range-operator': 'EQ'
           }}
         );
     assert.deepEqual(
         q.range('foo', 1, q.fragmentScope('properties')),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
           value: [1],
+          'range-operator': 'EQ',
           'fragment-scope': 'properties'
           }}
         );
@@ -901,8 +1119,8 @@ describe('query-builder', function() {
         q.range('foo', 1, q.rangeOptions('cached')),
         {'range-query':{
           'json-property': 'foo',
-          'range-operator': 'EQ',
           value: [1],
+          'range-operator': 'EQ',
           'range-option':['cached']
           }}
         );
@@ -1218,7 +1436,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-attr-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           'geo-option':['boundaries-included']},
@@ -1240,7 +1458,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElement('parent', 'element', q.bind('constraint1'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'},
           'geo-option':['boundaries-included']},
@@ -1262,7 +1480,7 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1'),
-            q.geoOption('boundaries-included')),
+            q.geoOptions('boundaries-included')),
         {'geo-elem-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           'geo-option':['boundaries-included']},
@@ -1282,7 +1500,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoPath('foo', q.bind('constraint1'), q.geoOption('boundaries-included')),
+        q.geoPath('foo', q.bind('constraint1'), q.geoOptions('boundaries-included')),
         {'geo-path':{'path-index':{text: 'foo', namespaces: ''},
           'geo-option':['boundaries-included']},
           name:'constraint1'}
@@ -1389,7 +1607,7 @@ describe('query-builder', function() {
         {empty:{'apply': 'no-results'}}
         );
     assert.deepEqual(
-        q.parseFunction('module1', q.bind('constraint1')),
+        q.parseFunction('module1.xqy', q.bind('constraint1')),
         {custom:{parse: {
             apply: 'parse',
             ns:    'http://marklogic.com/query/custom/module1',
@@ -1399,7 +1617,7 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.parseFunction('module1', q.bind('constraint1'), q.termOptions('stemmed')),
+        q.parseFunction('module1.xqy', q.bind('constraint1'), q.termOptions('stemmed')),
         {custom:{parse: {
             apply: 'parse',
             ns:    'http://marklogic.com/query/custom/module1',
@@ -1431,13 +1649,109 @@ describe('query-builder', function() {
         );
   });
 
+  it('should specify extraction', function(){
+    assert.deepEqual(
+        q.extract('/path1', '/path2'),
+        {'extract-document-data':{
+          'extract-path':['/path1', '/path2']
+          }}
+        );
+    assert.deepEqual(
+        q.extract(['/path1', '/path2']),
+        {'extract-document-data':{
+          'extract-path':['/path1', '/path2']
+          }}
+        );
+    assert.deepEqual(
+        q.extract({paths:['/path1', '/path2']}),
+        {'extract-document-data':{
+          'extract-path':['/path1', '/path2']
+          }}
+        );
+    assert.deepEqual(
+        q.extract({selected:'include', paths:['/path1', '/path2']}),
+        {'extract-document-data':{
+          selected:'include',
+          'extract-path':['/path1', '/path2']
+          }}
+        );
+    assert.deepEqual(
+        q.extract({selected:'include-with-ancestors', paths:['/path1', '/path2']}),
+        {'extract-document-data':{
+          selected:'include-with-ancestors',
+          'extract-path':['/path1', '/path2']
+          }}
+        );
+    assert.deepEqual(
+        q.extract({selected:'exclude', paths:['/path1', '/path2']}),
+        {'extract-document-data':{
+          selected:'exclude',
+          'extract-path':['/path1', '/path2']
+          }}
+        );
+  });
+
+  it('should specify a snippet transform', function(){
+    assert.deepEqual(
+        q.snippet(),
+        {'transform-results':{
+          apply: 'snippet'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('snippet'),
+        {'transform-results':{
+          apply: 'snippet'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('empty'),
+        {'transform-results':{
+          apply: 'empty-snippet'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('foo.xqy'),
+        {'transform-results':{
+          apply: 'snippet',
+          ns:    'http://marklogic.com/snippet/custom/foo',
+          at:    '/ext/marklogic/snippet/custom/foo.xqy'
+          }}
+        );
+    assert.deepEqual(
+        q.snippet({
+          'max-matches':       5,
+          'per-match-tokens':  6,
+          'max-snippet-chars': 7
+        }),
+        {'transform-results':{
+          apply:               'snippet',
+          'max-matches':       5,
+          'per-match-tokens':  6,
+          'max-snippet-chars': 7
+          }}
+        );
+    assert.deepEqual(
+        q.snippet('foo.xqy', {
+          'max-matches': 5,
+          'bar':         'baz'
+        }),
+        {'transform-results':{
+          apply:         'snippet',
+          ns:            'http://marklogic.com/snippet/custom/foo',
+          at:            '/ext/marklogic/snippet/custom/foo.xqy',
+          'max-matches': 5,
+          'bar':         'baz'
+          }}
+        );
+  });
+
   it('should specify a facet', function(){
     assert.deepEqual(
         q.facet('key1'),
         {range:{
           'json-property': 'key1',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'key1'}
         );
@@ -1445,8 +1759,7 @@ describe('query-builder', function() {
         q.facet(q.field('field2')),
         {range:{
           field: 'field2',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'field2'}
         );
@@ -1454,8 +1767,7 @@ describe('query-builder', function() {
         q.facet('facet3', 'key3'),
         {range:{
           'json-property': 'key3',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'facet3'}
         );
@@ -1463,8 +1775,7 @@ describe('query-builder', function() {
         q.facet('facet4', q.field('field4')),
         {range:{
           field: 'field4',
-          facet: true,
-          type: 'xs:string'
+          facet: true
           },
           name:'facet4'}
         );
@@ -1473,7 +1784,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key5',
           facet: true,
-          type: 'xs:string',
           'facet-option': ['item-frequency', 'descending']
           },
           name:'key5'}
@@ -1486,7 +1796,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key6',
           facet: true,
-          type: 'xs:string',
           bucket:[
               {name: 'bucket6A', label: 'bucket6A', lt: 60},
               {name: 'bucket6B', label: 'bucket6B', ge: 60, lt: 65},
@@ -1502,7 +1811,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key7',
           facet: true,
-          type: 'xs:string',
           'computed-bucket':[
               {name: 'bucket7A', label: 'bucket7A', anchor: 'now',
                 ge:  'P0D', lt: 'P1D'},
@@ -1521,7 +1829,6 @@ describe('query-builder', function() {
         {range:{
           'json-property': 'key8',
           facet: true,
-          type: 'xs:string',
           'computed-bucket':[
               {name: 'bucket8A', label: 'bucket8A',
                   'ge-anchor': '-P30D', ge:  'P0H',
@@ -1541,7 +1848,7 @@ describe('query-builder', function() {
           name:'facet9'}
         );
     assert.deepEqual(
-        q.facet('facet10', q.calculateFunction('module1')),
+        q.facet('facet10', q.calculateFunction('module1.xqy')),
         {custom:{
           'start-facet': {
             apply: 'start-facet',
@@ -1680,6 +1987,36 @@ describe('document query', function(){
       var built = q.slice(0);
       built.should.have.property('sliceClause');
       built.sliceClause['page-length'].should.equal(0);
+    });
+    it('should build a slice clause with a page and a snippet transform', function(){
+      var built = q.slice(11, 10,
+        q.snippet('foo.xqy', {
+          'max-matches': 5,
+          'bar':         'baz'
+          }));
+      built.should.have.property('sliceClause');
+      built.sliceClause['page-start'].should.equal(11);
+      built.sliceClause['page-length'].should.equal(10);
+      built.sliceClause['transform-results']['max-matches'].should.equal(5);
+      built.sliceClause['transform-results'].bar.should.equal('baz');
+      built.sliceClause['transform-results'].apply.should.equal('snippet');
+      built.sliceClause['transform-results'].ns.should.equal('http://marklogic.com/snippet/custom/foo');
+      built.sliceClause['transform-results'].at.should.equal('/ext/marklogic/snippet/custom/foo.xqy');
+
+    });
+    it('should build a slice clause with a default page and a snippet transform', function(){
+      var built = q.slice(
+        q.snippet('foo.xqy', {
+          'max-matches': 5,
+          'bar':         'baz'
+          }));
+      built.should.have.property('sliceClause');
+      built.sliceClause['transform-results']['max-matches'].should.equal(5);
+      built.sliceClause['transform-results'].bar.should.equal('baz');
+      built.sliceClause['transform-results'].apply.should.equal('snippet');
+      built.sliceClause['transform-results'].ns.should.equal('http://marklogic.com/snippet/custom/foo');
+      built.sliceClause['transform-results'].at.should.equal('/ext/marklogic/snippet/custom/foo.xqy');
+
     });
     it('should build with all clauses', function(){
       var built = q.where(

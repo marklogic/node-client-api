@@ -31,7 +31,9 @@ var collections = ['/countries', '/facts/geographic'];
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
   fs.readFile(fsdir+filename, function (err, content) {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
 
     buffer.push({
       uri:         dbdir+filename,
@@ -43,7 +45,7 @@ function readFile(filenames, i, buffer, isLast) {
 
     if (isLast) {
       console.log('loading batch from '+buffer[0].uri+' to '+filename);
-      db.write(buffer).result(function(response) {
+      db.documents.write(buffer).result(function(response) {
         console.log(
             'done loading:\n'+
             response.documents.map(function(document) {
@@ -79,12 +81,12 @@ fs.readdir(fsdir, function(err, filenames) {
 });
 
 var imageFile = 'uv_flag_2004.gif';
-var ws = db.createWriteStream({
+var ws = db.documents.write({
   uri:         dbdir+imageFile,
   contentType: 'image/gif',
-  collections: collections
-  });
-ws.result(function(response) {
+  collections: collections,
+  content:     fs.createReadStream(fsdir+imageFile)
+  }).
+result(function(response) {
   console.log('wrote '+imageFile);
   });
-fs.createReadStream(fsdir+imageFile).pipe(ws);
