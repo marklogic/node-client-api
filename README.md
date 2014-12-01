@@ -124,4 +124,5 @@ any request. In addition, MarkLogic provides technical support
 for [release tags](https://github.com/marklogic/node-client-api/releases)
 of the Node Client API to licensed customers under the terms outlined
 in the [Support Handbook](http://www.marklogic.com/files/Mark_Logic_Support_Handbook.pdf).
-For more information or to sign up for support, visit [help.marklogic.com](help.marklogic.com).
+For more information or to sign up for support,
+visit [help.marklogic.com](http://help.marklogic.com).
