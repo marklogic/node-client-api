@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -159,7 +159,7 @@ describe('Write Document Test', function() {
         if (document.collections[i] !== 'temporalCollection' && document.collections[i] !== 'coll0' &&
             document.collections[i] !== 'coll1' && document.collections[i] !== 'latest' &&
             document.collections[i] !== docuri) {
-          console.log("Invalid Collection: " + coll);
+          //console.log("Invalid Collection: " + coll);
           should.equal(false, true);
         }
       }      

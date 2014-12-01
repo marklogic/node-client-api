@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -128,7 +128,7 @@ describe('Write Document Test', function() {
         if (document.collections[i] !== 'temporalCollection' && document.collections[i] !== 'coll0' &&
             document.collections[i] !== 'coll1' && document.collections[i] !== 'latest' &&
             document.collections[i] !== docuri) {
-          console.log("Invalid Collection: " + coll);
+          //console.log("Invalid Collection: " + coll);
           should.equal(false, true);
         }
       }           
@@ -162,7 +162,7 @@ describe('Write Document Test', function() {
 
   it('should read multiple documents', function(done) {
     db.documents.read({uris: [docuri], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
+      ////console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(12);
       done();
     }, done);
@@ -170,7 +170,7 @@ describe('Write Document Test', function() {
 
   it('should read multiple documents with an invalid one', function(done) {
     db.documents.read({uris: [docuri, '/not/here/blah.json'], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
+      ////console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(12);
       done();
     }, done);
@@ -248,7 +248,7 @@ describe('Write Document Test', function() {
       uri: docuri,
       temporalCollection: 'temporalCollection'
     }).result(function(document) {
-      // console.log("Document = " + JSON.stringify(document));
+      // //console.log("Document = " + JSON.stringify(document));
 
       done();
     }, done);

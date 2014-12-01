@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -40,7 +40,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         )
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         docCount = response.length;
         done();
       }, done);
@@ -84,7 +84,7 @@ describe('Document transaction test', function() {
 
  it('should read the document before commit if txid matches', function(done) {
     db.documents.read({uris: docuri, txid: tid, categories:['metadata']}).result(function(documents) {
-      console.log("Document count: " + documents.length);
+      //console.log("Document count: " + documents.length);
       done();
     }, done);
   });
@@ -95,7 +95,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         )
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         response.length.should.equal(docCount);
         done();
       }, done);
@@ -107,7 +107,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         ).withOptions({txid: tid})
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         response.length.should.equal(docCount + 1);
         done();
       }, done);
@@ -117,11 +117,11 @@ describe('Document transaction test', function() {
     db.transactions.rollback(tid).
     result(
       function(response) {
-        console.log("response: " + JSON.stringify(response));
+        //console.log("response: " + JSON.stringify(response));
         done();
       }, 
       function(err) {
-        console.log("Error: " + err);
+        //console.log("Error: " + err);
         done();
       });
   });  
@@ -132,7 +132,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         )
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         response.length.should.equal(docCount);
         done();
       }, done);

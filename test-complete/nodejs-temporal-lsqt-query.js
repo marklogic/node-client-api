@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -118,7 +118,7 @@ describe('Write Document Test', function() {
     db.documents.query(q.where(
       q.lsqtQuery(temporalCollectionName, '2007-01-01T00:00:01')
       ).withOptions({debug:true})).result(function(response) {
-        console.log(response);
+        //console.log(response);
         response.length.should.equal(1);
         done();
       }, done);

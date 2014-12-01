@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 var testlib    = require('../etc/test-lib.js');
 
 var marklogic = require('../');
@@ -75,7 +75,7 @@ describe('Write Document Test', function() {
         // p.replace('quality', 24)
       ]
     }).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        ////console.log(JSON.stringify(response, null, 4));
         response.uri.should.equal(docuri);
         done();
     }, function(err) {
@@ -109,7 +109,7 @@ describe('Write Document Test', function() {
       p.pathLanguage('jsonpath'),
       p.replace('$.name', 'Bourne')
     ).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        ////console.log(JSON.stringify(response, null, 4));
         response.uri.should.equal(docuri);
         done();
     }, function(err) {
@@ -129,7 +129,7 @@ describe('Write Document Test', function() {
         // p.replace('quality', 24)
       ]
     }).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        ////console.log(JSON.stringify(response, null, 4));
         response.uri.should.equal(docuri);
         done();
     }, done);

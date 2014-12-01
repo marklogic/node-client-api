@@ -19,7 +19,7 @@ var fs = require('fs');
 var valcheck = require('core-util-is');
 var concatStream = require('concat-stream');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;

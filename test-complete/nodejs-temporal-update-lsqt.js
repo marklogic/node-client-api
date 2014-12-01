@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -36,22 +36,22 @@ var updateCollectionName = 'updateCollection';
 function validateData(response) {
   for (var i = 0; i < response.length; ++i) {
   // Make sure that system and valid times are what is expected
-    console.log("---------------------------------");
-    console.log(response[i]);
+    //console.log("---------------------------------");
+    //console.log(response[i]);
 
     systemStartTime = response[i].content.System.systemStartTime;
     systemEndTime = response[i].content.System.systemEndTime;
-    console.log("systemStartTime = " + systemStartTime);
-    console.log("systemEndTime = " + systemEndTime);
+    //console.log("systemStartTime = " + systemStartTime);
+    //console.log("systemEndTime = " + systemEndTime);
     
     validStartTime = response[i].content.Valid.validStartTime;
     validEndTime = response[i].content.Valid.validEndTime;
-    console.log("validStartTime = " + validStartTime);
-    console.log("validEndTime = " + validEndTime);
+    //console.log("validStartTime = " + validStartTime);
+    //console.log("validEndTime = " + validEndTime);
 
 
     var quality = response[i].quality;
-    console.log("Quality: " + quality);
+    //console.log("Quality: " + quality);
 
     var permissions = response[i].permissions;
     
@@ -352,7 +352,7 @@ describe('Write Document Test', function() {
         if (document.collections[i] !== temporalCollectionName && document.collections[i] !== 'coll0' &&
             document.collections[i] !== 'coll1' && document.collections[i] !== 'latest' &&
             document.collections[i] !== docuri) {
-          console.log("Invalid Collection: " + coll);
+          //console.log("Invalid Collection: " + coll);
           should.equal(false, true);
         }
       }           

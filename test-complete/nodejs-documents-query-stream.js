@@ -16,7 +16,7 @@
 var should = require('should');
 //var should = require('chai').should();
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
