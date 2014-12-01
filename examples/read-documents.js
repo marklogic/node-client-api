@@ -21,7 +21,6 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Read documents');
 
-db.setLogger({level: 'debug'});
 db.documents.read('/countries/ml.json', '/countries/uv.json').
   // or use stream() as in query-builder.js
   result(function(documents) {
