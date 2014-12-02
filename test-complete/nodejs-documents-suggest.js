@@ -32,8 +32,8 @@ describe('Document suggest test', function(){
       collections: ['suggestCollection'],
       contentType: 'application/json',
       content: {
-        defaultKey: 'memory',
-        taggedKey: 'apple',
+        defaultWordKey: 'memory',
+        taggedWordKey: 'apple',
         otherKey: 'aruba'
         }
       }, { 
@@ -41,39 +41,39 @@ describe('Document suggest test', function(){
       collections: ['suggestCollection'],
       contentType: 'application/json',
       content: {
-        defaultKey: 'memento',
-        taggedKey: 'application'
+        defaultWordKey: 'memento',
+        taggedWordKey: 'application'
         }
       }, { 
       uri: '/test/query/suggest/doc3.json',
       collections: ['suggestCollection'],
       contentType: 'application/json',
       content: {
-        defaultKey: 'mendoza',
-        taggedKey: 'approximate'
+        defaultWordKey: 'mendoza',
+        taggedWordKey: 'approximate'
         }
       }, { 
       uri: '/test/query/suggest/doc4.json',
       collections: ['suggestCollection'],
       contentType: 'application/json',
       content: {
-        defaultKey: 'memoir',
-        taggedKey: 'ape'
+        defaultWordKey: 'memoir',
+        taggedWordKey: 'ape'
         }
       }, { 
         uri: '/test/query/suggest/doc5.json',
         collections: ['suggestCollection'],
         contentType: 'application/json',
         content: {
-          defaultKey: 'member',
-          taggedKey: 'akron'
+          defaultWordKey: 'member',
+          taggedWordKey: 'akron'
           }
         }).
     result(function(response){done();}, done);
   });
 
   it('should do suggest with default binding', function(done){
-    db.documents.suggest('mem', q.parseBindings(q.word('defaultKey', q.bindDefault()))).
+    db.documents.suggest('mem', q.parseBindings(q.word('defaultWordKey', q.bindDefault()))).
     result(function(response) {
       //console.log(response);
       response.length.should.equal(4);
@@ -89,7 +89,7 @@ describe('Document suggest test', function(){
     db.documents.suggest({
       input: 'mem', 
       limit: 2, 
-      bindings: q.parseBindings(q.word('defaultKey', q.bindDefault()))
+      bindings: q.parseBindings(q.word('defaultWordKey', q.bindDefault()))
     }).
     result(function(response) {
       //console.log(response);
@@ -104,7 +104,7 @@ describe('Document suggest test', function(){
     db.documents.suggest({
       input: 'mem', 
       limit: 10,
-      bindings: q.parseBindings(q.word('defaultKey', q.bindDefault()))
+      bindings: q.parseBindings(q.word('defaultWordKey', q.bindDefault()))
     }).
     result(function(response) {
       //console.log(response);
@@ -122,8 +122,8 @@ describe('Document suggest test', function(){
       input: 'mem', 
       limit: 3, 
       queries: ['add1:akron'],
-      bindings: q.parseBindings(q.word('defaultKey', q.bindDefault()),
-                                q.value('taggedKey', q.bind('add1')))
+      bindings: q.parseBindings(q.word('defaultWordKey', q.bindDefault()),
+                                q.value('taggedWordKey', q.bind('add1')))
     }).
     result(function(response) {
       console.log(response);
@@ -138,7 +138,7 @@ describe('Document suggest test', function(){
     db.documents.suggest({
       input: 'tag1:app', 
       limit: 4,
-      bindings: q.parseBindings(q.word('taggedKey', q.bind('tag1')))
+      bindings: q.parseBindings(q.word('taggedWordKey', q.bind('tag1')))
     }).
     result(function(response) {
       //console.log(response);
@@ -154,7 +154,7 @@ describe('Document suggest test', function(){
     db.documents.suggest({
       input: 'tag1:app', 
       limit: 2,
-      bindings: q.parseBindings(q.word('taggedKey', q.bind('tag1')))
+      bindings: q.parseBindings(q.word('taggedWordKey', q.bind('tag1')))
     }).
     result(function(response) {
       //console.log(response);
@@ -169,7 +169,7 @@ describe('Document suggest test', function(){
     db.documents.suggest({
       input: 'tag1:app', 
       limit: 2,
-      bindings: q.parseBindings(q.word('taggedKey', q.bind('tag1')),
+      bindings: q.parseBindings(q.word('taggedWordKey', q.bind('tag1')),
                                 q.word('otherKey', q.bind('other1')))
     }).
     result(function(response) {
