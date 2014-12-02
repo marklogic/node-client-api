@@ -103,7 +103,6 @@ describe('document content', function(){
     describe('a JSON descriptor with a readable stream', function(){
       before(function(done){
         var readableString = new testutil.ValueStream('{"key1":"value 1"}');
-        readableString.pause();
         db.documents.write({
           uri: '/test/write/stream1.json',
           contentType: 'application/json',
@@ -261,7 +260,6 @@ describe('document content', function(){
         this.timeout(3000);
         var uri = '/test/write/stream1.png';
         var readableBinary = new testutil.ValueStream(binaryValue);
-        readableBinary.pause();
         db.documents.write({
           uri: uri,
           contentType: 'image/png',

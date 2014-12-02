@@ -25,7 +25,7 @@
     "core-util-is": "^1.0.1",
     "deepcopy": "^0.3.3",
     "dicer": "^0.2.3",
-    "multipart": "^0.1.5",
+    "multipart-stream": "^1.0.0",
     "qs": "~2.2.3",
     "through2": "^0.5.1",
     "winston": "^0.7.3",
