@@ -46,7 +46,7 @@ describe('Binary documents test', function(){
     this.timeout(10000);
     var uri = '/test/write/someMp3File.mp3';
     var readableBinary = new ValueStream(binaryValue);
-    readableBinary.pause();
+    //readableBinary.pause();
     dbWriter.documents.write({
       uri: uri,
       contentType: 'audio/mpeg',
