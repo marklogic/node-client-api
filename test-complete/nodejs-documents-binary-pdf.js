@@ -46,7 +46,7 @@ describe('Binary documents test', function(){
     this.timeout(3000);
     var uri = '/test/write/somePdfFile.pdf';
     var readableBinary = new ValueStream(binaryValue);
-    readableBinary.pause();
+    //readableBinary.pause();
     dbWriter.documents.write({
       uri: uri,
       contentType: 'application/pdf',
@@ -65,6 +65,7 @@ describe('Binary documents test', function(){
     var uri = '/test/write/somePdfFile.pdf';
     dbReader.documents.read(uri).
     result(function(documents){
+    //console.log(JSON.stringify(documents, null, 2));
       JSON.stringify(binaryValue).should.equal(
         JSON.stringify(documents[0].content));
       done();
