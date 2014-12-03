@@ -35,6 +35,7 @@ describe('rest server properties', function() {
       return db.config.serverprops.write(props).result();
       }).
     then(function(response) {
+      response.should.equal(true);
       return db.config.serverprops.read().result();
       }).
     then(function(props) {

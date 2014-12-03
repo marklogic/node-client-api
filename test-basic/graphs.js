@@ -56,6 +56,15 @@ describe('graph operations', function(){
       done();
     }, done);
   });
+  it('should list the default graph', function(done){
+    db.graphs.list().
+    result(function(collections){
+      collections.some(function(collection){
+        return collection === 'http://marklogic.com/semantics#default-graph';
+        }).should.equal(true);
+      done();
+    }, done);
+  });
   it('should delete the default graph', function(done){
     db.graphs.remove().
     result(function(response){
