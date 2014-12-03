@@ -46,7 +46,7 @@ describe('Binary documents test', function(){
     this.timeout(3000);
     var uri = '/test/write/somePdfFile.pdf';
     var readableBinary = new ValueStream(binaryValue);
-    readableBinary.pause();
+    //readableBinary.pause();
     dbWriter.documents.write({
       uri: uri,
       contentType: 'application/pdf',
