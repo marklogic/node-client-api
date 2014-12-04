@@ -188,21 +188,21 @@ describe('Write Document Test', function() {
 
   it('should delete the document', function(done) {
     db.documents.remove(docuri).result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });
 
   it('should delete the document', function(done) {
     db.documents.remove(docuri2).result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });
 
   it('should delete the document', function(done) {
     db.documents.remove('/test/crud/withoutContentType1.json').result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });
