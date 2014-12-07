@@ -21,7 +21,7 @@ var promptForAdmin = require('../etc/test-setup-prompt.js');
 var setupUsers     = require('../etc/test-setup-users.js');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 // promptForAdmin(createManager);
 createManager('admin', 'admin');

@@ -16,7 +16,7 @@
 var marklogic = require('../lib/marklogic.js');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var manageClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var manager      = testlib.createManager(manageClient);

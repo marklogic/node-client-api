@@ -279,7 +279,15 @@ describe('Write Document Test', function() {
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result(function(response){done();}, done);
+    }).result().then(function(response) {
+      if (response >= 400) {
+        console.log(response);
+      } 
+      done();
+    }, function(err) {
+      console.log(err); done();
+    },
+    done);
   });
 
 });

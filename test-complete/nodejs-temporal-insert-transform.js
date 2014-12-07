@@ -38,10 +38,10 @@ describe('Write Document Test', function() {
   var docuri2 = 'nonTemporalDoc.json';
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './test-complete/data/flagTransform.xqy';
+  var transformPath1 = './data/flagTransform.xqy';
 
   var transformName2 = 'timestamp';
-  var transformPath2 = './test-complete/data/timestampTransform.js';
+  var transformPath2 = './data/timestampTransform.js';
 
   before(function(done) {
     fs.createReadStream(transformPath1).
@@ -234,7 +234,15 @@ describe('Write Document Test', function() {
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result(function(response){done();}, done);
+    }).result().then(function(response) {
+      if (response >= 400) {
+        console.log(response);
+      } 
+      done();
+    }, function(err) {
+      console.log(err); done();
+    },
+    done);
   });
   
 });

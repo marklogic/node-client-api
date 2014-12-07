@@ -182,38 +182,14 @@ describe('Write Document Test', function() {
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
     }).result().then(function(response) {
-      //console.log("Before setting LSQT in response");
-
-      return adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result(), done();
-    }, function(err) {
-      //console.log("Before setting LSQT in error");
-
-      adminManager.put({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-        body: {
-          "lsqt-enabled": true
-        }
-      }).result();
+      if (response >= 400) {
+        console.log(response);
+      } 
       done();
+    }, function(err) {
+      console.log(err); done();
     },
     done);
   });
-
-/***
-  it('should delete the document', function(done) {
-    db.documents.remove({
-      uri: docuri,
-      temporalCollection: 'temporalCollection'
-    }).result(function(document) {
-      // Document by the docUri should exist
-      document.exists.should.eql(true);
-      done();
-    }, done);
-  });
-***/
+  
 });
