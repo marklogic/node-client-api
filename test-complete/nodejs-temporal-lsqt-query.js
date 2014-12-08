@@ -114,12 +114,19 @@ describe('Write Document Test', function() {
   });
 
 
-  it('should do lsqt query', function(done) { 
-    db.documents.query(q.where(
-      q.lsqtQuery(temporalCollectionName, '2007-01-01T00:00:01')
-      ).withOptions({debug:true})).result(function(response) {
-        //console.log(response);
+  it('should do lsqt query: ', function(done) {
+    db.documents.query(
+      q.where(
+        q.lsqtQuery(temporalCollectionName, '2007-01-01T00:00:01')
+        )
+      ).result(function(response) {
         response.length.should.equal(1);
+
+        response[0].content.System.systemStartTime.should.equal('2005-01-01T00:00:01');
+        response[0].content.System.systemEndTime.should.equal('2010-01-01T00:00:01');
+        response[0].content.Valid.validStartTime.should.equal('2001-01-01T00:00:00');
+        response[0].content.Valid.validEndTime.should.equal('2011-12-31T23:59:59');
+
         done();
       }, done);
   });
