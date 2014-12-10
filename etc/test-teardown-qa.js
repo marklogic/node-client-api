@@ -42,9 +42,17 @@ function setup(manager) {
       console.log(testconfig.testServerName+' not found - nothing to delete');
     } else {
       console.log('removing database and REST server for '+testconfig.testServerName);
-      manager.remove({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
+      manager.post({
+        endpoint: '/manage/v2/databases/' + testconfig.testServerName,
+        contentType: 'application/json',
+        accept: 'application/json',
+        body: {'operation': 'clear-database'}
         }).result().
+      then(function(response) { 
+        return manager.remove({
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
+          }).result();
+        }).
       then(function(response) {
         return manager.remove({
           endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollectionLsqt'
