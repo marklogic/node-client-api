@@ -38,10 +38,10 @@ describe('Write Document Test', function() {
   var docuri2 = 'nonTemporalDoc.json';
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './data/flagTransform.xqy';
+  var transformPath1 = './test-complete/data/flagTransform.xqy';
 
   var transformName2 = 'timestamp';
-  var transformPath2 = './data/timestampTransform.js';
+  var transformPath2 = './test-complete/data/timestampTransform.js';
 
   before(function(done) {
     fs.createReadStream(transformPath1).
