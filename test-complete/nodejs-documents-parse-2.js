@@ -31,7 +31,7 @@ describe('Document parse binding test 2', function(){
   var dbDir = '/marklogic/query/custom/constaint/';
   var dbModule = 'directoryConstraint.xqy';
   var dbPath = dbDir+dbModule;
-  var fsPath = './test-complete/data/directoryConstraint.xqy';
+  var fsPath = './node-client-api/test-complete/data/directoryConstraint.xqy';
 
   before(function(done){
     this.timeout(3000);

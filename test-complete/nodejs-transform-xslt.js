@@ -40,7 +40,7 @@ describe('Transform test', function(){
   });
 
   var transformName = 'employeeStylesheet';
-  var transformPath = './test-complete/data/employeeStylesheet.xslt';
+  var transformPath = './node-client-api/test-complete/data/employeeStylesheet.xslt';
 
   it('should write the transform', function(done){
     this.timeout(3000);

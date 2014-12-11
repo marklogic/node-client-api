@@ -28,8 +28,8 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('stream graph test', function(){
   var graphUri   = 'marklogic.com/stream/people';
-  var graphPath  = './test-complete/data/people.ttl';
-  var sparqlPath = './test-complete/data/people.rq';
+  var graphPath  = './node-client-api/test-complete/data/people.ttl';
+  var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write a new graph with stream', function(done){
     this.timeout(3000);

@@ -27,8 +27,8 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('graph negative test', function(){
   var graphUri   = 'marklogic.com/negative/people';
-  var graphPath  = './test-complete/data/people.ttl';
-  var sparqlPath = './test-complete/data/people.rq';
+  var graphPath  = './node-client-api/test-complete/data/people.ttl';
+  var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the graph', function(done){
     this.timeout(3000);

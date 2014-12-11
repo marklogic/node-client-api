@@ -25,9 +25,9 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Extlib negative test', function(){
-  var fsPath = './test-complete/data/sourceParams.js';
+  var fsPath = './node-client-api/test-complete/data/sourceParams.js';
   var invokePath = '/ext/invokeTest/sourceParams.sjs';
-  var invalidFsPath = './test-complete/data/someInvalidFile.js';
+  var invalidFsPath = './node-client-api/test-complete/data/someInvalidFile.js';
 
   before(function(done) {
     this.timeout(3000);
