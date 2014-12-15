@@ -26,6 +26,7 @@ testconfig.manageAdminConnection.password = "admin";
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 describe('Write Document Test', function() {
@@ -175,7 +176,7 @@ describe('Write Document Test', function() {
     }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -190,6 +191,15 @@ describe('Write Document Test', function() {
       console.log(err); done();
     },
     done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
   
 });
