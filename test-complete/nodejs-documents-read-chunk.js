@@ -28,6 +28,7 @@ var q = marklogic.queryBuilder;
 
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Binary documents test', function(){
   var binaryPath = './node-client-api/test-complete/data/somePdfFile.pdf';
@@ -72,7 +73,14 @@ describe('Binary documents test', function(){
       done();
     }, done);   
   });
-
+it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  }); 
 
 });
 
