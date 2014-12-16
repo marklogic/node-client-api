@@ -28,9 +28,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('merge stream graph test', function(){
   var graphUri   = 'marklogic.com/stream/merge/people';
-  var graphPath1  = './test-complete/data/people3.ttl';
-  var graphPath2  = './test-complete/data/people4.ttl';
-  var sparqlPath = './test-complete/data/people.rq';
+  var graphPath1  = './node-client-api/test-complete/data/people3.ttl';
+  var graphPath2  = './node-client-api/test-complete/data/people4.ttl';
+  var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the first graph with stream', function(done){
     this.timeout(3000);

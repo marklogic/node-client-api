@@ -38,10 +38,10 @@ describe('Write Document Test', function() {
   var docuri2 = 'nonTemporalDoc.json';
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './data/flagTransform.xqy';
+  var transformPath1 = './node-client-api/test-complete/data/flagTransform.xqy';
 
   var transformName2 = 'timestamp';
-  var transformPath2 = './data/timestampTransform.js';
+  var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
 
   before(function(done) {
     fs.createReadStream(transformPath1).
@@ -228,7 +228,7 @@ describe('Write Document Test', function() {
     }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -243,6 +243,15 @@ describe('Write Document Test', function() {
       console.log(err); done();
     },
     done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
   
 });

@@ -29,7 +29,7 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 describe('when configuring resource services', function(){
   var serviceName = 'timeService';
   var serviceNameInvalid = 'BlaBla';
-  var servicePath = './test-basic/data/timeService.xqy';
+  var servicePath = './node-client-api/test-basic/data/timeService.xqy';
     it('should write the resource service with positional parameters', function(done){
     this.timeout(3000);
     restAdminDB.config.resources.write(serviceName, 'xquery', fs.createReadStream(servicePath)).

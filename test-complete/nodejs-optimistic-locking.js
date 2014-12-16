@@ -172,7 +172,7 @@ describe('Optimistic locking test', function() {
       }).
       result(function(response) {
         //console.log(JSON.stringify(response, null, 4));
-        response.exists.should.equal(false);
+        response.removed.should.equal(true);
         done();
       }, done);
     });

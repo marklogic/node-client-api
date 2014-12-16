@@ -30,7 +30,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Extension library test', function(){
 
   var dbPath = '/marklogic/snippet/custom/extractFirst.xqy';
-  var fsPath = './test-complete/data/extractFirst.xqy';
+  var fsPath = './node-client-api/test-complete/data/extractFirst.xqy';
 
   it('should write the extension library', function(done){
     this.timeout(3000);

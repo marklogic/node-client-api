@@ -31,9 +31,9 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Config patch negative test', function(){
 
   var replaceModule = 'objectify.xqy';
-  var replacePath = './test-complete/data/objectify.xqy';
+  var replacePath = './node-client-api/test-complete/data/objectify.xqy';
   var replaceModuleInvalid = 'objectifyInvalid.xqy';
-  var replacePathInvalid = './test-complete/data/objectifyInvalid.xqy';
+  var replacePathInvalid = './node-client-api/test-complete/data/objectifyInvalid.xqy';
 
   it('should fail to write replacement library with reader user', function(done){
     this.timeout(3000);

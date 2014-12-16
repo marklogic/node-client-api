@@ -28,9 +28,10 @@ var q = marklogic.queryBuilder;
 
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Binary documents test', function(){
-  var binaryPath = './test-complete/data/mediaCQ.mp3';
+  var binaryPath = './node-client-api/test-complete/data/mediaCQ.mp3';
   var uri = '/test/binary/someMp3File.mp3';
   var binaryValue = null;
   before(function(done){
@@ -68,6 +69,15 @@ describe('Binary documents test', function(){
       done();
     }, done);   
   });
+  
+  it('should delete mp3 file', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  }); 
 
 });
 

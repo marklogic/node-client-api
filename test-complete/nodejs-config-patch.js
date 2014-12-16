@@ -31,7 +31,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Config patch test', function(){
 
   var replaceModule = 'objectify.xqy';
-  var replacePath = './test-complete/data/objectify.xqy';
+  var replacePath = './node-client-api/test-complete/data/objectify.xqy';
 
   it('should write the replacement library', function(done){
     this.timeout(3000);
