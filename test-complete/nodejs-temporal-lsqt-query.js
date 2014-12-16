@@ -29,7 +29,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
 var temporalCollectionName = 'temporalCollectionLsqt';
 
-describe('Write Document Test', function() {
+describe('LSQT query (lsqtQuery) Test', function() {
   
   var docuri = 'temporalDoc.json'; 
  
