@@ -22,10 +22,8 @@ var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-db.setLogger({console: false});
 
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-dbReader.setLogger({console: false});
 
 describe('document negative', function(){
   it('should fail to write a document as reader', function(done){

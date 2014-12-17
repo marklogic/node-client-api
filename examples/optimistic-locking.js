@@ -40,8 +40,6 @@ dbAdmin.config.serverprops.write({
     console.log(
         'try to update a value in the content to '+
         timestamp+'\n    without passing the document version id');
-    // suppress the error for this demo
-    db.setLogger({console:false});
     db.documents.patch({
       uri:        uri,
       operations: operations
@@ -52,7 +50,6 @@ dbAdmin.config.serverprops.write({
         },
         function(failure) {
           console.log('expected failure for the update without the version id');
-          db.setLogger({console:true});
 
           console.log('get the current version id for the document');
           db.documents.probe(uri).result().
