@@ -15,7 +15,10 @@
  */
 var assert = require('assert');
 var should = require('should');
-var q = require('../lib/query-builder.js');
+
+var queryBuilder = require('../lib/query-builder.js');
+var q    = queryBuilder.builder;
+var qlib = queryBuilder.lib;
 
 describe('query-builder', function() {
   it('should create an and-query', function(){
@@ -351,35 +354,37 @@ describe('query-builder', function() {
 
   it('should create geo-attribute-pair queries', function(){
     assert.deepEqual(
-        q.geoAttributePair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoAttributePair('parent', 'latitude', 'longitude'),
+            q.latlon(1.1, 2.2)),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoAttributePair(q.qname('parent'), q.qname('latitude'), q.qname('longitude'),
+        q.geospatial(q.geoAttributePair(q.qname('parent'), q.qname('latitude'), q.qname('longitude')),
             q.point(1.1, 2.2)),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoAttributePair(q.attribute('parent', 'latitude'),
-            q.attribute('parent', 'longitude'),
+        q.geospatial(q.geoAttributePair(q.attribute('parent', 'latitude'),
+            q.attribute('parent', 'longitude')),
             q.point(1.1, 2.2)),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoAttributePair([q.qname('parent'), q.qname('latitude'), q.qname('longitude'),
-                            q.point(1.1, 2.2)]),
+        q.geospatial(q.geoAttributePair([q.qname('parent'), q.qname('latitude'), q.qname('longitude')]),
+            q.point(1.1, 2.2)),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoAttributePair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
+        q.geospatial(q.geoAttributePair('parent', 'latitude', 'longitude'),
+            q.latlon(1.1, 2.2),
             q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-attr-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
@@ -391,49 +396,53 @@ describe('query-builder', function() {
 
   it('should create geo-element queries', function(){
     assert.deepEqual(
-        q.geoElement('element', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoElement('element'), q.latlon(1.1, 2.2)),
         {'geo-elem-query':{
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement(q.qname('element'), q.point(1.1, 2.2)),
+        q.geospatial(q.geoElement(q.qname('element')), q.point(1.1, 2.2)),
         {'geo-elem-query':{
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement(q.element('element'), q.point(1.1, 2.2)),
+        q.geospatial(q.geoElement(q.element('element')), q.point(1.1, 2.2)),
         {'geo-elem-query':{
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement('parent', 'element', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoElement('parent', 'element'), q.latlon(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement(q.qname('parent'), q.qname('element'), q.point(1.1, 2.2)),
+        q.geospatial(q.geoElement(q.qname('parent'), q.qname('element')),
+            q.point(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement(q.element('parent'), q.element('element'), q.point(1.1, 2.2)),
+        q.geospatial(q.geoElement(q.element('parent'), q.element('element')),
+            q.point(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement([q.qname('parent'), q.qname('element'), q.point(1.1, 2.2)]),
+        q.geospatial(q.geoElement([q.qname('parent'), q.qname('element')]),
+            q.point(1.1, 2.2)),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElement('parent', 'element', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
+        q.geospatial(q.geoElement('parent', 'element'),
+            q.latlon(1.1, 2.2), q.fragmentScope('documents'),
             q.geoOptions('boundaries-included')),
         {'geo-elem-query':{parent:{name:'parent'},
           element:{name:'element'},
@@ -445,34 +454,34 @@ describe('query-builder', function() {
 
   it('should create geo-element-pair queries', function(){
     assert.deepEqual(
-        q.geoElementPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoElementPair('parent', 'latitude', 'longitude'), q.latlon(1.1, 2.2)),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElementPair(q.qname('parent'), q.qname('latitude'), q.qname('longitude'),
+        q.geospatial(q.geoElementPair(q.qname('parent'), q.qname('latitude'), q.qname('longitude')),
             q.point(1.1, 2.2)),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElementPair(q.element('parent'), q.element('latitude'), q.element('longitude'),
+        q.geospatial(q.geoElementPair(q.element('parent'), q.element('latitude'), q.element('longitude')),
             q.point(1.1, 2.2)),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElementPair([q.qname('parent'), q.qname('latitude'), q.qname('longitude'),
-                          q.point(1.1, 2.2)]),
+        q.geospatial(q.geoElementPair([q.qname('parent'), q.qname('latitude'), q.qname('longitude')]),
+            q.point(1.1, 2.2)),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoElementPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
+        q.geospatial(q.geoElementPair('parent', 'latitude', 'longitude'), q.latlon(1.1, 2.2),
             q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-elem-pair-query':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
@@ -484,32 +493,32 @@ describe('query-builder', function() {
 
   it('should create geo-path queries', function(){
     assert.deepEqual(
-        q.geoPath('foo', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoPath('foo'), q.latlon(1.1, 2.2)),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPath('foo', [1.1, 2.2]),
+        q.geospatial(q.geoPath('foo'), [1.1, 2.2]),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPath(q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2)),
+        q.geospatial(q.geoPath(q.pathIndex('foo', {bar: 'baz'})), q.point(1.1, 2.2)),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPath(['foo', {bar: 'baz'}], [1.1, 2.2]),
+        q.geospatial(q.geoPath(['foo', {bar: 'baz'}]), [1.1, 2.2]),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPath([q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2)]),
+        q.geospatial(q.geoPath([q.pathIndex('foo', {bar: 'baz'})]), q.point(1.1, 2.2)),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPath(q.pathIndex('foo', {bar: 'baz'}), q.point(1.1, 2.2),
+        q.geospatial(q.geoPath(q.pathIndex('foo', {bar: 'baz'})), q.point(1.1, 2.2),
             q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: {bar: 'baz'}},
           point:[{latitude:1.1, longitude:2.2}],
@@ -520,37 +529,40 @@ describe('query-builder', function() {
 
   it('should create geo-json-property queries', function(){
     assert.deepEqual(
-        q.geoProperty('property1', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoProperty('property1'), q.latlon(1.1, 2.2)),
         {'geo-json-property-query':{
           'json-property':'property1',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoProperty(q.property('property1'), q.point(1.1, 2.2)),
+        q.geospatial(q.geoProperty(q.property('property1')), q.point(1.1, 2.2)),
         {'geo-json-property-query':{
           'json-property':'property1',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoProperty('parent', 'property1'), q.latlon(1.1, 2.2)),
         {'geo-json-property-query':{'parent-property':'parent',
           'json-property':'property1',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoProperty(q.property('parent'), q.property('property1'), q.point(1.1, 2.2)),
+        q.geospatial(q.geoProperty(q.property('parent'), q.property('property1')),
+            q.point(1.1, 2.2)),
         {'geo-json-property-query':{'parent-property':'parent',
           'json-property':'property1',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoProperty([q.property('parent'), q.property('property1'), q.point(1.1, 2.2)]),
+        q.geospatial(q.geoProperty([q.property('parent'), q.property('property1')]),
+            q.point(1.1, 2.2)),
         {'geo-json-property-query':{'parent-property':'parent',
           'json-property':'property1',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoProperty('parent', 'property1', q.latlon(1.1, 2.2), q.fragmentScope('documents'),
+        q.geospatial(q.geoProperty('parent', 'property1'),
+            q.latlon(1.1, 2.2), q.fragmentScope('documents'),
             q.geoOptions('boundaries-included')),
         {'geo-json-property-query':{'parent-property':'parent',
           'json-property':'property1',
@@ -562,27 +574,31 @@ describe('query-builder', function() {
 
   it('should create geo-json-property-pair queries', function(){
     assert.deepEqual(
-        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoPropertyPair('parent', 'latitude', 'longitude'),
+            q.latlon(1.1, 2.2)),
         {'geo-json-property-pair-query':{'parent-property':'parent',
           'lat-property':'latitude', 'lon-property':'longitude',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPropertyPair(q.property('parent'), q.property('latitude'), q.property('longitude'),
+        q.geospatial(q.geoPropertyPair(q.property('parent'),
+            q.property('latitude'), q.property('longitude')),
             q.point(1.1, 2.2)),
         {'geo-json-property-pair-query':{'parent-property':'parent',
           'lat-property':'latitude', 'lon-property':'longitude',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPropertyPair([q.property('parent'), q.property('latitude'), q.property('longitude'),
-                          q.point(1.1, 2.2)]),
+        q.geospatial(q.geoPropertyPair([q.property('parent'),
+          q.property('latitude'), q.property('longitude')]),
+          q.point(1.1, 2.2)),
         {'geo-json-property-pair-query':{'parent-property':'parent',
           'lat-property':'latitude', 'lon-property':'longitude',
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geoPropertyPair('parent', 'latitude', 'longitude', q.latlon(1.1, 2.2),
+        q.geospatial(q.geoPropertyPair('parent', 'latitude', 'longitude'),
+            q.latlon(1.1, 2.2),
             q.fragmentScope('documents'), q.geoOptions('boundaries-included')),
         {'geo-json-property-pair-query':{'parent-property':'parent',
           'lat-property':'latitude', 'lon-property':'longitude',
@@ -608,23 +624,6 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.geoOptions(['boundaries-included', 'boundaries-latitude-excluded']),
         {'geo-option':['boundaries-included', 'boundaries-latitude-excluded']}
-        );
-  });
-
-  it('should create a heatmap facet', function(){
-    assert.deepEqual(
-        q.geoElement('parent', 'element',
-            q.heatmap(2, 3, q.southWestNorthEast(1.1, 2.2, 3.3, 4.4))),
-        {'geo-elem':{parent:{name:'parent'},
-          element:{name:'element'},
-          heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}}}
-        );
-    assert.deepEqual(
-        q.geoElement('parent', 'element',
-            q.heatmap(2, 3, 1.1, 2.2, 3.3, 4.4)),
-        {'geo-elem':{parent:{name:'parent'},
-          element:{name:'element'},
-          heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}}}
         );
   });
 
@@ -1429,13 +1428,15 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1')),
+        q.geospatial(q.geoAttributePair('parent', 'latitude', 'longitude'),
+            q.bind('constraint1')),
         {'geo-attr-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'}},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1'),
+        q.geospatial(q.geoAttributePair('parent', 'latitude', 'longitude'),
+            q.bind('constraint1'),
             q.geoOptions('boundaries-included')),
         {'geo-attr-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
@@ -1443,7 +1444,8 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoAttributePair('parent', 'latitude', 'longitude', q.bind('constraint1'),
+        q.geospatial(q.geoAttributePair('parent', 'latitude', 'longitude'),
+            q.bind('constraint1'),
             q.fragmentScope('properties')),
         {'geo-attr-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
@@ -1451,62 +1453,66 @@ describe('query-builder', function() {
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoElement('parent', 'element', q.bind('constraint1')),
+        q.geospatial(q.geoElement('parent', 'element'),
+            q.bind('constraint1')),
         {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'}},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoElement('parent', 'element', q.bind('constraint1'),
-            q.geoOptions('boundaries-included')),
+        q.geospatial(q.geoElement('parent', 'element'),
+            q.bind('constraint1'), q.geoOptions('boundaries-included')),
         {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'},
           'geo-option':['boundaries-included']},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoElement('parent', 'element', q.bind('constraint1'),
-            q.fragmentScope('properties')),
+        q.geospatial(q.geoElement('parent', 'element'),
+            q.bind('constraint1'), q.fragmentScope('properties')),
         {'geo-elem':{parent:{name:'parent'},
           element:{name:'element'},
           'fragment-scope': 'properties'},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1')),
+        q.geospatial(q.geoElementPair('parent', 'latitude', 'longitude'),
+            q.bind('constraint1')),
         {'geo-elem-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'}},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1'),
-            q.geoOptions('boundaries-included')),
+        q.geospatial(q.geoElementPair('parent', 'latitude', 'longitude'),
+            q.bind('constraint1'), q.geoOptions('boundaries-included')),
         {'geo-elem-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           'geo-option':['boundaries-included']},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoElementPair('parent', 'latitude', 'longitude', q.bind('constraint1'),
-            q.fragmentScope('properties')),
+        q.geospatial(q.geoElementPair('parent', 'latitude', 'longitude'),
+            q.bind('constraint1'), q.fragmentScope('properties')),
         {'geo-elem-pair':{parent:{name:'parent'},
           lat:{name:'latitude'}, lon:{name:'longitude'},
           'fragment-scope': 'properties'},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoPath('foo', q.bind('constraint1')),
+        q.geospatial(q.geoPath('foo'), q.bind('constraint1')),
         {'geo-path':{'path-index':{text: 'foo', namespaces: ''}},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoPath('foo', q.bind('constraint1'), q.geoOptions('boundaries-included')),
+        q.geospatial(q.geoPath('foo'), q.bind('constraint1'),
+            q.geoOptions('boundaries-included')),
         {'geo-path':{'path-index':{text: 'foo', namespaces: ''},
           'geo-option':['boundaries-included']},
           name:'constraint1'}
         );
     assert.deepEqual(
-        q.geoPath('foo', q.bind('constraint1'), q.fragmentScope('properties')),
+        q.geospatial(q.geoPath('foo'),
+            q.bind('constraint1'), q.fragmentScope('properties')),
         {'geo-path':{'path-index':{text: 'foo', namespaces: ''},
           'fragment-scope': 'properties'},
           name:'constraint1'}
@@ -1646,6 +1652,14 @@ describe('query-builder', function() {
           term:{
                 empty:{'apply': 'all-results'}
                 }}}
+        );
+    assert.deepEqual(
+        q.parseBindings(
+          q.value('key1', q.jsontype('number'), q.bind('constraint1'))
+          ),
+        {constraint:[
+          {name:'constraint1', value:{'json-property': 'key1', type:'number'}}
+          ]}
         );
   });
 
@@ -1865,6 +1879,25 @@ describe('query-builder', function() {
           name:'facet10'}
         );
   });
+
+  it('should create a heatmap facet', function(){
+    assert.deepEqual(
+        q.facet('geoFacet1', q.geoElement('parent', 'element'),
+            q.heatmap(2, 3, q.southWestNorthEast(1.1, 2.2, 3.3, 4.4))),
+        {'geo-elem':{parent:{name:'parent'},
+          element:{name:'element'},
+          heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}},
+          name:'geoFacet1'}
+        );
+    assert.deepEqual(
+        q.facet('geoFacet2', q.geoElement('parent', 'element'),
+            q.heatmap(2, 3, 1.1, 2.2, 3.3, 4.4)),
+        {'geo-elem':{parent:{name:'parent'},
+          element:{name:'element'},
+          heatmap:{latdivs:2, londivs:3, s:1.1, w:2.2, n:3.3, e:4.4}},
+          name:'geoFacet2'}
+        );
+  });
 });
 
 describe('document query', function(){
@@ -1943,7 +1976,7 @@ describe('document query', function(){
       built.whereClause.query.queries[0].should.have.property('value-query');
     });
     it('should build a calculate clause', function(){
-      var built = q.calculate(
+      var built = qlib.calculate(
           q.facet('key1'),
           q.facet(q.field('field2'))
       );
@@ -1954,7 +1987,7 @@ describe('document query', function(){
       built.calculateClause.constraint[1].name.should.equal('field2');
     });
     it('should build an orderBy clause', function(){
-      var built = q.orderBy(
+      var built = qlib.orderBy(
           'key1',
           q.field('field1'),
           q.sort('key2', 'ascending'),
@@ -1973,23 +2006,23 @@ describe('document query', function(){
       built.orderByClause['sort-order'][4].direction.should.equal('descending');
     });
     it('should build a slice clause with start page and page length', function(){
-      var built = q.slice(11, 10);
+      var built = qlib.slice(11, 10);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
     });
     it('should build a slice clause with start page', function(){
-      var built = q.slice(11);
+      var built = qlib.slice(11);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
     });
     it('should build a slice clause without a page', function(){
-      var built = q.slice(0);
+      var built = qlib.slice(0);
       built.should.have.property('sliceClause');
       built.sliceClause['page-length'].should.equal(0);
     });
     it('should build a slice clause with a page and a snippet transform', function(){
-      var built = q.slice(11, 10,
+      var built = qlib.slice(11, 10,
         q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'
@@ -2005,7 +2038,7 @@ describe('document query', function(){
 
     });
     it('should build a slice clause with a default page and a snippet transform', function(){
-      var built = q.slice(
+      var built = qlib.slice(
         q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'

@@ -31,9 +31,7 @@ declare function extractFirst:snippet(
     $ctsquery  as schema-element(cts:query), 
     $transform as element(search:transform-results))
 as element(search:snippet) {
-    <search:snippet>
-    <jsonbasic:json type="object">
-    <jsonbasic:first type="string">{($result//text())[1]}</jsonbasic:first>
-    </jsonbasic:json>
-    </search:snippet>
+    <search:snippet format="json">{
+        concat('{first: "',string(($result//text())[1]),'"}')
+    }</search:snippet>
 };

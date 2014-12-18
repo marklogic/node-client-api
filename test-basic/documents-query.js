@@ -386,13 +386,12 @@ describe('document query', function(){
         done();
       }, done);
     });
-/* TODO: reenable custom snippeter after Bug 30345 is fixed
     it('should take a slice with a snippet', function(done){
       db.documents.query(
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.snippet('extractFirst'))
+        slice(1, 1, q.snippet('extractFirst.xqy'))
         ).
       result(function(response) {
         response.length.should.equal(2);
@@ -401,7 +400,6 @@ describe('document query', function(){
         done();
       }, done);
     });
- */
     it('should get the query plan and permissions', function(done){
       db.documents.query(
         q.where(
