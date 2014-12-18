@@ -266,6 +266,20 @@ describe('Document query test', function(){
         done();
       }, done);
   });
+
+  it('should do query with no where clause', function(done){
+    db.documents.query(
+      q.document(
+          '/test/query/matchList/doc5.json'
+      )
+    ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(5);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
