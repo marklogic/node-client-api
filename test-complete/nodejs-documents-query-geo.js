@@ -117,7 +117,10 @@ describe('Document geo query test', function(){
   it('should do geo property pair query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.latlon(12, 5))
+        q.geospatial(
+            q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+            q.latlon(12, 5)
+        )
       )
     ).
     result(function(response) {
@@ -131,8 +134,10 @@ describe('Document geo query test', function(){
   it('should do geo property pair query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.latlon(12, 5),
-        q.geoOptions('boundaries-latitude-excluded')
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.latlon(12, 5),
+          q.geoOptions('boundaries-latitude-excluded')
         )
       )
     ).
@@ -147,7 +152,10 @@ describe('Document geo query test', function(){
   it('should do geo property point query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoProperty('gElemPoint', q.point(34, 88))
+        q.geospatial(
+          q.geoProperty('gElemPoint'), 
+          q.point(34, 88)
+        )
       )
     ).
     result(function(response) {
@@ -161,7 +169,13 @@ describe('Document geo query test', function(){
   it('should do geo property child point query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoProperty(q.property('gElemChildParent'), q.property('gElemChildPoint'), q.latlon(34, 88))
+        q.geospatial(
+          q.geoProperty(
+            q.property('gElemChildParent'), 
+            q.property('gElemChildPoint')
+          ), 
+          q.latlon(34, 88)     
+        ) 
       )
     ).
     result(function(response) {
@@ -176,7 +190,13 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.or(
-          q.geoProperty(q.property('gElemChildParent'), q.property('gElemChildPoint'), q.latlon(34, 88)),
+          q.geospatial(
+            q.geoProperty(
+              q.property('gElemChildParent'), 
+              q.property('gElemChildPoint')
+            ), 
+            q.latlon(34, 88)
+          ),
           q.word('title', 'karl_kara')
         )
       )
@@ -192,7 +212,10 @@ describe('Document geo query test', function(){
   it('should do geo property pair query with circle in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.circle(100, 11, 5))
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.circle(100, 11, 5)
+        )
       )
     ).
     result(function(response) {
@@ -206,8 +229,11 @@ describe('Document geo query test', function(){
   it('should do geo property pair query with box in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(11, 4, 20, 10),
-        q.geoOptions('boundaries-included'))
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.box(11, 4, 20, 10),
+          q.geoOptions('boundaries-included')
+        )
       )
     ).
     result(function(response) {
@@ -221,8 +247,11 @@ describe('Document geo query test', function(){
   it('should do geo property pair query with box boundaries included in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(12, 5, 20, 10),
-        q.geoOptions('boundaries-included'))
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.box(12, 5, 20, 10),
+          q.geoOptions('boundaries-included')
+        )
       )
     ).
     result(function(response) {
@@ -236,8 +265,11 @@ describe('Document geo query test', function(){
   it('should do geo property pair query with box boundaries excluded in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.box(12, 5, 20, 10),
-        q.geoOptions('boundaries-excluded'))
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.box(12, 5, 20, 10),
+          q.geoOptions('boundaries-excluded')
+        )
       )
     ).
     result(function(response) {
@@ -250,7 +282,10 @@ describe('Document geo query test', function(){
   it('should do geo property pair query with polygon in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPropertyPair('gElemPair', 'latitude', 'longitude', q.polygon([12, 5], [20, 10], [34, 22]))
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.polygon([12, 5], [20, 10], [34, 22])
+        )
       )
     ).
     result(function(response) {
@@ -264,7 +299,10 @@ describe('Document geo query test', function(){
   it('should do geo path query in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPath('gElemChildParent/gElemChildPoint', q.latlon(12, 5))
+        q.geospatial(
+          q.geoPath('gElemChildParent/gElemChildPoint'), 
+          q.latlon(12, 5)
+        )
       )
     ).
     result(function(response) {
@@ -278,7 +316,10 @@ describe('Document geo query test', function(){
   it('should do geo path query with pathIndex in json doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoPath(q.pathIndex('gElemChildParent/gElemChildPoint'), q.point(12, 5))
+        q.geospatial(
+          q.geoPath(q.pathIndex('gElemChildParent/gElemChildPoint')), 
+          q.point(12, 5)
+        )
       )
     ).
     result(function(response) {
@@ -292,7 +333,10 @@ describe('Document geo query test', function(){
   it('should do geo element pair query in xml doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoElementPair('gElemPair', 'latitude', 'longitude', q.latlon(50, 44))
+        q.geospatial(
+          q.geoElementPair('gElemPair', 'latitude', 'longitude'), 
+          q.latlon(50, 44)
+        )
       )
     ).
     result(function(response) {
@@ -306,7 +350,10 @@ describe('Document geo query test', function(){
   it('should do geo element query in xml doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoElement('gElemPoint', q.latlon(50, 44))
+        q.geospatial(
+          q.geoElement('gElemPoint'), 
+          q.latlon(50, 44)
+        )
       )
     ).
     result(function(response) {
@@ -320,7 +367,10 @@ describe('Document geo query test', function(){
   it('should do geo attribute pair query in xml doc', function(done){
     dbWriter.documents.query(
       q.where(
-        q.geoAttributePair('gAttrPair', 'latitude', 'longitude', q.circle(100, 240, 144))
+        q.geospatial(
+          q.geoAttributePair('gAttrPair', 'latitude', 'longitude'), 
+          q.circle(100, 240, 144)
+        )
       )
     ).
     result(function(response) {
