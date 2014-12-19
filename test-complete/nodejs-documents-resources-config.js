@@ -60,14 +60,16 @@ describe('when configuring resource services', function(){
       done();
     }, done);
   }); 
+  
   it('should try to read the resource service via invalid name', function(done){
     restAdminDB.config.resources.read(serviceNameInvalid).
     result(function(source){
-	  //console.log(JSON.stringify(source, null, 4));
-	  //output should be null, need to put a check on it
-	  (valcheck.isNullOrUndefined(source)).should.equal(true);
-      done();
-    }, done);
+	  //console.log(JSON.stringify("Output :"+source, null, 4));
+	  },function(error){
+	  //console.log(JSON.stringify(error, null, 4));
+	  (valcheck.isNullOrUndefined(error)).should.equal(false);
+	  done();
+	  }, done);
   });
   it('should list the resource services', function(done){
     db.config.resources.list().
@@ -114,10 +116,11 @@ describe('when configuring resource services', function(){
     it('should try read the resource service after remove', function(done){
     restAdminDB.config.resources.read(serviceName).
     result(function(source){
-	  // console.log(JSON.stringify(source, null, 4));
-      (valcheck.isNullOrUndefined(source)).should.equal(true);
-      done();
-    }, done);
+	},function(error){
+	  //console.log(JSON.stringify(error, null, 4));
+	  (valcheck.isNullOrUndefined(error)).should.equal(false);
+	  done();
+	  }, done);
   });  
    it('should delete the invalid resource service', function(done){
     restAdminDB.config.resources.remove(serviceNameInvalid).
