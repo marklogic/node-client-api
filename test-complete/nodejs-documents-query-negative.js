@@ -121,6 +121,28 @@ describe('Document query negative test', function(){
       db.documents.query(
         q.where(
           q.byExample({title: 'The memex'}),
+          q.parsedFrom('pop:5',
+            q.parseBindings(
+              q.value('popularity', q.jsontype('number'), q.bind('pop'))
+            )
+          )
+        )
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+    } 
+    catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: A Query by Example (QBE) must be the only query');
+      done();
+    }
+  });
+
+  it('should fail to do combined qbe and parsed query', function(done){
+    try {
+      db.documents.query(
+        q.where(
+          q.byExample({title: 'The memex'}),
           q.term('Bush')
         )
       ).should.equal('SHOULD HAVE FAILED');
