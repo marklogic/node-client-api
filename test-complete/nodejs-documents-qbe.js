@@ -276,6 +276,7 @@ describe('Document qbe test', function(){
         done();
       }, done);
   });
+
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
