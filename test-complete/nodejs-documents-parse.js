@@ -194,6 +194,26 @@ describe('Document parse binding test', function(){
       done();
     }, done);
   });
+
+  it('should do simple parse combined with structured query', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('intitle:"The memex"',
+          q.parseBindings(
+            q.value('title', q.bind('intitle'))
+          )
+        ),
+        q.term('automated')
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
