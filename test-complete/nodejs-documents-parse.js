@@ -95,7 +95,8 @@ describe('Document parse binding test', function(){
           price: {
                amt: 123.45
              },
-          p: 'The Memex, unfortunately, had no automated search feature'
+          p: 'The Memex, unfortunately, had no automated search feature',
+          booleanVal: true
           }
         }).
     result(function(response){done();}, done);
@@ -118,6 +119,42 @@ describe('Document parse binding test', function(){
       done();
     }, done);
   });
+
+  it('should do value query on int type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('pop:5',
+          q.parseBindings(
+            q.value('popularity', q.jsontype('number'), q.bind('pop'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(3);
+      //response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  /*it('should do value query on boolean type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('bool:true',
+          q.parseBindings(
+            q.value('booleanVal', q.jsontype('boolean'), q.bind('bool'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });*/
   
   it('should do complex parse', function(done){
     db.documents.query(
