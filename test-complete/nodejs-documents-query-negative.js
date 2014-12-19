@@ -115,6 +115,25 @@ describe('Document query negative test', function(){
       done();
       });
   });
+
+  it('should fail to do combined qbe and structured query', function(done){
+    try {
+      db.documents.query(
+        q.where(
+          q.byExample({title: 'The memex'}),
+          q.term('Bush')
+        )
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+    } 
+    catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: A Query by Example (QBE) must be the only query');
+      done();
+    }
+  });
+
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
