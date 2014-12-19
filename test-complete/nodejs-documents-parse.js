@@ -81,7 +81,9 @@ describe('Document parse binding test', function(){
         price: {
              amt: 12.34
            },
-        p: 'Vannevar served as a prominent policymaker and public intellectual'
+        p: 'Vannevar served as a prominent policymaker and public intellectual',
+        booleanVal: false,
+        nullVal: 'not null'
         }
       }, { 
         uri: '/test/query/matchList/doc5.json',
@@ -96,7 +98,8 @@ describe('Document parse binding test', function(){
                amt: 123.45
              },
           p: 'The Memex, unfortunately, had no automated search feature',
-          booleanVal: true
+          booleanVal: true,
+          nullVal: null
           }
         }).
     result(function(response){done();}, done);
@@ -155,6 +158,24 @@ describe('Document parse binding test', function(){
       done();
     }, done);
   });*/
+
+  it('should do value query on null type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('myNull:null',
+          q.parseBindings(
+            q.value('nullVal', q.jsontype('null'), q.bind('myNull'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
   
   it('should do complex parse', function(done){
     db.documents.query(
