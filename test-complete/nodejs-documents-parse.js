@@ -141,6 +141,23 @@ describe('Document parse binding test', function(){
     }, done);
   });
 
+  it('should do value query on int type without mentioning json type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('pop:5',
+          q.parseBindings(
+            q.value('popularity', q.bind('pop'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(0);
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
   /*it('should do value query on boolean type', function(done){
     db.documents.query(
       q.where(
