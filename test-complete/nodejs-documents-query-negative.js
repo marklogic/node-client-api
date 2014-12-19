@@ -134,6 +134,23 @@ describe('Document query negative test', function(){
     }
   });
 
+  it('should fail to do word query with one arg', function(done){
+    try {
+      db.documents.query(
+        q.where(
+          q.word('Bush')
+        ).slice(0)
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+    } 
+    catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: subquery must supply literal criteria for: Bush');
+      done();
+    }
+  });
+
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
