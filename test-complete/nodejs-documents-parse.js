@@ -176,7 +176,7 @@ describe('Document parse binding test', function(){
     }, done);
   });
 
-  /*it('should do value query on boolean type', function(done){
+  it('should do value query on boolean type', function(done){
     db.documents.query(
       q.where(
         q.parsedFrom('bool:true',
@@ -189,10 +189,10 @@ describe('Document parse binding test', function(){
     result(function(response) {
       response.length.should.equal(1);
       response[0].content.id.should.equal('0026');
-      console.log(JSON.stringify(response, null, 4));
+      //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
-  });*/
+  });
 
   it('should do value query on null type', function(done){
     db.documents.query(
