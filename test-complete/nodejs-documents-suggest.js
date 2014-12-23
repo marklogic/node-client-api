@@ -249,6 +249,58 @@ describe('Document suggest test', function(){
     }, done);
   });
 
+  it('should fail with invalid binding', function(done){
+    db.documents.suggest({
+      partial: 'a', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('taggedWordKey', q.bindDefault())
+          )
+        )
+      ),
+      bindings: q.suggestBindings(
+        q.word('invalidKey', q.bindDefault())
+      ),
+      limit: 4
+    }).
+    result(function(response) {
+      //console.log(response);
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.body.errorResponse.messageCode.should.equal('XDMP-ELEMLXCNNOTFOUND');
+      done();
+    });
+  });
+
+  it('should fail with negative limit', function(done){
+    db.documents.suggest({
+      partial: 'a', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('taggedWordKey', q.bindDefault())
+          )
+        )
+      ),
+      bindings: q.suggestBindings(
+        q.word('otherKey', q.bindDefault())
+      ),
+      limit: -4
+    }).
+    result(function(response) {
+      //console.log(response);
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      error.body.errorResponse.messageCode.should.equal('XDMP-ARGTYPE');
+      done();
+    });
+  });
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({
       directory: '/test/query/suggest/'
