@@ -93,7 +93,8 @@ function setup(manager) {
             var elementWordLexicon = response.data['element-word-lexicon'];
             var lexiconTest = {
                 defaultWordKey: true,
-                taggedWordKey:  true
+                taggedWordKey:  true,
+                otherKey:       true
                 };
 
             var lexers = [];
