@@ -1898,6 +1898,17 @@ describe('query-builder', function() {
           name:'geoFacet2'}
         );
   });
+
+  it('should create suggest options', function(){
+    assert.deepEqual(
+        q.suggestOptions('case-sensitive', 'diacritic-sensitive'),
+        {'suggest-option':['case-sensitive', 'diacritic-sensitive']}
+        );
+    assert.deepEqual(
+        q.suggestOptions(['case-sensitive', 'diacritic-sensitive']),
+        {'suggest-option':['case-sensitive', 'diacritic-sensitive']}
+        );
+  });
 });
 
 describe('document query', function(){
