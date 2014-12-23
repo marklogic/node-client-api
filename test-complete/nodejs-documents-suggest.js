@@ -73,7 +73,16 @@ describe('Document suggest test', function(){
   });
 
   it('should do suggest with default binding', function(done){
-    db.documents.suggest('mem', q.parseBindings(q.word('defaultWordKey', q.bindDefault()))).
+    db.documents.suggest({
+      partial: 'mem', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('defaultWordKey', q.bindDefault())
+          )
+        )
+      )
+    }).
     result(function(response) {
       //console.log(response);
       response.length.should.equal(4);
@@ -87,9 +96,15 @@ describe('Document suggest test', function(){
 
   it('should do suggest with default binding and limit', function(done){
     db.documents.suggest({
-      input: 'mem', 
-      limit: 2, 
-      bindings: q.parseBindings(q.word('defaultWordKey', q.bindDefault()))
+      partial: 'mem', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('defaultWordKey', q.bindDefault())
+          )
+        )
+      ),
+      limit: 2 
     }).
     result(function(response) {
       //console.log(response);
@@ -102,9 +117,15 @@ describe('Document suggest test', function(){
 
   it('should do suggest with default binding and exceeding limit', function(done){
     db.documents.suggest({
-      input: 'mem', 
-      limit: 10,
-      bindings: q.parseBindings(q.word('defaultWordKey', q.bindDefault()))
+      partial: 'mem', 
+      query: q.where(
+        q.parsedFrom('',
+          q.suggestBindings(
+            q.word('defaultWordKey', q.bindDefault())
+          )
+        )
+      ),
+      limit: 10
     }).
     result(function(response) {
       //console.log(response);
@@ -117,28 +138,17 @@ describe('Document suggest test', function(){
     }, done);
   });
 
-  /*it('should do suggest with multiple bindings, additional queries, and limit', function(done){
-    db.documents.suggest({
-      input: 'mem', 
-      limit: 3, 
-      queries: ['add1:akron'],
-      bindings: q.parseBindings(q.word('defaultWordKey', q.bindDefault()),
-                                q.value('taggedWordKey', q.bind('add1')))
-    }).
-    result(function(response) {
-      console.log(response);
-      //response.length.should.equal(2);
-      //response[0].should.equal('member');
-      //response[1].should.equal('memento');
-      done();
-    }, done);
-  });*/
-
   it('should do suggest with binding', function(done){
     db.documents.suggest({
-      input: 'tag1:app', 
-      limit: 4,
-      bindings: q.parseBindings(q.word('taggedWordKey', q.bind('tag1')))
+      partial: 'tag1:app', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('taggedWordKey', q.bind('tag1'))
+          )
+        )
+      ),
+      limit: 4
     }).
     result(function(response) {
       //console.log(response);
@@ -150,11 +160,63 @@ describe('Document suggest test', function(){
     }, done);
   });
 
+  it('should do suggest with overriden default binding', function(done){
+    db.documents.suggest({
+      partial: 'a', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('taggedWordKey', q.bindDefault())
+          )
+        )
+      ),
+      bindings: q.suggestBindings(
+        q.word('otherKey', q.bindDefault())
+      ),
+      limit: 4
+    }).
+    result(function(response) {
+      //console.log(response);
+      //response.length.should.equal(1);
+      response.should.equal('aruba');
+      done();
+    }, done);
+  });
+
+  it('should do suggest with overriden binding', function(done){
+    db.documents.suggest({
+      partial: 'tag1:a', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('taggedWordKey', q.bind('tag1'))
+          )
+        )
+      ),
+      bindings: q.suggestBindings(
+        q.word('otherKey', q.bind('tag1'))
+      ),
+      limit: 4
+    }).
+    result(function(response) {
+      //console.log(response);
+      //response.length.should.equal(1);
+      response.should.equal('tag1:aruba');
+      done();
+    }, done);
+  });
+
   it('should do suggest with binding and limit', function(done){
     db.documents.suggest({
-      input: 'tag1:app', 
-      limit: 2,
-      bindings: q.parseBindings(q.word('taggedWordKey', q.bind('tag1')))
+      partial: 'tag1:app', 
+      query: q.where(
+        q.parsedFrom('',
+          q.suggestBindings(
+            q.word('taggedWordKey', q.bind('tag1'))
+          )
+        )
+      ),
+      limit: 2
     }).
     result(function(response) {
       //console.log(response);
@@ -167,10 +229,16 @@ describe('Document suggest test', function(){
 
   it('should do suggest with multiple bindings', function(done){
     db.documents.suggest({
-      input: 'tag1:app', 
-      limit: 2,
-      bindings: q.parseBindings(q.word('taggedWordKey', q.bind('tag1')),
-                                q.word('otherKey', q.bind('other1')))
+      partial: 'tag1:a', 
+      query: q.where(
+        q.parsedFrom('',
+          q.parseBindings(
+            q.word('taggedWordKey', q.bind('tag1')),
+            q.word('otherKey', q.bind('other1'))
+          )
+        )
+      ),
+      limit: 2
     }).
     result(function(response) {
       //console.log(response);
