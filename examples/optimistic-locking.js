@@ -28,7 +28,7 @@ var timestamp = (new Date()).toISOString();
 var uri        = '/countries/uv.json';
 var operations = [
     p.pathLanguage('jsonpath'),
-    p.replaceInsert('$.timestamp', '$.name', 'after', {timestamp: timestamp})
+    p.replaceInsert('$.timestamp', '$.name', 'after', timestamp)
     ];
 
 console.log('configure the server to enforce optimistic locking');
