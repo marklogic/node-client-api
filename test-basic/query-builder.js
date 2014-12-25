@@ -1855,14 +1855,33 @@ describe('query-builder', function() {
           }
         );
     assert.deepEqual(
-        q.facet('facet9', q.collection()),
+        q.facet('key9', q.datatype('xs:dateTime'),
+            q.bucket('2009>',                        '<', '2009-01-01T00:00:00'),
+            q.bucket('2009=', '2009-01-01T00:00:00', '<', '2010-01-01T00:00:00'),
+            q.bucket('2009<', '2010-01-01T00:00:00', '<')),
+            {range:{
+              'json-property': 'key9',
+              type: 'xs:dateTime',
+              facet: true,
+              bucket:[
+                {name: '2009>', label: '2009>',                            lt: '2009-01-01T00:00:00'},
+                {name: '2009=', label: '2009=', ge: '2009-01-01T00:00:00', lt: '2010-01-01T00:00:00'},
+                {name: '2009<', label: '2009<', ge: '2010-01-01T00:00:00'}
+                ]
+              },
+              name:'key9'
+              }
+        );
+
+    assert.deepEqual(
+        q.facet('facet10', q.collection()),
         {collection:{
           facet: true
           },
-          name:'facet9'}
+          name:'facet10'}
         );
     assert.deepEqual(
-        q.facet('facet10', q.calculateFunction('module1.xqy')),
+        q.facet('facet11', q.calculateFunction('module1.xqy')),
         {custom:{
           'start-facet': {
             apply: 'start-facet',
@@ -1876,7 +1895,7 @@ describe('query-builder', function() {
             },
           facet: true
           },
-          name:'facet10'}
+          name:'facet11'}
         );
   });
 
