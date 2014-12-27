@@ -333,11 +333,11 @@ describe('query-builder', function() {
   it('should create a field name', function(){
     assert.deepEqual(
         q.field('foo'),
-        {field: 'foo'}
+        {field: {name: 'foo'}}
         );
     assert.deepEqual(
         q.field(['foo']),
-        {field: 'foo'}
+        {field: {name: 'foo'}}
         );
   });
 
@@ -1772,7 +1772,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.facet(q.field('field2')),
         {range:{
-          field: 'field2',
+          field: {name: 'field2'},
           facet: true
           },
           name:'field2'}
@@ -1788,7 +1788,7 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.facet('facet4', q.field('field4')),
         {range:{
-          field: 'field4',
+          field: {name: 'field4'},
           facet: true
           },
           name:'facet4'}
@@ -2028,7 +2028,8 @@ describe('document query', function(){
       built.orderByClause.should.have.property('sort-order');
       built.orderByClause['sort-order'].length.should.equal(5);
       built.orderByClause['sort-order'][0]['json-property'].should.equal('key1');
-      built.orderByClause['sort-order'][1].field.should.equal('field1');
+      built.orderByClause['sort-order'][1].field.should.have.property('name');
+      built.orderByClause['sort-order'][1].field.name.should.equal('field1');
       built.orderByClause['sort-order'][2]['json-property'].should.equal('key2');
       built.orderByClause['sort-order'][2].direction.should.equal('ascending');
       built.orderByClause['sort-order'][3].score.should.equal('logtf');
