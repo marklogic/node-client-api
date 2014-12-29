@@ -201,13 +201,14 @@ describe('document query', function(){
         slice(0)
         ).
       result(function(response) {
-        response.should.have.property('facets');
-        response.facets.should.have.property('rangeKey1');
-        response.facets.rangeKey1.should.have.property('facetValues');
-        response.facets.rangeKey1.facetValues.length.should.equal(3);
-        response.facets.should.have.property('rangeKey2');
-        response.facets.rangeKey2.should.have.property('facetValues');
-        response.facets.rangeKey2.facetValues.length.should.equal(3);
+        response.length.should.equal(1);
+        response[0].should.have.property('facets');
+        response[0].facets.should.have.property('rangeKey1');
+        response[0].facets.rangeKey1.should.have.property('facetValues');
+        response[0].facets.rangeKey1.facetValues.length.should.equal(3);
+        response[0].facets.should.have.property('rangeKey2');
+        response[0].facets.rangeKey2.should.have.property('facetValues');
+        response[0].facets.rangeKey2.facetValues.length.should.equal(3);
         done();
       }, done);
     });
@@ -372,10 +373,11 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.snippet())
+        slice(1, 1, q.snippet()).
+        withOptions({categories: 'none'})
         ).
       result(function(response) {
-        response.length.should.equal(2);
+        response.length.should.equal(1);
         response[0].results.length.should.equal(1);
         response[0].results[0].should.have.property('matches');
         response[0].results[0].matches.length.should.equal(1);
