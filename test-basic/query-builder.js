@@ -107,6 +107,7 @@ describe('query-builder', function() {
   });
 
   it('should create an attribute name', function(){
+    q.attribute('foo', 'bar').should.be.instanceOf(qlib.AttributeDef);
     assert.deepEqual(
         q.attribute('foo', 'bar'),
         {element:{name: 'foo'}, attribute:{name: 'bar'}}
@@ -162,7 +163,8 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a box region', function(){
+  it('should create a box region', function() {
+    q.box(1.1, 2.2, 3.3, 4.4).should.be.instanceOf(qlib.BoxRegionDef);
     assert.deepEqual(
         q.box(1.1, 2.2, 3.3, 4.4),
         {box:{south:1.1, west:2.2, north:3.3, east:4.4}}
@@ -178,6 +180,7 @@ describe('query-builder', function() {
   });
 
   it('should create a circle region', function(){
+    q.circle(3.3, 1.1, 2.2).should.be.instanceOf(qlib.CircleRegionDef);
     assert.deepEqual(
         q.circle(3.3, 1.1, 2.2),
         {circle:{radius:3.3, point:[{latitude:1.1, longitude:2.2}]}}
@@ -220,6 +223,7 @@ describe('query-builder', function() {
   });
 
   it('should create a datatype', function(){
+    q.datatype('string').should.be.instanceOf(qlib.DatatypeDef);
     assert.deepEqual(
         q.datatype('string'),
         {datatype: 'xs:string'}
@@ -304,6 +308,7 @@ describe('query-builder', function() {
   });
 
   it('should create an element name', function(){
+    q.element('foo').should.be.instanceOf(qlib.ElementDef);
     assert.deepEqual(
         q.element('foo'),
         {element:{name: 'foo'}}
@@ -330,7 +335,8 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a field name', function(){
+  it('should create a field name', function() {
+    q.field('foo').should.be.instanceOf(qlib.FieldDef);
     assert.deepEqual(
         q.field('foo'),
         {field: {name: 'foo'}}
@@ -342,6 +348,7 @@ describe('query-builder', function() {
   });
 
   it('should create a fragment scope', function(){
+    q.fragmentScope('documents').should.be.instanceOf(qlib.FragmentScopeDef);
     assert.deepEqual(
         q.fragmentScope('documents'),
         {'fragment-scope': 'documents'}
@@ -779,6 +786,7 @@ describe('query-builder', function() {
   });
 
   it('should create a path index', function(){
+    q.pathIndex('foo').should.be.instanceOf(qlib.PathIndexDef);
     assert.deepEqual(
         q.pathIndex('foo'),
         {'path-index': {text: 'foo', namespaces: ''}}
@@ -809,6 +817,7 @@ describe('query-builder', function() {
   });
 
   it('should create a point', function(){
+    q.point(1.1, 2.2).should.be.instanceOf(qlib.PointRegionDef);
     assert.deepEqual(
         q.point(1.1, 2.2),
         {point:[{latitude:1.1, longitude:2.2}]}
@@ -824,6 +833,7 @@ describe('query-builder', function() {
   });
 
   it('should create a polygon', function(){
+    q.polygon([1.1, 2.2], [3.3, 4.4]).should.be.instanceOf(qlib.PolygonRegionDef);
     assert.deepEqual(
         q.polygon([1.1, 2.2], [3.3, 4.4]),
         {polygon:{point:[{latitude:1.1, longitude:2.2}, {latitude:3.3, longitude:4.4}]}}
@@ -847,8 +857,9 @@ describe('query-builder', function() {
   });
 
   it('should create a property name', function(){
+    q.property('foo').should.be.instanceOf(qlib.JSONPropertyDef);
     assert.deepEqual(
-        q.property ('foo'),
+        q.property('foo'),
         {'json-property': 'foo'}
         );
     assert.deepEqual(
@@ -858,21 +869,22 @@ describe('query-builder', function() {
   });
 
   it('should create a QName', function(){
+    q.qname('foo').should.be.instanceOf(qlib.QNameDef);
     assert.deepEqual(
         q.qname('foo'),
-        {qname:{name: 'foo'}}
+        {name: 'foo'}
         );
     assert.deepEqual(
         q.qname(['foo']),
-        {qname:{name: 'foo'}}
+        {name: 'foo'}
         );
     assert.deepEqual(
         q.qname('foo', 'bar'),
-        {qname:{ns: 'foo', name: 'bar'}}
+        {ns: 'foo', name: 'bar'}
         );
     assert.deepEqual(
         q.qname(['foo', 'bar']),
-        {qname:{ns: 'foo', name: 'bar'}}
+        {ns: 'foo', name: 'bar'}
         );
   });
 
@@ -1802,6 +1814,7 @@ describe('query-builder', function() {
           },
           name:'key5'}
         );
+    q.bucket('foo', 1, '<', 2).should.be.instanceOf(qlib.BucketDef);
     assert.deepEqual(
         q.facet('key6',
             q.bucket('bucket6A',     '<', 60),
@@ -1818,18 +1831,20 @@ describe('query-builder', function() {
           name:'key6'
           }
         );
+    q.anchor('now',  'P0D', '<', 'P1D').should.be.instanceOf(qlib.AnchorDef);
+    q.bucket('foo', q.anchor('now',  'P0D', '<', 'P1D')).should.be.instanceOf(qlib.ComputedBucketDef);
     assert.deepEqual(
         q.facet('key7',
-            q.bucket('bucket7A', q.anchor('now',  'P0D', '<', 'P1D')),
-            q.bucket('bucket7B', q.anchor('now', '-P7D', '<', 'P1D'))),
+            q.bucket('bucket7A', q.anchor('now',  '-P1D', '<', 'P0D')),
+            q.bucket('bucket7B', q.anchor('now', '-P7D', '<', '-P1D'))),
         {range:{
           'json-property': 'key7',
           facet: true,
           'computed-bucket':[
               {name: 'bucket7A', label: 'bucket7A', anchor: 'now',
-                ge:  'P0D', lt: 'P1D'},
+                ge: '-P1D', lt:  'P0D'},
               {name: 'bucket7B', label: 'bucket7B', anchor: 'now',
-                ge: '-P7D', lt: 'P1D'}]
+                ge: '-P7D', lt: '-P1D'}]
           },
           name:'key7'
           }
@@ -1837,19 +1852,19 @@ describe('query-builder', function() {
     assert.deepEqual(
         q.facet('key8',
             q.bucket('bucket8A',
-                q.anchor('-P30D',  'P0H'), '<', q.anchor('now',  'P0H')),
+                q.anchor('now',  '-P7H'), '<', q.anchor('now',  'P0H')),
             q.bucket('bucket8B',
-                q.anchor('-P30D', '-P7H'), '<', q.anchor('now', '-P7H'))),
+                q.anchor('now', '-P30D'), '<', q.anchor('now', '-P7H'))),
         {range:{
           'json-property': 'key8',
           facet: true,
           'computed-bucket':[
               {name: 'bucket8A', label: 'bucket8A',
-                  'ge-anchor': '-P30D', ge:  'P0H',
-                  'lt-anchor': 'now',   lt: 'P0H'},
+                  'ge-anchor': 'now',  ge: '-P7H',
+                  'lt-anchor': 'now',  lt:  'P0H'},
               {name: 'bucket8B', label: 'bucket8B',
-                  'ge-anchor': '-P30D', ge: '-P7H',
-                  'lt-anchor': 'now',   lt: '-P7H'}]
+                  'ge-anchor': 'now',  ge: '-P30D',
+                  'lt-anchor': 'now',  lt:  '-P7H'}]
           },
           name:'key8'
           }
