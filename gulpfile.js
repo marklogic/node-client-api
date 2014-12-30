@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ gulp.task('doc', function() {
       {
         path:              './etc/marklogic-template',
         systemName:        'MarkLogic Node.js API',
-        copyright:         'Copyright 2014 MarkLogic Corporation',
+        copyright:         'Copyright 2014-2015 MarkLogic Corporation',
         theme:             'marklogic',
         inverseNav:        true,
         navType:           'vertical',
