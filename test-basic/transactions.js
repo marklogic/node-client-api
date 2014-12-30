@@ -133,6 +133,60 @@ describe('transaction', function(){
         }, done);
     });
   });
+  describe('with named transactions', function(){
+    this.timeout(5000);
+    var uri = '/test/txn/rollback2.json';
+    before(function(done){
+      db.documents.probe(uri).result(function(document){
+        if (document.exists) {
+          db.documents.remove(uri).
+            result(function(response) {done();}, done);          
+        } else {
+          done();
+        }
+      }, done);
+    });
+    it('should rollback a positional transaction name', function(done){
+      var tid = null;
+      db.transactions.open('firstTxn').result().
+      then(function(response) {
+        tid = response.txid;
+        return db.documents.write({
+          txid: tid,
+          uri: uri,
+          contentType: 'application/json',
+          content: {txKey: tid}
+          }).result();
+        }).
+      then(function(response) {
+        return db.transactions.rollback(tid).result();
+        }).
+      then(function(response) {
+        response.should.be.ok;
+        done();
+        }, done);
+    });
+    it('should rollback a named transaction name', function(done){
+      var tid = null;
+      db.transactions.open({transactionName:'firstTxn'}).result().
+      then(function(response) {
+        tid = response.txid;
+        return db.documents.write({
+          txid: tid,
+          uri: uri,
+          contentType: 'application/json',
+          content: {txKey: tid}
+          }).result();
+        }).
+      then(function(response) {
+        return db.transactions.rollback(tid).result();
+        }).
+      then(function(response) {
+        response.should.be.ok;
+        done();
+        }, done);
+    });
+  });
   describe('transaction status', function(){
     this.timeout(5000);
     var uri = '/test/txn/read1.json';
