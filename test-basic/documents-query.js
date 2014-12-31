@@ -398,7 +398,7 @@ describe('document query', function(){
       result(function(response) {
         response.length.should.equal(2);
         response[0].results.length.should.equal(1);
-        response[0].results[0].snippet.should.have.property('first');
+        response[0].results[0].matches.should.have.property('first');
         done();
       }, done);
     });

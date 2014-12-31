@@ -101,6 +101,22 @@ describe('patch-builder', function() {
           }}
         );
     assert.deepEqual(
+        p.replace('/the/select', p.apply('functionName', new Date('2014-09-05T00:00:00.000Z'))),
+        {replace:{
+          select:  '/the/select',
+          content: [{"$value":"2014-09-05T00:00:00.000Z", "$datatype":"xs:datetime"}],
+          apply:   'functionName'
+          }}
+        );
+    assert.deepEqual(
+        p.replace('/the/select', p.apply('functionName', p.datatype('long'), '9223372036854775807')),
+        {replace:{
+          select:  '/the/select',
+          content: [{"$value":"9223372036854775807", "$datatype":"xs:long"}],
+          apply:   'functionName'
+          }}
+        );
+    assert.deepEqual(
         p.replace('/the/select', p.concatBefore('the content')),
         {replace:{
           select:  '/the/select',
