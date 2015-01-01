@@ -1,6 +1,6 @@
 xquery version "1.0-ml";
 (:
- : Copyright 2014 MarkLogic Corporation
+ : Copyright 2014-2015 MarkLogic Corporation
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@ xquery version "1.0-ml";
  : See the License for the specific language governing permissions and
  : limitations under the License.
  :)
+ 
 module namespace objectify = "http://marklogic.com/patch/apply/objectify";
 
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
