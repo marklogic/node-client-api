@@ -64,9 +64,8 @@ describe('when executing resource services', function() {
       done();
     }, function(error) {
       console.log(JSON.stringify(error, null, 2));
-      false.should.be.true;
 
-      done();
+      done(error);
     }, done);
   });
 
