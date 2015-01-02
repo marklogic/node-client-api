@@ -112,7 +112,22 @@ describe('Document query test', function(){
         done();
       }, done);
   });
-
+ it('should do word query witgh slice and withOptions , BUG : 31452', function(done){
+    db.documents.query(
+      q.where(
+        q.word('title', 'bush')		
+      ).
+		slice(1, 1, q.snippet()).
+		withOptions({categories: 'none'})
+	).
+	  result(function(response) {
+	  //console.log(JSON.stringify(response[0].results[0].matches[0]['match-text'][1], null, 4));
+        response.length.should.equal(1);
+		response[0].results[0].matches[0]['match-text'].length.should.equal(2);
+		//response[0].results[0].matches[0]['match-text'][1].should.containEql('{ highlight: \'Bush\' }');
+        done();
+      }, done);
+  });
   it('should do term query', function(done){
     db.documents.query(
       q.where(
