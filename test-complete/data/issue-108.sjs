@@ -31,48 +31,9 @@ function get(context, params) {
 };
 
 // PUT
-//
-// The client should pass in one or more documents, and for each
-// document supplied, a value for the 'basename' request parameter.
-// The function inserts the input documents into the database only 
-// if the input type is JSON or XML. Input JSON documents have a
-// property added to them prior to insertion.
-//
-// Take note of the following aspects of this function:
-// - The 'input' param might be a document node or a ValueIterator
-//   over document nodes. You can normalize the values so your
-//   code can always assume a ValueIterator.
-// - The value of a caller-supplied parameter (basename, in this case)
-//   might be a value or a ValueIterator.
-// - context.inputTypes is always an array
-// - How to return an error report to the client
-//
 function put(context, params, input) {
-  // normalize the inputs so we don't care whether we have 1 or many
-  var docs = normalizeInput(input);
-  var basenames = normalizeInput(params.basename);
-  var uris = [];
-  var i = 0;
-
-  // Validate inputs. You MUST use this form of error reporting to
-  // return an error to the client other than a 500 Internal Error.
-  if (docs.count > basenames.count) {
-    returnErrToClient(400, 'Bad Request', 'json',
-       'Insufficient number of uri basenames. Expected ' +
-       docs.count + ' got ' + basenames.count + '.');
-    // unreachable - control does not return from fn.error
-  }
-
-  // Do something with the input documents
-  for (var doc of docs) {
-    uris.push( doSomething(
-        doc, context.inputTypes[i++], basenames.next().value
-    ));
-  }
-
-  // Set the response body MIME type and return the response data.
-  context.outputTypes = ['application/json'];
-  return { written: uris };
+  xdmp.log('POST invoked');
+  return null;
 };
 
 function post(context, params, input) {
@@ -81,69 +42,8 @@ function post(context, params, input) {
 };
 
 function deleteFunction(context, params) {
-  xdmp.log('POST invoked');
+  xdmp.log('DELETE invoked');
   return null;
-};
-
-// PUT helper func that demonstrates working with input documents.
-//
-// It inserts a (nonsense) property into the incoming document if
-// it is a JSON document and simply inserts the document unchanged
-// if it is an XML document. Other doc types are skipped.
-//
-// Input documents are imutable, so you must call toObject()
-// to create a mutable copy if you want to make a change.
-//
-// The property added to the JSON input is set to the current time
-// just so that you can easily observe it changing on each invocation.
-//
-function doSomething(doc, docType, basename)
-{
-  var uri = '/extensions/' + basename;
-  if (docType == 'application/json') {
-    // create a mutable version of the doc so we can modify it
-    var mutableDoc = doc.toObject();
-    uri += '.json';
-
-    // add a JSON property to the input content
-    mutableDoc.written = fn.currentTime();
-    xdmp.documentInsert(uri, mutableDoc);
-    return uri;
-  } else if (docType == 'application/xml') {
-    // pass thru an XML doc unchanged
-    uri += '.xml';
-    xdmp.documentInsert(uri, doc);
-    return uri;
-  } else {
-    return '(skipped)';
-  }
-};
-
-// Helper function that demonstrates how to normalize inputs
-// that may or may not be multi-valued, such as the 'input'
-// param to your methods.
-//
-// In cases where you might receive either a single value
-// or a ValueIterator, depending on the request context,
-// you can normalize the data type by creating a ValueIterator
-// from the single value.
-function normalizeInput(item)
-{
-  return (item instanceof ValueIterator)
-         ? item                        // many
-         : xdmp.arrayValues([item]);   // one
-};
-
-// Helper function that demonstrates how to return an error response
-// to the client.
-
-// You MUST use fn.error in exactly this way to return an error to the
-// client. Raising exceptions or calling fn.error in another manner
-// returns a 500 (Internal Server Error) response to the client.
-function returnErrToClient(statusCode, statusMsg, format, body)
-{
-  fn.error(null, 'RESTAPI-EXTNERR', [statusCode, statusMsg, format, body]);
-  // unreachable - control does not return from fn.error.
 };
 
 // Include an export for each method supported by your extension.
