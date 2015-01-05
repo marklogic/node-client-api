@@ -441,7 +441,56 @@ describe('document content', function(){
 
 describe('document metadata', function(){
   describe('write', function(){
-    describe('with content', function(){
+    describe('all except properties with one document', function() {
+      var uri = '/test/write/metaDocument1.json';
+      it('should read back the metadata and content', function(done) {
+        db.documents.write({
+          uri: uri,
+          contentType: 'application/json',
+          collections: ['collection1/0', 'collection1/1'],
+          permissions: [
+            {'role-name':'app-user',    capabilities:['read']},
+            {'role-name':'app-builder', capabilities:['read', 'update']}
+            ],
+          quality: 1,
+          content: {key1: 'value 1'}
+          })
+        .result(function(response) {
+          return db.documents.read({uris:uri, categories:['metadata', 'content']}).result();
+          })
+        .then(function(documents) {
+          valcheck.isUndefined(documents).should.equal(false);
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('collections');
+          document.collections.length.should.equal(2);
+          for (var i=0; i < 2; i++) {
+            document.collections[i].should.equal('collection1/'+i);
+          }
+          var permissionsFound = 0;
+          document.permissions.forEach(function(permission){
+            switch (permission['role-name']) {
+            case 'app-user':
+              permissionsFound++;
+              permission.capabilities.length.should.equal(1);
+              permission.capabilities[0].should.equal('read');
+              break;
+            case 'app-builder':
+              permissionsFound++;
+              permission.capabilities.length.should.equal(2);
+              permission.capabilities.should.containEql('read');
+              permission.capabilities.should.containEql('update');
+              break;
+            }
+          });
+          permissionsFound.should.equal(2);
+          document.quality.should.equal(1);
+          document.content.key1.should.equal('value 1');
+          done();
+          }, done);
+      });
+    });
+    describe('all with one document', function(){
       before(function(done){
         db.documents.write({
           uri: '/test/write/metaContent1.json',

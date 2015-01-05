@@ -153,9 +153,13 @@ describe('document negative', function(){
   });
   it('should fail to write a document with a mismapped extension', function(done){
     db.documents.write({
-      uri: '/test/negative/writeInvalidFormat1.xml',
-      contentType: 'application/json',
-      content: {"key": "value"}
+        uri: '/test/negative/writeInvalidFormat1.xml',
+        contentType: 'application/json',
+        content: {"key": "value"}
+      },{
+        uri: '/test/negative/writeInvalidFormat2.json',
+        contentType: 'application/xml',
+        content: '<root/>'
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');

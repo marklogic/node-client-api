@@ -110,7 +110,7 @@ describe('document patch', function(){
         contentType: 'application/json',
         collections: ['collection1/0', 'collection1/1'],
         permissions: [
-          {'role-name':'app-user',    capabilities:['read']}
+          {'role-name':'app-user', capabilities:['read']}
           ],
         properties: {
           property1: 'property value 1',
