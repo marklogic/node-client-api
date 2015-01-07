@@ -27,7 +27,7 @@ console.log('Update a document with a patch');
 
 db.documents.patch('/countries/uv.json',
     p.pathLanguage('jsonpath'),
-    p.replaceInsert('$.timestamp', '$.name', 'after', timestamp)
+    p.replace('$.timestamp', timestamp)
   ).result().
   then(function(response) {
     var uri = response.uri;
