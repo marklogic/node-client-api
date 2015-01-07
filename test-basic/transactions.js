@@ -206,8 +206,7 @@ describe('transaction', function(){
         return db.transactions.read(tid).result();
         }).
       then(function(response) {
-        // TODO: pre-parse based on accept header
-        var status = JSON.parse(response)['transaction-status'];
+        var status = response['transaction-status'];
         var transactionId = status['transaction-id'];
         tid.should.equal(transactionId);
         return db.transactions.rollback(tid).result();

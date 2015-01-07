@@ -135,6 +135,20 @@ describe('values query', function(){
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
     });
+    it('should build a slice clause with transform', function(){
+      var built = t.fromIndexes('property1').
+      slice(t.transform('transform1'));
+      built.should.have.property('fromIndexesClause');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
+      built.should.have.property('sliceClause');
+      built.sliceClause.should.have.property('document-transform');
+      built.sliceClause['document-transform'].should.have.property('length');
+      built.sliceClause['document-transform'].length.should.equal(1);
+      built.sliceClause['document-transform'][0].should.equal('transform1');
+    });
     it('should build a with options clause', function(){
       var built = t.fromIndexes('property1').
       withOptions({values: ['proximity=5']});
