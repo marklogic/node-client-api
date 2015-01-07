@@ -43,9 +43,8 @@ describe('Document transaction test', function() {
   // Read about transaction status
   it('should read transaction status', function(done) {
     db.transactions.read(tid).result(function(response) {
-      var respStr = JSON.stringify(response);
-      var index = respStr.indexOf('\\"transaction-name\\":\\"nodeTransaction\\"');
-      index.should.be.above(0);
+      response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
+      response['transaction-status']['time-limit'].should.equal('1');
 
       done();
     }, done);
