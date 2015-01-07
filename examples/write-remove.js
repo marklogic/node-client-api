@@ -58,9 +58,9 @@ db.documents.write([
     });
 
     console.log('Remove the documents in a collection\n');
-    db.documents.removeAll({collections:'/imaginary/countries'}).
+    db.documents.removeAll({collection:'/imaginary/countries'}).
     result(function(response) {
-      console.log('Removed all documents in the collection: '+response.collections);
+      console.log('Removed all documents in the collection: '+response.collection);
       removedByCollection = isFinishing(removedByUri);
     }, function(error) {
       exutil.failed(error);
