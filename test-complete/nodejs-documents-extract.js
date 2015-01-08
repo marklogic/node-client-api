@@ -117,8 +117,10 @@ describe('Document extract test', function(){
       )
     ).result(function(response) {
       response.length.should.equal(2);
+      response[0].category.should.equal('content');
       response[0].content.id.should.equal('0011');
       response[1].content.id.should.equal('0012');
+      response[1].category.should.equal('content');
       response[0].content.should.not.have.property('popularity');
       //console.log(JSON.stringify(response, null, 4));
       done();
