@@ -95,13 +95,13 @@ describe('Document query test', function(){
           price: {
                amt: 123.45
              },
-          p: 'The Memex, unfortunately, had no automated search feature'
+          p: 'The Memex, unfortunately, had no automated search feature policy'
           }
         }).
     result(function(response){done();}, done);
   });
 
-  it('should do word query', function(done){
+   it('should do word query', function(done){
     db.documents.query(
       q.where(
         q.word('title', 'bush')
@@ -112,7 +112,7 @@ describe('Document query test', function(){
         done();
       }, done);
   });
- it('should do word query witgh slice and withOptions , BUG : 31452', function(done){
+  it('should do word query with slice and withOptions , BUG : 31452', function(done){
     db.documents.query(
       q.where(
         q.word('title', 'bush')		
@@ -121,13 +121,54 @@ describe('Document query test', function(){
 		withOptions({categories: 'none'})
 	).
 	  result(function(response) {
-	  //console.log(JSON.stringify(response[0].results[0].matches[0]['match-text'][1], null, 4));
+		//console.log(JSON.stringify(response, null, 4));
         response.length.should.equal(1);
 		response[0].results[0].matches[0]['match-text'].length.should.equal(2);
 		//response[0].results[0].matches[0]['match-text'][1].should.containEql('{ highlight: \'Bush\' }');
         done();
       }, done);
+  }); 
+  
+   it('should do word query withOptions Unfiltered', function(done){
+    db.documents.query(
+      q.where(
+        q.word('p', 'The')		
+      ).
+		withOptions({search:['unfiltered']},{categories: ['content']})
+	).
+	  result(function(response) {
+		//console.log(JSON.stringify(response, null, 4));
+        response.length.should.equal(5);
+		done();
+      }, done);
   });
+     it('should do word query withOptions default and must be unfiltered', function(done){
+    db.documents.query(
+      q.where(
+        q.word('p', 'The')		
+      ).
+		withOptions({categories: ['content']})
+	).
+	  result(function(response) {
+		//console.log(JSON.stringify(response, null, 4));
+       response.length.should.equal(4);
+		done();
+      }, done);
+  });
+   it('should do word query witgh slice and withOptions fileterd', function(done){
+    db.documents.query(
+      q.where(
+        q.word('p', 'The')		
+      ).
+		withOptions({search:['filtered']},{categories: ['content']})
+	).
+	  result(function(response) {
+	  //console.log(JSON.stringify(response, null, 4));
+        response.length.should.equal(4);
+		done();
+      }, done);
+  });
+  
   it('should do term query', function(done){
     db.documents.query(
       q.where(
@@ -152,8 +193,8 @@ describe('Document query test', function(){
           q.word('id', '00*2', q.termOptions('wildcarded'))
         )
       )).result(function(response) {
+       // console.log(JSON.stringify(response, null, 4));
         response.length.should.equal(2);
-        //console.log(JSON.stringify(response, null, 4));
         response[0].content.id.should.equal('0026');
         response[1].content.id.should.equal('0012');
         done();
@@ -241,10 +282,10 @@ describe('Document query test', function(){
           q.term('Vannevar Bush')
         )
       )).result(function(response) {
-        var document = response[0];
+        console.log(JSON.stringify(response, null, 4));
+		var document = response[0];
         response.length.should.equal(1);
-        //console.log(JSON.stringify(response, null, 4));
-        response[0].content.id.should.equal('0012');
+                response[0].content.id.should.equal('0012');
         done();
       }, done);
   });
