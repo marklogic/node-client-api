@@ -133,8 +133,8 @@ describe('document patch stream', function(){
     stream().
     on('data', function(data) {
       //console.log(data);
-      data.properties.prop2.should.equal('world');
-    }).
+	  data[0].properties.prop2.should.equal('world');
+      }).
     on('end', function() {
       done();
     }, done);
