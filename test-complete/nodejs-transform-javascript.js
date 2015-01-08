@@ -34,6 +34,11 @@ describe('Transform test with javascript', function(){
       uri: '/test/transform/jstransform.json',
       contentType: 'application/json',
       content: {title: 'transform test with javascript'} 
+    },
+	{
+      uri: '/test/transform/jstransform2.json',
+      contentType: 'application/json',
+      content: {title: 'exapmle test with javascript'} 
     }).
     result(function(response){done();}, done);
   });
@@ -81,6 +86,20 @@ describe('Transform test with javascript', function(){
     }, done);
   });
 
+   it('should  query', function(done){
+    db.documents.query(
+      q.where(
+        q.word('title', 'test')
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 4));
+	  response.length.should.equal(2);
+      done();
+    }, done);
+  }); 
+  
+  
   it('should modify during query', function(done){
     db.documents.query(
       q.where(
@@ -95,7 +114,20 @@ describe('Transform test with javascript', function(){
       done();
     }, done);
   });
-
+  it('should modify during query , slice without paging parameters, Bug 111', function(done){
+    db.documents.query(
+      q.where(
+        q.word('title', 'transform')
+      ).
+      slice(q.transform(transformName))
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 4));
+      response[0].content.should.have.property('timestamp');
+      response[0].content.userName.should.equal('rest-reader');
+      done();
+    }, done);
+  });
   /*it('should modify during write', function(done){
     dbWriter.documents.write({
       uri: '/test/transform/write/jstransform.json',
