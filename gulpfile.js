@@ -17,20 +17,15 @@ var gulp      = require('gulp');
 var jshint    = require('gulp-jshint');
 var mocha     = require('gulp-mocha');
 var jsdoc     = require('gulp-jsdoc');
-var intercept = require('gulp-intercept');
-// var glob      = require("glob");
-// var debug     = require('gulp-debug');
-
-var exutil = require('./examples/example-util.js');
 
 gulp.task('lint', function() {
-  gulp.src('./lib/*')
+  gulp.src('lib/*')
       .pipe(jshint())
       .pipe(jshint.reporter('default'));
 });
 
 gulp.task('test', function() {
-  gulp.src(['./test-basic/*.js'])
+  gulp.src(['test-basic/*.js'])
       .pipe(mocha({
         reporter: 'spec',
         globals: {
@@ -43,9 +38,9 @@ gulp.task('doc', function() {
   // TODO: clear the directory first
   gulp.src(['./lib/*.js', 'README.md'])
     .pipe(jsdoc.parser())
-    .pipe(jsdoc.generator('./doc',
+    .pipe(jsdoc.generator('doc',
       {
-        path:              './etc/marklogic-template',
+        path:              'etc/marklogic-template',
         systemName:        'MarkLogic Node.js API',
         copyright:         'Copyright 2014-2015 MarkLogic Corporation',
         theme:             'marklogic',
@@ -61,22 +56,6 @@ gulp.task('doc', function() {
         outputSourceFiles: false
         }
       ));
-});
-
-function listener() {
-  console.log('-----------------------------------------------------------');
-  console.log(this.path);
-  require(this.path);
-}
-
-gulp.task('examples', function() {
-  gulp.src(['./examples/*.js',
-        '!./examples/before-*.js', '!./examples/example-util.js'],
-      {read: false}
-    )
-  .pipe(intercept(function(file){
-    exutil.addListener(listener.bind(file));
-  }));
 });
 
 gulp.task('default', ['lint']);

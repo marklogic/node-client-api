@@ -21,7 +21,7 @@ var exutil = require('./example-util.js');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
-var fsdir = './examples/data/';
+var fsdir = 'examples/data/';
 var dbdir = '/countries/';
 
 var batchSize = 100;
@@ -73,6 +73,10 @@ function writeBatch(filenames, batchFirst) {
 }
 
 fs.readdir(fsdir, function(err, filenames) {
+  if (err) {
+    throw err;
+  }
+
   var jsonFilenames = filenames.filter(function(filename) {
     return filename.match(/\.json$/);
   });

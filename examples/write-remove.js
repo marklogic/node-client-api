@@ -15,7 +15,8 @@
  */
 var exutil = require('./example-util.js');
 
-var marklogic = require('../');
+//a real application would require without the 'exutil.' namespace
+var marklogic = exutil.require('marklogic');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
@@ -54,7 +55,9 @@ db.documents.write([
       console.log('Removed the document with uri: '+response.uri);
       removedByUri = isFinishing(removedByCollection);
     }, function(error) {
-      exutil.failed(error);
+      console.log(JSON.stringify(error));
+
+      exutil.failed();
     });
 
     console.log('Remove the documents in a collection\n');
@@ -63,14 +66,20 @@ db.documents.write([
       console.log('Removed all documents in the collection: '+response.collection);
       removedByCollection = isFinishing(removedByUri);
     }, function(error) {
-      exutil.failed(error);
+      console.log(JSON.stringify(error));
+
+      exutil.failed();
     });
   }, function(error) {
-    exutil.failed(error);
+    console.log(JSON.stringify(error));
+
+    exutil.failed();
   });
 
 function isFinishing(isDone) {
   if (isDone) {
+    console.log('done');
+
     exutil.succeeded();
   } else {
     return true;

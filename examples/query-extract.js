@@ -15,7 +15,9 @@
  */
 var exutil = require('./example-util.js');
 
-var marklogic = require('../');
+//a real application would require without the 'exutil.' namespace
+var marklogic = exutil.require('marklogic');
+
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
@@ -43,4 +45,11 @@ db.documents.query(
         JSON.stringify(document.content)
         );
       });
-  });
+    console.log('done');
+
+    exutil.succeeded();
+  }, function(error) {
+    console.log(JSON.stringify(error));
+
+    exutil.failed();
+    });
