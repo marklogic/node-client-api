@@ -65,6 +65,11 @@ function setupUsers(manager, done) {
             'privilege-name': 'xdbc-invoke',
             action: 'http://marklogic.com/xdmp/privileges/xdbc-invoke',
             kind: 'execute'
+          },
+          {
+            'privilege-name': 'any-uri',
+            action: 'http://marklogic.com/xdmp/privileges/any-uri',
+            kind: 'execute'
           }
         ]
       }
