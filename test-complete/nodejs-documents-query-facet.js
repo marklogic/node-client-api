@@ -113,8 +113,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.facets.popularity.facetValues.length.should.equal(3);  
-      response.facets.popularity.facetValues[0].name.should.equal('3');  
+	  response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
       done();
     }, done);
   });
@@ -131,8 +131,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.facets.popularity.facetValues.length.should.equal(3);  
-      response.facets.popularity.facetValues[0].name.should.equal('5');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('5');  
       done();
     }, done);
   });
