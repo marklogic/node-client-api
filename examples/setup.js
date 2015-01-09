@@ -20,6 +20,7 @@ var marklogic = require('../lib/marklogic.js');
 var testlib        = require('../etc/test-lib.js');
 var promptForAdmin = require('../etc/test-setup-prompt.js');
 var setupUsers     = require('../etc/test-setup-users.js');
+var testconfig     = require('../etc/test-config.js');
 
 promptForAdmin(createManager);
 
@@ -35,10 +36,9 @@ function createManager(adminUser, adminPassword) {
 }
 var scriptCount = 0;
 function setup(manager) {
-// TODO prompt for destination defaulting to '../../'
   var destination = '../../';
 
-  console.log('copying example connection configuration to "example-config.js" -- edit as needed');
+  console.log('copying example connection configuration to "example-config.js"');
   copyFile('./etc/test-config.js', destination+'example-config.js');
 
   fs.readdir('./examples', function(err, filenames) {
@@ -53,11 +53,12 @@ function setup(manager) {
     };
 
     console.log('copying example scripts');
+    filenames = filenames.filter(function(filename) {
+      return (filename.match(/\.js$/) && exclude[filename] !== true);
+    });
     scriptCount = filenames.length;
     filenames.forEach(function(filename) {
-      if (filename.match(/\.js$/) && exclude[filename] !== true) {
-        copyFile('./examples'+filename, destination+filename);
-      }
+      copyFile('./examples/'+filename, destination+filename, checkFinished);
     });
   });
 }
@@ -71,13 +72,15 @@ function checkFinished() {
     require('./before-load.js');
   }
 }
-function copyFile(inputFilename, outputFilename) {
+function copyFile(inputFilename, outputFilename, onFinished) {
   var reader = fs.createReadStream(inputFilename);
   reader.on('error', reportError);
 
   var writer = fs.createWriteStream(outputFilename);
   writer.on('error', reportError);
-  writer.on('finish', checkFinished);
+  if (onFinished !== undefined) {
+    writer.on('finish', onFinished);
+  }
 
   reader.pipe(writer);
 }
