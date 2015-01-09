@@ -64,6 +64,7 @@ describe('Transform test with combination', function(){
   var uri = '/test/transform/comboTransform.json'; 
 
   it('should modify during write and read', function(done){
+  this.timeout(3000);
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
       contentType: 'application/json',
