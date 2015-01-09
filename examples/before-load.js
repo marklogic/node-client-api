@@ -60,7 +60,7 @@ function readFile(filenames, i, buffer, isLast) {
 
 function writeBatch(filenames, batchFirst) {
   if (batchFirst >= filenames.length) {
-    console.log('done');
+    console.log('done loading example data to '+exutil.restWriterConnection.port);
     return;
   }
 
@@ -71,6 +71,8 @@ function writeBatch(filenames, batchFirst) {
     readFile(filenames, i, buffer, (i === batchLast));
   }
 }
+
+console.log('loading example data to '+exutil.restWriterConnection.port+'\n');
 
 fs.readdir(fsdir, function(err, filenames) {
   if (err) {

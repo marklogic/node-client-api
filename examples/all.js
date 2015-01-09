@@ -28,7 +28,8 @@ QueuedScript.prototype.run = function scriptRunner() {
   var script = this.script;
   console.log('-----------------------------------------------------------');
   console.log(script);
-  require('./'+script);
+  // must capture the required script to consume read streams
+  var x = require('./'+script);
 };
 
 fs.readdir('./examples', function(err, filenames) {
@@ -39,7 +40,8 @@ fs.readdir('./examples', function(err, filenames) {
   var exclude = {
       'all.js':          true,
       'before-load.js':  true,
-      'example-util.js': true
+      'example-util.js': true,
+      'setup.js':        true
   };
 
   filenames.forEach(function(filename) {

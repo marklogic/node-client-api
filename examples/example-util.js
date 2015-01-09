@@ -35,8 +35,7 @@ case packageLocation:
   testconfig = require('../etc/test-config.js');  
   break;
 default:
-  // TODO: copy config to project as example-config.js
-  testconfig = require('./node_modules/marklogic/etc/test-config.js');  
+  testconfig = require('./example-config.js');  
   break;
 }
 
