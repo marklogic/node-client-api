@@ -40,7 +40,6 @@
   },
   "devDependencies": {
     "gulp": "^3.6.1",
-    "gulp-intercept": "^0.1.0",
     "gulp-jsdoc": "^0.1.4",
     "gulp-jshint": "^1.5.3",
     "gulp-mocha": "^0.4.1",
