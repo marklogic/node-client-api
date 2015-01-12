@@ -178,7 +178,7 @@ describe('Document suggest test', function(){
     result(function(response) {
       //console.log(response);
       //response.length.should.equal(1);
-      response.should.equal('aruba');
+      response[0].should.equal('aruba');
       done();
     }, done);
   });
@@ -201,7 +201,7 @@ describe('Document suggest test', function(){
     result(function(response) {
       //console.log(response);
       //response.length.should.equal(1);
-      response.should.equal('tag1:aruba');
+      response[0].should.equal('tag1:aruba');
       done();
     }, done);
   });
@@ -296,7 +296,7 @@ describe('Document suggest test', function(){
       done();
     }, function(error) {
       //console.log(JSON.stringify(error, null, 2));
-      error.body.errorResponse.messageCode.should.equal('XDMP-ARGTYPE');
+      error.body.errorResponse.messageCode.should.equal('INTERNAL ERROR');
       done();
     });
   });
