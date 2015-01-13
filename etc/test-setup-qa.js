@@ -137,7 +137,8 @@ function setup(manager) {
                 popularity:      'int',
                 amt:             'double',
                 score:           'double',
-                rate:            'int'
+                rate:            'int',
+                date:            'dateTime'
                 };
             var rangers = [];
             if (valcheck.isNullOrUndefined(rangeElementIndex)) {
