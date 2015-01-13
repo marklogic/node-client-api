@@ -138,7 +138,7 @@ function setup(manager) {
                 amt:             'double',
                 score:           'double',
                 rate:            'int',
-                date:            'dateTime'
+                datetime:            'dateTime'
                 };
             var rangers = [];
             if (valcheck.isNullOrUndefined(rangeElementIndex)) {
