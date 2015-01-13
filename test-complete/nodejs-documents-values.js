@@ -125,20 +125,21 @@ describe('Document tuples test', function(){
       }, done);
   });
  it('should do values on path', function(done){
-    this.timeout(5000);  
+   this.timeout(5000);  
    db.values.read(
 	t.fromIndexes(t.pathIndex('price/amt'))
 	).result(function (values) {
-//	console.log(JSON.stringify(values, null, 2));
-	values.should.have.property('values-response');
-        values['values-response'].should.have.property('tuple');
-        values['values-response'].tuple.length.should.equal(5);
-        values['values-response'].tuple[0].should.have.property('frequency');
-		values['values-response'].tuple[0].should.have.property('distinct-value');
-	    values['values-response'].tuple[0].frequency.should.equal(1);
+	  //console.log(JSON.stringify(values, null, 2));
+	  values.should.have.property('values-response');
+          values['values-response'].should.have.property('tuple');
+          values['values-response'].tuple.length.should.equal(5);
+          values['values-response'].tuple[0].should.have.property('frequency');
+          values['values-response'].tuple[0].should.have.property('distinct-value');
+	  values['values-response'].tuple[0].frequency.should.equal(1);
+          done();
    	}, function(error) {
-	console.log(JSON.stringify(error, null, 2));
-     done();
+	  console.log(JSON.stringify(error, null, 2));
+          done();
     }, done);
   });
   
