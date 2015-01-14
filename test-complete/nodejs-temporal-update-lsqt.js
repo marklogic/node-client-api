@@ -236,7 +236,7 @@ function validateData(response) {
 
 
 
-describe('Write Document Test', function() {
+describe('Temporal update lsqt test', function() {
   
   var docuri = 'temporalDoc.json'; 
   var docuri2 = 'nonTemporalDoc.json';
