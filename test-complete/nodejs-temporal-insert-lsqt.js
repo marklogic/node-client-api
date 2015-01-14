@@ -33,7 +33,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-describe('Write Document Test', function() {
+describe('Temporal insert lsqt test', function() {
   
   var docuri = 'temporalDoc.json'; 
 
