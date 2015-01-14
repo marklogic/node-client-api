@@ -33,7 +33,7 @@ var docuri = '/test/transaction/doc1.json';
 var tid = null;
 var docCount = 0;
 
-describe('Document transaction test', function() {
+describe('Temporal transaction rollback test', function() {
 
   it('should get original count of documents', function(done) {
     db.documents.query(
