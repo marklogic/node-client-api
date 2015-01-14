@@ -32,7 +32,7 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var q = marklogic.queryBuilder;
 var p = marklogic.patchBuilder;
 
-describe('Write Document Test', function() {
+describe('Temporal patch test', function() {
   
   var docuri = 'temporalDoc.json'; 
  
