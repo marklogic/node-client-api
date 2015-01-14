@@ -31,7 +31,7 @@ var q = marklogic.queryBuilder;
 
 var temporalCollectionName = 'temporalCollectionLsqt'
 
-describe('Write Document Test', function() {
+describe('Temporal period compare query test', function() {
   
   var docuri = 'temporalDoc.json'; 
  
