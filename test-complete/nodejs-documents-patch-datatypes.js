@@ -62,7 +62,7 @@ describe('patch datatypes test', function(){
     }, done);
   });
 
-  it('should apply the replacement patch', function(done){
+  it('should apply long datatype', function(done){
     dbWriter.documents.patch('/test/patch/datatypes/patchDatatypes1.json',
       p.replace('/number', p.apply('ml.add', p.datatype('long'), '829394845')
     )).
@@ -73,7 +73,7 @@ describe('patch datatypes test', function(){
     }, done);
   });
 
-  it('should apply the replacement patch', function(done){
+  it('should apply date datatype', function(done){
     dbWriter.documents.patch('/test/patch/datatypes/patchDatatypes1.json',
       p.replace('/day', p.apply('ml.concat-after', p.datatype('date'), '2015-01-13')
     )).
@@ -84,7 +84,7 @@ describe('patch datatypes test', function(){
     }, done);
   });
 
-  it('should apply the replacement patch', function(done){
+  it('should apply double datatype', function(done){
     dbWriter.documents.patch('/test/patch/datatypes/patchDatatypes1.json',
       p.replace('/amount', p.apply('ml.multiply', p.datatype('double'), '0.5')
     )).
