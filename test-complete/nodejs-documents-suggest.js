@@ -94,6 +94,27 @@ describe('Document suggest test', function(){
     }, done);
   });
 
+  it('should do suggest with default binding without parsedFrom', function(done){
+    db.documents.suggest(
+      'mem', 
+      q.where(
+        q.directory('/test/query/suggest/', true)
+      ),
+      q.suggestBindings(
+        q.word('defaultWordKey', q.bindDefault())
+      )
+    ).
+    result(function(response) {
+      //console.log(response);
+      response.length.should.equal(4);
+      response[0].should.equal('member');
+      response[1].should.equal('memento');
+      response[2].should.equal('memoir');
+      response[3].should.equal('memory');
+      done();
+    }, done);
+  });
+
   it('should do suggest with default binding and limit', function(done){
     db.documents.suggest({
       partial: 'mem', 
