@@ -32,7 +32,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Write Document Test', function() {
+describe('Temporal insert transform test', function() {
   
   var docuri = 'temporalDoc.json'; 
   var docuri2 = 'nonTemporalDoc.json';
