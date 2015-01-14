@@ -30,7 +30,7 @@ var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-describe('Write Document Test', function() {
+describe('Temporal insert test', function() {
   
   var docuri = 'temporalDoc.json';
 
