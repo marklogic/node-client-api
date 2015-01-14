@@ -29,7 +29,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
 
-describe('Write Document Test', function() {
+describe('Temporal period range query test', function() {
   
   var docuri = 'temporalDoc.json'; 
  
