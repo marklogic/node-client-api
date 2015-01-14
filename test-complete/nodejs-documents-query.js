@@ -138,7 +138,7 @@ describe('Document query test', function(){
 	).
 	  result(function(response) {
 		//console.log(JSON.stringify(response, null, 4));
-        response.length.should.equal(5);
+        response.length.should.equal(3);
 		done();
       }, done);
   });
@@ -151,7 +151,7 @@ describe('Document query test', function(){
 	).
 	  result(function(response) {
 		//console.log(JSON.stringify(response, null, 4));
-       response.length.should.equal(4);
+       response.length.should.equal(3);
 		done();
       }, done);
   });
@@ -164,7 +164,7 @@ describe('Document query test', function(){
 	).
 	  result(function(response) {
 	  //console.log(JSON.stringify(response, null, 4));
-        response.length.should.equal(4);
+        response.length.should.equal(3);
 		done();
       }, done);
   });
@@ -192,13 +192,14 @@ describe('Document query test', function(){
           q.value('id', '0??6', q.termOptions('wildcarded')), 
           q.word('id', '00*2', q.termOptions('wildcarded'))
         )
-      )).result(function(response) {
+      ).withOptions({search:['filtered']},{categories: ['content']})
+     ).result(function(response) {
        // console.log(JSON.stringify(response, null, 4));
-        response.length.should.equal(2);
-        response[0].content.id.should.equal('0026');
-        response[1].content.id.should.equal('0012');
-        done();
-      }, done);
+       response.length.should.equal(2);
+       response[0].content.id.should.equal('0026');
+       response[1].content.id.should.equal('0012');
+       done();
+     }, done);
   });
 
   it('should do value query with google style grammar', function(done){
@@ -281,13 +282,14 @@ describe('Document query test', function(){
           q.term('Bush'),
           q.term('Vannevar Bush')
         )
-      )).result(function(response) {
-        console.log(JSON.stringify(response, null, 4));
-		var document = response[0];
-        response.length.should.equal(1);
-                response[0].content.id.should.equal('0012');
-        done();
-      }, done);
+      ).withOptions({search:['filtered']},{categories: ['content']})
+    ).result(function(response) {
+      //console.log(JSON.stringify(response, null, 4));
+      var document = response[0];
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0012');
+      done();
+    }, done);
   });
 
   it('should do document query', function(done){
