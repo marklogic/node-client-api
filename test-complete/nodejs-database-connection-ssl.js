@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config-qa.js');
+var testconfig = require('../etc/test-config-qa-ssl.js');
 
 var marklogic = require('../');
 
@@ -189,21 +189,22 @@ describe('SSL Test', function() {
 
   it('should delete the document', function(done) {
     dbSsl.documents.remove(docuri).result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
+      //console.log(document);
       done();
     }, done);
   });
 
   it('should delete the document', function(done) {
     dbSsl.documents.remove(docuri2).result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });
 
   it('should delete the document', function(done) {
     dbSsl.documents.remove('/test/crud/withoutContentType1.json').result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });
