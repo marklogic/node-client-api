@@ -63,7 +63,8 @@ The instructions describe:
 
 ### Example setup
 
-The Node.js API also distributes with some examples that you can run.
+The Node.js API also distributes with some additional examples to supplement
+the examples from the Getting Started introduction.
 
 Follow the instructions in the readme file in the example distribution:
 
