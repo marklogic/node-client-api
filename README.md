@@ -22,26 +22,28 @@ The following example creates two documents within the '/my/collection' collecti
 (which doesn't have to be created separately) using the built-in REST server for
 the built-in Documents database:
 
-  var marklogic = require('marklogic');
+```
+    var marklogic = require('marklogic');
 
-  var db = marklogic.createDatabaseClient({
-    host:     'localhost',
-    port:     '8000',
-    user:     'rest-writer-user',
-    password: 'rest-writer-password',
-    authType: 'DIGEST'
-  });
-
-  db.createCollection(
-    '/my/collection',
-    {key: 'doc 1 value'},
-    {key: 'doc 2 value'}
-    )
-  .result(function(response) {
-      console.log(JSON.stringify(response,null,2));
-    }, function (error) {
-      console.log(JSON.stringify(error,null,2));
+    var db = marklogic.createDatabaseClient({
+      host:     'localhost',
+      port:     '8000',
+      user:     'rest-writer-user',
+      password: 'rest-writer-password',
+      authType: 'DIGEST'
     });
+
+    db.createCollection(
+      '/my/collection',
+      {key: 'doc 1 value'},
+      {key: 'doc 2 value'}
+      )
+    .result(function(response) {
+        console.log(JSON.stringify(response,null,2));
+      }, function (error) {
+        console.log(JSON.stringify(error,null,2));
+      });
+```
 
 Once MarkLogic and the Node.js API have been installed and MarkLogic has been started,
 only the user has to be created before the code above can be executed.
@@ -50,8 +52,8 @@ only the user has to be created before the code above can be executed.
 
 Here are some resources that walk you through working with MarkLogic using the Node.js API:
 
-http://developer.marklogic.com/features/node-api
-http://docs.marklogic.com/guide/node-dev/intro#id_68052
+* http://developer.marklogic.com/features/node-api
+* http://docs.marklogic.com/guide/node-dev/intro#id_68052
 
 The instructions describe:
 
