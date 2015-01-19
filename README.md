@@ -18,9 +18,8 @@ Release 1.0.0 of the MarkLogic Node.js API
 
 ## Sample
 
-The following example creates two documents within the '/my/collection' collection
-(which doesn't have to be created separately) using the built-in REST server for
-the built-in Documents database:
+The following example creates two documents in a collection using the built-in
+REST server for the Documents database:
 
 ```
     var marklogic = require('marklogic');
@@ -28,15 +27,15 @@ the built-in Documents database:
     var db = marklogic.createDatabaseClient({
       host:     'localhost',
       port:     '8000',
-      user:     'rest-writer-user',
-      password: 'rest-writer-password',
+      user:     'admin',
+      password: 'admin',
       authType: 'DIGEST'
     });
 
     db.createCollection(
-      '/my/collection',
-      {key: 'doc 1 value'},
-      {key: 'doc 2 value'}
+      '/books',
+      {author: 'Beryl Markham', ...},
+      {author: 'WG Sebald',     ...}
       )
     .result(function(response) {
         console.log(JSON.stringify(response,null,2));
@@ -45,8 +44,7 @@ the built-in Documents database:
       });
 ```
 
-Once MarkLogic and the Node.js API have been installed and MarkLogic has been started,
-only the user has to be created before the code above can be executed.
+Other calls can create additional documents for the same collection.
 
 ## Getting started
 
@@ -66,7 +64,7 @@ The instructions describe:
 The Node.js API also distributes with some additional examples to supplement
 the examples from the Getting Started introduction.
 
-Follow the instructions in the readme file in the example distribution:
+Follow the instructions in the example distribution:
 
     examples/1readme.txt
 
