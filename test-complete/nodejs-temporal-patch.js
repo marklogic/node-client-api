@@ -37,7 +37,7 @@ describe('Temporal patch test', function() {
   var docuri = 'temporalDoc.json'; 
  
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
