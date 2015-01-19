@@ -193,7 +193,7 @@ describe('quick path', function(){
   });
    it('should remove a collection', function(done){
     var collectionUri = '/matchCollection1';
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.removeCollection(collectionUri).
     result(function(collection) {
       collectionUri.should.eql(collection);
