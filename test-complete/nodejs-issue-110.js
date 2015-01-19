@@ -26,7 +26,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document extract test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       contentType: 'application/json',
@@ -148,8 +148,8 @@ describe('Document extract test', function(){
     db.documents.query(
       q.where(
         q.word('id', '**26', q.termOptions('wildcarded'))
-      ).
-      slice(1, 10,
+      ).withOptions({search:['filtered']})
+      .slice(1, 10,
         q.extract({
           selected:'include',
           paths:[
