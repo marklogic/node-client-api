@@ -102,7 +102,7 @@ describe('Document remove all with all param', function(){
   });
 
   it('should remove all with all = true', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     dbAdmin.documents.removeAll({all:true}).
     result(function(result) {
       return db.documents.probe('/test/query/matchList/doc5.json').result();
