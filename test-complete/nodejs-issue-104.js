@@ -49,7 +49,7 @@ describe('when executing write to default graph', function() {
      
     db.graphs.write({contentType: 'text/turtle', data: triples.join('\n')}).result(
       function(response) { 
-        console.log(response);
+        //console.log(response);
         // response.length.should.equal(docCount);
         response.should.have.properties('defaultGraph', 'graph');
         response.defaultGraph.should.equal(true);
