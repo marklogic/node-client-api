@@ -1,7 +1,7 @@
 {
   "author": "MarkLogic",
   "name": "marklogic",
-  "description": "The official MarkLogic Node.js client.",
+  "description": "The official MarkLogic Node.js client API.",
   "homepage": "http://github.com/marklogic/node-client-api",
   "version": "1.0.0",
   "license": "Apache-2.0",

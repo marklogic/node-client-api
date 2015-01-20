@@ -248,12 +248,35 @@ function setup(manager) {
                 }
               }).result();
             }).
+/* TODO: advance LSQT after creating documents
           then(function(response) {
-            console.log(testconfig.testServerName+' setup succeeded');
+            var evalConnection = {
+                host:     testconfig.testHost,
+                port:     testconfig.restPort,
+                user:     testconfig.manageAdminConnection.user,
+                password: testconfig.manageAdminConnection.password,
+                authType: testconfig.restAuthType
+            };
+            var evalClient = marklogic.createDatabaseClient(evalConnection);
+            return evalClient.xqueryEval(
+                'xquery version "1.0-ml"; '+
+                'import module namespace temporal = "http://marklogic.com/xdmp/temporal" '+
+                '    at "/MarkLogic/temporal.xqy"; '+
+                'temporal:advance-lsqt("temporalCollection")'
+                ).result();
+            }).
+ */
+          then(function(response) {
+              console.log(testconfig.testServerName+' setup succeeded');
+            }, function(error) {
+              console.log('failed to set up '+testconfig.testServerName+' server:\n'+
+                  JSON.stringify(error, null, 2));
+              process.exit(1);
             });
         } else {
           console.log(testconfig.testServerName+' setup failed with HTTP status: '+response.statusCode);
           console.log(response.data);        
+          process.exit(1);
         }
       });
     } else {

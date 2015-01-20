@@ -40,6 +40,7 @@ module.exports = {
     testServerName: testServerName,
     testHost:       testHost,
     restPort:       restPort,
+    authType:       restAuthType,
     restAdminConnection: {
         host:     testHost,
         port:     restPort,
