@@ -33,7 +33,7 @@ describe('merge graph test', function(){
   var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the first graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath1)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4));
@@ -42,7 +42,7 @@ describe('merge graph test', function(){
   });
 
   it('should merge the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.merge(graphUri, 'text/turtle', fs.createReadStream(graphPath2)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4))
@@ -51,7 +51,7 @@ describe('merge graph test', function(){
   });
 
   /*it('should read the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('application/json', graphUri).
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
@@ -62,7 +62,7 @@ describe('merge graph test', function(){
   });*/
 
   it('should check the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.probe(graphUri).
     result(function(response){
       response.should.have.property('graph');
@@ -74,7 +74,7 @@ describe('merge graph test', function(){
   });
 
   it('should list the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list(). 
     result(function(collections){
       collections.some(function(collection){
@@ -85,7 +85,7 @@ describe('merge graph test', function(){
   });
 
   it('should run a SPARQL query against the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
@@ -111,7 +111,7 @@ describe('merge graph test', function(){
   });
 
   it('should delete the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove(graphUri).
     result(function(response){
       done();

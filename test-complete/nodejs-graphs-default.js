@@ -32,7 +32,7 @@ describe('default graph test', function(){
   var defGraphUri = 'http://marklogic.com/semantics#default-graph';
 
   it('should write the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.write('text/turtle', fs.createReadStream(graphPath)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -42,7 +42,7 @@ describe('default graph test', function(){
   });
 
   it('should read the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('application/json').
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
@@ -52,7 +52,7 @@ describe('default graph test', function(){
   });
 
   it('should check the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.probe().
     result(function(response){
       //console.log(response);
@@ -65,7 +65,7 @@ describe('default graph test', function(){
   });
 
   it('should list the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list(). 
     result(function(collections){
       collections.some(function(collection){
@@ -76,7 +76,7 @@ describe('default graph test', function(){
   });
 
   /*it('should run a SPARQL query against the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
@@ -102,7 +102,7 @@ describe('default graph test', function(){
   });*/
 
   it('should delete the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove().
     result(function(response){
       done();

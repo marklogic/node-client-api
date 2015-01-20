@@ -32,7 +32,7 @@ describe('overwrite graph test', function(){
   var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.write({uri: graphUri, repair: false, contentType: 'text/turtle', data: fs.createReadStream(graphPath1)}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4));
@@ -43,7 +43,7 @@ describe('overwrite graph test', function(){
   });
 
   it('should overwrite the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.write({uri: graphUri, repair: false, contentType: 'text/turtle', data: fs.createReadStream(graphPath2)}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4));
@@ -54,7 +54,7 @@ describe('overwrite graph test', function(){
   });
 
   /*it('should read the overwritten graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read({contentType: 'application/json', uri: graphUri}).
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
@@ -64,7 +64,7 @@ describe('overwrite graph test', function(){
   });*/
 
   it('should check the overwritten graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.probe(graphUri).
     result(function(response){
       response.should.have.property('graph');
@@ -76,7 +76,7 @@ describe('overwrite graph test', function(){
   });
 
   it('should list the overwritten graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list(). 
     result(function(collections){
       collections.some(function(collection){
@@ -87,7 +87,7 @@ describe('overwrite graph test', function(){
   });
 
   /*it('should list the overwritten graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list('foo/bar'). 
     result(function(response){
       //console.log(JSON.stringify(response, null, 4))
@@ -96,7 +96,7 @@ describe('overwrite graph test', function(){
   });*/
 
   it('should run a SPARQL query against the overwritten graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
@@ -122,7 +122,7 @@ describe('overwrite graph test', function(){
   });
 
   it('should delete the overwritten graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove(graphUri).
     result(function(response){
       done();

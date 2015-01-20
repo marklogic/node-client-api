@@ -31,7 +31,7 @@ describe('graph negative test', function(){
   var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -40,7 +40,7 @@ describe('graph negative test', function(){
   });
 
   /*it('should read the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('application/json').
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
@@ -50,7 +50,7 @@ describe('graph negative test', function(){
   });*/
 
   it('should fail to read graph with invalid contentType', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('foo/bar', graphUri).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -63,7 +63,7 @@ describe('graph negative test', function(){
   });
 
   it('should fail to read non-existent graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('text/n3', 'nonexistent/graph/invalid').
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -76,7 +76,7 @@ describe('graph negative test', function(){
   });
 
   it('should fail to check graph with invalid contentType', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list('foo/bar').
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -89,7 +89,7 @@ describe('graph negative test', function(){
   });
 
   /*it('should run a SPARQL query against the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
@@ -115,7 +115,7 @@ describe('graph negative test', function(){
   });*/
 
   /*it('should fail to remove non-existent graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove('nonExistent/graph/invalid').
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -128,7 +128,7 @@ describe('graph negative test', function(){
   });*/
 
   it('should delete the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove(graphUri).
     result(function(response){
       done();
