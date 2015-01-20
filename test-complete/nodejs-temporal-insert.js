@@ -35,7 +35,7 @@ describe('Temporal insert test', function() {
   var docuri = 'temporalDoc.json';
 
   before(function(done) {
-    this.timeout(1000);
+    this.timeout(10000);
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
