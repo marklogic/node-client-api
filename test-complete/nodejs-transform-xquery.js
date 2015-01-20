@@ -29,7 +29,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Transform test with xquery', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/xquerytransform.json',
       contentType: 'application/json',
@@ -42,7 +42,7 @@ describe('Transform test with xquery', function(){
   var transformPath = './node-client-api/test-complete/data/flagTransform.xqy';
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName, 'xquery', source).

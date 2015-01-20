@@ -29,7 +29,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Transform test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/employee.xml',
       collections: ['employee'],
@@ -43,7 +43,7 @@ describe('Transform test', function(){
   var transformPath = './node-client-api/test-complete/data/employeeStylesheet.xslt';
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName, 'xslt', source).

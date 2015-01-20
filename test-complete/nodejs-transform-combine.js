@@ -29,7 +29,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Transform test with combination', function(){
   /*before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
       contentType: 'application/json',
@@ -44,7 +44,7 @@ describe('Transform test with combination', function(){
   var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath1).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName1, 'xquery', source).
@@ -53,7 +53,7 @@ describe('Transform test with combination', function(){
   });
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath2).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName2, 'javascript', source).
@@ -64,7 +64,7 @@ describe('Transform test with combination', function(){
   var uri = '/test/transform/comboTransform.json'; 
 
   it('should modify during write and read', function(done){
-  this.timeout(3000);
+  this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
       contentType: 'application/json',
