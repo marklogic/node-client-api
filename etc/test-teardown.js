@@ -47,33 +47,37 @@ function setup(manager) {
         accept: 'application/json',
         body: {'operation': 'clear-database'}
         }).result().
-      then(function(response) { 
-        return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
+      then(function(response) {
+        return manager.post({
+          endpoint: '/manage/v2/databases/' + testconfig.testServerName+'-modules',
+          contentType: 'application/json',
+          accept: 'application/json',
+          body: {'operation': 'clear-database'}
           }).result();
         }).
       then(function(response) {
-        return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
-          }).result();
-        }).
-      then(function(response) {
-        return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
+        return manager.put({
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+          params:   {
+            format: 'json'
+            },
+          body:        {'schema-database': 'Schemas'},
+          hasResponse: true
           }).result();
         }).
       then(function(response) {
         return       manager.remove({
           endpoint: '/v1/rest-apis/'+testconfig.testServerName,
+          accept:   'application/json',
           params:   {include: ['content', 'modules']}
           }).result();
         }).
       then(function(response) {
-        console.log('teardown succeeded - restart the server');
+          console.log('teardown succeeded - restart the server');
         },
         function(error) {
           console.log('failed to tear down '+testconfig.testServerName+' server:\n'+
-              JSON.stringify(error));
+              JSON.stringify(error, null, 2));
         });
     }
   });
