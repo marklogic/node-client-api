@@ -34,7 +34,7 @@ describe('Config patch test', function(){
   var replacePath = './node-client-api/test-complete/data/objectify.xqy';
 
   it('should write the replacement library', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.patch.replace.write(
       replaceModule, 
       [{'role-name':'app-user', capabilities:['execute']}], 
@@ -85,7 +85,7 @@ describe('Config patch test', function(){
   });
 
   it('should write the replacement library for the test', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.patch.replace.write(
       replaceModule, 
       [{'role-name':'app-user', capabilities:['execute']}], 

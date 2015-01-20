@@ -35,7 +35,7 @@ describe('Config query negative test', function(){
   var fsPath = './node-client-api/test-complete/data/directoryConstraintInvalid.xqy';
 
   it('should fail to write the custom query with reader user', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.config.query.custom.write(
       'directoryConstraint.xqy', 
       [{'role-name':'app-user', capabilities:['execute']}], 

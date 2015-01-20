@@ -36,7 +36,7 @@ describe('Config patch negative test', function(){
   var replacePathInvalid = './node-client-api/test-complete/data/objectifyInvalid.xqy';
 
   it('should fail to write replacement library with reader user', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.config.patch.replace.write(
       replaceModule, 
       [{'role-name':'app-user', capabilities:['execute']}], 

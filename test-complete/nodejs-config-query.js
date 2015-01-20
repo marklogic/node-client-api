@@ -35,7 +35,7 @@ describe('Config query test', function(){
   var fsPath = './node-client-api/test-complete/data/directoryConstraint.xqy';
 
   it('should write the custom query', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.query.custom.write(
       dbModule, 
       [{'role-name':'app-user', capabilities:['execute']}], 
@@ -87,7 +87,7 @@ describe('Config query test', function(){
   });
 
   it('should write the custom query for test', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.query.custom.write(
       dbModule, 
       [{'role-name':'app-user', capabilities:['execute']}], 
