@@ -33,7 +33,7 @@ describe('Extension library test', function(){
   var fsPath = './node-client-api/test-complete/data/extractFirst.xqy';
 
   it('should write the extension library', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.extlibs.write(
       dbPath, 
       {'role-name':'app-user', capabilities:['execute']}, 
