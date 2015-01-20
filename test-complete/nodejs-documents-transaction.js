@@ -26,7 +26,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Document transaction test', function() {
   
   it('should commit the write document', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     var tid = null;
     db.transactions.open().result().
     then(function(response) {
@@ -45,7 +45,7 @@ describe('Document transaction test', function() {
   });
 
   it('should read the commited document', function(done) {
-      this.timeout(5000);
+      this.timeout(10000);
       db.documents.read({uris:'/test/transaction/doc1.json'}).result().
       then(function(documents) {
         var document = documents[0];
@@ -62,7 +62,7 @@ describe('Document transaction test', function() {
   });
 
   /*it('should rollback the write document', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     var tid = null;
     db.transactions.open().result().
     then(function(response) {
@@ -85,7 +85,7 @@ describe('Document transaction test', function() {
   });*/
 
   it('should rollback the write document', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     var tid = null;
     db.transactions.open().result().
     then(function(response) {
@@ -107,7 +107,7 @@ describe('Document transaction test', function() {
     });  
   });
   /*it('should be able to read the rolled back document', function(done) {
-      this.timeout(5000);
+      this.timeout(10000);
       console.log(tid);
       db.documents.read({uris:'/test/transaction/doc2.json'}).
       result(function(response) {
@@ -119,7 +119,7 @@ describe('Document transaction test', function() {
   });*/
 
   it('should rollback the overwritten document', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     var tid = null;
     db.transactions.open().result().
     then(function(response) {
@@ -148,7 +148,7 @@ describe('Document transaction test', function() {
   });
 
    it('should be able to read the original document', function(done) {
-      this.timeout(5000);
+      this.timeout(10000);
       db.documents.read({uris:'/test/transaction/doc3.json'}).
       result(function(response) {
         //console.log(response);
@@ -164,7 +164,7 @@ describe('Document transaction test', function() {
   
  
   it('should remove all documents', function(done) {
-      this.timeout(5000);
+      this.timeout(10000);
       dbAdmin.documents.removeAll({all: true}).
       result(function(response) {
         done();

@@ -108,7 +108,7 @@ describe('Document tuples test', function(){
   });
 
   it('should do values on score', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range('score', 'xs:double')
@@ -125,7 +125,7 @@ describe('Document tuples test', function(){
       }, done);
   });
  it('should do values on path', function(done){
-   this.timeout(5000);  
+   this.timeout(10000);  
    db.values.read(
 	t.fromIndexes(t.pathIndex('price/amt'))
 	).result(function (values) {
@@ -146,7 +146,7 @@ describe('Document tuples test', function(){
   /* 
 //Issue with Index settings working on it
   it('should do values on field', function(done){
-    this.timeout(5000); 
+    this.timeout(10000); 
    db.values.read(
 	t.fromIndexes(t.field('New'))
 	 ).result(function (result) {
@@ -158,7 +158,7 @@ describe('Document tuples test', function(){
   }); */
   
   it('should do sum aggregates', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range('score', 'xs:double')
@@ -176,7 +176,7 @@ describe('Document tuples test', function(){
   });
 
   it('should do correlation and covariance aggregates', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range('rate', 'xs:int'),
@@ -197,7 +197,7 @@ describe('Document tuples test', function(){
   });
 
   it('should do max, min, sum, average aggregates', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range(t.property('popularity'), t.datatype('int'))

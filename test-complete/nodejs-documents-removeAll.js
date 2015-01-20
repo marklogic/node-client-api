@@ -102,7 +102,7 @@ describe('Document remove all test', function(){
   });
 
   /*it('should remove the collection and directory', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     dbWriter.documents.removeAll({collection:'matchList', directory:'/test/query/matchDir'}).
     result(function(result) {
       return db.documents.probe('/test/query/matchList/doc5.json').result();
@@ -114,7 +114,7 @@ describe('Document remove all test', function(){
   });*/
 
   it('should remove the collection', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     dbWriter.documents.removeAll({collection:'matchList'}).
     result(function(result) {
       return db.documents.probe('/test/query/matchList/doc5.json').result();
@@ -126,7 +126,7 @@ describe('Document remove all test', function(){
   });
 
   it('should remove the directory', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     dbWriter.documents.removeAll({directory:'/test/query/matchDir'}).
     result(function(result) {
       return db.documents.probe('/test/query/matchDir/doc4.json').result();

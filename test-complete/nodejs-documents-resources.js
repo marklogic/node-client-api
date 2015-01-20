@@ -50,7 +50,7 @@ describe('when executing resource services', function(){
       }, done);
     });
  it('should get one document with transaction', function(done){
-		this.timeout(5000);
+		this.timeout(10000);
 		var tid = null;
 		//console.log('Started');
 		db.transactions.open().result().

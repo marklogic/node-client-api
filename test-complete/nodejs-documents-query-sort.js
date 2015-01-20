@@ -26,7 +26,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document query sort test', function(){
   before(function(done){
-    this.timeout(5000);
+    this.timeout(10000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/query/sort/doc1.json',
