@@ -106,7 +106,7 @@ describe('document patch stream', function(){
   });
 
   it('should appply patch on metadata', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
@@ -127,7 +127,7 @@ describe('document patch stream', function(){
   });
 
   it('should read the applied patch on metadata', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     db.documents.read({uris: uri1, categories: ['metadata']}).
     stream().

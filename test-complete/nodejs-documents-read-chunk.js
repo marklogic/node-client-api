@@ -35,7 +35,7 @@ describe('Binary documents test', function(){
   var uri = '/test/binary/somePdfFile.pdf';
   var binaryValue = null;
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(binaryPath).
       pipe(concatStream({encoding: 'buffer'}, function(value){
         binaryValue = value;
@@ -44,7 +44,7 @@ describe('Binary documents test', function(){
   });
 
   it('should write the binary with Readable stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri = '/test/write/somePdfFile.pdf';
     var readableBinary = new ValueStream(binaryValue);
     //readableBinary.pause();
@@ -62,7 +62,7 @@ describe('Binary documents test', function(){
   });
 
   it('should read the binary in chunk', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri = '/test/write/somePdfFile.pdf';
     dbReader.documents.read(uri).stream('chunked').
     on('data', function(data) {

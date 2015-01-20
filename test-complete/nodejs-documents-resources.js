@@ -31,7 +31,7 @@ describe('when executing resource services', function(){
     var xqyServiceName = 'wrapperService';
     var xqyServicePath = './node-client-api/test-basic/data/wrapperService.xqy';
     before(function(done){
-      this.timeout(3000);
+      this.timeout(10000);
       restAdminDB.config.resources.write(xqyServiceName, 'xquery', fs.createReadStream(xqyServicePath)).
       result(function(response){
         done();

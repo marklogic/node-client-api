@@ -28,7 +28,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Write Document Stream Test', function() {
   describe('write json stream', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writeable1.json',
                           contentType: 'application/json'
@@ -48,7 +48,7 @@ describe('Write Document Stream Test', function() {
 
   describe('write json stream in chunk', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writeable2.json',
                           contentType: 'application/json'
@@ -69,7 +69,7 @@ describe('Write Document Stream Test', function() {
       
   describe('write xml stream in chunk', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writeable1.xml',
                           contentType: 'application/xml'
@@ -90,7 +90,7 @@ describe('Write Document Stream Test', function() {
       
   describe('write transform for a test', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var transformName = 'employeeStylesheet';
       var transformPath = './node-client-api/test-complete/data/employeeStylesheet.xslt';
       fs.createReadStream(transformPath).
@@ -106,7 +106,7 @@ describe('Write Document Stream Test', function() {
 
   describe('write stream with transform', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var transformName = 'employeeStylesheet';
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writestreamtransform.xml',
@@ -129,7 +129,7 @@ describe('Write Document Stream Test', function() {
 
   describe('delete a transform for cleanup', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var transformName = 'employeeStylesheet';
       dbAdmin.config.transforms.remove(transformName).
       result(function(response){done();}, done);
@@ -141,7 +141,7 @@ describe('Write Document Stream Test', function() {
 
   describe('delete docs for cleanup', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       dbAdmin.documents.removeAll({directory:'/test/writestream'}).
       result(function(response){done();}, done);
       });

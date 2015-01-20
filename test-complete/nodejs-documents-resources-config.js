@@ -31,14 +31,14 @@ describe('when configuring resource services', function(){
   var serviceNameInvalid = 'BlaBla';
   var servicePath = './node-client-api/test-basic/data/timeService.xqy';
     it('should write the resource service with positional parameters', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     restAdminDB.config.resources.write(serviceName, 'xquery', fs.createReadStream(servicePath)).
     result(function(response){
       done();
     }, done);
   }); 
    it('should write the resource service with named parameters', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     restAdminDB.config.resources.write({
       name:        serviceName,
       title:       'The Time Service',
@@ -85,7 +85,7 @@ describe('when configuring resource services', function(){
     }, done);
   }); 
    it('should over-write the resource service with named parameters', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     restAdminDB.config.resources.write({
       name:        serviceName,
       title:       'The Hindustan Time Service',

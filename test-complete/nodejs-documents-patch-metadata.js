@@ -105,7 +105,7 @@ describe('document patch metadata test', function(){
   });
 
   it('should appply patch on metadata', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
@@ -125,7 +125,7 @@ describe('document patch metadata test', function(){
   });
 
   it('should appply patch on metadata with jsonpath', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
@@ -146,7 +146,7 @@ describe('document patch metadata test', function(){
   });
 
   it('should appply patch on metadata properties', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,

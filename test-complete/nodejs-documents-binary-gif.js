@@ -50,7 +50,7 @@ describe('Binary documents test', function(){
   });
 
   it('should read the binary with Readable stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbReader.documents.read(uri).
     result(function(documents) {
       documents[0].content.should.not.equal(null);
@@ -60,7 +60,7 @@ describe('Binary documents test', function(){
   });
   
   it('should remove the document', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.remove(uri).
     result(function(response) {
       response.should.be.ok;

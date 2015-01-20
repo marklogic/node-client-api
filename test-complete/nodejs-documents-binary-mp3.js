@@ -35,7 +35,7 @@ describe('Binary documents test', function(){
   var uri = '/test/binary/someMp3File.mp3';
   var binaryValue = null;
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(binaryPath).
       pipe(concatStream({encoding: 'buffer'}, function(value){
         binaryValue = value;
@@ -60,7 +60,7 @@ describe('Binary documents test', function(){
   });
 
   it('should read the binary with Readable stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri = '/test/write/someMp3File.mp3';
     dbReader.documents.read(uri).
     result(function(documents){
