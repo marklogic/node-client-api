@@ -29,7 +29,7 @@ describe('SSL Test', function() {
   var docuri2 = '/foo/bar/test2.json'; 
  
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbSsl.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
