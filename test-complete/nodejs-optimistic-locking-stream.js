@@ -71,7 +71,7 @@ describe('Optimistic locking stream test', function() {
   });
 
   it('should read with version id in chunk stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri = '/test/optlock/stream/streamLock1.json';
     dbReader.documents.read(uri).stream('chunked').
     on('data', function(data) {

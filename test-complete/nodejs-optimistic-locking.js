@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Optimistic locking test', function() {
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/optlock/doc1.json',
