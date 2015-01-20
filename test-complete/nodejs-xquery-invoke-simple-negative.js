@@ -31,7 +31,7 @@ describe('Xquery invoke simple negative test', function(){
   var invokePath = '/ext/invokeTest/sourceSimpleNegative.xqy';
 
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.extlibs.write({
       path:invokePath, contentType:'application/xquery', source:fs.createReadStream(fsPath)
     }).
