@@ -31,7 +31,7 @@ describe('Javascript invoke simple negative test', function(){
   var invokePath = '/ext/invokeTest/sourceSimpleNegative.sjs';
 
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.extlibs.write({
       path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
     }).

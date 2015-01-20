@@ -31,7 +31,7 @@ describe('Javascript invoke test', function(){
   var invokePath = '/ext/invokeTest/sourceSimple.sjs';
 
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.extlibs.write({
       path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
     }).
