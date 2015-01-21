@@ -109,8 +109,9 @@ describe('LSQT query (lsqtQuery) Test', function() {
 
 
   it('should wait for lsqt advancement', function(done) { 
-    this.timeout(15000);
-    done();
+    setTimeout(function() {
+      done();
+    }, 3000);
   });
 
 
