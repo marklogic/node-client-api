@@ -913,12 +913,6 @@ describe('query-builder', function() {
          weight: 2}}
         );
     assert.deepEqual(
-        q.lsqtQuery('bitemporalCollection', 2),
-        {'lsqt-query':{
-         'temporal-collection': 'bitemporalCollection',
-         weight: 2}}
-        );
-    assert.deepEqual(
         q.lsqtQuery('bitemporalCollection',
             q.temporalOptions('cached')),
         {'lsqt-query':{
@@ -926,7 +920,7 @@ describe('query-builder', function() {
          'temporal-option':['cached']}}
         );
     assert.deepEqual(
-        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
+        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z', q.weight(2),
             q.temporalOptions('cached')),
         {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
