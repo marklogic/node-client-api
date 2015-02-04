@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -26,7 +26,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document facet query test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/facet/doc1.json',
       collections: ['facetCollection'],
@@ -35,7 +35,7 @@ describe('Document facet query test', function(){
         title: 'Vannevar Bush',
         popularity: 5,
         id: '0011',
-        date: '2005-01-01',
+        datetime: '2005-01-01T01:02:55',
         price: {
              amt: 0.1
            },
@@ -49,7 +49,7 @@ describe('Document facet query test', function(){
         title: 'The Bush article',
         popularity: 4,
         id: '0012',
-        date: '2006-02-02',
+        datetime: '2006-02-02T14:33:34',
         price: {
              amt: 0.12
            },
@@ -63,7 +63,7 @@ describe('Document facet query test', function(){
         title: 'For 1945',
         popularity: 3,
         id: '0013',
-        date: '2007-03-03',
+        datetime: '2007-03-03T23:12:44',
         price: {
              amt: 1.23
            },
@@ -77,7 +77,7 @@ describe('Document facet query test', function(){
         title: 'Vannevar served',
         popularity: 5,
         id: '0024',
-        date: '2008-04-04',
+        datetime: '2008-04-04T10:00:23',
         price: {
              amt: 12.34
            },
@@ -91,7 +91,7 @@ describe('Document facet query test', function(){
           title: 'The memex',
           popularity: 5,
           id: '0026',
-          date: '2009-05-05',
+          datetime: '2009-05-05T20:55:12',
           price: {
                amt: 123.45
              },
@@ -113,8 +113,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.facets.popularity.facetValues.length.should.equal(3);  
-      response.facets.popularity.facetValues[0].name.should.equal('3');  
+	  response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
       done();
     }, done);
   });
@@ -131,8 +131,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.facets.popularity.facetValues.length.should.equal(3);  
-      response.facets.popularity.facetValues[0].name.should.equal('5');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('5');  
       done();
     }, done);
   });
@@ -156,6 +156,33 @@ describe('Document facet query test', function(){
       //console.log(JSON.stringify(response, null, 2));
       response[0].facets.popularity.facetValues[0].name.should.equal('moderate'); 
       response[0].facets.popularity.facetValues[0].count.should.equal(1); 
+      done();
+    }, done);
+  });
+
+  it('should query with absolute bucket on dateTime', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/facet/')
+      ).
+      calculate(
+        q.facet(
+          'datetime',
+          q.datatype('xs:dateTime'),
+          q.bucket('2005', '2005-01-01T00:00:00', '<', '2006-01-01T00:00:00'),
+          q.bucket('2006', '2006-01-01T00:00:00', '<', '2007-01-01T00:00:00'),
+          q.bucket('2007', '2007-01-01T00:00:00', '<', '2008-01-01T00:00:00'),
+          q.bucket('2008', '2008-01-01T00:00:00', '<', '2009-01-01T00:00:00'),
+          q.bucket('2009', '2009-01-01T00:00:00', '<', '2010-01-01T00:00:00')
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].facets.datetime.facetValues[0].name.should.equal('2005'); 
+      response[0].facets.datetime.facetValues[0].count.should.equal(1); 
+      response[0].facets.datetime.facetValues[4].name.should.equal('2009'); 
+      response[0].facets.datetime.facetValues[4].count.should.equal(1); 
       done();
     }, done);
   });

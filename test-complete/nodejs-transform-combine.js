@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -29,7 +29,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Transform test with combination', function(){
   /*before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
       contentType: 'application/json',
@@ -39,12 +39,12 @@ describe('Transform test with combination', function(){
   });*/
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './test-complete/data/flagTransform.xqy';
+  var transformPath1 = './node-client-api/test-complete/data/flagTransform.xqy';
   var transformName2 = 'timestamp';
-  var transformPath2 = './test-complete/data/timestampTransform.js';
+  var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath1).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName1, 'xquery', source).
@@ -53,7 +53,7 @@ describe('Transform test with combination', function(){
   });
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath2).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName2, 'javascript', source).
@@ -64,6 +64,7 @@ describe('Transform test with combination', function(){
   var uri = '/test/transform/comboTransform.json'; 
 
   it('should modify during write and read', function(done){
+  this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
       contentType: 'application/json',

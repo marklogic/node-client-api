@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -29,7 +29,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Extension library test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/employee.xml',
       collections: ['employee'],
@@ -65,7 +65,7 @@ describe('Extension library test', function(){
     }, function(error) {
          //console.log(error);
          error.statusCode.should.equal(400);
-         error.body.errorResponse.messageCode.should.equal('RESTAPI-INVALIDREQ');
+         error.body.errorResponse.messageCode.should.equal('XDMP-MODNOTFOUND');
          done();
        });
   });

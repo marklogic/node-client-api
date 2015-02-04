@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -32,14 +32,14 @@ describe('Config query negative test', function(){
   var dbDir = '/marklogic/query/invalid/custom/';
   var dbModule = 'directoryConstraintInvalid.xqy';
   var dbPath = dbDir + dbModule;
-  var fsPath = './test-complete/data/directoryConstraintInvalid.xqy';
+  var fsPath = './node-client-api/test-complete/data/directoryConstraintInvalid.xqy';
 
   it('should fail to write the custom query with reader user', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.config.query.custom.write(
       'directoryConstraint.xqy', 
       [{'role-name':'app-user', capabilities:['execute']}], 
-      fs.createReadStream('./test-complete/data/directoryConstraint.xqy')).
+      fs.createReadStream('./node-client-api/test-complete/data/directoryConstraint.xqy')).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();

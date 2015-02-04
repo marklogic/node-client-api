@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ describe('document patch', function(){
         contentType: 'application/json',
         collections: ['collection1/0', 'collection1/1'],
         permissions: [
-          {'role-name':'app-user',    capabilities:['read']}
+          {'role-name':'app-user', capabilities:['read']}
           ],
         properties: {
           property1: 'property value 1',

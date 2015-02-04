@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,11 @@ function setupUsers(manager, done) {
           {
             'privilege-name': 'xdbc-invoke',
             action: 'http://marklogic.com/xdmp/privileges/xdbc-invoke',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'any-uri',
+            action: 'http://marklogic.com/xdmp/privileges/any-uri',
             kind: 'execute'
           }
         ]

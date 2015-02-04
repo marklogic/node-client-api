@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ var util   = require('util');
 
 var concatStream = require('concat-stream');
 var valcheck     = require('core-util-is');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -30,7 +30,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Binary documents test', function(){
-  var fsPath = './test-complete/data/121-GIF-Image-GIF-gif_sample1.gif';
+  var fsPath = './node-client-api/test-complete/data/121-GIF-Image-GIF-gif_sample1.gif';
   var uri = '/test/binary/stream/121-GIF-Image-GIF-gif_sample1.gif';
   var binaryValue = null;
 
@@ -50,7 +50,7 @@ describe('Binary documents test', function(){
   });
 
   it('should read the binary with Readable stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbReader.documents.read(uri).
     result(function(documents) {
       documents[0].content.should.not.equal(null);
@@ -60,7 +60,7 @@ describe('Binary documents test', function(){
   });
   
   it('should remove the document', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.remove(uri).
     result(function(response) {
       response.should.be.ok;

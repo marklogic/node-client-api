@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,10 +141,11 @@ describe('extension libraries', function(){
           slice(0)
           ).
           result(function(response) {
-            response.should.have.property('facets');
-            response.facets.should.have.property('directories');
-            response.facets.directories.should.have.property('facetValues');
-            response.facets.directories.facetValues.length.should.be.greaterThan(0);
+            response.length.should.equal(1);
+            response[0].should.have.property('facets');
+            response[0].facets.should.have.property('directories');
+            response[0].facets.directories.should.have.property('facetValues');
+            response[0].facets.directories.facetValues.length.should.be.greaterThan(0);
             done();
           }, done);
     });
@@ -165,13 +166,14 @@ describe('extension libraries', function(){
           slice(0)
           ).
           result(function(response) {
-            response.should.have.property('facets');
-            response.facets.should.have.property('dirs');
-            response.facets.dirs.should.have.property('facetValues');
-            response.facets.dirs.facetValues.length.should.be.greaterThan(0);
-            response.facets.should.have.property('range');
-            response.facets.range.should.have.property('facetValues');
-            response.facets.range.facetValues.length.should.be.greaterThan(0);
+            response.length.should.equal(1);
+            response[0].should.have.property('facets');
+            response[0].facets.should.have.property('dirs');
+            response[0].facets.dirs.should.have.property('facetValues');
+            response[0].facets.dirs.facetValues.length.should.be.greaterThan(0);
+            response[0].facets.should.have.property('range');
+            response[0].facets.range.should.have.property('facetValues');
+            response[0].facets.range.facetValues.length.should.be.greaterThan(0);
             done();
           }, done);
       // TODO: mix of implicit bindings for facets and explicit bindings

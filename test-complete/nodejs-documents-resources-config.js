@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var should = require('should');
 var fs = require('fs');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -29,16 +29,16 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 describe('when configuring resource services', function(){
   var serviceName = 'timeService';
   var serviceNameInvalid = 'BlaBla';
-  var servicePath = './test-basic/data/timeService.xqy';
+  var servicePath = './node-client-api/test-basic/data/timeService.xqy';
     it('should write the resource service with positional parameters', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     restAdminDB.config.resources.write(serviceName, 'xquery', fs.createReadStream(servicePath)).
     result(function(response){
       done();
     }, done);
   }); 
    it('should write the resource service with named parameters', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     restAdminDB.config.resources.write({
       name:        serviceName,
       title:       'The Time Service',
@@ -60,14 +60,16 @@ describe('when configuring resource services', function(){
       done();
     }, done);
   }); 
+  
   it('should try to read the resource service via invalid name', function(done){
     restAdminDB.config.resources.read(serviceNameInvalid).
     result(function(source){
-	 //console.log(JSON.stringify(source, null, 4));
-	  //output should be null, need to put a check on it
-	  (!valcheck.isNullOrUndefined(source)).should.equal(true);
-      done();
-    }, done);
+	  //console.log(JSON.stringify("Output :"+source, null, 4));
+	  },function(error){
+	  //console.log(JSON.stringify(error, null, 4));
+	  (valcheck.isNullOrUndefined(error)).should.equal(false);
+	  done();
+	  }, done);
   });
   it('should list the resource services', function(done){
     db.config.resources.list().
@@ -83,7 +85,7 @@ describe('when configuring resource services', function(){
     }, done);
   }); 
    it('should over-write the resource service with named parameters', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     restAdminDB.config.resources.write({
       name:        serviceName,
       title:       'The Hindustan Time Service',
@@ -114,10 +116,11 @@ describe('when configuring resource services', function(){
     it('should try read the resource service after remove', function(done){
     restAdminDB.config.resources.read(serviceName).
     result(function(source){
-	   //console.log(JSON.stringify(source, null, 4));
-      (!valcheck.isNullOrUndefined(source)).should.equal(true);
-      done();
-    }, done);
+	},function(error){
+	  //console.log(JSON.stringify(error, null, 4));
+	  (valcheck.isNullOrUndefined(error)).should.equal(false);
+	  done();
+	  }, done);
   });  
    it('should delete the invalid resource service', function(done){
     restAdminDB.config.resources.remove(serviceNameInvalid).

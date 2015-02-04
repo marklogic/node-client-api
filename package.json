@@ -1,9 +1,9 @@
 {
   "author": "MarkLogic",
   "name": "marklogic",
-  "description": "The official MarkLogic Node.js client.",
+  "description": "The official MarkLogic Node.js client API.",
   "homepage": "http://github.com/marklogic/node-client-api",
-  "version": "1.0.0-ea3",
+  "version": "1.0.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "keywords": [
@@ -25,10 +25,9 @@
     "core-util-is": "^1.0.1",
     "deepcopy": "^0.3.3",
     "dicer": "^0.2.3",
-    "multipart": "^0.1.5",
-    "qs": "~2.2.3",
+    "multipart-stream": "^1.0.0",
+    "qs": "^2.2.3",
     "through2": "^0.5.1",
-    "winston": "^0.7.3",
     "www-authenticate": "^0.6.2",
     "yakaa": "^1.0.0"
   },
@@ -40,8 +39,8 @@
     "node": ">=0.10.26 <0.11"
   },
   "devDependencies": {
+    "bunyan": "^1.2.3",
     "gulp": "^3.6.1",
-    "gulp-intercept": "^0.1.0",
     "gulp-jsdoc": "^0.1.4",
     "gulp-jshint": "^1.5.3",
     "gulp-mocha": "^0.4.1",
@@ -49,6 +48,7 @@
     "jshint": "^2.5.1",
     "mocha": "^1.18.2",
     "read": "^1.0.5",
-    "should": "^4.0.4"
+    "should": "^4.0.4",
+    "winston": "^0.7.3"
   }
 }

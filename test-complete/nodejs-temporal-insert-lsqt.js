@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -30,9 +30,10 @@ testconfig.manageAdminConnection.password = "admin";
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-describe('Write Document Test', function() {
+describe('Temporal insert lsqt test', function() {
   
   var docuri = 'temporalDoc.json'; 
 
@@ -118,7 +119,7 @@ describe('Write Document Test', function() {
         if (document.collections[i] !== temporalCollectionName && document.collections[i] !== 'coll0' &&
             document.collections[i] !== 'coll1' && document.collections[i] !== 'latest' &&
             document.collections[i] !== docuri) {
-          console.log("Invalid Collection: " + coll);
+          //console.log("Invalid Collection: " + coll);
           should.equal(false, true);
         }
       }      
@@ -164,13 +165,30 @@ describe('Write Document Test', function() {
     }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result(function(response){done();}, done);
+    }).result().then(function(response) {
+      if (response >= 400) {
+        console.log(response);
+      } 
+      done();
+    }, function(err) {
+      console.log(err); done();
+    },
+    done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
 
 });

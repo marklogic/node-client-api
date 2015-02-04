@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -25,6 +25,7 @@ testconfig.manageAdminConnection.password = "admin";
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
 
@@ -32,7 +33,7 @@ var docuri = '/test/transaction/doc1.json';
 var tid = null;
 var docCount = 0;
 
-describe('Document transaction test', function() {
+describe('Temporal transaction commit test', function() {
 
   it('should get original count of documents', function(done) {
     db.documents.query(
@@ -40,7 +41,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         )
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         docCount = response.length;
         done();
       }, done);
@@ -84,7 +85,7 @@ describe('Document transaction test', function() {
 
  it('should read the document before commit if txid matches', function(done) {
     db.documents.read({uris: docuri, txid: tid, categories:['metadata']}).result(function(documents) {
-      console.log("Document count: " + documents.length);
+      //console.log("Document count: " + documents.length);
       done();
     }, done);
   });
@@ -95,7 +96,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         )
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         response.length.should.equal(docCount);
         done();
       }, done);
@@ -107,7 +108,7 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         ).withOptions({txid: tid})
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         response.length.should.equal(docCount + 1);
         done();
       }, done);
@@ -117,11 +118,11 @@ describe('Document transaction test', function() {
     db.transactions.commit(tid).
     result(
       function(response) {
-        console.log("response: " + JSON.stringify(response));
+        //console.log("response: " + JSON.stringify(response));
         done();
       }, 
       function(err) {
-        console.log("Error: " + err);
+        //console.log("Error: " + err);
         done();
       });
   });  
@@ -132,19 +133,36 @@ describe('Document transaction test', function() {
         q.collection(docuri)
         )
       ).result(function(response) {
-        console.log("Document count: " + response.length);
+        //console.log("Document count: " + response.length);
         response.length.should.equal(docCount + 1);
         done();
       }, done);
   });
   
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result(function(response){done();}, done);
+    }).result().then(function(response) {
+      if (response >= 400) {
+        console.log(response);
+      } 
+      done();
+    }, function(err) {
+      console.log(err); done();
+    },
+    done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
 
 });

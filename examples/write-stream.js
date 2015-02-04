@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,10 @@
  */
 var fs = require('fs');
 
-var marklogic = require('../');
-
 var exutil = require('./example-util.js');
+
+// a real application would require without the 'exutil.' namespace
+var marklogic = exutil.require('marklogic');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
@@ -30,9 +31,13 @@ var writableStream = db.documents.createWriteStream({
   });
 writableStream.result(function(response) {
     console.log('wrote '+response.documents[0].uri);
+    console.log('done');
+
     exutil.succeeded();
   }, function(error) {
-    exutil.failed(error);
+    console.log(JSON.stringify(error));
+
+    exutil.failed();
   });
 
-fs.createReadStream('./examples/data/uv_flag_2004.gif').pipe(writableStream);
+fs.createReadStream(exutil.pathToData()+'uv_flag_2004.gif').pipe(writableStream);

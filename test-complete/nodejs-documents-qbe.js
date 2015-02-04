@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document qbe test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -276,5 +277,13 @@ describe('Document qbe test', function(){
       }, done);
   });
 
+it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  }); 
 
 });

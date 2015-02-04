@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var should = require('should');
 var fs = require('fs');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -29,16 +29,16 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 describe('when executing resource services', function(){
   describe('using XQuery', function() {
     var xqyServiceName = 'wrapperService';
-    var xqyServicePath = './test-basic/data/wrapperService.xqy';
+    var xqyServicePath = './node-client-api/test-basic/data/wrapperService.xqy';
     before(function(done){
-      this.timeout(3000);
+      this.timeout(10000);
       restAdminDB.config.resources.write(xqyServiceName, 'xquery', fs.createReadStream(xqyServicePath)).
       result(function(response){
         done();
       }, done);
     });
  it('should get one document', function(done){
-      db.resources.get({name:xqyServiceName, format:'xquery', params:{value:'foo'}}).
+      db.resources.get({name:xqyServiceName, params:{value:'foo'}}).
       result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(1);
@@ -50,7 +50,7 @@ describe('when executing resource services', function(){
       }, done);
     });
  it('should get one document with transaction', function(done){
-		this.timeout(5000);
+		this.timeout(10000);
 		var tid = null;
 		//console.log('Started');
 		db.transactions.open().result().
@@ -59,7 +59,7 @@ describe('when executing resource services', function(){
 		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
-		return db.resources.get({name:xqyServiceName, format:'xquery',params:{value:'foo'}}).
+		return db.resources.get({name:xqyServiceName, params:{value:'foo'}}).
       result(function(response){
 		//console.log('Responce of Get');
 		//console.log(JSON.stringify(response, null, 4));
@@ -81,7 +81,7 @@ describe('when executing resource services', function(){
 	  
 	  it('should get two documents', function(done){
       db.resources.get({
-        name:xqyServiceName, format:'xquery', params:{value:'foo', multipart:'true'}
+        name:xqyServiceName, params:{value:'foo', multipart:'true'}
         }).
       result(function(response){
         valcheck.isArray(response).should.equal(true);
@@ -106,7 +106,7 @@ describe('when executing resource services', function(){
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.get({
-        name:xqyServiceName, format:'xquery', params:{value:'foo', multipart:'true'}
+        name:xqyServiceName, params:{value:'foo', multipart:'true'}
         }).
       result(function(response){
         valcheck.isArray(response).should.equal(true);
@@ -130,7 +130,7 @@ describe('when executing resource services', function(){
     });
 	it('should put one typed document', function(done){
       db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}}
         ]}).
       result(function(response){
@@ -152,7 +152,7 @@ describe('when executing resource services', function(){
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}}
         ]}).
       result(function(response){
@@ -176,7 +176,7 @@ describe('when executing resource services', function(){
 	  }); 
 it('should put one untyped document', function(done){
       db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {one:'untyped document'}
         ]}).
       result(function(response){
@@ -198,7 +198,7 @@ it('should put one untyped document', function(done){
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {one:'untyped document'}
         ]}).
       result(function(response){
@@ -220,7 +220,7 @@ it('should put one untyped document', function(done){
   });
   it('should put two typed documents', function(done){
       db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
@@ -246,7 +246,7 @@ it('should put one untyped document', function(done){
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
@@ -272,7 +272,7 @@ it('should put one untyped document', function(done){
     });
 	it('should post two typed documents', function(done){
       db.resources.post({
-        name:xqyServiceName, format:'xquery', params:{value:'foo', multipart:'true'}, documents:[
+        name:xqyServiceName, params:{value:'foo', multipart:'true'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
@@ -305,7 +305,7 @@ it('should put one untyped document', function(done){
 		tid = response.txid;
 		//console.log(tid, null, 4);
 		return db.resources.post({
-        name:xqyServiceName, format:'xquery', params:{value:'foo', multipart:'true'}, documents:[
+        name:xqyServiceName, params:{value:'foo', multipart:'true'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
@@ -344,7 +344,7 @@ it('should put one untyped document', function(done){
 		//console.log(JSON.stringify(response, null, 4));
 		tid = response.txid;
 		//console.log(tid, null, 4);
-		return db.resources.remove({name:xqyServiceName, format:'xquery', params:{value:'foo'}}).
+		return db.resources.remove({name:xqyServiceName, params:{value:'foo'}}).
       result(function(response){
 		//console.log(JSON.stringify(response, null, 4));
         response.should.have.property('deletedDoc');

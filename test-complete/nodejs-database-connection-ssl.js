@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa-ssl.js');
 
 var marklogic = require('../');
 
@@ -29,7 +29,7 @@ describe('SSL Test', function() {
   var docuri2 = '/foo/bar/test2.json'; 
  
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbSsl.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -189,21 +189,22 @@ describe('SSL Test', function() {
 
   it('should delete the document', function(done) {
     dbSsl.documents.remove(docuri).result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
+      //console.log(document);
       done();
     }, done);
   });
 
   it('should delete the document', function(done) {
     dbSsl.documents.remove(docuri2).result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });
 
   it('should delete the document', function(done) {
     dbSsl.documents.remove('/test/crud/withoutContentType1.json').result(function(document) {
-      document.exists.should.eql(false);
+      document.removed.should.eql(true);
       done();
     }, done);
   });

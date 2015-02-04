@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 var exutil = require('./example-util.js');
 
-var marklogic = require('../');
+//a real application would require without the 'exutil.' namespace
+var marklogic = exutil.require('marklogic');
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
@@ -29,9 +30,13 @@ db.documents.read('/countries/uv_flag_2004.gif').stream('chunked').
     length += chunk.length;
     }).
   on('error', function(error) {
-    exutil.failed(error);
+    console.log(JSON.stringify(error));
+
+    exutil.failed();
     }).
   on('end', function() {
     console.log('read '+chunks+' chunks of '+length+' length');
+    console.log('done');
+
     exutil.succeeded();
     });

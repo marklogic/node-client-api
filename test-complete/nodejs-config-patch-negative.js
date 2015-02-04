@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -31,12 +31,12 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Config patch negative test', function(){
 
   var replaceModule = 'objectify.xqy';
-  var replacePath = './test-complete/data/objectify.xqy';
+  var replacePath = './node-client-api/test-complete/data/objectify.xqy';
   var replaceModuleInvalid = 'objectifyInvalid.xqy';
-  var replacePathInvalid = './test-complete/data/objectifyInvalid.xqy';
+  var replacePathInvalid = './node-client-api/test-complete/data/objectifyInvalid.xqy';
 
   it('should fail to write replacement library with reader user', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.config.patch.replace.write(
       replaceModule, 
       [{'role-name':'app-user', capabilities:['execute']}], 

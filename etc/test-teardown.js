@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,31 +41,43 @@ function setup(manager) {
       console.log(testconfig.testServerName+' not found - nothing to delete');
     } else {
       console.log('removing database and REST server for '+testconfig.testServerName);
-      manager.remove({
-        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
+      manager.post({
+        endpoint: '/manage/v2/databases/' + testconfig.testServerName,
+        contentType: 'application/json',
+        accept: 'application/json',
+        body: {'operation': 'clear-database'}
         }).result().
       then(function(response) {
-        return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
+        return manager.post({
+          endpoint: '/manage/v2/databases/' + testconfig.testServerName+'-modules',
+          contentType: 'application/json',
+          accept: 'application/json',
+          body: {'operation': 'clear-database'}
           }).result();
         }).
       then(function(response) {
-        return manager.remove({
-          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
+        return manager.put({
+          endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+          params:   {
+            format: 'json'
+            },
+          body:        {'schema-database': 'Schemas'},
+          hasResponse: true
           }).result();
         }).
       then(function(response) {
         return       manager.remove({
           endpoint: '/v1/rest-apis/'+testconfig.testServerName,
+          accept:   'application/json',
           params:   {include: ['content', 'modules']}
           }).result();
         }).
       then(function(response) {
-        console.log('teardown succeeded - restart the server');
+          console.log('teardown succeeded - restart the server');
         },
         function(error) {
           console.log('failed to tear down '+testconfig.testServerName+' server:\n'+
-              JSON.stringify(error));
+              JSON.stringify(error, null, 2));
         });
     }
   });

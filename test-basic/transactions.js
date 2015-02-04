@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,6 +133,60 @@ describe('transaction', function(){
         }, done);
     });
   });
+  describe('with named transactions', function(){
+    this.timeout(5000);
+    var uri = '/test/txn/rollback2.json';
+    before(function(done){
+      db.documents.probe(uri).result(function(document){
+        if (document.exists) {
+          db.documents.remove(uri).
+            result(function(response) {done();}, done);          
+        } else {
+          done();
+        }
+      }, done);
+    });
+    it('should rollback a positional transaction name', function(done){
+      var tid = null;
+      db.transactions.open('firstTxn').result().
+      then(function(response) {
+        tid = response.txid;
+        return db.documents.write({
+          txid: tid,
+          uri: uri,
+          contentType: 'application/json',
+          content: {txKey: tid}
+          }).result();
+        }).
+      then(function(response) {
+        return db.transactions.rollback(tid).result();
+        }).
+      then(function(response) {
+        response.should.be.ok;
+        done();
+        }, done);
+    });
+    it('should rollback a named transaction name', function(done){
+      var tid = null;
+      db.transactions.open({transactionName:'firstTxn'}).result().
+      then(function(response) {
+        tid = response.txid;
+        return db.documents.write({
+          txid: tid,
+          uri: uri,
+          contentType: 'application/json',
+          content: {txKey: tid}
+          }).result();
+        }).
+      then(function(response) {
+        return db.transactions.rollback(tid).result();
+        }).
+      then(function(response) {
+        response.should.be.ok;
+        done();
+        }, done);
+    });
+  });
   describe('transaction status', function(){
     this.timeout(5000);
     var uri = '/test/txn/read1.json';
@@ -152,8 +206,7 @@ describe('transaction', function(){
         return db.transactions.read(tid).result();
         }).
       then(function(response) {
-        // TODO: pre-parse based on accept header
-        var status = JSON.parse(response)['transaction-status'];
+        var status = response['transaction-status'];
         var transactionId = status['transaction-id'];
         tid.should.equal(transactionId);
         return db.transactions.rollback(tid).result();

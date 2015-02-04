@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var should = require('should');
 var fs = require('fs');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -27,11 +27,11 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('graph negative test', function(){
   var graphUri   = 'marklogic.com/negative/people';
-  var graphPath  = './test-complete/data/people.ttl';
-  var sparqlPath = './test-complete/data/people.rq';
+  var graphPath  = './node-client-api/test-complete/data/people.ttl';
+  var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -40,7 +40,7 @@ describe('graph negative test', function(){
   });
 
   /*it('should read the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('application/json').
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
@@ -50,7 +50,7 @@ describe('graph negative test', function(){
   });*/
 
   it('should fail to read graph with invalid contentType', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('foo/bar', graphUri).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -63,7 +63,7 @@ describe('graph negative test', function(){
   });
 
   it('should fail to read non-existent graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read('text/n3', 'nonexistent/graph/invalid').
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -76,7 +76,7 @@ describe('graph negative test', function(){
   });
 
   it('should fail to check graph with invalid contentType', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list('foo/bar').
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -89,7 +89,7 @@ describe('graph negative test', function(){
   });
 
   /*it('should run a SPARQL query against the default graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
@@ -115,7 +115,7 @@ describe('graph negative test', function(){
   });*/
 
   /*it('should fail to remove non-existent graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove('nonExistent/graph/invalid').
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -128,7 +128,7 @@ describe('graph negative test', function(){
   });*/
 
   it('should delete the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove(graphUri).
     result(function(response){
       done();

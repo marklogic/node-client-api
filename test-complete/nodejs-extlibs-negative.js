@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 var fs = require('fs');
 
 var marklogic = require('../');
@@ -25,12 +25,12 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Extlib negative test', function(){
-  var fsPath = './test-complete/data/sourceParams.js';
+  var fsPath = './node-client-api/test-complete/data/sourceParams.js';
   var invokePath = '/ext/invokeTest/sourceParams.sjs';
-  var invalidFsPath = './test-complete/data/someInvalidFile.js';
+  var invalidFsPath = './node-client-api/test-complete/data/someInvalidFile.js';
 
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbAdmin.config.extlibs.write({
       path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
     }).

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -26,7 +26,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document query test 2', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -238,18 +238,18 @@ describe('Document query test 2', function(){
     }, done);
   });
 
-  /*it('should do locks fragment', function(done){
+  it('should do locks fragment', function(done){
     db.documents.query(
       q.where(
-        q.locksFragment(q.word('title', 'bush'))
+        q.locksFragment(q.term('Bush'))
       )
     ).
     result(function(response) {
-      console.log(JSON.stringify(response, null, 2));
-      //response.length.should.equal(2);
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
       done();
     }, done);
-  });*/
+  });
 
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document parse binding test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -80,7 +81,9 @@ describe('Document parse binding test', function(){
         price: {
              amt: 12.34
            },
-        p: 'Vannevar served as a prominent policymaker and public intellectual'
+        p: 'Vannevar served as a prominent policymaker and public intellectual',
+        booleanVal: false,
+        nullVal: 'not null'
         }
       }, { 
         uri: '/test/query/matchList/doc5.json',
@@ -94,7 +97,9 @@ describe('Document parse binding test', function(){
           price: {
                amt: 123.45
              },
-          p: 'The Memex, unfortunately, had no automated search feature'
+          p: 'The Memex, unfortunately, had no automated search feature',
+          booleanVal: true,
+          nullVal: null
           }
         }).
     result(function(response){done();}, done);
@@ -106,6 +111,95 @@ describe('Document parse binding test', function(){
         q.parsedFrom('intitle:"The memex"',
           q.parseBindings(
             q.value('title', q.bind('intitle'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do value query on int type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('myAmt:123.45',
+          q.parseBindings(
+            q.value('amt', q.jsontype('number'), q.bind('myAmt'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do value query on double type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('pop:5',
+          q.parseBindings(
+            q.value('popularity', q.jsontype('number'), q.bind('pop'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(3);
+      //response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do value query on int type without mentioning json type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('pop:5',
+          q.parseBindings(
+            q.value('popularity', q.bind('pop'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(0);
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do value query on boolean type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('bool:true',
+          q.parseBindings(
+            q.value('booleanVal', q.jsontype('boolean'), q.bind('bool'))
+          )
+        )
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should do value query on null type', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('myNull:null',
+          q.parseBindings(
+            q.value('nullVal', q.jsontype('null'), q.bind('myNull'))
           )
         )
       )
@@ -194,4 +288,31 @@ describe('Document parse binding test', function(){
     }, done);
   });
 
+  it('should do simple parse combined with structured query', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('intitle:"The memex"',
+          q.parseBindings(
+            q.value('title', q.bind('intitle'))
+          )
+        ),
+        q.term('automated')
+      )
+    ).
+    result(function(response) {
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  }); 
 });

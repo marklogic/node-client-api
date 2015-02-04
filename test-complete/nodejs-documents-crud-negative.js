@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
+var valcheck = require('core-util-is');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -48,10 +49,10 @@ describe('Document CRUD negative test', function(){
       content: '<a><b>foo</a>'
       }).
     result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
+	 (valcheck.isNullOrUndefined(response.documents[0].contentType)).should.equal(true);
       done();
     }, function(error) {
-      //console.log(error);
+      console.log(error);
       error.body.errorResponse.messageCode.should.equal('XDMP-DOCNOENDTAG');
       error.statusCode.should.equal(400);
       done();
@@ -65,7 +66,7 @@ describe('Document CRUD negative test', function(){
       content: { title: 'invalid type' }
       }).
     result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
+	(valcheck.isNullOrUndefined(response.documents[0].contentType)).should.equal(true);
       done();
     }, function(error) {
       //console.log(error.body);
@@ -115,8 +116,8 @@ describe('Document CRUD negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('INTERNAL ERROR');
-      error.statusCode.should.equal(500);
+      error.body.errorResponse.messageCode.should.equal('REST-REQUIREDPARAM');
+      error.statusCode.should.equal(400);
       done();
       });
   });

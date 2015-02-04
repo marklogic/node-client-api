@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,22 @@ describe('patch-builder', function() {
         {replace:{
           select:  '/the/select',
           content: [{"$value":"the content"}],
+          apply:   'functionName'
+          }}
+        );
+    assert.deepEqual(
+        p.replace('/the/select', p.apply('functionName', new Date('2014-09-05T00:00:00.000Z'))),
+        {replace:{
+          select:  '/the/select',
+          content: [{"$value":"2014-09-05T00:00:00.000Z", "$datatype":"xs:datetime"}],
+          apply:   'functionName'
+          }}
+        );
+    assert.deepEqual(
+        p.replace('/the/select', p.apply('functionName', p.datatype('long'), '9223372036854775807')),
+        {replace:{
+          select:  '/the/select',
+          content: [{"$value":"9223372036854775807", "$datatype":"xs:long"}],
           apply:   'functionName'
           }}
         );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 var exutil = require('./example-util.js');
 
-var marklogic = require('../');
+//a real application would require without the 'exutil.' namespace
+var marklogic = exutil.require('marklogic');
 
 var p = marklogic.patchBuilder;
 
@@ -28,7 +29,7 @@ var timestamp = (new Date()).toISOString();
 var uri        = '/countries/uv.json';
 var operations = [
     p.pathLanguage('jsonpath'),
-    p.replaceInsert('$.timestamp', '$.name', 'after', {timestamp: timestamp})
+    p.replaceInsert('$.timestamp', '$.name', 'after', timestamp)
     ];
 
 console.log('configure the server to enforce optimistic locking');
@@ -40,8 +41,6 @@ dbAdmin.config.serverprops.write({
     console.log(
         'try to update a value in the content to '+
         timestamp+'\n    without passing the document version id');
-    // suppress the error for this demo
-    db.setLogger({console:false});
     db.documents.patch({
       uri:        uri,
       operations: operations
@@ -52,7 +51,6 @@ dbAdmin.config.serverprops.write({
         },
         function(failure) {
           console.log('expected failure for the update without the version id');
-          db.setLogger({console:true});
 
           console.log('get the current version id for the document');
           db.documents.probe(uri).result().
@@ -83,13 +81,19 @@ dbAdmin.config.serverprops.write({
             return dbAdmin.config.serverprops.write({
               'update-policy': 'merge-metadata'
                 }).result();
-            }).
-          then(function(response){
-            exutil.succeeded();
-          }, function(error) {
-            exutil.failed(error);
-            });
+              }).
+            then(function(response) {
+                console.log('done');
+
+                exutil.succeeded();
+              }, function(error) {
+                console.log(JSON.stringify(error));
+
+                exutil.failed();
+              });
         });
   }, function(error) {
-    exutil.failed(error);
+    console.log(JSON.stringify(error));
+
+    exutil.failed();
   });

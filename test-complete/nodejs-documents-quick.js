@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var util   = require('util');
 var concatStream = require('concat-stream');
 var valcheck     = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 //var testutil   = require('./test-util.js');
 
 var marklogic = require('../');
@@ -193,7 +193,7 @@ describe('quick path', function(){
   });
    it('should remove a collection', function(done){
     var collectionUri = '/matchCollection1';
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.removeCollection(collectionUri).
     result(function(collection) {
       collectionUri.should.eql(collection);

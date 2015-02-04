@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 var should = require('should');
 
 var testlib    = require('../etc/test-lib.js');
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
@@ -26,10 +26,11 @@ var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnectio
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var q = marklogic.queryBuilder;
 var temporalCollectionName = 'temporalCollectionLsqt';
 
-describe('Write Document Test', function() {
+describe('LSQT query (lsqtQuery) Test', function() {
   
   var docuri = 'temporalDoc.json'; 
  
@@ -114,23 +115,47 @@ describe('Write Document Test', function() {
   });
 
 
-  it('should do lsqt query', function(done) { 
-    db.documents.query(q.where(
-      q.lsqtQuery(temporalCollectionName, '2007-01-01T00:00:01')
-      ).withOptions({debug:true})).result(function(response) {
-        console.log(response);
+  it('should do lsqt query: ', function(done) {
+    db.documents.query(
+      q.where(
+        q.lsqtQuery(temporalCollectionName, '2007-01-01T00:00:01')
+        )
+      ).result(function(response) {
         response.length.should.equal(1);
+
+        response[0].content.System.systemStartTime.should.equal('2005-01-01T00:00:01');
+        response[0].content.System.systemEndTime.should.equal('2010-01-01T00:00:01');
+        response[0].content.Valid.validStartTime.should.equal('2001-01-01T00:00:00');
+        response[0].content.Valid.validEndTime.should.equal('2011-12-31T23:59:59');
+
         done();
       }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result(function(response){done();}, done);
+    }).result().then(function(response) {
+      if (response >= 400) {
+        console.log(response);
+      } 
+      done();
+    }, function(err) {
+      console.log(err); done();
+    },
+    done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
 
 });

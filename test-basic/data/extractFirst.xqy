@@ -1,6 +1,6 @@
 xquery version "1.0-ml";
 (:
- : Copyright 2014 MarkLogic Corporation
+ : Copyright 2014-2015 MarkLogic Corporation
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -31,9 +31,7 @@ declare function extractFirst:snippet(
     $ctsquery  as schema-element(cts:query), 
     $transform as element(search:transform-results))
 as element(search:snippet) {
-    <search:snippet>
-    <jsonbasic:json type="object">
-    <jsonbasic:first type="string">{($result//text())[1]}</jsonbasic:first>
-    </jsonbasic:json>
-    </search:snippet>
+    <search:snippet format="json">{
+        concat('{first: "',string(($result//text())[1]),'"}')
+    }</search:snippet>
 };

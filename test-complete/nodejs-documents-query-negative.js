@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document query negative test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -115,4 +116,69 @@ describe('Document query negative test', function(){
       });
   });
 
+  it('should fail to do combined qbe and structured query', function(done){
+    try {
+      db.documents.query(
+        q.where(
+          q.byExample({title: 'The memex'}),
+          q.parsedFrom('pop:5',
+            q.parseBindings(
+              q.value('popularity', q.jsontype('number'), q.bind('pop'))
+            )
+          )
+        )
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+    } 
+    catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: A Query by Example (QBE) must be the only query');
+      done();
+    }
+  });
+
+  it('should fail to do combined qbe and parsed query', function(done){
+    try {
+      db.documents.query(
+        q.where(
+          q.byExample({title: 'The memex'}),
+          q.term('Bush')
+        )
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+    } 
+    catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: A Query by Example (QBE) must be the only query');
+      done();
+    }
+  });
+
+  it('should fail to do word query with one arg', function(done){
+    try {
+      db.documents.query(
+        q.where(
+          q.word('Bush')
+        ).slice(0)
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+    } 
+    catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: subquery must supply literal criteria for: Bush');
+      done();
+    }
+  });
+
+it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  }); 
 });

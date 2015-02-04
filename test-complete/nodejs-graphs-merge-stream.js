@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ var fs = require('fs');
 var valcheck = require('core-util-is');
 var concatStream = require('concat-stream');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -28,12 +28,12 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('merge stream graph test', function(){
   var graphUri   = 'marklogic.com/stream/merge/people';
-  var graphPath1  = './test-complete/data/people3.ttl';
-  var graphPath2  = './test-complete/data/people4.ttl';
-  var sparqlPath = './test-complete/data/people.rq';
+  var graphPath1  = './node-client-api/test-complete/data/people3.ttl';
+  var graphPath2  = './node-client-api/test-complete/data/people4.ttl';
+  var sparqlPath = './node-client-api/test-complete/data/people.rq';
 
   it('should write the first graph with stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var ws = db.graphs.createWriteStream(graphUri, 'text/turtle');
     ws.result(function(response) {
       //console.log(JSON.stringify(response, null, 4));
@@ -45,7 +45,7 @@ describe('merge stream graph test', function(){
   });
 
   it('should merge the second graph with stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var ws = db.graphs.createMergeStream(graphUri, 'text/turtle');
     ws.result(function(response) {
       //console.log(JSON.stringify(response, null, 4));
@@ -57,7 +57,7 @@ describe('merge stream graph test', function(){
   });
 
   /*it('should read the merged graph as a stream', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.read(graphUri, 'text/n3').stream('chunked').
     on('data', function(data) {
       //console.log(data);
@@ -72,7 +72,7 @@ describe('merge stream graph test', function(){
   });*/
 
   it('should list the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.list(). 
     result(function(collections){
       //console.log(collections);
@@ -84,7 +84,7 @@ describe('merge stream graph test', function(){
   });
 
   it('should check the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.probe(graphUri).
     result(function(response){
       response.should.have.property('graph');
@@ -96,7 +96,7 @@ describe('merge stream graph test', function(){
   });
 
   it('should run a SPARQL query against the merged graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
@@ -124,7 +124,7 @@ describe('merge stream graph test', function(){
   });
 
   it('should remove the graph', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     db.graphs.remove(graphUri).
     result(function(response){
       done();

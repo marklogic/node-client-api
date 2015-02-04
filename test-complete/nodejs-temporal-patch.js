@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 var testlib    = require('../etc/test-lib.js');
 
 var marklogic = require('../');
@@ -27,16 +27,17 @@ var adminManager = testlib.createManager(adminClient);
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var q = marklogic.queryBuilder;
 var p = marklogic.patchBuilder;
 
-describe('Write Document Test', function() {
+describe('Temporal patch test', function() {
   
   var docuri = 'temporalDoc.json'; 
  
   before(function(done) {
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -75,7 +76,7 @@ describe('Write Document Test', function() {
         // p.replace('quality', 24)
       ]
     }).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        ////console.log(JSON.stringify(response, null, 4));
         response.uri.should.equal(docuri);
         done();
     }, function(err) {
@@ -109,7 +110,7 @@ describe('Write Document Test', function() {
       p.pathLanguage('jsonpath'),
       p.replace('$.name', 'Bourne')
     ).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        ////console.log(JSON.stringify(response, null, 4));
         response.uri.should.equal(docuri);
         done();
     }, function(err) {
@@ -129,19 +130,36 @@ describe('Write Document Test', function() {
         // p.replace('quality', 24)
       ]
     }).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        ////console.log(JSON.stringify(response, null, 4));
         response.uri.should.equal(docuri);
         done();
     }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
       accept: 'application/json',
       body:   {'operation': 'clear-database'}
-    }).result(function(response){done();}, done);
+    }).result().then(function(response) {
+      if (response >= 400) {
+        console.log(response);
+      } 
+      done();
+    }, function(err) {
+      console.log(err); done();
+    },
+    done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
 
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,6 @@ describe('document content', function(){
     describe('a JSON descriptor with a readable stream', function(){
       before(function(done){
         var readableString = new testutil.ValueStream('{"key1":"value 1"}');
-        readableString.pause();
         db.documents.write({
           uri: '/test/write/stream1.json',
           contentType: 'application/json',
@@ -261,7 +260,6 @@ describe('document content', function(){
         this.timeout(3000);
         var uri = '/test/write/stream1.png';
         var readableBinary = new testutil.ValueStream(binaryValue);
-        readableBinary.pause();
         db.documents.write({
           uri: uri,
           contentType: 'image/png',
@@ -443,7 +441,56 @@ describe('document content', function(){
 
 describe('document metadata', function(){
   describe('write', function(){
-    describe('with content', function(){
+    describe('all except properties with one document', function() {
+      var uri = '/test/write/metaDocument1.json';
+      it('should read back the metadata and content', function(done) {
+        db.documents.write({
+          uri: uri,
+          contentType: 'application/json',
+          collections: ['collection1/0', 'collection1/1'],
+          permissions: [
+            {'role-name':'app-user',    capabilities:['read']},
+            {'role-name':'app-builder', capabilities:['read', 'update']}
+            ],
+          quality: 1,
+          content: {key1: 'value 1'}
+          })
+        .result(function(response) {
+          return db.documents.read({uris:uri, categories:['metadata', 'content']}).result();
+          })
+        .then(function(documents) {
+          valcheck.isUndefined(documents).should.equal(false);
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.should.have.property('collections');
+          document.collections.length.should.equal(2);
+          for (var i=0; i < 2; i++) {
+            document.collections[i].should.equal('collection1/'+i);
+          }
+          var permissionsFound = 0;
+          document.permissions.forEach(function(permission){
+            switch (permission['role-name']) {
+            case 'app-user':
+              permissionsFound++;
+              permission.capabilities.length.should.equal(1);
+              permission.capabilities[0].should.equal('read');
+              break;
+            case 'app-builder':
+              permissionsFound++;
+              permission.capabilities.length.should.equal(2);
+              permission.capabilities.should.containEql('read');
+              permission.capabilities.should.containEql('update');
+              break;
+            }
+          });
+          permissionsFound.should.equal(2);
+          document.quality.should.equal(1);
+          document.content.key1.should.equal('value 1');
+          done();
+          }, done);
+      });
+    });
+    describe('all with one document', function(){
       before(function(done){
         db.documents.write({
           uri: '/test/write/metaContent1.json',

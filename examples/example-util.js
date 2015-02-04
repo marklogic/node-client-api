@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,43 +13,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var testconfig = require('../etc/test-config.js');
+var fs = require('fs');
 
 var examplePort     = 8000; // change to 8015 to use the test database
 var exampleAuthType = 'DIGEST';
 
-var listeners = {
+var unknownLocation = 0;
+var modulesLocation = 1;
+var packageLocation = 2;
+
+var locationType = unknownLocation;
+if (fs.existsSync('node_modules/marklogic')) {
+  locationType = modulesLocation;
+} else if (fs.existsSync('lib/marklogic.js')) {
+  locationType = packageLocation;
+}
+
+var testconfig = null;
+switch(locationType) {
+case packageLocation:
+  testconfig = require('../etc/test-config.js');  
+  break;
+default:
+  testconfig = require('./example-config.js');  
+  break;
+}
+
+// dispatch the require from the project or within the distribution
+var marklogic = null;
+function locateRequire() {
+  if (marklogic === null) {
+    switch(locationType) {
+    case packageLocation:
+      marklogic = require('../');  
+      break;
+    default:
+      marklogic = require('marklogic');  
+      break;
+    }
+  }
+
+  return marklogic;
+}
+
+var dataDir = null;
+function pathToData() {
+  if (dataDir !== null) {
+    return dataDir;
+  }
+
+  dataDir = 'node_modules/marklogic/examples/data';
+  if (fs.existsSync(dataDir)) {
+    dataDir += '/';
+    return dataDir;
+  }
+
+  dataDir = 'examples/data';
+  if (fs.existsSync(dataDir)) {
+    dataDir += '/';
+    return dataDir;
+  }
+
+  throw new Error('cannot find data directory for example');
+}
+
+var queueRunner = {
     mode:  'waiting',
     queue: []  
 };
-function addListener(listener) {
-  if (listeners.mode === 'waiting' && listeners.queue.length === 0) {
-    listeners.mode = 'running';
-    listener();
+function addScript(script) {
+  if (queueRunner.mode === 'waiting' && queueRunner.queue.length === 0) {
+    queueRunner.mode = 'running';
+    script.run();
   } else {
-    listeners.queue.push(listener);
+    queueRunner.queue.push(script);
   }
 };
-function notifyListener() {
-  if (listeners.queue.length === 0) {
-    if (listeners.mode !== 'waiting') {
-      listeners.mode = 'waiting';
+function notifyQueue() {
+  if (queueRunner.queue.length === 0) {
+    if (queueRunner.mode !== 'waiting') {
+      queueRunner.mode = 'waiting';
     }
     return;
   }
-  var listener = listeners.queue.shift();
-  listener();
+  var script = queueRunner.queue.shift();
+  script.run();
 };
 
 function succeeded() {
-  console.log('done');
-
-  notifyListener();
+  notifyQueue();
 };
 function failed(error) {
-  console.log(JSON.stringify(error));
-
-  notifyListener();
+  notifyQueue();
 };
 
 module.exports = {
@@ -74,7 +129,9 @@ module.exports = {
     password: testconfig.restWriterConnection.password,
     authType: exampleAuthType
   },
-  addListener: addListener,
+  require:     locateRequire,
+  pathToData:  pathToData,
+  addScript:   addScript,
   succeeded:   succeeded,
   failed:      failed
 };

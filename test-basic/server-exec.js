@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -202,8 +202,23 @@ describe('server-side call', function() {
  */
   });
   describe('to pass variables to XQuery', function() {
-    it('should interpolate an XQuery variable', function(done) {
-      db.xqueryEval('declare variable $you external;fn:concat("hello, ",$you)', {you:'world'}).
+    it('should interpolate a simple XQuery variable', function(done) {
+      db.xqueryEval(
+          'declare variable $you external;fn:concat("hello, ",$you)',
+          {'you':'world'}
+          ).
+      result(function(values) {
+        values.length.should.equal(1);
+        checkValue(values[0], 'text', 'string');
+        values[0].value.should.equal('hello, world');
+        done();
+      }, done);
+    });
+    it('should interpolate a namespaced XQuery variable', function(done) {
+      db.xqueryEval(
+          'declare namespace a = "/ns/a";declare variable $a:you external;fn:concat("hello, ",$a:you)',
+          {'{/ns/a}you':'world'}
+          ).
       result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'string');

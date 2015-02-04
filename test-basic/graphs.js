@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,15 @@ describe('graph operations', function(){
     db.graphs.read('text/n3').
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
+      done();
+    }, done);
+  });
+  it('should list the default graph', function(done){
+    db.graphs.list().
+    result(function(collections){
+      collections.some(function(collection){
+        return collection === 'http://marklogic.com/semantics#default-graph';
+        }).should.equal(true);
       done();
     }, done);
   });

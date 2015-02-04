@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ var exutil = require('./example-util.js');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
-var fsdir = './examples/data/';
+var fsdir = 'examples/data/';
 var dbdir = '/countries/';
 
 var batchSize = 100;
@@ -60,7 +60,7 @@ function readFile(filenames, i, buffer, isLast) {
 
 function writeBatch(filenames, batchFirst) {
   if (batchFirst >= filenames.length) {
-    console.log('done');
+    console.log('done loading example data to '+exutil.restWriterConnection.port);
     return;
   }
 
@@ -72,7 +72,13 @@ function writeBatch(filenames, batchFirst) {
   }
 }
 
+console.log('loading example data to '+exutil.restWriterConnection.port+'\n');
+
 fs.readdir(fsdir, function(err, filenames) {
+  if (err) {
+    throw err;
+  }
+
   var jsonFilenames = filenames.filter(function(filename) {
     return filename.match(/\.json$/);
   });

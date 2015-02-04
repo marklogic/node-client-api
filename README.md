@@ -1,49 +1,81 @@
 # MarkLogic Client API for Node.js
 
 The MarkLogic Client API for Node.js provides access to the MarkLogic database
-from Node.js.
+from Node.js applications.
+
+## Features
+
+*  Writing, reading, patching, and deleting documents in JSON, XML, text, or binary formats
+*  Querying over documents including parsing string queries, extracting properties, and calculating facets
+*  Projecting tuples (like table rows) out of documents
+*  Single transactions and multi-statement transactions for database changes
+*  Writing, reading, and deleting graphs and executing SPARQL queries over graphs
+*  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
 
 ## Status
 
-This branch provides the work in progress for the Early Access Release 3 of the MarkLogic Node.js API.
+Release 1.0.0 of the MarkLogic Node.js API
+
+## Sample
+
+The following example creates two documents in a collection using the built-in
+REST server for the Documents database:
+
+```
+    var marklogic = require('marklogic');
+
+    var db = marklogic.createDatabaseClient({
+      host:     'localhost',
+      port:     '8000',
+      user:     'admin',
+      password: 'admin',
+      authType: 'DIGEST'
+    });
+
+    db.createCollection(
+      '/books',
+      {author: 'Beryl Markham', ...},
+      {author: 'WG Sebald',     ...}
+      )
+    .result(function(response) {
+        console.log(JSON.stringify(response,null,2));
+      }, function (error) {
+        console.log(JSON.stringify(error,null,2));
+      });
+```
+
+Other calls can create additional documents for the same collection.
 
 ## Getting started
 
-Please register at the MarkLogic Early Access website and then follow the tutorial instructions:
+Here are some resources that walk you through working with MarkLogic using the Node.js API:
 
-http://ea.marklogic.com/features/node-js-client-api/
+* http://developer.marklogic.com/features/node-api
+* http://docs.marklogic.com/guide/node-dev/intro#id_68052
 
 The instructions describe:
 
 * installing the MarkLogic database and setting up an admin user
-* cloning this repository to set up the API
+* installing the Node.js API using npm
 * working through some initial examples to get familiar with the API
 
-For more detail about the API, use the documentation login from the Early Access to view
-the reference documentation:
+### Example setup
 
-http://docs-ea.marklogic.com/jsdoc/index.html
+The Node.js API also distributes with some additional examples to supplement
+the examples from the Getting Started introduction.
 
-After installing the dependencies including gulp, you can also build the documentation locally
-from the root directory of the marklogic package:
+Follow the instructions in the example distribution:
+
+    examples/1readme.txt
+
+### Documentation setup
+
+After installing the dependencies including gulp, you can also build the reference
+documentation locally from the root directory of the marklogic package:
 
     gulp doc
 
 The documentation should be produced in the doc subdirectory.
-
-### Example setup
-
-To set up the REST users for the examples, execute the following
-command in the root directory for the marklogic package:
-
-    node etc/users-setup.js
-
-Then, load the sample data:
-
-    node examples/before-load.js
-
-You can then execute any of the examples in the examples
-subdirectory from the root directory for the marklogic package.
 
 ### Test setup and teardown
 
@@ -56,63 +88,6 @@ To tear down the test database and REST server, execute
 
     node etc/test-teardown.js
 
-### Capabilities added to the Node.js Client API in Early Access 3
-
-* quick path for simple CRUD and query on the database client
-* values and tuples requests
-* server-side transforms on query response summary and result documents in slice() clause
-* snippets including custom snippets in slice() clause
-* extract from result documents (projection)
-* resource service CRUD and invocation
-* graph CRUD and SPARQL query
-* bitemporal document CRUD and query
-* specifying the database when creating a database client
-* server-side eval and invoke
-* search suggest
-
-### Capabilities of the Node.js Client API in Early Access 2
-
-* createDatabaseClient() including HTTPS
-* documents.query()
-    * queryBuilder.where() including structured query builder
-    * queryBuilder.byExample() for QBE (Query By Example)
-    * queryBuilder.parsedFrom() for string query
-    * queryBuilder.orderBy()
-    * queryBuilder.calculate()
-    * queryBuilder.slice()
-    * queryBuilder.withOptions()
-    * queryBuilder.parsedFrom()
-    * queryBuilder.copyFrom()
-* documents.check()
-* documents.remove()
-* documents.read()
-* documents.createReadStream()
-* documents.write()
-* documents.createWriteStream()
-* documents.removeAll()
-* documents.patch()
-* transactions.open()
-* transactions.read()
-* transactions.commit()
-* transactions.rollback()
-* config.transforms.list()
-* config.transforms.read()
-* config.transforms.remove()
-* config.transforms.write()
-* config.properties.read()
-* config.properties.write()
-* config.extlibs.list()
-* config.extlibs.read()
-* config.extlibs.remove()
-* config.extlibs.write()
-* optimistic locking
-
-### Limitations in Early Access 3
-
-The MarkLogic Node.js Client API has not yet undergone performance or
-stress testing.  The API should not be used in production in EA3.  The
-interface may change before the initial release.
-
 ## Support
 
 The MarkLogic Node.js Client API is maintained by MarkLogic Engineering.
@@ -124,4 +99,5 @@ any request. In addition, MarkLogic provides technical support
 for [release tags](https://github.com/marklogic/node-client-api/releases)
 of the Node Client API to licensed customers under the terms outlined
 in the [Support Handbook](http://www.marklogic.com/files/Mark_Logic_Support_Handbook.pdf).
-For more information or to sign up for support, visit [help.marklogic.com](help.marklogic.com).
+For more information or to sign up for support,
+visit [help.marklogic.com](http://help.marklogic.com).

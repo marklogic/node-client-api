@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,18 @@
 
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document patch stream', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
@@ -105,7 +106,7 @@ describe('document patch stream', function(){
   });
 
   it('should appply patch on metadata', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
@@ -126,17 +127,24 @@ describe('document patch stream', function(){
   });
 
   it('should read the applied patch on metadata', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     db.documents.read({uris: uri1, categories: ['metadata']}).
     stream().
     on('data', function(data) {
       //console.log(data);
-      data.properties.prop2.should.equal('world');
-    }).
+	  data[0].properties.prop2.should.equal('world');
+      }).
     on('end', function() {
       done();
     }, done);
   });
-
+it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  }); 
 });

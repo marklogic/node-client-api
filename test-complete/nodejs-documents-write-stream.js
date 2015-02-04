@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 var fs = require('fs');
 var concatStream = require('concat-stream');
 
@@ -28,7 +28,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Write Document Stream Test', function() {
   describe('write json stream', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writeable1.json',
                           contentType: 'application/json'
@@ -48,7 +48,7 @@ describe('Write Document Stream Test', function() {
 
   describe('write json stream in chunk', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writeable2.json',
                           contentType: 'application/json'
@@ -69,7 +69,7 @@ describe('Write Document Stream Test', function() {
       
   describe('write xml stream in chunk', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writeable1.xml',
                           contentType: 'application/xml'
@@ -90,9 +90,9 @@ describe('Write Document Stream Test', function() {
       
   describe('write transform for a test', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var transformName = 'employeeStylesheet';
-      var transformPath = './test-complete/data/employeeStylesheet.xslt';
+      var transformPath = './node-client-api/test-complete/data/employeeStylesheet.xslt';
       fs.createReadStream(transformPath).
       pipe(concatStream({encoding:'string'}, function(source) {
         dbAdmin.config.transforms.write(transformName, 'xslt', source).
@@ -106,7 +106,7 @@ describe('Write Document Stream Test', function() {
 
   describe('write stream with transform', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var transformName = 'employeeStylesheet';
       var writeStream = db.documents.createWriteStream({
                           uri: '/test/writestream/writestreamtransform.xml',
@@ -129,7 +129,7 @@ describe('Write Document Stream Test', function() {
 
   describe('delete a transform for cleanup', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       var transformName = 'employeeStylesheet';
       dbAdmin.config.transforms.remove(transformName).
       result(function(response){done();}, done);
@@ -141,7 +141,7 @@ describe('Write Document Stream Test', function() {
 
   describe('delete docs for cleanup', function() {
     before(function(done) {
-      this.timeout(3000);
+      this.timeout(10000);
       dbAdmin.documents.removeAll({directory:'/test/writestream'}).
       result(function(response){done();}, done);
       });

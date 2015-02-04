@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document tuples test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
       collections: ['matchCollection1'],
@@ -108,7 +108,7 @@ describe('Document tuples test', function(){
   });
 
   it('should do values on score', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range('score', 'xs:double')
@@ -124,9 +124,41 @@ describe('Document tuples test', function(){
         done();
       }, done);
   });
-
+ it('should do values on path', function(done){
+   this.timeout(10000);  
+   db.values.read(
+	t.fromIndexes(t.pathIndex('price/amt'))
+	).result(function (values) {
+	  //console.log(JSON.stringify(values, null, 2));
+	  values.should.have.property('values-response');
+          values['values-response'].should.have.property('tuple');
+          values['values-response'].tuple.length.should.equal(5);
+          values['values-response'].tuple[0].should.have.property('frequency');
+          values['values-response'].tuple[0].should.have.property('distinct-value');
+	  values['values-response'].tuple[0].frequency.should.equal(1);
+          done();
+   	}, function(error) {
+	  console.log(JSON.stringify(error, null, 2));
+          done();
+    }, done);
+  });
+  
+  /* 
+//Issue with Index settings working on it
+  it('should do values on field', function(done){
+    this.timeout(10000); 
+   db.values.read(
+	t.fromIndexes(t.field('New'))
+	 ).result(function (result) {
+	console.log(JSON.stringify(result, null, 2));
+	}, function(error) {
+	console.log(JSON.stringify(error, null, 2));
+     done();
+    }, done);
+  }); */
+  
   it('should do sum aggregates', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range('score', 'xs:double')
@@ -144,7 +176,7 @@ describe('Document tuples test', function(){
   });
 
   it('should do correlation and covariance aggregates', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range('rate', 'xs:int'),
@@ -165,7 +197,7 @@ describe('Document tuples test', function(){
   });
 
   it('should do max, min, sum, average aggregates', function(done){
-    this.timeout(5000);
+    this.timeout(10000);
     db.values.read(
       t.fromIndexes(
         t.range(t.property('popularity'), t.datatype('int'))

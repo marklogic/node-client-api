@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ describe('when executing resource services', function(){
       }, done);
     });
     it('should get one document', function(done){
-      db.resources.get({name:xqyServiceName, format:'xquery', params:{value:'foo'}}).
+      db.resources.get({name:xqyServiceName, params:{value:'foo'}}).
       result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(1);
@@ -51,7 +51,7 @@ describe('when executing resource services', function(){
     });
     it('should get two documents', function(done){
       db.resources.get({
-        name:xqyServiceName, format:'xquery', params:{value:'foo', multipart:'true'}
+        name:xqyServiceName, params:{value:'foo', multipart:'true'}
         }).
       result(function(response){
         valcheck.isArray(response).should.equal(true);
@@ -69,7 +69,7 @@ describe('when executing resource services', function(){
     });
     it('should put one typed document', function(done){
       db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}}
         ]}).
       result(function(response){
@@ -84,7 +84,7 @@ describe('when executing resource services', function(){
     });
     it('should put one untyped document', function(done){
       db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {one:'untyped document'}
         ]}).
       result(function(response){
@@ -99,7 +99,7 @@ describe('when executing resource services', function(){
     });
     it('should put two typed documents', function(done){
       db.resources.put({
-        name:xqyServiceName, format:'xquery', params:{value:'foo'}, documents:[
+        name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
@@ -118,7 +118,7 @@ describe('when executing resource services', function(){
     });
     it('should post two typed documents', function(done){
       db.resources.post({
-        name:xqyServiceName, format:'xquery', params:{value:'foo', multipart:'true'}, documents:[
+        name:xqyServiceName, params:{value:'foo', multipart:'true'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
         ]}).
@@ -143,7 +143,7 @@ describe('when executing resource services', function(){
       }, done);
     });
     it('should remove one document', function(done){
-      db.resources.remove({name:xqyServiceName, format:'xquery', params:{value:'foo'}}).
+      db.resources.remove({name:xqyServiceName, params:{value:'foo'}}).
       result(function(response){
         response.should.have.property('deletedDoc');
         response.deletedDoc.should.have.property('param');
@@ -164,7 +164,7 @@ describe('when executing resource services', function(){
       }, done);
     });
     it('should get one document', function(done){
-      db.resources.get({name:jsServiceName, format:'javascript'}).
+      db.resources.get({name:jsServiceName}).
       result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(1);

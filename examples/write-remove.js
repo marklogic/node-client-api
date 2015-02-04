@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 var exutil = require('./example-util.js');
 
-var marklogic = require('../');
+//a real application would require without the 'exutil.' namespace
+var marklogic = exutil.require('marklogic');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
@@ -54,23 +55,31 @@ db.documents.write([
       console.log('Removed the document with uri: '+response.uri);
       removedByUri = isFinishing(removedByCollection);
     }, function(error) {
-      exutil.failed(error);
+      console.log(JSON.stringify(error));
+
+      exutil.failed();
     });
 
     console.log('Remove the documents in a collection\n');
-    db.documents.removeAll({collections:'/imaginary/countries'}).
+    db.documents.removeAll({collection:'/imaginary/countries'}).
     result(function(response) {
-      console.log('Removed all documents in the collection: '+response.collections);
+      console.log('Removed all documents in the collection: '+response.collection);
       removedByCollection = isFinishing(removedByUri);
     }, function(error) {
-      exutil.failed(error);
+      console.log(JSON.stringify(error));
+
+      exutil.failed();
     });
   }, function(error) {
-    exutil.failed(error);
+    console.log(JSON.stringify(error));
+
+    exutil.failed();
   });
 
 function isFinishing(isDone) {
   if (isDone) {
+    console.log('done');
+
     exutil.succeeded();
   } else {
     return true;

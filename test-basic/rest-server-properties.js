@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ describe('rest server properties', function() {
       return db.config.serverprops.write(props).result();
       }).
     then(function(response) {
+      response.should.equal(true);
       return db.config.serverprops.read().result();
       }).
     then(function(props) {

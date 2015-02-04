@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 var should = require('should');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -26,7 +26,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('document patch metadata test', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2
     dbWriter.documents.write({
       uri: '/test/query/matchDir/doc1.json',
@@ -105,7 +105,7 @@ describe('document patch metadata test', function(){
   });
 
   it('should appply patch on metadata', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
@@ -125,7 +125,7 @@ describe('document patch metadata test', function(){
   });
 
   it('should appply patch on metadata with jsonpath', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
@@ -146,7 +146,7 @@ describe('document patch metadata test', function(){
   });
 
   it('should appply patch on metadata properties', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,

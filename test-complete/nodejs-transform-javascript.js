@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 MarkLogic Corporation
+ * Copyright 2014-2015 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ var fs = require('fs');
 var concatStream = require('concat-stream');
 var valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
@@ -29,20 +29,25 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Transform test with javascript', function(){
   before(function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/jstransform.json',
       contentType: 'application/json',
       content: {title: 'transform test with javascript'} 
+    },
+	{
+      uri: '/test/transform/jstransform2.json',
+      contentType: 'application/json',
+      content: {title: 'exapmle test with javascript'} 
     }).
     result(function(response){done();}, done);
   });
 
   var transformName = 'timestamp';
-  var transformPath = './test-complete/data/timestampTransform.js';
+  var transformPath = './node-client-api/test-complete/data/timestampTransform.js';
 
   it('should write the transform', function(done){
-    this.timeout(3000);
+    this.timeout(10000);
     fs.createReadStream(transformPath).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName, 'javascript', source).
@@ -81,6 +86,20 @@ describe('Transform test with javascript', function(){
     }, done);
   });
 
+   it('should  query', function(done){
+    db.documents.query(
+      q.where(
+        q.word('title', 'test')
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 4));
+	  response.length.should.equal(2);
+      done();
+    }, done);
+  }); 
+  
+  
   it('should modify during query', function(done){
     db.documents.query(
       q.where(
@@ -95,7 +114,20 @@ describe('Transform test with javascript', function(){
       done();
     }, done);
   });
-
+  it('should modify during query , slice without paging parameters, Bug 111', function(done){
+    db.documents.query(
+      q.where(
+        q.word('title', 'transform')
+      ).
+      slice(q.transform(transformName))
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 4));
+      response[0].content.should.have.property('timestamp');
+      response[0].content.userName.should.equal('rest-reader');
+      done();
+    }, done);
+  });
   /*it('should modify during write', function(done){
     dbWriter.documents.write({
       uri: '/test/transform/write/jstransform.json',
