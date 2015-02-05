@@ -18,30 +18,36 @@ Release 1.0.0 of the MarkLogic Node.js API
 
 ## Sample
 
+First, install the MarkLogic into your local modules using [npm](https://www.npmjs.com/package/marklogic).
+
+```
+npm install marklogic --save
+```
+
 The following example creates two documents in a collection using the built-in
 REST server for the Documents database:
 
-```
-    var marklogic = require('marklogic');
+```javascript
+var marklogic = require('marklogic');
 
-    var db = marklogic.createDatabaseClient({
-      host:     'localhost',
-      port:     '8000',
-      user:     'admin',
-      password: 'admin',
-      authType: 'DIGEST'
-    });
+var db = marklogic.createDatabaseClient({
+  host:     'localhost',
+  port:     '8000',
+  user:     'admin',
+  password: 'admin',
+  authType: 'DIGEST'
+});
 
-    db.createCollection(
-      '/books',
-      {author: 'Beryl Markham', ...},
-      {author: 'WG Sebald',     ...}
-      )
-    .result(function(response) {
-        console.log(JSON.stringify(response,null,2));
-      }, function (error) {
-        console.log(JSON.stringify(error,null,2));
-      });
+db.createCollection(
+  '/books',
+  {author: 'Beryl Markham', ...},
+  {author: 'WG Sebald',     ...}
+  )
+.result(function(response) {
+    console.log(JSON.stringify(response,null,2));
+  }, function (error) {
+    console.log(JSON.stringify(error,null,2));
+  });
 ```
 
 Other calls can create additional documents for the same collection.
