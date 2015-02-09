@@ -23,7 +23,7 @@
     "bluebird": "^2.9.6",
     "concat-stream": "^1.4.7",
     "core-util-is": "^1.0.1",
-    "deep-copy": "^1.0.0",
+    "deepcopy": "^0.4.0",
     "dicer": "^0.2.3",
     "multipart-stream": "^1.0.0",
     "qs": "^2.3.3",
