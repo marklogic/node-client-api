@@ -37,29 +37,31 @@ describe('extension libraries', function(){
       restAdminDB.config.extlibs.write(dbPath, [
           {'role-name':'app-user',    capabilities:['execute']},
           {'role-name':'app-builder', capabilities:['execute', 'read', 'update']}
-        ], 'application/xquery', fs.createReadStream(fsPath)).
-      result(function(response){done();}, done);
+        ], 'application/xquery', fs.createReadStream(fsPath))
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should read the extension library', function(done){
-      restAdminDB.config.extlibs.read(dbPath).
-      result(function(source){
+      restAdminDB.config.extlibs.read(dbPath)
+      .result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should list the extension libraries', function(done){
-      restAdminDB.config.extlibs.list(dbDir).
-      result(function(response){
+      restAdminDB.config.extlibs.list(dbDir)
+      .result(function(response){
         response.should.have.property('assets');
         response.assets.length.should.be.greaterThan(0);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should delete the extension library', function(done) {
-      restAdminDB.config.extlibs.remove(dbPath).
-      result(function(response){
-        done();
-      }, done);
+      restAdminDB.config.extlibs.remove(dbPath)
+      .result(function(response){done();})
+      .catch(done);
     });
     // TODO: test streaming of source and list
   });
@@ -70,38 +72,40 @@ describe('extension libraries', function(){
       restAdminDB.config.query.custom.write(dbModule, [
           {'role-name':'app-user',    capabilities:['execute']},
           {'role-name':'app-builder', capabilities:['execute', 'read', 'update']}
-        ], fs.createReadStream(fsPath)).
-      result(function(response){done();}, done);
+        ], fs.createReadStream(fsPath))
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should read the custom query', function(done){
-      restAdminDB.config.query.custom.read(dbModule).
-      result(function(source){
+      restAdminDB.config.query.custom.read(dbModule)
+      .result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should list the custom queries', function(done){
-      restAdminDB.config.query.custom.list().
-      result(function(response){
+      restAdminDB.config.query.custom.list()
+      .result(function(response){
         response.should.have.property('assets');
         response.assets.length.should.be.greaterThan(0);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should delete the custom query', function(done) {
-      restAdminDB.config.query.custom.remove(dbModule).
-      result(function(response){
-        done();
-      }, done);
+      restAdminDB.config.query.custom.remove(dbModule)
+      .result(function(response){done();})
+      .catch(done);
     });
   });
 
   describe('when using', function() {
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.query.custom.write(dbModule, fs.createReadStream(fsPath)).result().
-      then(function(response) {
-        db.documents.write({
+      restAdminDB.config.query.custom.write(dbModule, fs.createReadStream(fsPath))
+      .result(function(response) {
+        return db.documents.write({
           uri: '/test/extlib/queryDoc1.json',
           collections: ['constraintList'],
           contentType: 'application/json',
@@ -109,13 +113,15 @@ describe('extension libraries', function(){
             rangeKey1:         'constraintValue',
             constraintQueryKey:'constraint query value'
             }
-          }).
-        result(function(response){done();}, done);
-        }, done);
+          }).result();
+        })
+      .then(function(response){done();})
+      .catch(done);
     });
     after(function(done) {
-      restAdminDB.config.query.custom.remove(dbModule).
-      result(function(response){done();}, done);
+      restAdminDB.config.query.custom.remove(dbModule)
+      .result(function(response){done();})
+      .catch(done);
     });
     it('a custom constraint to parse', function(done){
       db.documents.query(
@@ -125,12 +131,13 @@ describe('extension libraries', function(){
               q.parseFunction('directoryConstraint.xqy', q.bind('dirs'))
               ))
           )
-        ).
-      result(function(documents) {
+        )
+      .result(function(documents) {
         documents.should.be.ok;
         documents.length.should.be.greaterThan(0);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('a custom constraint for facet calculation', function(done){
       db.documents.query(
@@ -139,15 +146,16 @@ describe('extension libraries', function(){
               q.facet('directories', q.calculateFunction('directoryConstraint.xqy'))
               ).
           slice(0)
-          ).
-          result(function(response) {
-            response.length.should.equal(1);
-            response[0].should.have.property('facets');
-            response[0].facets.should.have.property('directories');
-            response[0].facets.directories.should.have.property('facetValues');
-            response[0].facets.directories.facetValues.length.should.be.greaterThan(0);
-            done();
-          }, done);
+          )
+        .result(function(response) {
+          response.length.should.equal(1);
+          response[0].should.have.property('facets');
+          response[0].facets.should.have.property('directories');
+          response[0].facets.directories.should.have.property('facetValues');
+          response[0].facets.directories.facetValues.length.should.be.greaterThan(0);
+          done();
+          })
+        .catch(done);
     });
     it('should merge constraints', function(done) {
       db.documents.query(
@@ -164,18 +172,19 @@ describe('extension libraries', function(){
               q.facet('dirs', q.calculateFunction('directoryConstraint.xqy'))
               ).
           slice(0)
-          ).
-          result(function(response) {
-            response.length.should.equal(1);
-            response[0].should.have.property('facets');
-            response[0].facets.should.have.property('dirs');
-            response[0].facets.dirs.should.have.property('facetValues');
-            response[0].facets.dirs.facetValues.length.should.be.greaterThan(0);
-            response[0].facets.should.have.property('range');
-            response[0].facets.range.should.have.property('facetValues');
-            response[0].facets.range.facetValues.length.should.be.greaterThan(0);
-            done();
-          }, done);
+          )
+        .result(function(response) {
+          response.length.should.equal(1);
+          response[0].should.have.property('facets');
+          response[0].facets.should.have.property('dirs');
+          response[0].facets.dirs.should.have.property('facetValues');
+          response[0].facets.dirs.facetValues.length.should.be.greaterThan(0);
+          response[0].facets.should.have.property('range');
+          response[0].facets.range.should.have.property('facetValues');
+          response[0].facets.range.facetValues.length.should.be.greaterThan(0);
+          done();
+          })
+        .catch(done);
       // TODO: mix of implicit bindings for facets and explicit bindings
     });
   });
@@ -188,29 +197,33 @@ describe('extension libraries', function(){
       restAdminDB.config.patch.replace.write(replaceModuleXQY, [
           {'role-name':'app-user',    capabilities:['execute']},
           {'role-name':'app-builder', capabilities:['execute', 'read', 'update']}
-        ], fs.createReadStream(replaceFSPathXQY)).
-      result(function(response){done();}, done);
+        ], fs.createReadStream(replaceFSPathXQY))
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should read the replacement library', function(done){
-      restAdminDB.config.patch.replace.read(replaceModuleXQY).
-      result(function(source){
+      restAdminDB.config.patch.replace.read(replaceModuleXQY)
+      .result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should list the replacement libraries', function(done){
-      restAdminDB.config.patch.replace.list().
-      result(function(response){
+      restAdminDB.config.patch.replace.list()
+      .result(function(response){
         response.should.have.property('assets');
         response.assets.length.should.be.greaterThan(0);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should delete the replacement library', function(done) {
-      restAdminDB.config.patch.replace.remove(replaceModuleXQY).
-      result(function(response){
+      restAdminDB.config.patch.replace.remove(replaceModuleXQY)
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
 
@@ -218,41 +231,45 @@ describe('extension libraries', function(){
   describe('when using an XQuery replacement library', function() {
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.patch.replace.write(replaceModuleXQY, fs.createReadStream(replaceFSPathXQY)).result().
-      then(function(response) {
-        db.documents.write({
+      restAdminDB.config.patch.replace.write(replaceModuleXQY, fs.createReadStream(replaceFSPathXQY))
+      .result(function(response) {
+        return db.documents.write({
           uri: patchDoc,
           contentType: 'application/json',
           content: {
             targetKey:'existing value'
             }
-          }).
-        result(function(response){done();}, done);
-        }, done);
+          }).result();
+        })
+      .then(function(response){done();})
+      .catch(done);
     });
     after(function(done) {
-      restAdminDB.config.query.custom.remove(replaceModuleXQY).
-      result(function(response){done();}, done);
+      restAdminDB.config.query.custom.remove(replaceModuleXQY)
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should apply', function(done){
       var p = marklogic.patchBuilder;
       db.documents.patch(patchDoc,
           p.library(replaceModuleXQY),
           p.replace('/targetKey', p.apply('value', {paramKey: 'parameter value'}))
-          ).
-      result(function(response){
-        db.documents.read(patchDoc).
-        result(function(documents) {
-          documents.length.should.equal(1);
-          var document = documents[0];
-          document.should.have.property('content');
-          document.content.should.have.property('targetKey');
-          document.content.targetKey.should.have.property('value');
-          document.content.targetKey.value.should.equal('existing value');
-          document.content.targetKey.should.have.property('paramKey');
-          document.content.targetKey.paramKey.should.equal('parameter value');
-          done();}, done);
-        }, done);
+          )
+      .result(function(response){
+        return db.documents.read(patchDoc).result();
+        })
+      .then(function(documents) {
+        documents.length.should.equal(1);
+        var document = documents[0];
+        document.should.have.property('content');
+        document.content.should.have.property('targetKey');
+        document.content.targetKey.should.have.property('value');
+        document.content.targetKey.value.should.equal('existing value');
+        document.content.targetKey.should.have.property('paramKey');
+        document.content.targetKey.paramKey.should.equal('parameter value');
+        done();
+        })
+      .catch(done);
     });
   });
 });

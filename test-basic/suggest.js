@@ -54,9 +54,9 @@ describe('suggest', function() {
         defaultWordKey: 'aSuggestC defaultOther',
         taggedWordKey:  'bSuggestC taggedOther'
         }
-    }).
-    result(function(response){
-      done();}, done);
+      })
+    .result(function(response){done();})
+    .catch(done);
   });
   it('should handle default criteria', function(done) {
     db.documents.suggest(
@@ -68,14 +68,15 @@ describe('suggest', function() {
               )
             )
           )
-        ).
-    result(function(list) {
+        )
+    .result(function(list) {
       list.length.should.equal(3);
       list[0].should.equal('aSuggestA');
       list[1].should.equal('aSuggestB');
       list[2].should.equal('aSuggestC');
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should handle tagged criteria', function(done) {
     db.documents.suggest(
@@ -87,14 +88,15 @@ describe('suggest', function() {
               )
             )
           )
-        ).
-    result(function(list) {
+        )
+    .result(function(list) {
       list.length.should.equal(3);
       list[0].should.equal('tag:bSuggestA');
       list[1].should.equal('tag:bSuggestB');
       list[2].should.equal('tag:bSuggestC');
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should override default criteria', function(done) {
     db.documents.suggest(
@@ -109,14 +111,15 @@ describe('suggest', function() {
         q.suggestBindings(
           q.word('defaultWordKey', q.bindDefault())
           )
-        ).
-    result(function(list) {
+        )
+    .result(function(list) {
       list.length.should.equal(3);
       list[0].should.equal('aSuggestA');
       list[1].should.equal('aSuggestB');
       list[2].should.equal('aSuggestC');
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should override tagged criteria', function(done) {
     db.documents.suggest(
@@ -131,14 +134,15 @@ describe('suggest', function() {
         q.suggestBindings(
           q.word('taggedWordKey', q.bind('tag'))
           )
-        ).
-    result(function(list) {
+        )
+    .result(function(list) {
       list.length.should.equal(3);
       list[0].should.equal('tag:bSuggestA');
       list[1].should.equal('tag:bSuggestB');
       list[2].should.equal('tag:bSuggestC');
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should apply a limit', function(done) {
     db.documents.suggest({
@@ -154,12 +158,13 @@ describe('suggest', function() {
           q.word('taggedWordKey', q.bind('tag'))
           ),
       limit:    2
-      }).
-    result(function(list) {
+      })
+    .result(function(list) {
       list.length.should.equal(2);
       list[0].should.equal('tag:bSuggestA');
       list[1].should.equal('tag:bSuggestB');
       done();
-      }, done);
+      })
+    .catch(done);
   });
 });

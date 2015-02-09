@@ -32,10 +32,11 @@ describe('document transform', function(){
   describe('when configuring', function() {
     it('should write the transform with positional parameters', function(done){
       this.timeout(3000);
-      restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath)).
-      result(function(response){
+      restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should write the transform with named parameters', function(done){
       this.timeout(3000);
@@ -47,21 +48,23 @@ describe('document transform', function(){
         version:     0.1,
         format:      'xquery',
         source:      fs.createReadStream(xqyTransformPath)
-        }).
-      result(function(response){
+        })
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should read the transform', function(done){
-      restAdminDB.config.transforms.read(xqyTransformName).
-      result(function(source){
+      restAdminDB.config.transforms.read(xqyTransformName)
+      .result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should list the transform', function(done){
-      db.config.transforms.list().
-      result(function(response){
+      db.config.transforms.list()
+      .result(function(response){
         response.should.have.property('transforms');
         response.transforms.should.have.property('transform');
         response.transforms.transform.length.should.be.greaterThan(0);
@@ -69,13 +72,15 @@ describe('document transform', function(){
           return item.name === xqyTransformName;
           }).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should delete the transform', function(done){
-      restAdminDB.config.transforms.remove(xqyTransformName).
-      result(function(response){
+      restAdminDB.config.transforms.remove(xqyTransformName)
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     // TODO: test streaming of source and list
   });
@@ -83,10 +88,11 @@ describe('document transform', function(){
     var uri = '/test/write/transformContent1.json';
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath)).
-      result(function(response){
+      restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should modify during write', function(done){
       db.documents.write({
@@ -94,26 +100,28 @@ describe('document transform', function(){
         contentType: 'application/json',
         content: {key1: 'value 1'},
         transform: [xqyTransformName, {flag:'tested1'}]
-        }).
-        result(function(response) {
-          db.documents.read(uri).
-          result(function(documents) {
-            documents.length.should.equal(1);
-            documents[0].content.flagParam.should.equal('tested1');
-          done();
-          }, done);
-        }, done);
+        })
+      .result(function(response) {
+        return db.documents.read(uri).result();
+        })
+      .then(function(documents) {
+        documents.length.should.equal(1);
+        documents[0].content.flagParam.should.equal('tested1');
+        done();
+        })
+      .catch(done);
     });
     it('should modify during read', function(done){
       db.documents.read({
         uris: uri,
         transform: [xqyTransformName, {flag:'tested2'}]
-        }).
-        result(function(documents) {
-          documents.length.should.equal(1);
-          documents[0].content.flagParam.should.equal('tested2');
-          done();
-          }, done);
+        })
+      .result(function(documents) {
+        documents.length.should.equal(1);
+        documents[0].content.flagParam.should.equal('tested2');
+        done();
+        })
+      .catch(done);
     });
     it('should modify during query', function(done){
       db.documents.query(
@@ -123,12 +131,13 @@ describe('document transform', function(){
           slice(1, 10,
             q.transform(xqyTransformName, {flag:'tested3'})
             )
-          ).
-        result(function(documents) {
+          )
+        .result(function(documents) {
           documents.length.should.equal(1);
           documents[0].content.flagParam.should.equal('tested3');
           done();
-          }, done);
+          })
+        .catch(done);
     });
   });
   describe('when using JavaScript', function() {
@@ -138,48 +147,49 @@ describe('document transform', function(){
     var writeUri = '/test/write/writeTransform.json';
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.transforms.write(jsTransformName, 'javascript', fs.createReadStream(jsTransformPath)).
-      result(function(response){
+      restAdminDB.config.transforms.write(jsTransformName, 'javascript', fs.createReadStream(jsTransformPath))
+      .result(function(response){
         return db.documents.write({
           uri: readUri,
           contentType: 'application/json',
           content: {readKey: 'read value'}
           }).result();
-        }).
-      then(function(response){done();}, done);
+        })
+      .then(function(response){done();})
+      .catch(done);
     });
-/* TODO: CURRENTLY BLOCKED
     it('should modify during write', function(done){
       db.documents.write({
         uri: writeUri,
         contentType: 'application/json',
         content: {writeKey: 'write value'},
         transform: jsTransformName
-        }).
-        result(function(response) {
-          db.documents.read(writeUri).
-          result(function(documents) {
-            documents.length.should.equal(1);
-            documents[0].content.should.have.property('timestamp');
-            documents[0].content.should.have.property('userName');
-            documents[0].content.userName.should.eql('rest-writer');
-          done();
-          }, done);
-        }, done);
+        })
+      .result(function(response) {
+        return db.documents.read(writeUri).result();
+        })
+      .then(function(documents) {
+        documents.length.should.equal(1);
+        documents[0].content.should.have.property('timestamp');
+        documents[0].content.should.have.property('userName');
+        documents[0].content.userName.should.eql('rest-writer');
+        done();
+        })
+      .catch(done);
     });
- */
     it('should modify during read', function(done){
       db.documents.read({
         uris: readUri,
         transform: jsTransformName
-        }).
-        result(function(documents) {
-          documents.length.should.equal(1);
-          documents[0].content.should.have.property('timestamp');
-          documents[0].content.should.have.property('userName');
-          documents[0].content.userName.should.eql('rest-writer');
-          done();
-          }, done);
+        })
+      .result(function(documents) {
+        documents.length.should.equal(1);
+        documents[0].content.should.have.property('timestamp');
+        documents[0].content.should.have.property('userName');
+        documents[0].content.userName.should.eql('rest-writer');
+        done();
+        })
+      .catch(done);
     });
     it('should modify during query', function(done){
       db.documents.query(
@@ -189,14 +199,15 @@ describe('document transform', function(){
           slice(1, 10,
             q.transform(jsTransformName)
             )
-          ).
-        result(function(documents) {
+          )
+        .result(function(documents) {
           documents.length.should.equal(1);
           documents[0].content.should.have.property('timestamp');
           documents[0].content.should.have.property('userName');
           documents[0].content.userName.should.eql('rest-writer');
           done();
-          }, done);
+          })
+        .catch(done);
     });
   });
 });

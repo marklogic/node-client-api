@@ -39,54 +39,58 @@ describe('document remove all', function(){
           });
       }
     });
-    db.documents.write(docs).
-    result(function(response){done();}, done);
+    db.documents.write(docs)
+    .result(function(response){done();})
+    .catch(done);
   });
   it('should remove the collection', function(done){
     this.timeout(5000);
-    db.documents.removeAll({collection:'/removeAll/collection'}).
-    result(function(result) {
+    db.documents.removeAll({collection:'/removeAll/collection'})
+    .result(function(result) {
       return db.documents.probe('/removeAll/collection/doc'+1+'.txt').result();
-      }, done).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.eql(false);
       return db.documents.probe('/removeAll/collection/doc'+2+'.txt').result();
-    }, done).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.eql(false);
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should remove the directory', function(done){
     this.timeout(5000);
     db.documents.removeAll({directory:'/removeAll/directory'}).
     result(function(result) {
       return db.documents.probe('/removeAll/directory/doc'+1+'.txt').result();
-      }, done).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.eql(false);
       return db.documents.probe('/removeAll/directory/doc'+2+'.txt').result();
-    }, done).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.eql(false);
       done();
-      }, done);
+      })
+    .catch(done);
   });
 /*
   it('should remove all', function(done){
     this.timeout(15000);
-    restAdminDB.documents.removeAll({all:true}).
-    result(function(result) {
+    restAdminDB.documents.removeAll({all:true})
+    .result(function(result) {
       return db.documents.probe('/removeAll/all/doc'+1+'.txt').result();
-      }, done).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.eql(false);
       return db.documents.probe('/removeAll/all/doc'+2+'.txt').result();
-    }, done).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.eql(false);
       done();
-      }, done);
+      })
+    .catch(done);
   });
  */
 });

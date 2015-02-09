@@ -18,28 +18,28 @@ var exutil = require('./example-util.js');
 //a real application would require without the 'exutil.' namespace
 var marklogic = exutil.require('marklogic');
 
-var q = marklogic.queryBuilder;
+var qb = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Extract fragments from queried documents');
 
 db.documents.query(
-  q.where(
-    q.collection('/countries'),
-    q.value('region', 'Africa'),
-    q.word('exportPartners', 'Niger')
-    ).
-  slice(1, 10,
-    q.extract({
+  qb.where(
+    qb.collection('/countries'),
+    qb.value('region', 'Africa'),
+    qb.word('exportPartners', 'Niger')
+    )
+  .slice(1, 10,
+    qb.extract({
       selected:'include-with-ancestors',
       paths:[
         '/node("name")',
         '//node("total")[node("unit") eq "years"]'
         ]
       })
-    )
-  ).result(function (documents){
+    ))
+  .result(function (documents){
     documents.forEach(function(document) {
       console.log(
         JSON.stringify(document.content)
@@ -48,7 +48,8 @@ db.documents.query(
     console.log('done');
 
     exutil.succeeded();
-  }, function(error) {
+    })
+  .catch(function(error) {
     console.log(JSON.stringify(error));
 
     exutil.failed();

@@ -79,8 +79,9 @@ describe('values query', function(){
             {rangeKey4: 43}
             ]
           }
-        }).
-    result(function(response){done();}, done);
+        })
+    .result(function(response){done();})
+    .catch(done);
   });
   describe('for a from indexes clause for values', function() {
     it('should return all values', function(done){
@@ -91,8 +92,8 @@ describe('values query', function(){
         where(
           t.collection('valuesCollection1')
           )
-      ).
-      result(function(values) {
+        )
+      .result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(3);
@@ -103,7 +104,8 @@ describe('values query', function(){
         values['values-response'].tuple[2].should.have.property('frequency');
         values['values-response'].tuple[2].frequency.should.equal(1);
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('for a from indexes clause for tuples', function() {
@@ -116,8 +118,8 @@ describe('values query', function(){
         where(
           t.collection('valuesCollection1')
           )
-      ).
-      result(function(values) {
+        )
+      .result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(5);
@@ -132,7 +134,8 @@ describe('values query', function(){
         values['values-response'].tuple[4].should.have.property('frequency');
         values['values-response'].tuple[4].frequency.should.equal(1);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a slice of tuples', function(done){
       db.values.read(
@@ -144,8 +147,8 @@ describe('values query', function(){
           t.collection('valuesCollection1')
           ).
         slice(2, 3)
-      ).
-      result(function(values) {
+        )
+      .result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(3);
@@ -156,7 +159,8 @@ describe('values query', function(){
         values['values-response'].tuple[2].should.have.property('frequency');
         values['values-response'].tuple[2].frequency.should.equal(1);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return aggregates over tuples', function(done){
       db.values.read(
@@ -169,8 +173,8 @@ describe('values query', function(){
           ).
         slice(0).
         aggregates('correlation', 'covariance')
-      ).
-      result(function(values) {
+        )
+      .result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('aggregate-result');
         values['values-response']['aggregate-result'].length.should.equal(2);
@@ -179,7 +183,8 @@ describe('values query', function(){
         values['values-response']['aggregate-result'][1].should.have.property('name');
         values['values-response']['aggregate-result'][1].name.should.equal('covariance');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return tuples with options', function(done){
       db.values.read(
@@ -192,8 +197,8 @@ describe('values query', function(){
           ).
         slice(2, 3).
         withOptions({values:['descending']})
-      ).
-      result(function(values) {
+        )
+      .result(function(values) {
         values.should.have.property('values-response');
         values['values-response'].should.have.property('tuple');
         values['values-response'].tuple.length.should.equal(3);
@@ -204,7 +209,8 @@ describe('values query', function(){
         values['values-response'].tuple[2].should.have.property('frequency');
         values['values-response'].tuple[2].frequency.should.equal(2);
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('with a transform', function() {
@@ -212,10 +218,11 @@ describe('values query', function(){
     var transformPath = './test-basic/data/flagTransform.xqy';
     before(function(done){
       this.timeout(3000);
-      dbAdmin.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath)).
-      result(function(response){
+      dbAdmin.config.transforms.write(transformName, 'xquery', fs.createReadStream(transformPath))
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should transform values', function(done){
       db.values.read(
@@ -228,13 +235,14 @@ describe('values query', function(){
           slice(1, 1000,
             t.transform(transformName, {flag:'valuesTest'})
             )
-        ).
-        result(function(response) {
+          )
+        .result(function(response) {
           response.flagParam.should.equal('valuesTest');
           response.should.have.property('content');
           response.content.should.have.property('values-response');
           done();
-          }, done);
+          })
+        .catch(done);
     });
     it('should transform tuples', function(done){
       db.values.read(
@@ -248,13 +256,14 @@ describe('values query', function(){
           slice(1, 1000,
             t.transform(transformName, {flag:'valuesTest'})
             )
-        ).
-        result(function(response) {
+          )
+        .result(function(response) {
           response.flagParam.should.equal('valuesTest');
           response.should.have.property('content');
           response.content.should.have.property('values-response');
           done();
-          }, done);
+          })
+        .catch(done);
     });
   });
 });

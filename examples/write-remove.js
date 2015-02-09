@@ -35,8 +35,8 @@ db.documents.write([
       collections: ['/imaginary/countries', '/vacation/destinations'],
       content: {name:'Shangri-La', description:'Valley of harmony'}
       }
-    ]).
-  result(function(response) {
+    ])
+  .result(function(response) {
     console.log('wrote:\n    '+
       response.documents.
       map(function(document) {
@@ -50,11 +50,12 @@ db.documents.write([
     var removedByCollection = null;
 
     console.log('Remove a document by uri');
-    db.documents.remove('/tmp/eldorado.json').
-    result(function(response) {
+    db.documents.remove('/tmp/eldorado.json')
+    .result(function(response) {
       console.log('Removed the document with uri: '+response.uri);
       removedByUri = isFinishing(removedByCollection);
-    }, function(error) {
+    })
+    .catch(function(error) {
       console.log(JSON.stringify(error));
 
       exutil.failed();
@@ -70,7 +71,8 @@ db.documents.write([
 
       exutil.failed();
     });
-  }, function(error) {
+  })
+  .catch(function(error) {
     console.log(JSON.stringify(error));
 
     exutil.failed();

@@ -35,8 +35,9 @@ describe('document patch', function(){
           objectParentKey: {replacementKey: 'replaceable value'},
           deletableKey:    'deletable value'
           }
-        }).
-      result(function(response){done();}, done);
+        })
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should insert, replace, and delete', function(done){
       var p = marklogic.patchBuilder;
@@ -45,10 +46,11 @@ describe('document patch', function(){
           p.insert('$["arrayParentKey"]', 'last-child', 'appended value'),
           p.replace('$.objectParentKey.replacementKey', 'replacement value'),
           p.remove('$.deletableKey')
-          ).
-      result(function(response){
-        db.documents.read(uri1).
-        result(function(documents) {
+          )
+      .result(function(response){
+        return db.documents.read(uri1).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.should.have.property('content');
@@ -59,8 +61,9 @@ describe('document patch', function(){
           document.content.objectParentKey.should.have.property('replacementKey');
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
           document.should.not.have.property('deletableKey');
-          done();}, done);
-        }, done);
+          done();
+        })
+      .catch(done);
     });    
   });
   describe('with XPath', function() {
@@ -75,8 +78,9 @@ describe('document patch', function(){
           objectParentKey: {replacementKey: 'replaceable value'},
           deletableKey:    'deletable value'
           }
-        }).
-      result(function(response){done();}, done);
+        })
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should insert, replace, and delete', function(done) {
       var p = marklogic.patchBuilder;
@@ -85,10 +89,11 @@ describe('document patch', function(){
           p.replace('/objectParentKey/replacementKey',
               'replacement value'),
           p.remove('/deletableKey')
-          ).
-      result(function(response){
-        db.documents.read(uri1).
-        result(function(documents) {
+          )
+      .result(function(response){
+        return db.documents.read(uri1).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.should.have.property('content');
@@ -99,8 +104,9 @@ describe('document patch', function(){
           document.content.objectParentKey.should.have.property('replacementKey');
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
           document.should.not.have.property('deletableKey');
-          done();}, done);
-        }, done);
+          done();
+        })
+      .catch(done);
     });    
   });    
   describe('for metadata', function() {
@@ -118,8 +124,9 @@ describe('document patch', function(){
           },
         quality: 1,
         content: {key1: 'value 1'}
-        }).
-      result(function(response){done();}, done);
+        })
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should insert, replace, and delete', function(done) {
       var p = marklogic.patchBuilder;
@@ -138,10 +145,11 @@ describe('document patch', function(){
               {propertyINSERTED_LAST: 'property value INSERTED_LAST'}),
           p.remove('properties/property1'),
           p.replace('quality', 2)
-          ]}).
-      result(function(response){
-        db.documents.read({uris:uri1, categories:['metadata']}).
-        result(function(documents) {
+          ]})
+      .result(function(response){
+        return db.documents.read({uris:uri1, categories:['metadata']}).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.collections.length.should.equal(3);
@@ -176,8 +184,9 @@ describe('document patch', function(){
             equal('property value INSERTED_LAST');
           document.should.have.property('quality');
           document.quality.should.equal(2);
-          done();}, done);
-        }, done);
+          done();
+        })
+      .catch(done);
     });    
   });    
   describe('as raw positional params', function() {
@@ -197,8 +206,9 @@ describe('document patch', function(){
           uri: xmlUri,
           contentType: 'application/xml',
           content:     '<doc><appendable/><replaceable/><removable/></doc>'
-          }).
-      result(function(response){done();}, done);
+          })
+      .result(function(response){done();})
+      .catch(done);
     });
     it('for positional JSON', function(done) {
       db.documents.patch(jsonUri,
@@ -217,10 +227,11 @@ describe('document patch', function(){
                select:   '$.deletableKey'
                }}
              ]}
-          ).
-      result(function(response){
-        db.documents.read(jsonUri).
-        result(function(documents) {
+          )
+      .result(function(response) {
+        return db.documents.read(jsonUri).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.should.have.property('content');
@@ -231,8 +242,9 @@ describe('document patch', function(){
           document.content.objectParentKey.should.have.property('replacementKey');
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
           document.should.not.have.property('deletableKey');
-          done();}, done);
-        }, done);
+          done();
+        })
+      .catch(done);
     });
     it('for positional XML', function(done) {
       db.documents.patch(xmlUri,
@@ -241,10 +253,11 @@ describe('document patch', function(){
           '<rapi:replace select="/doc/replaceable"><replaced/></rapi:replace>'+
           '<rapi:delete select="/doc/removable"/>'+
           '</rapi:patch>'
-      ).
-      result(function(response){
-        db.documents.read(xmlUri).
-        result(function(documents) {
+        )
+      .result(function(response) {
+        return db.documents.read(xmlUri).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.should.have.property('content');
@@ -254,8 +267,9 @@ describe('document patch', function(){
           content.substring(startPos).should.equal(
               '<doc><appendable><appended/></appendable><replaced/></doc>'
               );
-          done();}, done);
-      }, done);
+          done();
+      })
+    .catch(done);
     });    
   });    
   describe('as raw named params', function() {
@@ -275,8 +289,9 @@ describe('document patch', function(){
           uri: xmlUri,
           contentType: 'application/xml',
           content:     '<doc><appendable/><replaceable/><removable/></doc>'
-          }).
-      result(function(response){done();}, done);
+          })
+      .result(function(response){done();})
+      .catch(done);
     });
     it('for named JSON', function(done) {
       db.documents.patch({uri:jsonUri,
@@ -296,10 +311,11 @@ describe('document patch', function(){
                select:   '$.deletableKey'
                }}
              ]}
-        }).
-      result(function(response){
-        db.documents.read(jsonUri).
-        result(function(documents) {
+        })
+      .result(function(response) {
+        return db.documents.read(jsonUri).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.should.have.property('content');
@@ -310,8 +326,9 @@ describe('document patch', function(){
           document.content.objectParentKey.should.have.property('replacementKey');
           document.content.objectParentKey.replacementKey.should.equal('replacement value');
           document.should.not.have.property('deletableKey');
-          done();}, done);
-        }, done);
+          done();
+        })
+      .catch(done);
     });
     it('for named XML', function(done) {
       db.documents.patch({uri:xmlUri,
@@ -322,10 +339,11 @@ describe('document patch', function(){
           '<rapi:replace select="/doc/replaceable"><replaced/></rapi:replace>'+
           '<rapi:delete select="/doc/removable"/>'+
           '</rapi:patch>'
-      }).
-      result(function(response){
-        db.documents.read(xmlUri).
-        result(function(documents) {
+        })
+      .result(function(response){
+        return db.documents.read(xmlUri).result();
+        })
+      .then(function(documents) {
           documents.length.should.equal(1);
           var document = documents[0];
           document.should.have.property('content');
@@ -335,8 +353,9 @@ describe('document patch', function(){
           content.substring(startPos).should.equal(
               '<doc><appendable><appended/></appendable><replaced/></doc>'
               );
-          done();}, done);
-      }, done);
+          done();
+        })
+      .catch(done);
     });    
   });    
   // NOTE: patch library tested in extlibs.js 

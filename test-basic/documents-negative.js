@@ -197,7 +197,8 @@ multipart read should report a non-existent uri or up-to-date versionId
       documents.length.should.equal(1);
       var document = documents[0];
       console.log(document);
-    }, done);
+    })
+  .catch(done);
   });
 
       invalidDb.documents.probe('/test/remove/doc1.json').result(function(response) {

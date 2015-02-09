@@ -26,7 +26,8 @@ var files = ['/countries/uv.json', '/does/not/exist.json'];
 
 var finished = 0;
 files.forEach(function(uri){
-    db.documents.probe(uri).result(function(document) {
+    db.documents.probe(uri)
+    .result(function(document) {
         console.log('document at '+uri+' exists: '+document.exists);
 
         if ((++finished) === files.length) {
@@ -34,7 +35,8 @@ files.forEach(function(uri){
 
           exutil.succeeded();
         }
-      }, function(error) {
+      })
+    .catch(function(error) {
         console.log(JSON.stringify(error));
 
         exutil.failed();

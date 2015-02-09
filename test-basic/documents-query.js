@@ -109,9 +109,9 @@ describe('document query', function(){
     then(function(response) {
       var dbModule = 'extractFirst.xqy';
       var fsPath   = './test-basic/data/extractFirst.xqy';
-      restAdminDB.config.query.snippet.write(dbModule, fs.createReadStream(fsPath)).
-      result(function(response){
-        done();}, done);
+      restAdminDB.config.query.snippet.write(dbModule, fs.createReadStream(fsPath))
+      .result(function(response){done();})
+      .catch(done);
     });
   });
   describe('for a built where clause', function() {
@@ -120,8 +120,8 @@ describe('document query', function(){
         q.where(
           q.directory('/test/query/matchDir/')
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -129,15 +129,16 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should match a collection query', function(done){
       db.documents.query(
         q.where(
           q.collection('matchCollection1')
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -145,15 +146,16 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should match a value query', function(done){
       db.documents.query(
         q.where(
           q.value('valueKey', 'match value')
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -161,15 +163,16 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should match a word query', function(done){
       db.documents.query(
         q.where(
           q.word('wordKey', 'matchWord1')
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -177,18 +180,20 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should support an empty result set', function(done){
       db.documents.query(
-          q.where(
-            q.word('wordKey', 'ThisCriteriaShouldNeverMatch')
-            )
-          ).
-        result(function(response) {
+        q.where(
+          q.word('wordKey', 'ThisCriteriaShouldNeverMatch')
+          )
+        )
+      .result(function(response) {
           response.length.should.equal(0);
           done();
-        }, done);
+        })
+      .catch(done);
     });
     it('should calculate key1 and key2 facets without results', function(done){
       db.documents.query(
@@ -199,8 +204,8 @@ describe('document query', function(){
             q.facet('rangeKey1'),
             q.facet('rangeKey2')).
         slice(0)
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         response[0].should.have.property('facets');
         response[0].facets.should.have.property('rangeKey1');
@@ -210,7 +215,8 @@ describe('document query', function(){
         response[0].facets.rangeKey2.should.have.property('facetValues');
         response[0].facets.rangeKey2.facetValues.length.should.equal(3);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should calculate key1 and key2 facets with ordered results', function(done){
       db.documents.query(
@@ -221,8 +227,8 @@ describe('document query', function(){
             q.facet('rangeKey1'),
             q.facet('rangeKey2')).
         orderBy('rangeKey1', 'rangeKey2')
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(6);
         var order = [1, 3, 2, 4, 5];
         for (var i=0; i <= order.length; i++) {
@@ -243,7 +249,8 @@ describe('document query', function(){
           }
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should order by key1 and key2', function(done){
       db.documents.query(
@@ -251,8 +258,8 @@ describe('document query', function(){
             q.collection('matchList')
           ).
         orderBy('rangeKey1', 'rangeKey2')
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(5);
         var order = [1, 3, 2, 4, 5];
         for (var i=0; i < order.length; i++) {
@@ -263,7 +270,8 @@ describe('document query', function(){
           document.content.id.should.equal('matchList'+order[i]);
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should order by key2 and key1 descending', function(done){
       db.documents.query(
@@ -271,8 +279,8 @@ describe('document query', function(){
             q.collection('matchList')
           ).
         orderBy('rangeKey2', q.sort('rangeKey1', 'descending'))
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(5);
         var order = [2, 1, 4, 3, 5];
         for (var i=0; i < order.length; i++) {
@@ -283,7 +291,8 @@ describe('document query', function(){
           document.content.id.should.equal('matchList'+order[i]);
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should order by key1 and score', function(done){
       db.documents.query(
@@ -294,8 +303,8 @@ describe('document query', function(){
                 )
           ).
         orderBy('rangeKey1', q.sort(q.score(), 'descending'))
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(5);
         var order = [3, 1, 4, 2, 5];
         for (var i=0; i < order.length; i++) {
@@ -306,7 +315,8 @@ describe('document query', function(){
           document.content.id.should.equal('matchList'+order[i]);
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should take a slice from the middle', function(done){
       db.documents.query(
@@ -314,8 +324,8 @@ describe('document query', function(){
             q.word('scoreKey', 'matchList')
           ).
         slice(2, 3)
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(3);
         for (var i=0; i < 3; i++) {
           var document = response[i];
@@ -325,7 +335,8 @@ describe('document query', function(){
           document.content.id.should.equal('matchList'+(4 - i));
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should take a slice from the end', function(done){
       db.documents.query(
@@ -333,8 +344,8 @@ describe('document query', function(){
             q.word('scoreKey', 'matchList')
           ).
         slice(3)
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(2);
         for (var i=0; i < 2; i++) {
           var document = response[i];
@@ -344,7 +355,8 @@ describe('document query', function(){
           document.content.id.should.equal('matchList'+(3 - i));
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should take a slice with extract', function(done){
       db.documents.query(
@@ -355,8 +367,8 @@ describe('document query', function(){
           selected:'include-with-ancestors',
           paths:'/node("a1")/node("a2")/node("extractMatch")'
           }))
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.have.property('content');
@@ -366,7 +378,8 @@ describe('document query', function(){
         document.content.a1.a2.should.have.property('extractMatch');
         document.content.a1.a2.should.not.have.property('skippedChild2');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should take a slice with a standard snippet', function(done){
       db.documents.query(
@@ -375,8 +388,8 @@ describe('document query', function(){
           ).
         slice(1, 1, q.snippet()).
         withOptions({categories: 'none'})
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         response[0].results.length.should.equal(1);
         response[0].results[0].should.have.property('matches');
@@ -386,7 +399,8 @@ describe('document query', function(){
         response[0].results[0].matches[0]['match-text'][0].should.have.property('highlight');
         response[0].results[0].matches[0]['match-text'][0].highlight.should.equal('matchWord1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should take a slice with a snippet', function(done){
       db.documents.query(
@@ -394,13 +408,14 @@ describe('document query', function(){
             q.word('wordKey', 'matchWord1')
           ).
         slice(1, 1, q.snippet('extractFirst.xqy'))
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(2);
         response[0].results.length.should.equal(1);
         response[0].results[0].matches.should.have.property('first');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should get the query plan and permissions', function(done){
       db.documents.query(
@@ -408,8 +423,8 @@ describe('document query', function(){
             q.collection('matchList')
           ).
         withOptions({queryPlan:true, categories:'permissions'})
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(6);
         // TODO: separate the diagnostics from the facets
         for (var i=0; i < 6; i++) {
@@ -427,7 +442,8 @@ describe('document query', function(){
           }
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('for a where clause with a parsed query', function() {
@@ -439,8 +455,8 @@ describe('document query', function(){
               q.word('wordKey', q.bind('matchConstraint'))
               ))
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -448,7 +464,8 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should match an empty query', function(done){
       db.documents.query(
@@ -458,11 +475,12 @@ describe('document query', function(){
               q.bindEmptyAs('no-results')
               ))
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(0);
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('for a QBE where clause', function() {
@@ -473,8 +491,8 @@ describe('document query', function(){
               valueKey: 'match value'
               })
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -482,7 +500,8 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should match a word query', function(done){
       db.documents.query(
@@ -491,8 +510,8 @@ describe('document query', function(){
               wordKey: {$word:'matchWord1'}
               })
           )
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -500,7 +519,8 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should work with calculate and orderBy clauses', function(done){
       db.documents.query(
@@ -515,8 +535,8 @@ describe('document query', function(){
             q.facet('rangeKey1'),
             q.facet('rangeKey2')).
         orderBy('rangeKey1', 'rangeKey2')
-        ).
-      result(function(response) {
+        )
+      .result(function(response) {
         response.length.should.equal(6);
         var order = [1, 3, 2, 4, 5];
         for (var i=0; i <= order.length; i++) {
@@ -537,7 +557,8 @@ describe('document query', function(){
           }
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('for a structured query', function() {
@@ -549,8 +570,8 @@ describe('document query', function(){
               {'directory-query':{uri:['/test/query/matchDir/']}}
               ]}
           }
-      }).
-      result(function(response) {
+        })
+      .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
         document.should.be.ok;
@@ -558,7 +579,8 @@ describe('document query', function(){
         document.should.have.property('content');
         document.content.id.should.equal('matchDoc1');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should work with combined search', function(done){
       db.documents.query({
@@ -622,8 +644,8 @@ describe('document query', function(){
             'return-facets':     true
             }
           }
-      }).
-      result(function(response) {
+        })
+      .result(function(response) {
         response.length.should.equal(6);
         var order = [1, 3, 2, 4, 5];
         for (var i=0; i <= order.length; i++) {
@@ -644,7 +666,8 @@ describe('document query', function(){
           }
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
 });

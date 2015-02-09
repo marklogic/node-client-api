@@ -35,7 +35,8 @@ describe('server-side call', function() {
         values[0].value.should.have.property('k');
         values[0].value.k.should.equal('v');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate an XML node', function(done) {
       db.eval('xdmp.unquote("<a>element</a>");').result(function(values) {
@@ -43,15 +44,18 @@ describe('server-side call', function() {
         checkValue(values[0], 'xml', 'node()');
         /\<a\>element\<\/a\>/.test(values[0].value).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a binary node', function(done) {
-      db.eval('xdmp.xqueryEval("binary{xdmp:integer-to-hex(255)}");').result(function(values) {
+      db.eval('xdmp.xqueryEval("binary{xdmp:integer-to-hex(255)}");')
+      .result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'binary', 'node()');
         valcheck.isBuffer(values[0].value).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a text node', function(done) {
       db.eval('xdmp.xqueryEval("text{'+"'text value'"+'}");').result(function(values) {
@@ -59,7 +63,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'node()');
         values[0].value.should.equal('text value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a string value', function(done) {
       db.eval('"string value";').result(function(values) {
@@ -67,7 +72,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'string');
         values[0].value.should.equal('string value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a boolean value', function(done) {
       db.eval('true;').result(function(values) {
@@ -75,7 +81,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'boolean');
         values[0].value.should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate an integer value', function(done) {
       db.eval('3;').result(function(values) {
@@ -83,7 +90,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'integer');
         values[0].value.should.equal(3);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a decimal value', function(done) {
       db.eval('4.4;').result(function(values) {
@@ -91,7 +99,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'decimal');
         values[0].value.should.equal(4.4);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a date value', function(done) {
       db.eval('new Date("2010-10-08T10:17:15.125Z");').result(function(values) {
@@ -99,10 +108,12 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'dateTime');
         values[0].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a list of values', function(done) {
-      db.eval('xdmp.arrayValues([1, "two", {i:3}, [4], xdmp.unquote("<i>5</i>")]);').result(function(values) {
+      db.eval('xdmp.arrayValues([1, "two", {i:3}, [4], xdmp.unquote("<i>5</i>")]);')
+      .result(function(values) {
         values.length.should.equal(5);
         checkValue(values[0], 'text', 'integer');
         values[0].value.should.equal(1);
@@ -118,18 +129,20 @@ describe('server-side call', function() {
         checkValue(values[4], 'xml', 'node()');
         /\<i\>5\<\/i\>/.test(values[4].value).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('to pass variables to JavaScript', function() {
     it('should interpolate a Script variable', function(done) {
-      db.eval('var you;"hello, "+you;', {you:'world'}).
-      result(function(values) {
+      db.eval('var you;"hello, "+you;', {you:'world'})
+      .result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'string');
         values[0].value.should.equal('hello, world');
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('to eval XQuery', function() {
@@ -152,11 +165,12 @@ describe('server-side call', function() {
         checkValue(values[3], 'text', 'node()');
         values[3].value.should.equal('text value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate values of different types', function(done) {
-      db.xqueryEval('("string value", fn:true(), 3, 4.4, xs:dateTime("2010-10-08T10:17:15.125Z"))').
-      result(function(values) {
+      db.xqueryEval('("string value", fn:true(), 3, 4.4, xs:dateTime("2010-10-08T10:17:15.125Z"))')
+      .result(function(values) {
         values.length.should.equal(5);
         checkValue(values[0], 'text', 'string');
         values[0].value.should.equal('string value');
@@ -170,7 +184,8 @@ describe('server-side call', function() {
         valcheck.isDate(values[4].value).should.equal(true);
         values[4].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a list of integer values', function(done) {
       var max = 10;
@@ -181,16 +196,18 @@ describe('server-side call', function() {
           values[i].value.should.equal(i + 1);
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should generate a miscellaneous value', function(done) {
-      db.xqueryEval('(attribute att {"attribute value"})').
-      result(function(values) {
+      db.xqueryEval('(attribute att {"attribute value"})')
+      .result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'attribute()');
         values[0].value.should.equal('attribute value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
 /* TODO:
     negative tests for error response
@@ -206,25 +223,27 @@ describe('server-side call', function() {
       db.xqueryEval(
           'declare variable $you external;fn:concat("hello, ",$you)',
           {'you':'world'}
-          ).
-      result(function(values) {
+          )
+      .result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'string');
         values[0].value.should.equal('hello, world');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should interpolate a namespaced XQuery variable', function(done) {
       db.xqueryEval(
           'declare namespace a = "/ns/a";declare variable $a:you external;fn:concat("hello, ",$a:you)',
           {'{/ns/a}you':'world'}
-          ).
-      result(function(values) {
+          )
+      .result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'string');
         values[0].value.should.equal('hello, world');
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('to invoke JavaScript', function() {
@@ -234,12 +253,14 @@ describe('server-side call', function() {
       this.timeout(3000);
       restAdminDB.config.extlibs.write({
         path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
-      }).
-      result(function(response){done();}, done);
+        })
+      .result(function(response){done();})
+      .catch(done);
     });
     after(function(done) {
-      restAdminDB.config.extlibs.remove(invokePath).
-      result(function(response){done();}, done);
+      restAdminDB.config.extlibs.remove(invokePath)
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should return a JSON node', function(done) {
       db.invoke(invokePath, {test:1}).result(function(values) {
@@ -248,7 +269,8 @@ describe('server-side call', function() {
         values[0].value.should.have.property('k');
         values[0].value.k.should.equal('v');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return an XML node', function(done) {
       db.invoke(invokePath, {test:2}).result(function(values) {
@@ -256,7 +278,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'xml', 'node()');
         /\<a\>element\<\/a\>/.test(values[0].value).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a binary node', function(done) {
       db.invoke(invokePath, {test:3}).result(function(values) {
@@ -264,7 +287,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'binary', 'node()');
         valcheck.isBuffer(values[0].value).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a text node', function(done) {
       db.invoke(invokePath, {test:4}).result(function(values) {
@@ -272,7 +296,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'node()');
         values[0].value.should.equal('text value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a string value', function(done) {
       db.invoke(invokePath, {test:5}).result(function(values) {
@@ -280,7 +305,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'string');
         values[0].value.should.equal('string value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a boolean value', function(done) {
       db.invoke(invokePath, {test:6}).result(function(values) {
@@ -288,7 +314,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'boolean');
         values[0].value.should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return an integer value', function(done) {
       db.invoke(invokePath, {test:7}).result(function(values) {
@@ -296,7 +323,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'integer');
         values[0].value.should.equal(3);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a decimal value', function(done) {
       db.invoke(invokePath, {test:8}).result(function(values) {
@@ -304,7 +332,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'decimal');
         values[0].value.should.equal(4.4);
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a date value', function(done) {
       db.invoke(invokePath, {test:9}).result(function(values) {
@@ -312,7 +341,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'dateTime');
         values[0].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a list of values', function(done) {
       db.invoke(invokePath, {test:10}).result(function(values) {
@@ -331,7 +361,8 @@ describe('server-side call', function() {
         checkValue(values[4], 'xml', 'node()');
         /\<i\>5\<\/i\>/.test(values[4].value).should.equal(true);
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
   describe('to invoke XQuery', function() {
@@ -342,12 +373,14 @@ describe('server-side call', function() {
       this.timeout(3000);
       restAdminDB.config.extlibs.write({
         path:dbPath, contentType:'application/xquery', source:fs.createReadStream(fsPath)
-      }).
-      result(function(response){done();}, done);
+      })
+      .result(function(response){done();})
+      .catch(done);
     });
     after(function(done) {
-      restAdminDB.config.extlibs.remove(dbPath).
-      result(function(response){done();}, done);
+      restAdminDB.config.extlibs.remove(dbPath)
+      .result(function(response){done();})
+      .catch(done);
     });
     it('should return nodes of different formats', function(done) {
       db.invoke(invokePath, {test:[1,2,3,4]}).result(function(values) {
@@ -362,7 +395,8 @@ describe('server-side call', function() {
         checkValue(values[3], 'text', 'node()');
         values[3].value.should.equal('text value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return values of different types', function(done) {
       db.invoke(invokePath, {test:[5,6,7,8,9]}).result(function(values) {
@@ -379,7 +413,8 @@ describe('server-side call', function() {
         valcheck.isDate(values[4].value).should.equal(true);
         values[4].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a list of integer values', function(done) {
       db.invoke(invokePath, {test:[10]}).result(function(values) {
@@ -389,7 +424,8 @@ describe('server-side call', function() {
           values[i].value.should.equal(i + 1);
         }
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should return a miscellaneous value', function(done) {
       db.invoke(invokePath, {test:[11]}).result(function(values) {
@@ -397,7 +433,8 @@ describe('server-side call', function() {
         checkValue(values[0], 'text', 'attribute()');
         values[0].value.should.equal('attribute value');
         done();
-      }, done);
+        })
+      .catch(done);
     });
   });
 });

@@ -18,19 +18,19 @@ var exutil = require('./example-util.js');
 //a real application would require without the 'exutil.' namespace
 var marklogic = exutil.require('marklogic');
 
-var q = marklogic.queryBuilder;
+var qb = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Query documents with the Query Builder');
 
 db.documents.query(
-  q.where(
-    q.collection('/countries'),
-    q.value('region', 'Africa'),
-    q.or(
-      q.word('background',   'France'),
-      q.word('Legal system', 'French')
+  qb.where(
+    qb.collection('/countries'),
+    qb.value('region', 'Africa'),
+    qb.or(
+      qb.word('background',   'France'),
+      qb.word('Legal system', 'French')
       )
     )
   ).

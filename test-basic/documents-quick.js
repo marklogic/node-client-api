@@ -42,33 +42,35 @@ describe('quick path', function(){
         collections: '/quickdocs',
         contentType: 'application/json',
         content: {quickKey: 'quickMatch'}
-      }).
-    result(function(response){done();}, done);
+      })
+    .result(function(response){done();})
+    .catch(done);
   });
   it('should create objects', function(done){
     db.createCollection(
       '/quickdocs',
       {quickKey: 'quick value 1'},
       {quickKey: 'quick value 2'}
-      ).result().
-    then(function(uris){
+      )
+    .result(function(uris){
       valcheck.isUndefined(uris).should.equal(false);
       uris.length.should.equal(2);
       return db.documents.read({uris:uris, categories:['content', 'collections']}).result();
-      }, done).
-    then(function(documents) {
-        valcheck.isUndefined(documents).should.equal(false);
-        documents.length.should.equal(2);
-        documents[0].should.have.property('content');
-        documents[0].content.should.have.property('quickKey');
-        documents[0].should.have.property('collections');
-        documents[0].collections[0].should.equal('/quickdocs');
-        documents[1].should.have.property('content');
-        documents[1].content.should.have.property('quickKey');
-        documents[1].should.have.property('collections');
-        documents[1].collections[0].should.equal('/quickdocs');
-        done();
-        }, done);
+      })
+    .then(function(documents) {
+      valcheck.isUndefined(documents).should.equal(false);
+      documents.length.should.equal(2);
+      documents[0].should.have.property('content');
+      documents[0].content.should.have.property('quickKey');
+      documents[0].should.have.property('collections');
+      documents[0].collections[0].should.equal('/quickdocs');
+      documents[1].should.have.property('content');
+      documents[1].content.should.have.property('quickKey');
+      documents[1].should.have.property('collections');
+      documents[1].collections[0].should.equal('/quickdocs');
+      done();
+      })
+    .catch(done);
   });
   it('should write a mapping', function(done){
     db.writeCollection(
@@ -77,29 +79,30 @@ describe('quick path', function(){
         '/quickmapped/doc1.json': {mappedKey: 'quick value 1'},
         '/quickmapped/doc2.xml':  '<quickDoc>quick content 2</quickDoc>'
       }
-      ).result().
-    then(function(uris){
+      )
+    .result(function(uris){
       valcheck.isUndefined(uris).should.equal(false);
       uris.length.should.equal(2);
       return db.documents.read({uris:uris, categories:['content', 'collections']}).result();
-      }, done).
-    then(function(documents) {
-        valcheck.isUndefined(documents).should.equal(false);
-        documents.length.should.equal(2);
-        documents[0].should.have.property('content');
-        documents[0].content.should.have.property('mappedKey');
-        documents[0].should.have.property('collections');
-        documents[0].collections[0].should.equal('/quickmapped');
-        documents[1].should.have.property('content');
-        documents[1].content.should.containEql('<quickDoc>quick content 2</quickDoc>');
-        documents[1].should.have.property('collections');
-        documents[1].collections[0].should.equal('/quickmapped');
-        done();
-        }, done);
+      })
+    .then(function(documents) {
+      valcheck.isUndefined(documents).should.equal(false);
+      documents.length.should.equal(2);
+      documents[0].should.have.property('content');
+      documents[0].content.should.have.property('mappedKey');
+      documents[0].should.have.property('collections');
+      documents[0].collections[0].should.equal('/quickmapped');
+      documents[1].should.have.property('content');
+      documents[1].content.should.containEql('<quickDoc>quick content 2</quickDoc>');
+      documents[1].should.have.property('collections');
+      documents[1].collections[0].should.equal('/quickmapped');
+      done();
+      })
+    .catch(done);
   });
   it('should read objects', function(done){
-    db.read('/test/quick/object1.json', '/test/quick/object2.json').
-    result(function(objects) {
+    db.read('/test/quick/object1.json', '/test/quick/object2.json')
+    .result(function(objects) {
       valcheck.isUndefined(objects).should.equal(false);
       objects.length.should.equal(2);
       objects[0].should.have.property('quickKey');
@@ -107,15 +110,16 @@ describe('quick path', function(){
       objects[1].should.have.property('quickKey');
       objects[1].quickKey.should.equal('quickMatch');
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should query objects', function(done){
     db.queryCollection(
         '/quickdocs',
         q.where(q.byExample({
           quickKey: 'quickMatch'
-        }))).
-    result(function(objects) {
+        })))
+    .result(function(objects) {
       valcheck.isUndefined(objects).should.equal(false);
       objects.length.should.equal(2);
       objects[0].should.have.property('quickKey');
@@ -123,38 +127,42 @@ describe('quick path', function(){
       objects[1].should.have.property('quickKey');
       objects[1].quickKey.should.equal('quickMatch');
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should remove a document', function(done) {
     var docUri = '/test/quick/object1.json';
-    db.remove(docUri).
-    result(function(uri) {
+    db.remove(docUri)
+    .result(function(uri) {
       docUri.should.eql(uri);
       return db.probe(docUri).result();
-      }, done).
-    then(function(exists) {
+      })
+    .then(function(exists) {
       exists.should.eql(false);
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should probe', function(done){
-    db.probe('/test/quick/object2.json').
-    result(function(exists) {
+    db.probe('/test/quick/object2.json')
+    .result(function(exists) {
       exists.should.eql(true);
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should remove a collection', function(done){
     var collectionUri = '/quickdocs';
     this.timeout(3000);
-    db.removeCollection(collectionUri).
-    result(function(collection) {
+    db.removeCollection(collectionUri)
+    .result(function(collection) {
       collectionUri.should.eql(collection);
       return db.probe('/test/quick/object2.json').result();
-      }, done).
-    then(function(exists) {
+      })
+    .then(function(exists) {
       exists.should.eql(false);
       done();
-      }, done);
+      })
+    .catch(done);
   });
 });
