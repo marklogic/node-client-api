@@ -349,6 +349,20 @@ describe('document content', function(){
               }).on('error', done)
             ).on('error', done);
       });
+      it('should read a range', function(done){
+        db.documents.read({uris:uri, range:[10,15]}).result(function(documents) {
+          valcheck.isArray(documents).should.equal(true);
+          documents.length.should.equal(1);
+          var document = documents[0];
+          valcheck.isUndefined(document).should.equal(false);
+          document.should.have.property('content');
+          document.content.should.eql(binaryValue.slice(10,15));
+          done();
+        }).catch(function(error) {
+          console.log(JSON.stringify(error, null, 2));
+          done(error);
+        });
+      });
     });
 
     // write and read arity
