@@ -153,7 +153,6 @@ describe('document query options test', function(){
                    debug: true,
                    weight: 2.3,
                    similarDocs: true,
-                   view: "none",
                    categories: ['permissions']})).
       result(function(response) {
         response.length.should.equal(5);
@@ -161,7 +160,10 @@ describe('document query options test', function(){
         response[0].results[0].content.should.containEql('similar');
         //console.log(JSON.stringify(response, null, 4));
         done();
-      }, done);
+      }, function(error) {
+        console.log(JSON.stringify(error, null, 2));
+        done();
+      });
   });
 
   it('should do document query with invalid options', function(done){
@@ -174,7 +176,6 @@ describe('document query options test', function(){
                    debug: true,
                    weight: "five",
                    similarDocs: true,
-                   view: "none",
                    categories: ['permissions']})).
       result(function(response) {
         response.should.equal('SHOULD HAVE FAILED');
