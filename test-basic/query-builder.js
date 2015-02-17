@@ -805,14 +805,14 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a properties-query', function(){
+  it('should create a properties-fragment-query', function(){
     assert.deepEqual(
-        q.properties(q.collection('foo')),
-        {'properties-query':{'collection-query': {uri:['foo']}}}
+        q.propertiesFragment(q.collection('foo')),
+        {'properties-fragment-query':{'collection-query': {uri:['foo']}}}
         );
     assert.deepEqual(
-        q.properties([q.collection('foo')]),
-        {'properties-query':{'collection-query': {uri:['foo']}}}
+        q.propertiesFragment([q.collection('foo')]),
+        {'properties-fragment-query':{'collection-query': {uri:['foo']}}}
         );
   });
 
