@@ -73,6 +73,7 @@ describe('Document query test 2', function(){
       uri: '/test/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
+      properties: {prop1: 'anotherprop', prop2: 'same'},
       content: {
         title: 'Vannevar served',
         popularity: 5,
@@ -87,7 +88,7 @@ describe('Document query test 2', function(){
         uri: '/test/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
-        properties: {prop1: 'property1', prop2: 34},
+        properties: {prop1: 'property1', prop2: 'same'},
         quality: 50,
         content: {
           title: 'The memex',
