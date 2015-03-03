@@ -187,6 +187,147 @@ describe('Document facet query test', function(){
     }, done);
   });
 
+  it('should query with facet and snippet', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+
+  it('should query with facet, asc orderby, and snippet', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy(
+        q.sort('popularity', 'ascending')
+      ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+
+  it('should query with facet, desc orderby, and snippet', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy(
+        q.sort('popularity', 'descending')
+      ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc5.json');
+      response[0].results[0].matches[0]['match-text'][0].highlight.should.equal('The');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+
+  it('should query with facet, orderby, extract, and snippet', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy(
+        q.sort('popularity', 'ascending')
+      ).
+      slice(1, 10,
+        q.snippet(),
+        q.extract({
+          selected: 'include-with-ancestors',
+          paths:['/node("id")']
+        })
+      ).withOptions({categories: 'content'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[1].content.id.should.equal('0013');  
+      done();
+    }, done);
+  });
+
+  it('should query with facet, orderby, extract, bucket, and snippet', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency')),
+        q.facet(
+          'datetime',
+          q.datatype('xs:dateTime'),
+          q.bucket('2005', '2005-01-01T00:00:00', '<', '2006-01-01T00:00:00'),
+          q.bucket('2006', '2006-01-01T00:00:00', '<', '2007-01-01T00:00:00'),
+          q.bucket('2007', '2007-01-01T00:00:00', '<', '2008-01-01T00:00:00'),
+          q.bucket('2008', '2008-01-01T00:00:00', '<', '2009-01-01T00:00:00'),
+          q.bucket('2009', '2009-01-01T00:00:00', '<', '2010-01-01T00:00:00')
+        )
+      ).
+      orderBy(
+        q.sort('popularity', 'ascending')
+      ).
+      slice(1, 10,
+        q.snippet(),
+        q.extract({
+          selected: 'include-with-ancestors',
+          paths:['/node("id")']
+        })
+      ).withOptions({categories: 'content'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[1].content.id.should.equal('0013');  
+      response[0].facets.datetime.facetValues[0].name.should.equal('2005'); 
+      response[0].facets.datetime.facetValues[0].count.should.equal(1); 
+      done();
+    }, done);
+  });
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({collection: 'facetCollection'}).
     result(function(response) {
