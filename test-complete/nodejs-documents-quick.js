@@ -119,6 +119,7 @@ describe('quick path', function(){
    it('should read objects', function(done){
     dbWriter.read('/test/query/matchDir/doc1.json', '/test/query/matchDir/doc2.json','/test/query/matchDir/doc3.json').
     result(function(objects) {
+      //console.log(JSON.stringify(objects, null, 2));
       valcheck.isUndefined(objects).should.equal(false);
       objects.length.should.equal(3);
       objects[0].should.have.property('title');
@@ -130,6 +131,18 @@ describe('quick path', function(){
       done();
       }, done);
   });
+
+   it('should read a single doc', function(done){
+    dbWriter.read('/test/query/matchDir/doc1.json').
+    result(function(objects) {
+      //console.log(JSON.stringify(objects, null, 2));
+      valcheck.isUndefined(objects).should.equal(false);
+      objects.should.have.property('title');
+      objects.title.should.equal('Vannevar Bush');
+      done();
+      }, done);
+  });
+
   it('should fail in reading objects because of wrong URI', function(done){
     dbWriter.read('/test/query/match/doc1.json', '/test/query/Dir/doc2.json','/test/query/tchD/doc3.json').
 	result(function(response){
@@ -191,6 +204,65 @@ describe('quick path', function(){
       done();
       }, done);
   });
+
+  it('should write documents to collection', function(done){
+    dbWriter.writeCollection(
+      '/matchCollection1',
+      {
+        '/matchCollection1/doc10.json': {title: 'The Orchid'},
+        '/matchCollection1/doc11.xml': '<title>The Rose</title>'
+      }
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].should.equal('/matchCollection1/doc10.json');
+      response[1].should.equal('/matchCollection1/doc11.xml');
+      done();
+    }, done);
+  });
+
+  it('should write a document to collection', function(done){
+    dbWriter.writeCollection(
+      '/matchCollection1',
+      {
+        '/matchCollection1/doc12.json': {title: 'The Bloom'}
+      }
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].should.equal('/matchCollection1/doc12.json');
+      done();
+    }, done);
+  });
+
+  it('should write a document to invalid collection', function(done){
+    dbWriter.writeCollection(
+      '/matchCollectionNew',
+      {
+        '/matchCollectionNew/doc13.json': {title: 'The New Bloom'}
+      }
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].should.equal('/matchCollectionNew/doc13.json');
+      done();
+    }, done);
+  });
+
+  it('should remove matchCollectionNew', function(done){
+    var collectionUri = '/matchCollectionNew';
+    this.timeout(10000);
+    dbWriter.removeCollection(collectionUri).
+    result(function(collection) {
+      collectionUri.should.eql(collection);
+      return dbWriter.probe('/matchCollectionNew/doc13.json').result();
+    }, done).
+    then(function(exists) {
+      exists.should.eql(false);
+      done();
+    }, done);
+  });
+
    it('should remove a collection', function(done){
     var collectionUri = '/matchCollection1';
     this.timeout(10000);
@@ -204,4 +276,5 @@ describe('quick path', function(){
       done();
       }, done);
   });
-  });
+
+});
