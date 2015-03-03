@@ -86,9 +86,9 @@ describe('quick path', function(){
       {title: 'quick value 2'}
       ).result().
     then(function(uris){
-		//console.log(JSON.stringify(uris, null, 4));
+      //console.log(JSON.stringify(uris, null, 4));
       valcheck.isUndefined(uris).should.equal(false);
-   //   uris.length.should.equal(2);
+      //   uris.length.should.equal(2);
       return dbWriter.documents.read(uris).result();
       }, done).
     then(function(documents) {
@@ -100,7 +100,7 @@ describe('quick path', function(){
         documents[1].should.have.property('content');
         documents[1].content.should.have.property('title');
         done();
-        }, done);
+      }, done);
   }); 
 /*   it('should fail in writing objects to wrong collection', function(done){
     dbWriter.createCollection(
