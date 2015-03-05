@@ -65,7 +65,7 @@ describe('Extension library test', function(){
     }, function(error) {
          //console.log(error);
          error.statusCode.should.equal(400);
-         error.body.errorResponse.messageCode.should.equal('XDMP-MODNOTFOUND');
+         error.body.errorResponse.messageCode.should.equal('RESTAPI-INVALIDREQ');
          done();
        });
   });
