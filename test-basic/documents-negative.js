@@ -104,7 +104,7 @@ describe('document negative', function(){
       uri: '/test/negative/writeInvalidTransaction1.txt',
       contentType: 'text/plain',
       content: 'the text',
-      txid: 'not a real transaction'
+      txid: encodeURIComponent('not a real transaction')
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');
@@ -135,7 +135,7 @@ describe('document negative', function(){
   it('should fail to delete a document with a non-existent transaction', function(done){
     db.documents.remove({
       uri: '/test/negative/deleteInvalidTransaction1.txt',
-      txid: 'not a real transaction'
+      txid: encodeURIComponent('not a real transaction')
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');
