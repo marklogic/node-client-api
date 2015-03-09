@@ -1418,9 +1418,7 @@ describe('query-builder', function() {
   it('should specify a constraint', function(){
     assert.deepEqual(
         q.collection('foo', q.bind('constraint1')),
-        {collection:{
-          prefix: 'foo'
-          },
+        {collection:{prefix: 'foo', facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1525,17 +1523,17 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1')),
-        {range:{'json-property': 'key1'},
+        {range:{'json-property': 'key1', facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1'), q.rangeOptions('cached')),
-        {range:{'json-property': 'key1', 'range-option':['cached']},
+        {range:{'json-property': 'key1', 'range-option':['cached'], facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1'), q.fragmentScope('properties')),
-        {range:{'json-property': 'key1', 'fragment-scope': 'properties'},
+        {range:{'json-property': 'key1', 'fragment-scope': 'properties', facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1625,7 +1623,7 @@ describe('query-builder', function() {
             ns:    'http://marklogic.com/query/custom/module1',
             at:    '/ext/marklogic/query/custom/module1.xqy'
             },
-            facet:false},
+            facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1636,7 +1634,7 @@ describe('query-builder', function() {
             at:    '/ext/marklogic/query/custom/module1.xqy'
             },
             'term-option':['stemmed'],
-            facet:false},
+            facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
