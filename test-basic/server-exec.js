@@ -112,7 +112,7 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate a list of values', function(done) {
-      db.eval('xdmp.arrayValues([1, "two", {i:3}, [4], xdmp.unquote("<i>5</i>")]);')
+      db.eval('xdmp.arrayValues([1, "two", {i:3}, [4,"four"], xdmp.unquote("<i>5</i>")]);')
       .result(function(values) {
         values.length.should.equal(5);
         checkValue(values[0], 'text', 'integer');
@@ -124,8 +124,9 @@ describe('server-side call', function() {
         values[2].value.i.should.equal(3);
         checkValue(values[3], 'json', 'node()');
         values[3].value.should.have.property('length');
-        values[3].value.length.should.equal(1);
+        values[3].value.length.should.equal(2);
         values[3].value[0].should.equal(4);
+        values[3].value[1].should.equal('four');
         checkValue(values[4], 'xml', 'node()');
         /\<i\>5\<\/i\>/.test(values[4].value).should.equal(true);
         done();
@@ -356,8 +357,9 @@ describe('server-side call', function() {
         values[2].value.i.should.equal(3);
         checkValue(values[3], 'json', 'node()');
         values[3].value.should.have.property('length');
-        values[3].value.length.should.equal(1);
+        values[3].value.length.should.equal(2);
         values[3].value[0].should.equal(4);
+        values[3].value[1].should.equal('four');
         checkValue(values[4], 'xml', 'node()');
         /\<i\>5\<\/i\>/.test(values[4].value).should.equal(true);
         done();

@@ -45,7 +45,7 @@ case  9:
   new Date('2010-10-08T10:17:15.125Z');
   break;
 case  10:
-  xdmp.arrayValues([1, 'two', {i:3}, [4], xdmp.unquote('<i>5</i>')]);
+  xdmp.arrayValues([1, 'two', {i:3}, [4,'four'], xdmp.unquote('<i>5</i>')]);
   break;
 default:
   extra;
