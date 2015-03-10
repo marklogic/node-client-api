@@ -307,6 +307,33 @@ describe('Document parse binding test', function(){
     }, done);
   });
 
+  it('should do range constraint parse with different facet -- issue #145', function(done){
+    db.documents.query(
+      q.where(
+        q.parsedFrom('amount1 GE 10 AND amount2 LE 100',
+          q.parseBindings(
+            q.range('amt', q.datatype('double'), q.bind('amount1')),
+            q.range('amt', q.datatype('double'), q.bind('amount2'))
+          )
+        )
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('frequency-order', 'descending', 'limit=10'))
+      ).
+      withOptions({
+        queryPlan: true,
+        metrics: false,
+        debug: true
+      })
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].facets.should.not.have.property('amt');
+      response[0].facets.should.have.property('popularity');
+      done();
+    }, done);
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
