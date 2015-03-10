@@ -80,6 +80,50 @@ describe('Transform test with null output -- issue #147', function(){
     }, done);
   });
 
+  it('should write content with null transform and metadata', function(done){
+    dbWriter.documents.write({
+      uri: '/test/transform/emptyTransform3.json',
+      contentType: 'application/json',
+      quality: 20,
+      content: {title: 'hi there'},
+      transform: transformName  
+    },
+    { 
+      uri: '/test/transform/emptyTransform4.json',
+      contentType: 'application/json',
+      quality: 25,
+      content: {title: 'this is example'}  ,
+      transform: transformName
+    }).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      done();
+    }, done);
+  });
+
+  var uri3 = '/test/transform/emptyTransform3.json'; 
+  var uri4 = '/test/transform/emptyTransform4.json'; 
+
+  it('should return null content and metadata on read', function(done){
+    db.documents.read({
+      uris: [uri3, uri4],
+      categories: ['content', 'metadata'],
+      transform: transformName
+    }).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].uri.should.equal(uri3);
+      response[0].contentLength.should.equal('0');
+      response[0].quality.should.equal(20);
+      (response[0].content === null).should.be.true;
+      response[1].uri.should.equal(uri4);
+      response[1].contentLength.should.equal('0');
+      response[1].quality.should.equal(25);
+      (response[1].content === null).should.be.true;
+      done();
+    }, done);
+  });
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({
       directory: '/test/transform/'
