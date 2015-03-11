@@ -64,11 +64,15 @@ describe('Transform with params', function(){
     db.documents.read({
       uris: [uri1, uri2],
       categories: ['content', 'metadata'],
-      transform: [transformName, {title: 'new title'}]
+      transform: [transformName, 
+        {title: 'new title', myInt: 2, myBool: true}
+      ]
     }).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response[0].content.title.should.equal('new title');
+      response[0].content.intKey.should.equal(2);
+      response[0].content.boolKey.should.equal(true);
       done();
     }, done);
   });
