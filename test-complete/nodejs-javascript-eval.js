@@ -32,7 +32,10 @@ describe('Server eval test', function(){
       //console.log(values);
       values[0].value.k.should.equal('v');
       done();
-    }, done);
+    }, function(error) {
+      console.log(JSON.stringify(error, null, 2));
+      done();
+    });
   });
 
   it('should do javascript eval on text', function(done){
