@@ -78,7 +78,10 @@ describe('Transform test with combination', function(){
         documents[0].content.flagParam.should.equal('mountain');
         documents[0].content.should.have.property('timestamp');
         done();
-      }, done);
+      }, function(error) {
+        console.log(JSON.stringify(error, null, 2));
+        done();
+      });
     }, done);
   });
 
