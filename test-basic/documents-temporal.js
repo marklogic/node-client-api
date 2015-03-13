@@ -15,9 +15,9 @@
  */
 var should = require('should');
 
-var util   = require('util');
+var util = require('util');
 
-var valcheck     = require('core-util-is');
+var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
 var testutil   = require('./test-util.js');
@@ -76,6 +76,7 @@ describe('temporal document', function() {
       var documents = response.documents;
       documents.should.have.property('length');
       documents.length.should.equal(2);
+      response.should.have.property('systemTime');
       var uris = documents.map(function(document){return document.uri;});
       return db.documents.read(uris).result();
       })
@@ -143,12 +144,14 @@ describe('temporal document', function() {
           }
         }]})
     .result(function(response) {
+      response.should.have.property('systemTime');
       return db.documents.remove({
         temporalCollection: 'temporalCollection',
         uri: delUri1
         }).result();
       })
     .then(function(response) {
+      response.should.have.property('systemTime');
       return db.documents.query(q.where(
           q.document(delUri1),
           q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
