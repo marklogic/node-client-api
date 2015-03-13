@@ -56,7 +56,7 @@ describe('Server eval test', function(){
 
   it('should do javascript eval to call on array', function(done){
     var src = 'var mycars = ["volvo", "nissan", "honda", "volvo", "HONDA"];' +
-              'fn.distinctValues(mycars);' 
+              'fn.distinctValues(xdmp.arrayValues(mycars));' 
     dbEval.eval(src).
     result(function(values) {
       //console.log(values);
