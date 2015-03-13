@@ -1823,6 +1823,22 @@ describe('query-builder', function() {
           name:'key6'
           }
         );
+    assert.deepEqual(
+        q.facet('key6', [
+            q.bucket('bucket6A',     '<', 60),
+            q.bucket('bucket6B', 60, '<', 65),
+            q.bucket('bucket6C', 65, '<'    )]),
+        {range:{
+          'json-property': 'key6',
+          facet: true,
+          bucket:[
+              {name: 'bucket6A', label: 'bucket6A', lt: 60},
+              {name: 'bucket6B', label: 'bucket6B', ge: 60, lt: 65},
+              {name: 'bucket6C', label: 'bucket6C', ge: 65}]
+          },
+          name:'key6'
+          }
+        );
     q.anchor('now',  'P0D', '<', 'P1D').should.be.instanceOf(qlib.AnchorDef);
     q.bucket('foo', q.anchor('now',  'P0D', '<', 'P1D')).should.be.instanceOf(qlib.ComputedBucketDef);
     assert.deepEqual(
