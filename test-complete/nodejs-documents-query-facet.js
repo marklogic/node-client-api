@@ -160,6 +160,31 @@ describe('Document facet query test', function(){
     }, done);
   });
 
+  it('should query with array of bucket', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/facet/')
+      ).
+      calculate(
+        q.facet(
+          'popularity',
+          q.datatype('int'),
+          [
+            q.bucket('low', '<', 2),
+            q.bucket('moderate', 2, '<', 4),
+            q.bucket('high', 4, '<')
+          ]
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].facets.popularity.facetValues[0].name.should.equal('moderate'); 
+      response[0].facets.popularity.facetValues[0].count.should.equal(1); 
+      done();
+    }, done);
+  });
+
   it('should query with absolute bucket on dateTime', function(done){
     db.documents.query(
       q.where(
@@ -174,6 +199,35 @@ describe('Document facet query test', function(){
           q.bucket('2007', '2007-01-01T00:00:00', '<', '2008-01-01T00:00:00'),
           q.bucket('2008', '2008-01-01T00:00:00', '<', '2009-01-01T00:00:00'),
           q.bucket('2009', '2009-01-01T00:00:00', '<', '2010-01-01T00:00:00')
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].facets.datetime.facetValues[0].name.should.equal('2005'); 
+      response[0].facets.datetime.facetValues[0].count.should.equal(1); 
+      response[0].facets.datetime.facetValues[4].name.should.equal('2009'); 
+      response[0].facets.datetime.facetValues[4].count.should.equal(1); 
+      done();
+    }, done);
+  });
+
+  it('should query with array of bucket on dateTime', function(done){
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/facet/')
+      ).
+      calculate(
+        q.facet(
+          'datetime',
+          q.datatype('xs:dateTime'),
+          [
+            q.bucket('2005', '2005-01-01T00:00:00', '<', '2006-01-01T00:00:00'),
+            q.bucket('2006', '2006-01-01T00:00:00', '<', '2007-01-01T00:00:00'),
+            q.bucket('2007', '2007-01-01T00:00:00', '<', '2008-01-01T00:00:00'),
+            q.bucket('2008', '2008-01-01T00:00:00', '<', '2009-01-01T00:00:00'),
+            q.bucket('2009', '2009-01-01T00:00:00', '<', '2010-01-01T00:00:00')
+          ]
         )
       )
     ).
