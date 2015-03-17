@@ -50,13 +50,14 @@ describe('Write Document Test', function() {
         {'role-name':'app-builder', capabilities:['read', 'update']}
       ],
       properties: {prop1:'bar', prop2:33},
-      content: {id:245, name:'Paul'}
+      content: {id:245, name:'Paul'}  
     }).result(function(response){done();}, done);
   });
 
   it('should read the document content name', function(done) {
     db.documents.read({uris: docuri}).result(function(documents) {
       var document = documents[0];
+      //console.log(JSON.stringify(documents, null, 2));
       document.content.name.should.equal('Jason');
       done();
     }, done);
