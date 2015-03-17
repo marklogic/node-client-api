@@ -92,6 +92,32 @@ describe('values query', function(){
       built.whereClause.query.queries.length.should.equal(1);
       built.whereClause.query.queries[0].should.have.property('value-query');
     });
+    it('should build with parsed bindings', function(){
+      var built = t.fromIndexes('property1').
+      where(
+          t.parsedFrom('constraint1:value1',
+              t.parseBindings(
+                  t.value('key1', t.bind('constraint1'))
+                  )),
+          t.value('key1', 'value 1')
+      );
+      built.should.have.property('fromIndexesClause');
+      built.fromIndexesClause.length.should.equal(1);
+      built.fromIndexesClause[0].should.have.property('range');
+      built.fromIndexesClause[0].range.should.have.property('json-property');
+      built.fromIndexesClause[0].range['json-property'].should.equal('property1');
+      built.should.have.property('whereClause');
+      built.whereClause.should.have.property('query');
+      built.whereClause.query.should.have.property('queries');
+      built.whereClause.query.queries.length.should.equal(1);
+      built.whereClause.query.queries[0].should.have.property('value-query');
+      built.whereClause.should.have.property('parsedQuery');
+      built.whereClause.parsedQuery.should.have.property('qtext');
+      built.whereClause.parsedQuery.qtext.should.equal('constraint1:value1');
+      built.whereClause.parsedQuery.should.have.property('constraint');
+      built.whereClause.parsedQuery.constraint.length.should.equal(1);
+      built.whereClause.parsedQuery.constraint[0].should.have.property('value');
+    });
     it('should build an aggregates clause', function(){
       var built = t.fromIndexes('property1').
       aggregates('avg', 'sum', t.udf('plugin1', 'function1'));

@@ -107,6 +107,31 @@ describe('values query', function(){
         })
       .catch(done);
     });
+    it('should return values for a string query', function(done){
+      db.values.read(
+        t.fromIndexes(
+          t.range('rangeKey3', 'xs:int')
+          ).
+        where(
+          t.parsedFrom('id:valuesList2 OR id:valuesList3',
+              t.parseBindings(
+                  t.value('id', t.bind('id'))
+                  )),
+          t.collection('valuesCollection1')
+          )
+        )
+      .result(function(values) {
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('tuple');
+        values['values-response'].tuple.length.should.equal(2);
+        values['values-response'].tuple[0].should.have.property('frequency');
+        values['values-response'].tuple[0].frequency.should.equal(2);
+        values['values-response'].tuple[1].should.have.property('frequency');
+        values['values-response'].tuple[1].frequency.should.equal(1);
+        done();
+        })
+      .catch(done);
+    });
   });
   describe('for a from indexes clause for tuples', function() {
     it('should return all tuples', function(done){
@@ -133,6 +158,34 @@ describe('values query', function(){
         values['values-response'].tuple[3].frequency.should.equal(1);
         values['values-response'].tuple[4].should.have.property('frequency');
         values['values-response'].tuple[4].frequency.should.equal(1);
+        done();
+        })
+      .catch(done);
+    });
+    it('should return tuples for a string query', function(done){
+      db.values.read(
+        t.fromIndexes(
+          t.range('rangeKey3'),
+          t.range(t.property('rangeKey4'))
+          ).
+        where(
+          t.parsedFrom('id:valuesList2 OR id:valuesList3',
+              t.parseBindings(
+                  t.value('id', t.bind('id'))
+                  )),
+          t.collection('valuesCollection1')
+          )
+        )
+      .result(function(values) {
+        values.should.have.property('values-response');
+        values['values-response'].should.have.property('tuple');
+        values['values-response'].tuple.length.should.equal(3);
+        values['values-response'].tuple[0].should.have.property('frequency');
+        values['values-response'].tuple[0].frequency.should.equal(2);
+        values['values-response'].tuple[1].should.have.property('frequency');
+        values['values-response'].tuple[1].frequency.should.equal(1);
+        values['values-response'].tuple[2].should.have.property('frequency');
+        values['values-response'].tuple[2].frequency.should.equal(1);
         done();
         })
       .catch(done);
