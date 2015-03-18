@@ -187,13 +187,13 @@ describe('Write Document Test', function() {
     }, done);
   });
 
-  /*it('should return null on non-existent document -- issue #153', function(done) {
+  it('should return empty array on non-existent document -- issue #153', function(done) {
     db.documents.read({
       uris: '/test/crud/thisdocumentisnotexist.json'
       }).
     result(function(response) {
-      console.log(JSON.stringify(response, null, 2));
-      //response[0].content.name.should.equal('no content type');
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
       done();
     }, done);
   });
@@ -204,11 +204,11 @@ describe('Write Document Test', function() {
       categories: ['content']
       }).
     result(function(response) {
-      console.log(JSON.stringify(response, null, 2));
-      //response[0].content.name.should.equal('no content type');
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
       done();
     }, done);
-  });*/
+  });
 
   it('should delete the document', function(done) {
     db.documents.remove(docuri).result(function(document) {
