@@ -137,8 +137,8 @@ describe('quick path', function(){
     result(function(objects) {
       //console.log(JSON.stringify(objects, null, 2));
       valcheck.isUndefined(objects).should.equal(false);
-      objects.should.have.property('title');
-      objects.title.should.equal('Vannevar Bush');
+      objects[0].should.have.property('title');
+      objects[0].title.should.equal('Vannevar Bush');
       done();
       }, done);
   });
