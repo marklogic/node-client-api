@@ -178,7 +178,7 @@ describe('Write Document Test', function() {
 
   it('should read document without contentType', function(done) {
     db.documents.read({
-      uris: '/test/crud/withoutContentType1.json',
+      uris: '/test/crud/withoutContentType1.json'
       }).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
@@ -186,6 +186,29 @@ describe('Write Document Test', function() {
       done();
     }, done);
   });
+
+  /*it('should return null on non-existent document -- issue #153', function(done) {
+    db.documents.read({
+      uris: '/test/crud/thisdocumentisnotexist.json'
+      }).
+    result(function(response) {
+      console.log(JSON.stringify(response, null, 2));
+      //response[0].content.name.should.equal('no content type');
+      done();
+    }, done);
+  });
+
+  it('should return empty array on non-existent document content -- issue #153', function(done) {
+    db.documents.read({
+      uris: '/test/crud/thisdocumentisnotexist.json',
+      categories: ['content']
+      }).
+    result(function(response) {
+      console.log(JSON.stringify(response, null, 2));
+      //response[0].content.name.should.equal('no content type');
+      done();
+    }, done);
+  });*/
 
   it('should delete the document', function(done) {
     db.documents.remove(docuri).result(function(document) {
