@@ -124,6 +124,71 @@ describe('Document tuples test', function(){
         done();
       }, done);
   });
+
+  it('should do values on simple parse', function(done){
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+        t.range('score', 'xs:double')
+      ).
+      where(
+        q.parsedFrom('intitle:"The memex"',
+          q.parseBindings(
+            q.value('title', q.bind('intitle'))
+          )
+        )
+      )
+    ).result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response['values-response'].tuple.length.should.equal(1);
+      done();
+    }, done);
+  });
+
+  it('should do values on complex parse', function(done){
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+        t.range('score', 'xs:double')
+      ).
+      where(
+        q.parsedFrom('"Vannevar" AND theId:0024 OR (pop LT 4)',
+          q.parseBindings(
+            q.word('title', q.bindDefault()),
+            q.value('id', q.bind('theId')),
+            q.range('popularity', q.datatype('int'), q.bind('pop'))
+          )
+        )
+      )
+    ).result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response['values-response'].tuple.length.should.equal(2);
+      done();
+    }, done);
+  });
+
+  it('should do values aggregate on parse', function(done){
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+        t.range('score', 'xs:double')
+      ).
+      where(
+        q.parsedFrom('intitle:bush',
+          q.parseBindings(
+            q.word('title', q.bind('intitle'))
+          )
+        )
+      ).
+      aggregates('sum')
+    ).result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      var strData = JSON.stringify(response);
+      strData.should.containEql('"aggregate-result":[{"name":"sum","_value":"149.15"}]');
+      done();
+    }, done);
+  });
+
  it('should do values on path', function(done){
    this.timeout(10000);  
    db.values.read(
