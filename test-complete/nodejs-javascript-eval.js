@@ -73,5 +73,35 @@ describe('Server eval test', function(){
     }, done);
   });
 
+  it('should do eval to Documents db -- issue #158', function(done){
+    var dbDoc = marklogic.createDatabaseClient({
+      host: 'localhost',
+      port: '8000',
+      database: 'Documents',
+      user: 'admin',
+      password: 'admin'
+    });
 
+    dbDoc.eval('xdmp.databaseName(xdmp.database());').result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].value.should.equal('Documents');
+      done();
+    }, done);
+  });
+
+  it('should do eval to Modules db -- issue #158', function(done){
+    var dbMod = marklogic.createDatabaseClient({
+      host: 'localhost',
+      port: '8000',
+      database: 'Modules',
+      user: 'admin',
+      password: 'admin'
+    });
+
+    dbMod.eval('xdmp.databaseName(xdmp.database());').result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].value.should.equal('Modules');
+      done();
+    }, done);
+  });
 });
