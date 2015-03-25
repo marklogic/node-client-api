@@ -22,7 +22,7 @@ var marklogic = require('../');
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
-var tid = 0;
+var tid = null;
 
 describe('Document transaction test', function() {
   
