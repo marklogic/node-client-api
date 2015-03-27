@@ -109,6 +109,22 @@ describe('Document geo query test', function(){
         '  </gElemPair>' +
         '  <gAttrPair latitude="250" longitude="144"/>' + 
         '</root>'
+    },
+    {
+      uri: '/test/query/geo/doc6.json',
+      collections: ['geoCollection'],
+      contentType: 'application/json',
+      content: {
+        title: 'cross_pole',
+        gElemPoint: '37.2768,-77.4008',
+        gElemChildParent: {
+          gElemChildPoint: '37.2768,-77.4008'
+        },
+        gElemPair: {
+          latitude: 37.2768,
+          longitude: -77.4008
+        }
+      } 
     }
     ).
     result(function(response){done();}, done);
@@ -222,6 +238,23 @@ describe('Document geo query test', function(){
       //console.log(JSON.stringify(response, null, 2));
       response.length.should.equal(1);
       response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
+
+  it('should do geo property pair query with circle in crossed pole', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geospatial(
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.circle(2000, 32.2768, -62.4008)
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.title.should.equal('cross_pole');
       done();
     }, done);
   });
