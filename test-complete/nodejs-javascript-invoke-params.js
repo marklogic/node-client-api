@@ -51,6 +51,41 @@ describe('Javascript invoke test', function(){
     }, done);
   });
 
+  it('should do javascript invoke with params on stream', function(done){
+    dbEval.invoke(invokePath, {num1:2, num2:3}).
+    stream().
+    on('data', function(data) {
+      //console.log(data);
+      data.value.should.equal(5);
+    }).
+    on('end', function() {
+      done();
+    }, done);
+  });
+
+  it('should do javascript invoke with params and transaction', function(done){
+    var tid = 0;
+
+    dbEval.transactions.open({transactionName: 'invokeTransaction', timeLimit: 60})
+    .result(function(response) {
+      tid = response.txid;
+      return dbEval.invoke({
+        path: invokePath,
+        variables: {num1:2, num2:3},
+        txid: tid
+      }).result();
+    })
+    .then(function(response) {
+      //console.log(response);
+      response[0].value.should.equal(5);
+      return dbEval.transactions.commit(tid).result();
+    })
+    .then(function(response) {
+      //console.log(response);
+      done();
+    }, done);
+  });
+
   it('should do javascript invoke with wrong params', function(done){
     dbEval.invoke(invokePath, {numa:2, num2:3}).result(function(values) {
       //console.log(values);
