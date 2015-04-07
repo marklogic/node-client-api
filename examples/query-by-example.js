@@ -18,21 +18,21 @@ var exutil = require('./example-util.js');
 //a real application would require without the 'exutil.' namespace
 var marklogic = exutil.require('marklogic');
 
-var q = marklogic.queryBuilder;
+var qb = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Query documents with Query By Example');
 
 db.documents.query(
-  q.where(
-    q.byExample({
+  qb.where(
+    qb.byExample({
       region:     'Africa',
       background: {$word: 'France'}
       })
-    )).
+    ))
   // or use stream() as in query-builder.js
-  result(function(documents) {
+  .result(function(documents) {
     documents.forEach(function(document) {
       console.log(
         document.content.name+' at '+document.uri
@@ -41,7 +41,8 @@ db.documents.query(
       console.log('done');
 
       exutil.succeeded();
-    }, function(error) {
+    })
+  .catch(function(error) {
       console.log(JSON.stringify(error));
 
       exutil.failed();

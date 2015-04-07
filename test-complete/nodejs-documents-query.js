@@ -317,10 +317,12 @@ describe('Document query test', function(){
           )
         ).slice(1, 100, q.snippet())
       ).result(function(response) {
-        var document = response[0];
-        //response.length.should.equal(1);
         //console.log(JSON.stringify(response, null, 4));
-        //response[0].content.id.should.equal('0011');
+        response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('Bush');
+        response[0].results[0].matches[1]['match-text'][1].highlight.should.equal('Bush');
+        response[0].results[0].matches[1]['match-text'][3].highlight.should.equal('Atlantic');
+        response[0].results[0].matches[1]['match-text'][4].highlight.should.equal('Monthly');
+        response[1].content.id.should.equal('0011');
         done();
       }, done);
   });

@@ -24,8 +24,8 @@ var timestamp = (new Date()).toISOString();
 
 console.log('Transform a document on the client');
 
-db.documents.read('/countries/uv.json').result().
-  then(function(documents) {
+db.documents.read('/countries/uv.json')
+  .result(function(documents) {
     var documentBefore = documents[0];
     console.log('before: '+
         documentBefore.content.name+' on '+
@@ -33,13 +33,13 @@ db.documents.read('/countries/uv.json').result().
         );
     documentBefore.content.timestamp = timestamp;
     return db.documents.write(documentBefore).result();
-    }).
-  then(function(response) {
+    })
+  .then(function(response) {
     var uri = response.documents[0].uri;
     console.log('modified: '+uri);
     return db.documents.read(uri).result();
-  }).
-  then(function(documents) {
+    })
+  .then(function(documents) {
     var documentAfter = documents[0];
     console.log('after: '+
       documentAfter.content.name+' on '+
@@ -48,8 +48,9 @@ db.documents.read('/countries/uv.json').result().
     console.log('done');
 
     exutil.succeeded();
-  }, function(error) {
+    })
+  .catch(function(error) {
     console.log(JSON.stringify(error));
 
     exutil.failed();
-  });
+    });

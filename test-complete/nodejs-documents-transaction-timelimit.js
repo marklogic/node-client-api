@@ -28,7 +28,7 @@ describe('Document transaction test', function() {
   
   // Set transaction time limit to be 1 second
   it('should commit the write document', function(done) {
-    db.transactions.open({transactionName: "nodeTransaction", "timeLimit": 1}).result().
+    db.transactions.open({transactionName: "nodeTransaction", timeLimit: 1}).result().
     then(function(response) {
       tid = response.txid;
       return db.documents.write({
@@ -43,9 +43,9 @@ describe('Document transaction test', function() {
   // Read about transaction status
   it('should read transaction status', function(done) {
     db.transactions.read(tid).result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
       response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
       response['transaction-status']['time-limit'].should.equal('1');
-
       done();
     }, done);
   });
@@ -91,5 +91,4 @@ describe('Document transaction test', function() {
         done();
       }, done);
   }); 
-
 });

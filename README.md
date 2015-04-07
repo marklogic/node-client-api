@@ -14,7 +14,7 @@ from Node.js applications.
 
 ## Status
 
-Release 1.0.0 of the MarkLogic Node.js API
+Release 1.0.2 of the MarkLogic Node.js API
 
 ## Sample
 
@@ -56,7 +56,7 @@ Other calls can create additional documents for the same collection.
 
 Here are some resources that walk you through working with MarkLogic using the Node.js API:
 
-* http://developer.marklogic.com/features/node-api
+* http://developer.marklogic.com/features/node-client-api
 * http://docs.marklogic.com/guide/node-dev/intro#id_68052
 
 The instructions describe:

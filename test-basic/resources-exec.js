@@ -32,14 +32,15 @@ describe('when executing resource services', function(){
     var xqyServicePath = './test-basic/data/wrapperService.xqy';
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.resources.write(xqyServiceName, 'xquery', fs.createReadStream(xqyServicePath)).
-      result(function(response){
+      restAdminDB.config.resources.write(xqyServiceName, 'xquery', fs.createReadStream(xqyServicePath))
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should get one document', function(done){
-      db.resources.get({name:xqyServiceName, params:{value:'foo'}}).
-      result(function(response){
+      db.resources.get({name:xqyServiceName, params:{value:'foo'}})
+      .result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(1);
         response[0].should.have.property('content');
@@ -47,13 +48,14 @@ describe('when executing resource services', function(){
         response[0].content.readDoc.should.have.property('param');
         response[0].content.readDoc.param.should.equal('foo');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should get two documents', function(done){
       db.resources.get({
         name:xqyServiceName, params:{value:'foo', multipart:'true'}
-        }).
-      result(function(response){
+        })
+      .result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(2);
         response[0].should.have.property('content');
@@ -65,14 +67,15 @@ describe('when executing resource services', function(){
         response[1].content.readMultiDoc.should.have.property('multiParam');
         response[1].content.readMultiDoc.multiParam.should.equal('foo');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should put one typed document', function(done){
       db.resources.put({
         name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}}
-        ]}).
-      result(function(response){
+        ]})
+      .result(function(response){
         response.should.have.property('wroteDoc');
         response.wroteDoc.should.have.property('param');
         response.wroteDoc.param.should.equal('foo');
@@ -80,14 +83,15 @@ describe('when executing resource services', function(){
         response.wroteDoc.inputDoc.should.have.property('one');
         response.wroteDoc.inputDoc.one.should.equal('typed document');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should put one untyped document', function(done){
       db.resources.put({
         name:xqyServiceName, params:{value:'foo'}, documents:[
           {one:'untyped document'}
-        ]}).
-      result(function(response){
+        ]})
+      .result(function(response){
         response.should.have.property('wroteDoc');
         response.wroteDoc.should.have.property('param');
         response.wroteDoc.param.should.equal('foo');
@@ -95,15 +99,16 @@ describe('when executing resource services', function(){
         response.wroteDoc.inputDoc.should.have.property('one');
         response.wroteDoc.inputDoc.one.should.equal('untyped document');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should put two typed documents', function(done){
       db.resources.put({
         name:xqyServiceName, params:{value:'foo'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
-        ]}).
-      result(function(response){
+        ]})
+      .result(function(response){
         response.should.have.property('wroteDoc');
         response.wroteDoc.should.have.property('param');
         response.wroteDoc.param.should.equal('foo');
@@ -114,15 +119,16 @@ describe('when executing resource services', function(){
         response.wroteDoc.multiInputDoc.should.have.property('two');
         response.wroteDoc.multiInputDoc.two.should.equal('typed document');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should post two typed documents', function(done){
       db.resources.post({
         name:xqyServiceName, params:{value:'foo', multipart:'true'}, documents:[
           {contentType:'application/json', content:{one:'typed document'}},
           {contentType:'application/json', content:{two:'typed document'}}
-        ]}).
-      result(function(response){
+        ]})
+      .result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(2);
         response[0].should.have.property('content');
@@ -140,16 +146,18 @@ describe('when executing resource services', function(){
         response[1].content.appliedMultiDoc.should.have.property('multiParam');
         response[1].content.appliedMultiDoc.multiParam.should.equal('foo');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should remove one document', function(done){
-      db.resources.remove({name:xqyServiceName, params:{value:'foo'}}).
-      result(function(response){
+      db.resources.remove({name:xqyServiceName, params:{value:'foo'}})
+      .result(function(response){
         response.should.have.property('deletedDoc');
         response.deletedDoc.should.have.property('param');
         response.deletedDoc.param.should.equal('foo');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     // TODO: formats, multiple, single, or empty response, chunked streams, JavaScript resource services    
   });
@@ -158,14 +166,15 @@ describe('when executing resource services', function(){
     var jsServicePath = './test-basic/data/versionService.js';
     before(function(done){
       this.timeout(3000);
-      restAdminDB.config.resources.write(jsServiceName, 'javascript', fs.createReadStream(jsServicePath)).
-      result(function(response){
+      restAdminDB.config.resources.write(jsServiceName, 'javascript', fs.createReadStream(jsServicePath))
+      .result(function(response){
         done();
-      }, done);
+        })
+      .catch(done);
     });
     it('should get one document', function(done){
-      db.resources.get({name:jsServiceName}).
-      result(function(response){
+      db.resources.get({name:jsServiceName})
+      .result(function(response){
         valcheck.isArray(response).should.equal(true);
         response.length.should.equal(1);
         response[0].should.have.property('content');
@@ -174,7 +183,8 @@ describe('when executing resource services', function(){
         response[0].content.should.have.property('platform');
         response[0].content.should.have.property('version');
         done();
-      }, done);
+        })
+      .catch(done);
     });
     // TODO: other services for JavaScript
   });

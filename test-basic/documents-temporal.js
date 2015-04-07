@@ -15,9 +15,9 @@
  */
 var should = require('should');
 
-var util   = require('util');
+var util = require('util');
 
-var valcheck     = require('core-util-is');
+var valcheck = require('core-util-is');
 
 var testconfig = require('../etc/test-config.js');
 var testutil   = require('./test-util.js');
@@ -71,15 +71,16 @@ describe('temporal document', function() {
             validStartTime:  validStart,
             validEndTime:    validEnd
             }
-        }]}).
-    result(function(response){
+        }]})
+    .result(function(response){
       var documents = response.documents;
       documents.should.have.property('length');
       documents.length.should.equal(2);
+      response.should.have.property('systemTime');
       var uris = documents.map(function(document){return document.uri;});
       return db.documents.read(uris).result();
-      }, done).
-    then(function(documents){
+      })
+    .then(function(documents){
       documents.should.have.property('length');
       documents.length.should.equal(2);
       var latestNow = Date.now();      
@@ -90,14 +91,15 @@ describe('temporal document', function() {
         var documentStart = new Date(document.content.systemStartTime).getTime();
         latestNow.should.be.greaterThan(documentStart);
       }
-      done();}, done);
+      done();})
+    .catch(done);
   });
 /* TODO: requires a REST interface to temporal:advance-lsqt() to create the collection LSQT document
   it('should query temporal documents relative to lsqt', function(done) {
     db.documents.query(q.where(
         q.lsqtQuery('temporalCollection')
-      )).
-    result(function(documents) {
+      ))
+    .result(function(documents) {
       documents.should.have.property('length');
       documents.length.should.equal(2);
       var checked = documents.filter(function(document){
@@ -106,14 +108,15 @@ describe('temporal document', function() {
       checked.should.have.property('length');
       checked.length.should.equal(2);
       done();
-    }, done);
+      })
+    .catch(done);
   });
  */
   it('should query a range of temporal documents', function(done) {
     db.documents.query(q.where(
       q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
-      )).
-    result(function(documents) {
+      ))
+    .result(function(documents) {
       documents.should.have.property('length');
       documents.length.should.equal(2);
       var checked = documents.filter(function(document){
@@ -122,7 +125,8 @@ describe('temporal document', function() {
       checked.should.have.property('length');
       checked.length.should.equal(2);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should remove temporal documents', function(done) {
     var delUri1 = '/test/temporal/deletableDoc1.json';
@@ -138,20 +142,22 @@ describe('temporal document', function() {
             validStartTime:  validStart,
             validEndTime:    validEnd
           }
-        }]}).result().
-    then(function(response) {
+        }]})
+    .result(function(response) {
+      response.should.have.property('systemTime');
       return db.documents.remove({
         temporalCollection: 'temporalCollection',
         uri: delUri1
         }).result();
-      }, done).
-    then(function(response) {
+      })
+    .then(function(response) {
+      response.should.have.property('systemTime');
       return db.documents.query(q.where(
           q.document(delUri1),
           q.periodRange('validTime', 'aln_contained_by', q.period(rangeStart, rangeEnd))
         )).result();
-      }, done).
-    then(function(documents) {
+      })
+    .then(function(documents) {
       documents.should.have.property('length');
       documents.length.should.equal(1);
       var latestNow = Date.now();      
@@ -161,7 +167,8 @@ describe('temporal document', function() {
       var documentEnd = new Date(document.content.systemEndTime).getTime();
       latestNow.should.be.greaterThan(documentEnd);
       done();
-      }, done);
+      })
+    .catch(done);
   });
 });
 

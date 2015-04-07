@@ -39,12 +39,13 @@ describe('document content', function(){
           uri: '/test/write/string1.json',
           contentType: 'application/json',
           content: '{"key1":"value 1"}'
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the value', function(done){
-        db.documents.read('/test/write/string1.json').
-          result(function(documents) {
+        db.documents.read('/test/write/string1.json')
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -53,7 +54,8 @@ describe('document content', function(){
             document.content.should.have.property('key1');
             document.content.key1.should.equal('value 1');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('a JSON object', function(){
@@ -62,12 +64,13 @@ describe('document content', function(){
           uri: '/test/write/object1.json',
           contentType: 'application/json',
           content: {key1: 'value 1'}
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the value', function(done){
-        db.documents.read('/test/write/object1.json').
-          result(function(documents) {
+        db.documents.read('/test/write/object1.json')
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -76,7 +79,8 @@ describe('document content', function(){
             document.content.should.have.property('key1');
             document.content.key1.should.equal('value 1');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('a JSON buffer', function(){
@@ -85,19 +89,21 @@ describe('document content', function(){
           uri: '/test/write/buffer1.json',
           contentType: 'application/json',
           content: new Buffer('{"key1":"value 1"}')
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the value', function(done){
-        db.documents.read('/test/write/buffer1.json').
-          result(function(documents) {
+        db.documents.read('/test/write/buffer1.json')
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             documents[0].should.have.property('content');
             documents[0].content.should.have.property('key1');
             documents[0].content.key1.should.equal('value 1');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('a JSON descriptor with a readable stream', function(){
@@ -107,19 +113,21 @@ describe('document content', function(){
           uri: '/test/write/stream1.json',
           contentType: 'application/json',
           content: readableString
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the value', function(done){
-        db.documents.read('/test/write/stream1.json').
-          result(function(documents) {
+        db.documents.read('/test/write/stream1.json')
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             documents[0].should.have.property('content');
             documents[0].content.should.have.property('key1');
             documents[0].content.key1.should.equal('value 1');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('an XML string', function(){
@@ -128,12 +136,13 @@ describe('document content', function(){
           uri: '/test/write/string1.xml',
           contentType: 'application/xml',
           content: '<doc>content 1</doc>'
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the content', function(done){
-        db.documents.read('/test/write/string1.xml').
-          result(function(documents) {
+        db.documents.read('/test/write/string1.xml')
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -141,7 +150,8 @@ describe('document content', function(){
             document.should.have.property('content');
             document.content.should.containEql('<doc>content 1</doc>');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('a repaired XML string', function(){
@@ -152,12 +162,13 @@ describe('document content', function(){
           contentType: 'application/xml',
           repair: 'full',
           content: '<doc><child>content 1</doc>'
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the content', function(done){
-        db.documents.read(uri).
-          result(function(documents) {
+        db.documents.read(uri)
+          .result(function(documents) {
             valcheck.isArray(documents).should.equal(true);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -165,7 +176,8 @@ describe('document content', function(){
             document.should.have.property('content');
             document.content.should.containEql('<doc><child>content 1</child></doc>');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('a language-specified XML string', function(){
@@ -176,12 +188,13 @@ describe('document content', function(){
           contentType: 'application/xml',
           lang: 'fr',
           content: '<doc>oui</doc>'
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the content', function(done){
-        db.documents.read(uri).
-          result(function(documents) {
+        db.documents.read(uri)
+          .result(function(documents) {
             valcheck.isArray(documents).should.equal(true);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -189,7 +202,8 @@ describe('document content', function(){
             document.should.have.property('content');
             document.content.should.containEql('<doc xml:lang="fr">oui</doc>');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
     describe('a text string', function(){
@@ -198,12 +212,13 @@ describe('document content', function(){
           uri: '/test/write/string1.txt',
           contentType: 'text/plain',
           content: 'text 1'
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the content', function(done){
-        db.documents.read('/test/write/string1.txt').
-          result(function(documents) {
+        db.documents.read('/test/write/string1.txt')
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -211,7 +226,8 @@ describe('document content', function(){
             document.should.have.property('content');
             document.content.should.equal('text 1');
             done();
-            }, done);
+            })
+          .catch(done);
       });
       it('should assign a uri on the server', function(done){
         db.documents.write({
@@ -219,8 +235,8 @@ describe('document content', function(){
           directory: '/test/write/',
           contentType: 'text/plain',
           content: 'text with assigned extension'
-          }).result().
-        then(function(response) {
+          })
+        .result(function(response) {
           valcheck.isUndefined(response).should.equal(false);
           var documents = response.documents;
           valcheck.isArray(documents).should.equal(true);
@@ -229,8 +245,8 @@ describe('document content', function(){
           valcheck.isUndefined(document).should.equal(false);
           document.should.have.property('uri');          
           return db.documents.read(document.uri).result();
-          }).
-        then(function(documents){
+          })
+        .then(function(documents){
           valcheck.isArray(documents).should.equal(true);
           documents.length.should.equal(1);
           var document = documents[0];
@@ -238,10 +254,11 @@ describe('document content', function(){
           document.should.have.property('content');
           document.content.should.equal('text with assigned extension');
           return db.documents.remove(document.uri).result();
-          }).
-        then(function(documents){
+          })
+        .then(function(documents){
           done();
-          }, done);
+          })
+        .catch(done);
       });
     });
     describe('a binary', function(){
@@ -264,8 +281,8 @@ describe('document content', function(){
           uri: uri,
           contentType: 'image/png',
           content: readableBinary
-          }).result().
-        then(function(response){
+          })
+        .result(function(response){
           valcheck.isUndefined(response).should.equal(false);
           response.should.have.property('documents');
           response.documents.should.have.property('length');
@@ -273,8 +290,8 @@ describe('document content', function(){
           response.documents[0].should.have.property('uri');
           response.documents[0].uri.should.equal(uri);
           return db.documents.read(response.documents[0].uri).result();
-          }, done).
-        then(function(documents){
+          })
+        .then(function(documents){
           valcheck.isArray(documents).should.equal(true);
           documents.should.have.property('length');
           documents.length.should.equal(1);
@@ -283,7 +300,8 @@ describe('document content', function(){
               JSON.stringify(documents[0].content)
               );
           done();
-          }, done);
+          })
+        .catch(done);
       });
       it('should write as a piped stream', function(done){
         this.timeout(3000);
@@ -299,7 +317,8 @@ describe('document content', function(){
           document.should.have.property('uri');
           document.uri.should.equal(uri);
           done();
-          }, done);
+          })
+        .catch(done);
         fs.createReadStream(binaryPath).pipe(ws);
       });
       it('should write as a readable stream', function(done){
@@ -308,8 +327,8 @@ describe('document content', function(){
           uri:         uri,
           contentType: 'image/png',
           content:     fs.createReadStream(binaryPath)
-          }).
-        result(function(response) {
+          })
+        .result(function(response) {
           valcheck.isUndefined(response).should.equal(false);
           response.should.have.property('documents');
           response.documents.length.should.equal(1);
@@ -317,7 +336,8 @@ describe('document content', function(){
           document.should.have.property('uri');
           document.uri.should.equal(uri);
           done();
-          }, done);
+          })
+        .catch(done);
       });
       it('should read as a stream', function(done){
         db.documents.read(uri).stream('chunked').on('error', done).
@@ -328,6 +348,20 @@ describe('document content', function(){
               done();
               }).on('error', done)
             ).on('error', done);
+      });
+      it('should read a range', function(done){
+        db.documents.read({uris:uri, range:[10,15]}).result(function(documents) {
+          valcheck.isArray(documents).should.equal(true);
+          documents.length.should.equal(1);
+          var document = documents[0];
+          valcheck.isUndefined(document).should.equal(false);
+          document.should.have.property('content');
+          document.content.should.eql(binaryValue.slice(10,15));
+          done();
+        }).catch(function(error) {
+          console.log(JSON.stringify(error, null, 2));
+          done(error);
+        });
       });
     });
 
@@ -342,15 +376,16 @@ describe('document content', function(){
           uri: '/test/write/arrayObject2.json',
           contentType: 'application/json',
           content: {key1: 'value 1'}
-          }]).
-        result(function(response){done();}, done);
+          }])
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back both values', function(done){
         db.documents.read(
             '/test/write/arrayString1.json',
             '/test/write/arrayObject2.json'
-            ).
-        result(function(documents) {
+            )
+        .result(function(documents) {
           valcheck.isUndefined(documents).should.equal(false);
           documents.length.should.equal(2);
           for (var i=0; i < 2; i++) {
@@ -361,7 +396,8 @@ describe('document content', function(){
             document.content.key1.should.equal('value 1');
           }
           done();
-          }, done);
+          })
+        .catch(done);
       });
     });
     describe('a JSON document in two chunks', function(){
@@ -370,7 +406,7 @@ describe('document content', function(){
             uri: '/test/write/writable1.json',
             contentType: 'application/json'
             });
-        writeStream.result(function(response){done();}, done);
+        writeStream.result(function(response){done();}).catch(done);
 
         writeStream.write('{"key1"', 'utf8');
         writeStream.write(       ':"value 1"}', 'utf8');
@@ -396,21 +432,23 @@ describe('document content', function(){
             uri: '/test/remove/doc1.json',
             contentType: 'application/json',
             content: {key1: 'value 1'}
-            }).
-          result(function(response){done();}, done);
+            })
+          .result(function(response){done();})
+          .catch(done);
         });
         it('should not exist', function(done){
-          db.documents.remove('/test/remove/doc1.json').
-            result(function(document) {
+          db.documents.remove('/test/remove/doc1.json')
+            .result(function(document) {
               document.should.have.property('uri');
               return db.documents.probe(document.uri).result();
-              }, done).
-            then(function(document) {
+              })
+            .then(function(document) {
               valcheck.isUndefined(document).should.equal(false);
               document.should.have.property('exists');
               document.exists.should.eql(false);
               done();
-              }, done);
+              })
+            .catch(done);
         });
       });
     });
@@ -422,17 +460,19 @@ describe('document content', function(){
             uri: '/test/check/doc1.json',
             contentType: 'application/json',
             content: {key1: 'value 1'}
-            }).
-            result(function(response){done();}, done);
+            })
+            .result(function(response){done();})
+            .catch(done);
         });
         it('should exist', function(done){
-          db.documents.probe('/test/check/doc1.json').
-            result(function(document) {
+          db.documents.probe('/test/check/doc1.json')
+            .result(function(document) {
               valcheck.isUndefined(document).should.equal(false);
               document.should.have.property('exists');
               document.exists.should.eql(true);
               done();
-              }, done);
+              })
+            .catch(done);
         });
       });
     });
@@ -487,7 +527,8 @@ describe('document metadata', function(){
           document.quality.should.equal(1);
           document.content.key1.should.equal('value 1');
           done();
-          }, done);
+          })
+        .catch(done);
       });
     });
     describe('all with one document', function(){
@@ -522,12 +563,13 @@ describe('document metadata', function(){
         {uri: '/test/write/metaContent2.json',
           contentType: 'application/json',
           content: {key2: 'value 2'}
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the metadata and content', function(done){
-        db.documents.read({uris:'/test/write/metaContent1.json', categories:['metadata', 'content']}).
-          result(function(documents) {
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:['metadata', 'content']})
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -561,7 +603,8 @@ describe('document metadata', function(){
             document.quality.should.equal(1);
             document.content.key1.should.equal('value 1');
             done();
-            }, done);
+            })
+          .catch(done);
       });
       it('should read back default metadata and content', function(done){
         db.documents.read({uris:'/test/write/metaContent2.json', categories:['metadata', 'content']}).
@@ -616,12 +659,13 @@ describe('document metadata', function(){
             property2: 'property value 2'
             },
           quality: 2
-          }).
-        result(function(response){done();}, done);
+          })
+        .result(function(response){done();})
+        .catch(done);
       });
       it('should read back the all of the metadata', function(done){
-        db.documents.read({uris:'/test/write/metaContent1.json', categories:'metadata'}).
-          result(function(documents) {
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'metadata'})
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -657,11 +701,12 @@ describe('document metadata', function(){
             document.quality.should.equal(2);
             document.should.not.have.property('content');
             done();
-            }, done);
+            })
+          .catch(done);
       });
       it('should read back collections metadata', function(done){
-        db.documents.read({uris:'/test/write/metaContent1.json', categories:'collections'}).
-          result(function(documents) {
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'collections'})
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -672,11 +717,12 @@ describe('document metadata', function(){
             }
             document.should.not.have.property('content');
             done();
-            }, done);
+            })
+          .catch(done);
       });
       it('should read back permissions metadata', function(done){
-        db.documents.read({uris:'/test/write/metaContent1.json', categories:'permissions'}).
-          result(function(documents) {
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'permissions'})
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -700,11 +746,12 @@ describe('document metadata', function(){
             permissionsFound.should.equal(2);
             document.should.not.have.property('content');
             done();
-            }, done);
+            })
+          .catch(done);
       });
       it('should read back the properties metadata', function(done){
-        db.documents.read({uris:'/test/write/metaContent1.json', categories:'properties'}).
-          result(function(documents) {
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'properties'})
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -715,11 +762,12 @@ describe('document metadata', function(){
             document.properties.property2.should.equal('property value 2');
             document.should.not.have.property('content');
             done();
-            }, done);
+            })
+          .catch(done);
       });
       it('should read back the quality metadata', function(done){
-        db.documents.read({uris:'/test/write/metaContent1.json', categories:'quality'}).
-          result(function(documents) {
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'quality'})
+          .result(function(documents) {
             valcheck.isUndefined(documents).should.equal(false);
             documents.length.should.equal(1);
             var document = documents[0];
@@ -727,7 +775,8 @@ describe('document metadata', function(){
             document.quality.should.equal(2);
             document.should.not.have.property('content');
             done();
-            }, done);
+            })
+          .catch(done);
       });
     });
   });

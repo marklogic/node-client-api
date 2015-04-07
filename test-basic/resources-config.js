@@ -31,10 +31,11 @@ describe('when configuring resource services', function(){
   var servicePath = './test-basic/data/timeService.xqy';
   it('should write the resource service with positional parameters', function(done){
     this.timeout(3000);
-    restAdminDB.config.resources.write(serviceName, 'xquery', fs.createReadStream(servicePath)).
-    result(function(response){
+    restAdminDB.config.resources.write(serviceName, 'xquery', fs.createReadStream(servicePath))
+    .result(function(response){
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should write the resource service with named parameters', function(done){
     this.timeout(3000);
@@ -46,34 +47,38 @@ describe('when configuring resource services', function(){
       version:     0.1,
       format:      'xquery',
       source:      fs.createReadStream(servicePath)
-      }).
-    result(function(response){
+      })
+    .result(function(response){
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should read the resource service', function(done){
-    restAdminDB.config.resources.read(serviceName).
-    result(function(source){
+    restAdminDB.config.resources.read(serviceName)
+    .result(function(source){
       (!valcheck.isNullOrUndefined(source)).should.equal(true);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should list the resource services', function(done){
-    db.config.resources.list().
-    result(function(response){
+    db.config.resources.list()
+    .result(function(response){
       response.should.have.property('resources');
       response.resources.should.have.property('resource');
       response.resources.resource.length.should.be.above(0);
       response.resources.resource.filter(function(item){return item.name === serviceName;}).
           length.should.equal(1);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should delete the resource service', function(done){
-    restAdminDB.config.resources.remove(serviceName).
-    result(function(response){
+    restAdminDB.config.resources.remove(serviceName)
+    .result(function(response){
       done();
-    }, done);
+      })
+    .catch(done);
   });
   // TODO: test streaming of source and list
 });

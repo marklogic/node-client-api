@@ -805,14 +805,14 @@ describe('query-builder', function() {
         );
   });
 
-  it('should create a properties-query', function(){
+  it('should create a properties-fragment-query', function(){
     assert.deepEqual(
-        q.properties(q.collection('foo')),
-        {'properties-query':{'collection-query': {uri:['foo']}}}
+        q.propertiesFragment(q.collection('foo')),
+        {'properties-fragment-query':{'collection-query': {uri:['foo']}}}
         );
     assert.deepEqual(
-        q.properties([q.collection('foo')]),
-        {'properties-query':{'collection-query': {uri:['foo']}}}
+        q.propertiesFragment([q.collection('foo')]),
+        {'properties-fragment-query':{'collection-query': {uri:['foo']}}}
         );
   });
 
@@ -913,12 +913,6 @@ describe('query-builder', function() {
          weight: 2}}
         );
     assert.deepEqual(
-        q.lsqtQuery('bitemporalCollection', 2),
-        {'lsqt-query':{
-         'temporal-collection': 'bitemporalCollection',
-         weight: 2}}
-        );
-    assert.deepEqual(
         q.lsqtQuery('bitemporalCollection',
             q.temporalOptions('cached')),
         {'lsqt-query':{
@@ -926,7 +920,7 @@ describe('query-builder', function() {
          'temporal-option':['cached']}}
         );
     assert.deepEqual(
-        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z', 2,
+        q.lsqtQuery('bitemporalCollection', '2014-09-05T00:00:00.000Z', q.weight(2),
             q.temporalOptions('cached')),
         {'lsqt-query':{
          'temporal-collection': 'bitemporalCollection',
@@ -1424,9 +1418,7 @@ describe('query-builder', function() {
   it('should specify a constraint', function(){
     assert.deepEqual(
         q.collection('foo', q.bind('constraint1')),
-        {collection:{
-          prefix: 'foo'
-          },
+        {collection:{prefix: 'foo', facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1531,17 +1523,17 @@ describe('query-builder', function() {
         );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1')),
-        {range:{'json-property': 'key1'},
+        {range:{'json-property': 'key1', facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1'), q.rangeOptions('cached')),
-        {range:{'json-property': 'key1', 'range-option':['cached']},
+        {range:{'json-property': 'key1', 'range-option':['cached'], facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
         q.range('key1', q.bind('constraint1'), q.fragmentScope('properties')),
-        {range:{'json-property': 'key1', 'fragment-scope': 'properties'},
+        {range:{'json-property': 'key1', 'fragment-scope': 'properties', facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1631,7 +1623,7 @@ describe('query-builder', function() {
             ns:    'http://marklogic.com/query/custom/module1',
             at:    '/ext/marklogic/query/custom/module1.xqy'
             },
-            facet:false},
+            facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1642,7 +1634,7 @@ describe('query-builder', function() {
             at:    '/ext/marklogic/query/custom/module1.xqy'
             },
             'term-option':['stemmed'],
-            facet:false},
+            facet: false},
           name:'constraint1'}
         );
     assert.deepEqual(
@@ -1820,6 +1812,22 @@ describe('query-builder', function() {
             q.bucket('bucket6A',     '<', 60),
             q.bucket('bucket6B', 60, '<', 65),
             q.bucket('bucket6C', 65, '<'    )),
+        {range:{
+          'json-property': 'key6',
+          facet: true,
+          bucket:[
+              {name: 'bucket6A', label: 'bucket6A', lt: 60},
+              {name: 'bucket6B', label: 'bucket6B', ge: 60, lt: 65},
+              {name: 'bucket6C', label: 'bucket6C', ge: 65}]
+          },
+          name:'key6'
+          }
+        );
+    assert.deepEqual(
+        q.facet('key6', [
+            q.bucket('bucket6A',     '<', 60),
+            q.bucket('bucket6B', 60, '<', 65),
+            q.bucket('bucket6C', 65, '<'    )]),
         {range:{
           'json-property': 'key6',
           facet: true,

@@ -22,9 +22,9 @@ var db = marklogic.createDatabaseClient(exutil.restReaderConnection);
 
 console.log('Read documents');
 
-db.documents.read('/countries/ml.json', '/countries/uv.json').
+db.documents.read('/countries/ml.json', '/countries/uv.json')
   // or use stream() as in query-builder.js
-  result(function(documents) {
+  .result(function(documents) {
     console.log('read:\n'+
       documents.
       map(function(document){
@@ -35,7 +35,8 @@ db.documents.read('/countries/ml.json', '/countries/uv.json').
     console.log('done');
 
     exutil.succeeded();
-  }, function(error) {
+    })
+  .catch(function(error) {
       console.log(JSON.stringify(error));
 
       exutil.failed();

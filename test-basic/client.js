@@ -53,13 +53,15 @@ describe('database clients', function() {
         id:    'database1',
         value: 'Database One'
         }
-      }).result(function(document) {
+      })
+    .result(function(document) {
         return otherDb.documents.probe('/test/database/doc1.json').result();
-      }).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.equal(true);
       done();
-      }, done);
+      })
+    .catch(done);
   });
   it('should write in a specified db and read in a default db', function(done) {
     otherDb.documents.write({
@@ -69,12 +71,14 @@ describe('database clients', function() {
         id:    'database2',
         value: 'Database Two'
         }
-      }).result(function(document) {
+      })
+    .result(function(document) {
         return db.documents.probe('/test/database/doc2.json').result();
-      }).
-    then(function(document) {
+      })
+    .then(function(document) {
       document.exists.should.equal(true);
       done();
-      }, done);
+      })
+    .catch(done);
   });
 });

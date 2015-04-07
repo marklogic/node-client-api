@@ -32,7 +32,10 @@ describe('Server eval test', function(){
       //console.log(values);
       values[0].value.k.should.equal('v');
       done();
-    }, done);
+    }, function(error) {
+      console.log(JSON.stringify(error, null, 2));
+      done();
+    });
   });
 
   it('should do javascript eval on text', function(done){
@@ -53,7 +56,7 @@ describe('Server eval test', function(){
 
   it('should do javascript eval to call on array', function(done){
     var src = 'var mycars = ["volvo", "nissan", "honda", "volvo", "HONDA"];' +
-              'fn.distinctValues(mycars);' 
+              'fn.distinctValues(xdmp.arrayValues(mycars));' 
     dbEval.eval(src).
     result(function(values) {
       //console.log(values);
@@ -70,5 +73,35 @@ describe('Server eval test', function(){
     }, done);
   });
 
+  it('should do eval to Documents db -- issue #158', function(done){
+    var dbDoc = marklogic.createDatabaseClient({
+      host: 'localhost',
+      port: '8000',
+      database: 'Documents',
+      user: 'admin',
+      password: 'admin'
+    });
 
+    dbDoc.eval('xdmp.databaseName(xdmp.database());').result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].value.should.equal('Documents');
+      done();
+    }, done);
+  });
+
+  it('should do eval to Modules db -- issue #158', function(done){
+    var dbMod = marklogic.createDatabaseClient({
+      host: 'localhost',
+      port: '8000',
+      database: 'Modules',
+      user: 'admin',
+      password: 'admin'
+    });
+
+    dbMod.eval('xdmp.databaseName(xdmp.database());').result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].value.should.equal('Modules');
+      done();
+    }, done);
+  });
 });

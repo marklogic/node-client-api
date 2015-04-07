@@ -89,7 +89,19 @@ describe('Temporal update test', function() {
         id: 12, 
         name: 'Jason'
       }
-    }).result(function(response){done();}, done);
+    }).result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.have.property('systemTime');
+
+      /*var d = new Date();
+      var yyyy = d.getFullYear().toString();
+      var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based
+      var dd  = d.getDate().toString();
+      var systemTimeDate = yyyy + '-' + (mm[1]?mm:"0"+mm[0])
+
+      response.systemTime.should.containEql(systemTimeDate);*/
+      done();
+    }, done);
   });
 
   it('should read the document content name', function(done) {
@@ -248,9 +260,18 @@ describe('Temporal update test', function() {
     db.documents.remove({
       uri: docuri,
       temporalCollection: 'temporalCollection'
-    }).result(function(document) {
-      // //console.log("Document = " + JSON.stringify(document));
+    }).result(function(response) {
+      //console.log("Document = " + JSON.stringify(response, null, 2));
 
+      response.should.have.property('systemTime');
+
+      /*var d = new Date();
+      var yyyy = d.getFullYear().toString();
+      var mm = (d.getMonth()+1).toString(); // getMonth() is zero-based
+      var dd  = d.getDate().toString();
+      var systemTimeDate = yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]); // padding
+
+      response.systemTime.should.containEql(systemTimeDate);*/
       done();
     }, done);
   });

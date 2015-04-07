@@ -18,7 +18,7 @@ var exutil = require('./example-util.js');
 //a real application would require without the 'exutil.' namespace
 var marklogic = exutil.require('marklogic');
 
-var p = marklogic.patchBuilder;
+var pb = marklogic.patchBuilder;
 
 var dbAdmin = marklogic.createDatabaseClient(exutil.restAdminConnection);
 
@@ -28,16 +28,16 @@ var timestamp = (new Date()).toISOString();
 
 var uri        = '/countries/uv.json';
 var operations = [
-    p.pathLanguage('jsonpath'),
-    p.replaceInsert('$.timestamp', '$.name', 'after', timestamp)
+    pb.pathLanguage('jsonpath'),
+    pb.replaceInsert('$.timestamp', '$.name', 'after', timestamp)
     ];
 
 console.log('configure the server to enforce optimistic locking');
 // a one-time administrative action
 dbAdmin.config.serverprops.write({
     'update-policy': 'version-required'
-  }).
-  result(function(response) {
+    })
+  .result(function(response) {
     console.log(
         'try to update a value in the content to '+
         timestamp+'\n    without passing the document version id');
@@ -45,16 +45,16 @@ dbAdmin.config.serverprops.write({
       uri:        uri,
       operations: operations
       // versionId not specified
-      }).result(
-        function(success) {
-          console.log('should never execute');
-        },
-        function(failure) {
-          console.log('expected failure for the update without the version id');
+      })
+    .result(function(success) {
+        console.log('should never execute');
+        })
+    .catch(function(failure) {
+        console.log('expected failure for the update without the version id');
 
-          console.log('get the current version id for the document');
-          db.documents.probe(uri).result().
-          then(function(document){
+        console.log('get the current version id for the document');
+        db.documents.probe(uri)
+          .result(function(document){
             console.log(
                 'try to update the document passing the version id '+document.versionId);
             return db.documents.patch({
@@ -62,14 +62,14 @@ dbAdmin.config.serverprops.write({
               operations: operations,
               versionId:  document.versionId
               }).result();
-            }).
-          then(function(response){
+            })
+          .then(function(response){
             console.log('update succeeded with the version id');
 
             console.log('get the new version id for the updated document');
             return db.documents.read(uri).result();
-            }).
-          then(function(documents) {
+            })
+          .then(function(documents) {
             var document = documents[0];
             console.log(
                 'the document has the new version id '+document.versionId+
@@ -81,19 +81,21 @@ dbAdmin.config.serverprops.write({
             return dbAdmin.config.serverprops.write({
               'update-policy': 'merge-metadata'
                 }).result();
-              }).
-            then(function(response) {
-                console.log('done');
+            })
+          .then(function(response) {
+            console.log('done');
 
-                exutil.succeeded();
-              }, function(error) {
-                console.log(JSON.stringify(error));
+            exutil.succeeded();
+            })
+          .catch(function(error) {
+            console.log(JSON.stringify(error));
 
-                exutil.failed();
-              });
+            exutil.failed();
+            });
         });
-  }, function(error) {
+    })
+  .catch(function(error) {
     console.log(JSON.stringify(error));
 
     exutil.failed();
-  });
+    });

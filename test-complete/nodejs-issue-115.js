@@ -102,92 +102,45 @@ describe('document query options test', function(){
     result(function(response){done();}, done);
   });
 
-  it('should do document query with options', function(done){
+  it('should do document query with options and category as content Github issue#151', function(done){
     db.documents.query(
       q.where(
-        q.directory('/test/query/matchDir/')
+         q.word('title', 'bush')	
         ).
       withOptions({queryPlan: true,
                    metrics: false,
                    debug: true,
-                   categories: ['collections', 'content']})).
-      result(function(response) {
-        response.length.should.equal(5);
-        response[0].plan.should.be.ok;
-        response[0].report.should.be.ok;
-        response[0].report.should.containEql('cts:search(fn:collection(), cts:directory-query');
-        //console.log(JSON.stringify(response, null, 4));
-        done();
-      }, done);
-  });
-
-  it('should do document query with options: content only and other options', function(done){
-    db.documents.query(
-      q.where(
-        q.directory('/test/query/matchDir/')
-        ).
-      withOptions({queryPlan: true,
-                   metrics: true,
-                   debug: true,
-                   weight: 2.3,
-                   similarDocs: true,
                    categories: ['content']})).
       result(function(response) {
-        response.length.should.equal(5);
-        response[0].plan.should.be.ok;
-        response[0].metrics.should.be.ok;
-        response[0].report.should.be.ok;
-        response[0].report.should.containEql('cts:search(fn:collection(), cts:directory-query');
         //console.log(JSON.stringify(response, null, 4));
+	 	response.length.should.equal(3);
+        response[0].plan.should.be.ok;
+        response[0].report.should.be.ok;
+        response[0].report.should.containEql('cts:search(fn:collection(), cts:json-property-word-query'); 
+        
         done();
       }, done);
   });
-
-  it('should do document query with options: categories = permissions and similarDocs = true', function(done){
+  it('should do document query with options and category as none Github issue#151', function(done){
     db.documents.query(
       q.where(
-        q.directory('/test/query/matchDir/')
+         q.word('title', 'bush')	
         ).
       withOptions({queryPlan: true,
-                   metrics: true,
+                   metrics: false,
                    debug: true,
-                   weight: 2.3,
-                   similarDocs: true,
-                   categories: ['permissions']})).
+                   categories: ['none']})).
       result(function(response) {
-        response.length.should.equal(5);
-        response[1].permissions.should.be.ok;
-        response[0].results[0].content.should.containEql('similar');
         //console.log(JSON.stringify(response, null, 4));
+	 	response.length.should.equal(1);
+        response[0].plan.should.be.ok;
+        response[0].report.should.be.ok;
+        response[0].report.should.containEql('cts:search(fn:collection(), cts:json-property-word-query'); 
+        
         done();
-      }, function(error) {
-        console.log(JSON.stringify(error, null, 2));
-        done();
-      });
+      }, done);
   });
-
-  it('should do document query with invalid options', function(done){
-    db.documents.query(
-      q.where(
-        q.directory('/test/query/matchDir/')
-        ).
-      withOptions({queryPlan: true,
-                   metrics: true,
-                   debug: true,
-                   weight: "five",
-                   similarDocs: true,
-                   categories: ['permissions']})).
-      result(function(response) {
-        response.should.equal('SHOULD HAVE FAILED');
-        done();
-      }, function(error) {
-        //console.log(error);
-        //error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
-        error.statusCode.should.equal(400);
-        done();
-      });
-  });
-
+ 
   it('should remove all documents', function(done){
     dbAdmin.documents.removeAll({all:true}).
     result(function(response) {

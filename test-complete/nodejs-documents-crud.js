@@ -50,13 +50,14 @@ describe('Write Document Test', function() {
         {'role-name':'app-builder', capabilities:['read', 'update']}
       ],
       properties: {prop1:'bar', prop2:33},
-      content: {id:245, name:'Paul'}
+      content: {id:245, name:'Paul'}  
     }).result(function(response){done();}, done);
   });
 
   it('should read the document content name', function(done) {
     db.documents.read({uris: docuri}).result(function(documents) {
       var document = documents[0];
+      //console.log(JSON.stringify(documents, null, 2));
       document.content.name.should.equal('Jason');
       done();
     }, done);
@@ -177,11 +178,34 @@ describe('Write Document Test', function() {
 
   it('should read document without contentType', function(done) {
     db.documents.read({
-      uris: '/test/crud/withoutContentType1.json',
+      uris: '/test/crud/withoutContentType1.json'
       }).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response[0].content.name.should.equal('no content type');
+      done();
+    }, done);
+  });
+
+  it('should return empty array on non-existent document -- issue #153', function(done) {
+    db.documents.read({
+      uris: '/test/crud/thisdocumentisnotexist.json'
+      }).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
+      done();
+    }, done);
+  });
+
+  it('should return empty array on non-existent document content -- issue #153', function(done) {
+    db.documents.read({
+      uris: '/test/crud/thisdocumentisnotexist.json',
+      categories: ['content']
+      }).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
       done();
     }, done);
   });

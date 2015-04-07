@@ -73,6 +73,7 @@ describe('Document query test 2', function(){
       uri: '/test/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
+      properties: {prop1: 'anotherprop', prop2: 'same'},
       content: {
         title: 'Vannevar served',
         popularity: 5,
@@ -87,6 +88,8 @@ describe('Document query test 2', function(){
         uri: '/test/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
+        properties: {prop1: 'property1', prop2: 'same'},
+        quality: 50,
         content: {
           title: 'The memex',
           popularity: 5,
@@ -102,6 +105,11 @@ describe('Document query test 2', function(){
          collections: ['matchList'],
          contentType: 'application/xml',
          content: '<Employee><name>John</name></Employee>'
+      }, {
+         uri: '/test/query/matchList/doc7.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee><firstname>John</firstname></Employee>'
       }).
     result(function(response){done();}, done);
   });
@@ -129,7 +137,7 @@ describe('Document query test 2', function(){
       )
     ).
     result(function(response) {
-      //console.log(response);
+      //console.log(JSON.stringify(response, null, 2));
       response.length.should.equal(1);
       done();
     }, done);
@@ -138,14 +146,15 @@ describe('Document query test 2', function(){
   it('should do properties query', function(done){
     db.documents.query(
       q.where(
-        q.properties(
-          q.term('bush')
+        q.propertiesFragment(
+          q.term('property1')
         )
       )
     ).
     result(function(response) {
-      //console.log(response);
-      //response.length.should.equal(1);
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].content.id.should.equal('0026');
       done();
     }, done);
   });
@@ -153,12 +162,13 @@ describe('Document query test 2', function(){
   it('should do element query', function(done){
     db.documents.query(
       q.where(
-        q.element(q.qname('Employee'))
+        q.word(q.element('name'), q.value('John'))
       )
     ).
     result(function(response) {
-      //console.log(response);
-      //response.length.should.equal(1);
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      response[0].uri.should.equal('/test/query/matchList/doc6.xml');
       done();
     }, done);
   });

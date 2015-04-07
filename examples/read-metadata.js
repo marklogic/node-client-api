@@ -25,8 +25,8 @@ console.log('Read document content and metadata');
 db.documents.read({
     uris:['/countries/ml.json', '/countries/uv.json'],
     categories:['content', 'metadata']
-    }).
-  result(function(documents) {
+    })
+  .result(function(documents) {
     console.log('read:\n'+
       documents.
       map(function(document){
@@ -43,8 +43,9 @@ db.documents.read({
     console.log('done');
 
     exutil.succeeded();
-  }, function(error) {
+    })
+  .catch(function(error) {
     console.log(JSON.stringify(error));
 
     exutil.failed();
-  });
+    });

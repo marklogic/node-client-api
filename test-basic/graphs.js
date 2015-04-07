@@ -33,43 +33,48 @@ describe('graph operations', function(){
   var sparqlPath = './test-basic/data/people.rq';
   it('should write the default graph', function(done){
     this.timeout(3000);
-    db.graphs.write('text/turtle', fs.createReadStream(graphPath)).
-    result(function(response){
+    db.graphs.write('text/turtle', fs.createReadStream(graphPath))
+    .result(function(response){
       response.should.have.property('defaultGraph');
       response.defaultGraph.should.equal(true);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should read the default graph as JSON', function(done){
-    db.graphs.read('application/rdf+json').
-    result(function(data){
+    db.graphs.read('application/rdf+json')
+    .result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       var personIds = Object.keys(data);
       personIds.length.should.equal(20);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should read the default graph as n3', function(done){
-    db.graphs.read('text/n3').
-    result(function(data){
+    db.graphs.read('text/n3')
+    .result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should list the default graph', function(done){
-    db.graphs.list().
-    result(function(collections){
+    db.graphs.list()
+    .result(function(collections){
       collections.some(function(collection){
         return collection === 'http://marklogic.com/semantics#default-graph';
         }).should.equal(true);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should delete the default graph', function(done){
-    db.graphs.remove().
-    result(function(response){
+    db.graphs.remove()
+    .result(function(response){
       done();
-    }, done);
+      })
+    .catch(done);
   });
 /* TODO:
    get output as application/rdf+json to verify, test merge
@@ -81,7 +86,8 @@ describe('graph operations', function(){
       response.should.have.property('graph');
       response.graph.should.equal(graphUri);
       done();
-    }, done);
+      })
+    .catch(done);
     fs.createReadStream(graphPath).pipe(writer);
   });
   it('should read the named graph as a stream', function(done){
@@ -95,28 +101,30 @@ describe('graph operations', function(){
     graphReadStream.pipe(graphAccumulator);
   });
   it('should check the named graph', function(done){
-    db.graphs.probe(graphUri).
-    result(function(response){
+    db.graphs.probe(graphUri)
+    .result(function(response){
       response.should.have.property('graph');
       response.graph.should.equal(graphUri);
       response.should.have.property('exists');
       response.exists.should.equal(true);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should list the named graph', function(done){
-    db.graphs.list().
-    result(function(collections){
+    db.graphs.list()
+    .result(function(collections){
       collections.some(function(collection){
         return collection === graphUri;
         }).should.equal(true);
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should run a SPARQL query', function(done){
     this.timeout(3000);
-    db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
-    result(function(response){
+    db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath))
+    .result(function(response){
       response.should.have.property('head');
       response.head.should.have.property('vars');
       response.head.vars.length.should.equal(2);
@@ -129,12 +137,14 @@ describe('graph operations', function(){
       response.results.bindings[0].should.have.property('personName2');
       response.results.bindings[0].personName2.should.have.property('value');
       done();
-    }, done);
+      })
+    .catch(done);
   });
   it('should delete the named graph', function(done){
-    db.graphs.remove(graphUri).
-    result(function(response){
+    db.graphs.remove(graphUri)
+    .result(function(response){
       done();
-    }, done);
+      })
+    .catch(done);
   });
 });
