@@ -122,7 +122,7 @@ describe('document negative', function(){
   });
   it('should fail to delete a document as reader', function(done){
     dbReader.documents.remove({
-      uri: '/test/negative/deleteAsReader1.txt'
+      uris: '/test/negative/deleteAsReader1.txt'
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');
@@ -134,7 +134,7 @@ describe('document negative', function(){
   });
   it('should fail to delete a document with a non-existent transaction', function(done){
     db.documents.remove({
-      uri: '/test/negative/deleteInvalidTransaction1.txt',
+      uris: '/test/negative/deleteInvalidTransaction1.txt',
       txid: encodeURIComponent('not a real transaction')
       }).
     result(function(response){

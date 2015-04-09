@@ -432,15 +432,23 @@ describe('document content', function(){
             uri: '/test/remove/doc1.json',
             contentType: 'application/json',
             content: {key1: 'value 1'}
+            },{
+              uri: '/test/remove/doc2.json',
+              contentType: 'application/json',
+              content: {key1: 'value 2'}
             })
           .result(function(response){done();})
           .catch(done);
         });
         it('should not exist', function(done){
-          db.documents.remove('/test/remove/doc1.json')
-            .result(function(document) {
-              document.should.have.property('uri');
-              return db.documents.probe(document.uri).result();
+          db.documents.remove(
+              '/test/remove/doc1.json',
+              '/test/remove/doc2.json'
+              )
+            .result(function(response) {
+              response.should.have.property('uris');
+              response.uris.length.should.equal(2);
+              return db.documents.probe(response.uris[0]).result();
               })
             .then(function(document) {
               valcheck.isUndefined(document).should.equal(false);
