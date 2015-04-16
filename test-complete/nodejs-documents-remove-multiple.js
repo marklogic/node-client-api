@@ -88,6 +88,10 @@ describe('Multiple document remove test', function() {
       content: {
         title: 'document 10'
       }
+    }, {
+      uri: 'test/remove/mult/doc11.xml',
+      contentType: 'application/xml',
+      content: '<title>document 11</title>'
     }).
     result(function(response){done();}, done);
   });
@@ -211,6 +215,53 @@ describe('Multiple document remove test', function() {
       response.exists.should.eql(false);
       //console.log(response);
       return db.documents.probe('/test/remove/mult/invalid2.json').result();
+    }).
+    then(function(response) {
+      response.exists.should.eql(false);
+      //console.log(response);
+      done();
+    }, done);
+  });
+
+  it('should remove multiple documents with one invalid uri', function(done){
+    dbWriter.documents.remove({
+      uris: [
+        '/test/remove/mult/doc8.json',
+        '/test/remove/mult/invalidDoc.json',
+        '/test/remove/mult/doc9.json'
+      ]
+    }).
+    result(function(response) {
+      //console.log(response);
+      return db.documents.probe('/test/remove/mult/doc8.json').result();
+    }).
+    then(function(response) {
+      response.exists.should.eql(false);
+      //console.log(response);
+      return db.documents.probe('/test/remove/mult/doc9.json').result();
+    }).
+    then(function(response) {
+      response.exists.should.eql(false);
+      //console.log(response);
+      done();
+    }, done);
+  });
+
+  it('should remove multiple documents with different content type', function(done){
+    dbWriter.documents.remove({
+      uris: [
+        '/test/remove/mult/doc10.json',
+        '/test/remove/mult/doc11.xml'
+      ]
+    }).
+    result(function(response) {
+      //console.log(response);
+      return db.documents.probe('/test/remove/mult/doc10.json').result();
+    }).
+    then(function(response) {
+      response.exists.should.eql(false);
+      //console.log(response);
+      return db.documents.probe('/test/remove/mult/doc11.xml').result();
     }).
     then(function(response) {
       response.exists.should.eql(false);
