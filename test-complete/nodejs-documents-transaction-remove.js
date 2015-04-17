@@ -98,6 +98,17 @@ describe('Transaction remove multiple documents test', function() {
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.removed.should.equal(true);
+      return db.documents.read({
+        txid: tid2,
+        uris: [
+          '/test/remove/transaction/doc1.json',
+          '/test/remove/transaction/doc2.json'
+        ]
+      }).result();
+    })
+    .then(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(0);
       return db.transactions.commit(tid2).result();
     })
     .then(function(response) {
