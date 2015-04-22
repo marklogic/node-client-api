@@ -88,6 +88,7 @@ describe('Large document write test', function(){
     }).
     on('end', function(){
       //console.log('read '+ chunks + ' chunks of ' + length + ' length');
+      chunks.should.be.greaterThan(1);
       length.should.equal(7648280);
       done();
     }, done);   
