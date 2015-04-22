@@ -61,7 +61,7 @@ describe('Large document write test', function(){
     }, done);   
   });
 
-  it('should read the large document with Readable stream', function(done){
+  /*it('should read the large document with Readable stream', function(done){
     this.timeout(30000);
     var uri = '/test/write/shaks200all.xml';
     dbReader.documents.read(uri).
@@ -70,6 +70,25 @@ describe('Large document write test', function(){
       //console.log(count);
       count.should.equal(2064);
       //console.log(JSON.stringify(documents, null, 2));
+      done();
+    }, done);   
+  });*/
+
+  it('should read the large document with Readable stream', function(done){
+    this.timeout(30000);
+    var uri = '/test/write/shaks200all.xml';
+    var chunks = 0;
+    var length = 0;
+    dbReader.documents.read(uri).stream('chunked').
+    on('data', function(chunk){
+      //console.log(chunk);
+      //console.log(chunk.length);
+      chunks++;
+      length += chunk.length;
+    }).
+    on('end', function(){
+      //console.log('read '+ chunks + ' chunks of ' + length + ' length');
+      length.should.equal(7648280);
       done();
     }, done);   
   });
