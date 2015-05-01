@@ -1,4 +1,9 @@
 {
   "node":   true,
-  "eqeqeq": true
+  "curly":  true,
+  "eqeqeq": true,
+  "noarg":  true,
+  "nonew":  true,
+  "undef":  true,
+  "unused": true
 }
