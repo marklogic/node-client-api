@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+'use strict';
 var valcheck = require('core-util-is');
 
-var mlrest    = require('../lib/mlrest.js');
 var mlutil    = require('../lib/mlutil.js');
+var Operation = require('../lib/operation.js');
+var requester = require('../lib/requester.js');
 
 //CAUTION: the functions in this module are not part of the supported API and
 //may change or may be removed at any time.
 
 function responseOutputTransform(headers, data) {
+  /*jshint validthis:true */
   var operation = this;
 
   var response = {
@@ -34,8 +37,16 @@ function responseOutputTransform(headers, data) {
 
   return response;
 }
+
+function Manager(adminClient) {
+  if (!(this instanceof Manager)) {
+    return new Manager(adminClient);
+  }
+  this.client = adminClient;
+}
+
 // TODO: configure acceptable errors
-function manageGet(paramsObj) {
+Manager.prototype.get = function manageGet(paramsObj) {
   var endpoint    = paramsObj.endpoint;
   var params      = paramsObj.params;
   var headers     = paramsObj.headers;
@@ -50,16 +61,16 @@ function manageGet(paramsObj) {
     } : headers;
   requestOptions.path = path;
   
-  var operation = mlrest.createOperation(
+  var operation = new Operation(
       'GET '+path, this.client, requestOptions, 'empty',
       ((hasResponse === 'false') ? 'empty' : 'single')
       );
   operation.validStatusCodes = [200, 201, 204, 404];
   operation.outputTransform  = responseOutputTransform;
 
-  return mlrest.startRequest(operation);
-}
-function managePost(paramsObj) {
+  return requester.startRequest(operation);
+};
+Manager.prototype.post = function managePost(paramsObj) {
   var endpoint    = paramsObj.endpoint;
   var params      = paramsObj.params;
   var headers     = paramsObj.headers;
@@ -78,7 +89,7 @@ function managePost(paramsObj) {
   
   var hasBody = !valcheck.isNullOrUndefined(body);
 
-  var operation = mlrest.createOperation(
+  var operation = new Operation(
       'POST '+path,
       this.client,
       requestOptions,
@@ -90,9 +101,9 @@ function managePost(paramsObj) {
     operation.requestBody = body;
   }
 
-  return mlrest.startRequest(operation);  
-}
-function managePut(paramsObj) {
+  return requester.startRequest(operation);  
+};
+Manager.prototype.put = function managePut(paramsObj) {
   var endpoint    = paramsObj.endpoint;
   var params      = paramsObj.params;
   var headers     = paramsObj.headers;
@@ -110,7 +121,7 @@ function managePut(paramsObj) {
 
   var hasBody = !valcheck.isNullOrUndefined(body);
 
-  var operation = mlrest.createOperation(
+  var operation = new Operation(
       'PUT '+path,
       this.client,
       requestOptions,
@@ -122,9 +133,9 @@ function managePut(paramsObj) {
     operation.requestBody = body;
   }
 
-  return mlrest.startRequest(operation);  
-}
-function manageRemove(paramsObj) {
+  return requester.startRequest(operation);  
+};
+Manager.prototype.remove = function manageRemove(paramsObj) {
   var endpoint    = paramsObj.endpoint;
   var params      = paramsObj.params;
   var headers     = paramsObj.headers;
@@ -139,7 +150,7 @@ function manageRemove(paramsObj) {
     } : headers;
   requestOptions.path = path;
   
-  var operation = mlrest.createOperation(
+  var operation = new Operation(
       'DELETE '+path,
       this.client,
       requestOptions,
@@ -148,8 +159,9 @@ function manageRemove(paramsObj) {
       );
   operation.outputTransform  = responseOutputTransform;
 
-  return mlrest.startRequest(operation);  
-}
+  return requester.startRequest(operation);  
+};
+
 function makePath(endpoint, params) {
   var path = encodeURI(endpoint);
   if (!valcheck.isNullOrUndefined(params)) {
@@ -176,14 +188,6 @@ function makePath(endpoint, params) {
 
   return path;
 }
-
-function Manager(adminClient) {
-  this.client = adminClient;
-}
-Manager.prototype.get    = manageGet;
-Manager.prototype.post   = managePost;
-Manager.prototype.put    = managePut;
-Manager.prototype.remove = manageRemove;
 
 function createManager(adminClient) {
   return new Manager(adminClient);

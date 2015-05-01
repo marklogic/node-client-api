@@ -20,7 +20,7 @@ var jsdoc     = require('gulp-jsdoc');
 
 gulp.task('lint', function() {
   gulp.src('lib/*')
-      .pipe(jshint())
+      .pipe(jshint({lookup:true}))
       .pipe(jshint.reporter('default'));
 });
 
