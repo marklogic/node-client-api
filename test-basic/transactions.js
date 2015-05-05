@@ -38,19 +38,19 @@ describe('transaction', function(){
       .catch(done);
     });
     it('should read from a write in the same transaction', function(done){
-      var tid = null;
-      db.transactions.open()
+      var txn = null;
+      db.transactions.open(true)
       .result(function(response) {
-        tid = response.txid;
+        txn = response;
         return db.documents.write({
-          txid: tid,
+          txid: txn,
           uri: uri,
           contentType: 'application/json',
-          content: {txKey: tid}
+          content: {txKey: txn.txid}
           }).result();
         })
       .then(function(response) {
-        return db.documents.read({uris:uri, txid:tid}).result();
+        return db.documents.read({uris:uri, txid:txn}).result();
         })
       .then(function(documents) {
         documents.length.should.equal(1);
@@ -58,13 +58,13 @@ describe('transaction', function(){
         document.should.be.ok;
         document.should.have.property('content');
         document.content.should.have.property('txKey');
-        document.content.txKey.should.equal(tid);
+        document.content.txKey.should.equal(txn.txid);
         return db.documents.probe(uri).result();
         })
       .then(function(response) {
         response.should.be.ok;
         response.exists.should.eql(false);
-        return db.transactions.commit(tid).result();
+        return db.transactions.commit(txn).result();
         })
       .then(function(response) {
         return db.documents.read(uri).result();
@@ -75,12 +75,12 @@ describe('transaction', function(){
         document.should.be.ok;
         document.should.have.property('content');
         document.content.should.have.property('txKey');
-        document.content.txKey.should.equal(tid);
+        document.content.txKey.should.equal(txn.txid);
         return db.documents.remove(uri).result();
         })
       .then(function(response) {done();})
       .catch(function(primaryError){
-        db.transactions.rollback(tid).result(function(data){
+        db.transactions.rollback(txn).result(function(data){
           done(primaryError);
         }, function(secondaryError){
           done(primaryError);
@@ -104,19 +104,19 @@ describe('transaction', function(){
       .catch(done);
     });
     it('should rollback a write', function(done){
-      var tid = null;
-      db.transactions.open()
+      var txn = null;
+      db.transactions.open(true)
       .result(function(response) {
-        tid = response.txid;
+        txn = response;
         return db.documents.write({
-          txid: tid,
+          txid: txn,
           uri: uri,
           contentType: 'application/json',
-          content: {txKey: tid}
+          content: {txKey: txn.txid}
           }).result();
         })
       .then(function(response) {
-        return db.documents.read({uris:uri, txid:tid}).result();
+        return db.documents.read({uris:uri, txid:txn}).result();
         })
       .then(function(documents) {
         documents.length.should.equal(1);
@@ -124,8 +124,8 @@ describe('transaction', function(){
         document.should.be.ok;
         document.should.have.property('content');
         document.content.should.have.property('txKey');
-        document.content.txKey.should.equal(tid);
-        return db.transactions.rollback(tid).result();
+        document.content.txKey.should.equal(txn.txid);
+        return db.transactions.rollback(txn).result();
         })
       .then(function(response) {
         return db.documents.probe(uri).result();
@@ -154,19 +154,19 @@ describe('transaction', function(){
       .catch(done);
     });
     it('should rollback a positional transaction name', function(done){
-      var tid = null;
-      db.transactions.open('firstTxn')
+      var txn = null;
+      db.transactions.open('firstTxn',true)
       .result(function(response) {
-        tid = response.txid;
+        txn = response;
         return db.documents.write({
-          txid: tid,
+          txid: txn,
           uri: uri,
           contentType: 'application/json',
-          content: {txKey: tid}
+          content: {txKey: txn.txid}
           }).result();
         })
       .then(function(response) {
-        return db.transactions.rollback(tid).result();
+        return db.transactions.rollback(txn).result();
         })
       .then(function(response) {
         response.should.be.ok;
@@ -175,19 +175,19 @@ describe('transaction', function(){
       .catch(done);
     });
     it('should rollback a named transaction name', function(done){
-      var tid = null;
-      db.transactions.open({transactionName:'firstTxn'})
+      var txn = null;
+      db.transactions.open({transactionName:'firstTxn',withState:true})
       .result(function(response) {
-        tid = response.txid;
+        txn = response;
         return db.documents.write({
-          txid: tid,
+          txid: txn,
           uri: uri,
           contentType: 'application/json',
-          content: {txKey: tid}
+          content: {txKey: txn.txid}
           }).result();
         })
       .then(function(response) {
-        return db.transactions.rollback(tid).result();
+        return db.transactions.rollback(txn).result();
         })
       .then(function(response) {
         response.should.be.ok;
@@ -200,25 +200,25 @@ describe('transaction', function(){
     this.timeout(5000);
     var uri = '/test/txn/read1.json';
     it('should read an open transaction', function(done){
-      var tid = null;
-      db.transactions.open()
+      var txn = null;
+      db.transactions.open(true)
       .result(function(response) {
-        tid = response.txid;
+        txn = response;
         return db.documents.write({
-          txid: tid,
+          txid: txn,
           uri: uri,
           contentType: 'application/json',
-          content: {txKey: tid}
+          content: {txKey: txn.txid}
           }).result();
         })
       .then(function(response) {
-        return db.transactions.read(tid).result();
+        return db.transactions.read(txn).result();
         })
       .then(function(response) {
         var status = response['transaction-status'];
         var transactionId = status['transaction-id'];
-        tid.should.equal(transactionId);
-        return db.transactions.rollback(tid).result();
+        txn.txid.should.equal(transactionId);
+        return db.transactions.rollback(txn).result();
         })
       .then(function(response) {
         response.should.be.ok;
