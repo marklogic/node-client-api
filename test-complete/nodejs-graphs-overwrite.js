@@ -79,6 +79,7 @@ describe('overwrite graph test', function(){
     this.timeout(10000);
     db.graphs.list(). 
     result(function(collections){
+      //console.log(JSON.stringify(collections, null, 2))
       collections.some(function(collection){
         return collection === graphUri;
         }).should.equal(true);
