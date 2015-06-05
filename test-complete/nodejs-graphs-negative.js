@@ -57,7 +57,7 @@ describe('graph negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.statusCode.should.equal(406);
+      error.statusCode.should.equal(404);
       done();
     });
   });
@@ -70,7 +70,7 @@ describe('graph negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.statusCode.should.equal(406);
+      error.statusCode.should.equal(404);
       done();
     });
   });

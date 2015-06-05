@@ -103,7 +103,7 @@ describe('document versions', function() {
       });
     });
     it('should fail with the wrong versionId', function(done) {
-      db.documents.remove({uri: uri, versionId: 1234567890})
+      db.documents.remove({uris: uri, versionId: 1234567890})
       .result(function(response){
         response.should.equal('SHOULD HAVE FAILED');
         done();
@@ -113,7 +113,7 @@ describe('document versions', function() {
       });
     });
     it('should succeed with the rightversionId', function(done) {
-      db.documents.remove({uri: uri, versionId: versionId})
+      db.documents.remove({uris: uri, versionId: versionId})
       .result(function(response){
         valcheck.isUndefined(response).should.equal(false);
         done();
@@ -195,7 +195,7 @@ describe('document versions', function() {
     before(function(done){
       db.documents.probe(createUri).result(function(response){
         if (response.exists === true) {
-          db.documents.remove({uri: createUri, versionId: response.versionId})
+          db.documents.remove({uris: createUri, versionId: response.versionId})
           .result(function(response) {done();})
           .catch(done);
         } else {
@@ -207,7 +207,7 @@ describe('document versions', function() {
     after(function(done) {
       db.documents.probe(createUri).result(function(response){
         return db.documents.remove({
-          uri: createUri, versionId: response.versionId
+          uris: createUri, versionId: response.versionId
           }).result();
         })
       .then(function(response) {done();})

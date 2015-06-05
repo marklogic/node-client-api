@@ -317,11 +317,11 @@ describe('Document query test', function(){
           )
         ).slice(1, 100, q.snippet())
       ).result(function(response) {
-        //console.log(JSON.stringify(response, null, 4));
+        //console.log(JSON.stringify(response, null, 2));
         response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('Bush');
         response[0].results[0].matches[1]['match-text'][1].highlight.should.equal('Bush');
         response[0].results[0].matches[1]['match-text'][3].highlight.should.equal('Atlantic');
-        response[0].results[0].matches[1]['match-text'][4].highlight.should.equal('Monthly');
+        response[0].results[0].matches[1]['match-text'][5].highlight.should.equal('Monthly');
         response[1].content.id.should.equal('0011');
         done();
       }, done);

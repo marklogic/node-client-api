@@ -162,13 +162,14 @@ describe('Document query test 2', function(){
   it('should do element query', function(done){
     db.documents.query(
       q.where(
-        q.word(q.element('name'), q.value('John'))
-      )
+        q.word(q.element('name'), q.value('Jo*'), q.termOptions('wildcarded'))
+      ).
+    withOptions({search:['filtered'], debug: true})
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(1);
-      response[0].uri.should.equal('/test/query/matchList/doc6.xml');
+      response.length.should.equal(2);
+      response[1].uri.should.equal('/test/query/matchList/doc6.xml');
       done();
     }, done);
   });

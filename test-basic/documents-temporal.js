@@ -147,7 +147,7 @@ describe('temporal document', function() {
       response.should.have.property('systemTime');
       return db.documents.remove({
         temporalCollection: 'temporalCollection',
-        uri: delUri1
+        uris: delUri1
         }).result();
       })
     .then(function(response) {
