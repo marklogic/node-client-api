@@ -55,7 +55,7 @@ describe('default graph test', function(){
     this.timeout(10000);
     db.graphs.probe().
     result(function(response){
-      //console.log(response);
+      //console.log(JSON.stringify(response, null, 2))
       response.should.have.property('graph');
       response.should.have.property('exists');
       response.exists.should.equal(true);
