@@ -105,6 +105,11 @@ describe('document query', function(){
           rangeKey2: 'bc',
           scoreKey:  'matchList matchList matchList matchList matchList'
           }
+      }, {
+          uri: '/test/query/extraDir/doc1.xml',
+          collections: ['extraCollection'],
+          contentType: 'application/xml',
+          content:     '<extraRoot><extraMatch>matchable extra</extraMatch></extraRoot>'
         }).result().
     then(function(response) {
       var dbModule = 'extractFirst.xqy';
@@ -556,6 +561,51 @@ describe('document query', function(){
             document.content.id.should.equal('matchList'+order[i - 1]);
           }
         }
+        done();
+        })
+      .catch(done);
+    });
+    it('should match an XML query', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample(
+                '<q:qbe xmlns:q="http://marklogic.com/appservices/querybyexample">'+
+                '<q:format>json</q:format>'+
+                '<q:query>'+
+                    '<valueKey>match value</valueKey>'+
+                '</q:query>'+
+                '</q:qbe>'
+              )
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/matchDir/doc1.json');
+        document.should.have.property('content');
+        document.content.id.should.equal('matchDoc1');
+        done();
+        })
+      .catch(done);
+    });
+    it('should match an XML document', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample({
+              $query:{
+                extraMatch: 'matchable extra'
+                },
+              $format: 'xml'
+              })
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/extraDir/doc1.xml');
+        document.should.have.property('content');
         done();
         })
       .catch(done);
