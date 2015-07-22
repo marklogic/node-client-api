@@ -63,7 +63,8 @@ describe('document query', function(){
           id:        'matchList1',
           rangeKey1: 'aa',
           rangeKey2: 'ba',
-          scoreKey:  'unselectedWord unselectedWord unselectedWord unselectedWord'
+          scoreKey:  'unselectedWord unselectedWord unselectedWord unselectedWord',
+          point:     '10.1, 10.1'
           }
       }, {
         uri: '/test/query/matchList/doc2.json',
@@ -73,7 +74,8 @@ describe('document query', function(){
           id:        'matchList2',
           rangeKey1: 'ab',
           rangeKey2: 'ba',
-          scoreKey:  'matchList unselectedWord unselectedWord unselectedWord'
+          scoreKey:  'matchList unselectedWord unselectedWord unselectedWord',
+          point:     '20.2, 20.2'
           }
       }, {
         uri: '/test/query/matchList/doc3.json',
@@ -83,7 +85,8 @@ describe('document query', function(){
           id:        'matchList3',
           rangeKey1: 'aa',
           rangeKey2: 'bb',
-          scoreKey:  'matchList matchList unselectedWord unselectedWord'
+          scoreKey:  'matchList matchList unselectedWord unselectedWord',
+          point:     '30.3, 30.3'
           }
       }, {
         uri: '/test/query/matchList/doc4.json',
@@ -93,7 +96,8 @@ describe('document query', function(){
           id:        'matchList4',
           rangeKey1: 'ab',
           rangeKey2: 'bb',
-          scoreKey:  'matchList matchList matchList unselectedWord'
+          scoreKey:  'matchList matchList matchList unselectedWord',
+          point:     '40.4, 40.4'
           }
       }, {
         uri: '/test/query/matchList/doc5.json',
@@ -103,7 +107,8 @@ describe('document query', function(){
           id:        'matchList5',
           rangeKey1: 'ac',
           rangeKey2: 'bc',
-          scoreKey:  'matchList matchList matchList matchList matchList'
+          scoreKey:  'matchList matchList matchList matchList matchList',
+          point:     '50.5, 50.5'
           }
       }, {
           uri: '/test/query/extraDir/doc1.xml',
@@ -253,6 +258,31 @@ describe('document query', function(){
             document.content.id.should.equal('matchList'+order[i - 1]);
           }
         }
+        done();
+        })
+      .catch(done);
+    });
+    it('should calculate a geospatial facet', function(done){
+      db.documents.query(
+        q.where(
+            q.collection('matchList')
+          ).
+        calculate(
+            q.facet('geo', q.geoProperty('point'),
+                q.heatmap(3, 3, q.southWestNorthEast(10, 10, 60, 60))
+                )
+            )
+        .slice(0)
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        response[0].should.have.property('facets');
+        response[0].facets.should.have.property('geo');
+        response[0].facets.geo.should.have.property('boxes');
+        response[0].facets.geo.boxes.length.should.equal(3);
+        response[0].facets.geo.boxes[0].count.should.equal(2);
+        response[0].facets.geo.boxes[1].count.should.equal(2);
+        response[0].facets.geo.boxes[2].count.should.equal(1);
         done();
         })
       .catch(done);
