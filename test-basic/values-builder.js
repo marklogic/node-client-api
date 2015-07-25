@@ -16,7 +16,9 @@
 var assert = require('assert');
 var should = require('should');
 
-var t = require('../lib/values-builder.js');
+var valuesBuilder = require('../lib/values-builder.js');
+
+var t = valuesBuilder.builder;
 
 describe('values query', function(){
   describe('with value builder', function(){

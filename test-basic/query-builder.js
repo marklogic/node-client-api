@@ -16,7 +16,9 @@
 var assert = require('assert');
 var should = require('should');
 
+var mlutil       = require('../lib/mlutil.js');
 var queryBuilder = require('../lib/query-builder.js');
+
 var q    = queryBuilder.builder;
 var qlib = queryBuilder.lib;
 
@@ -2059,11 +2061,19 @@ describe('document query', function(){
       built.orderByClause['sort-order'][4].should.have.property('score');
       built.orderByClause['sort-order'][4].direction.should.equal('descending');
     });
-    it('should build a slice clause with start page and page length', function(){
+    it('should build a slice clause with legacy start page and page length', function(){
       var built = qlib.slice(11, 10);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
+    });
+    it('should build a slice clause with array begin and end', function(){
+      mlutil.setSliceMode('array');
+      var built = qlib.slice(10, 20);
+      built.should.have.property('sliceClause');
+      built.sliceClause['page-start'].should.equal(11);
+      built.sliceClause['page-length'].should.equal(10);
+      mlutil.setSliceMode('legacy');
     });
     it('should build a slice clause with start page', function(){
       var built = qlib.slice(11);
