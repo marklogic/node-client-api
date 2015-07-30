@@ -23,6 +23,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('document patch', function(){
   var uri1 = '/test/patch/doc1.json';
+  var uri2 = '/test/patch/doc2.json';
   describe('with JSONPath', function() {
     before(function(done){
       db.documents.write({
@@ -116,9 +117,28 @@ describe('document patch', function(){
         contentType: 'application/json',
         collections: ['collection1/0', 'collection1/1'],
         permissions: [
-          {'role-name':'app-user', capabilities:['read']}
+          {'role-name':'app-builder',  capabilities:['read']},
+          {'role-name':'manage-admin', capabilities:['read']},
+          {'role-name':'manage-user',  capabilities:['read']}
           ],
         properties: {
+          property0: 'property value 0',
+          property1: 'property value 1',
+          property2: 'property value 2'
+          },
+        quality: 1,
+        content: {key1: 'value 1'}
+        },{
+        uri: uri2,
+        contentType: 'application/json',
+        collections: ['collection2/0', 'collection2/1'],
+        permissions: [
+          {'role-name':'app-builder',  capabilities:['read']},
+          {'role-name':'manage-admin', capabilities:['read']},
+          {'role-name':'manage-user',  capabilities:['read']}
+          ],
+        properties: {
+          property0: 'property value 0',
           property1: 'property value 1',
           property2: 'property value 2'
           },
@@ -128,23 +148,28 @@ describe('document patch', function(){
       .result(function(response){done();})
       .catch(done);
     });
-    it('should insert, replace, and delete', function(done) {
+    it('should insert, replace, and delete with raw operations', function(done) {
       var p = marklogic.patchBuilder;
       db.documents.patch({uri:uri1, categories:['metadata'], operations:[
-          p.insert('collections[. eq "collection1/1"]', 'before',
+          p.insert('/collections[. eq "collection1/1"]', 'before',
               'collection1/INSERTED_BEFORE'),
-          p.insert('array-node("collections")', 'last-child',
+          p.insert('/array-node("collections")', 'last-child',
               'collection1/INSERTED_LAST'),
-          p.remove('collections[. eq "collection1/0"]'),
-          p.replace('permissions[role-name eq "app-user"]',
+          p.remove('/collections[. eq "collection1/0"]'),
+          p.insert('/array-node("permissions")', 'last-child',
+              {'role-name':'app-user', capabilities:['read']}
+              ),
+          p.replace('/permissions[role-name eq "app-builder"]',
               {'role-name':'app-builder', capabilities:['read', 'update']}
               ),
-          p.insert('properties/property2', 'before',
+          p.remove('/permissions[role-name eq "manage-user"]'),
+          p.insert('/properties/property2', 'before',
               {propertyINSERTED_BEFORE2: 'property value INSERTED_BEFORE'}),
-          p.insert('node("properties")', 'last-child',
+          p.insert('/node("properties")', 'last-child',
               {propertyINSERTED_LAST: 'property value INSERTED_LAST'}),
-          p.remove('properties/property1'),
-          p.replace('quality', 2)
+          p.replace('/properties/property1', 'property value MODIFIED'),
+          p.remove('/properties/property0'),
+          p.replace('/quality', 2)
           ]})
       .result(function(response){
         return db.documents.read({uris:uri1, categories:['metadata']}).result();
@@ -158,8 +183,10 @@ describe('document patch', function(){
           document.collections[2].should.equal('collection1/INSERTED_LAST');
           document.collections[document.collections.length - 1].should.equal('collection1/INSERTED_LAST');
           document.should.have.property('permissions');
-          var foundAppUser    = false;
-          var foundAppBuilder = false;
+          var foundAppUser     = false;
+          var foundAppBuilder  = false;
+          var foundManageUser  = false;
+          var foundManageAdmin = false;
           document.permissions.forEach(function(permission){
             switch (permission['role-name']) {
             case 'app-user':
@@ -169,19 +196,98 @@ describe('document patch', function(){
               foundAppBuilder = true;
               permission.capabilities.length.should.equal(2);
               break;
+            case 'manage-admin':
+              foundManageAdmin = true;
+              break;
+            case 'manage-user':
+              foundManageUser = true;
+              break;
             }
           });
-          foundAppUser.should.equal(false);
+          foundAppUser.should.equal(true);
           foundAppBuilder.should.equal(true);
+          foundManageUser.should.equal(false);
+          foundManageAdmin.should.equal(true);
           document.should.have.property('properties');
+          Object.keys(document.properties).length.should.equal(4);
           document.properties.should.have.property('propertyINSERTED_BEFORE2');
           document.properties.propertyINSERTED_BEFORE2.should.
             equal('property value INSERTED_BEFORE');
+          document.properties.should.have.property('property1');
+          document.properties.property1.should.equal('property value MODIFIED');
           document.properties.should.have.property('property2');
           document.properties.property2.should.equal('property value 2');
           document.properties.should.have.property('propertyINSERTED_LAST');
           document.properties.propertyINSERTED_LAST.should.
             equal('property value INSERTED_LAST');
+          document.should.have.property('quality');
+          document.quality.should.equal(2);
+          done();
+        })
+      .catch(done);
+    });    
+    it('should insert, replace, and delete with built operations', function(done) {
+      var p = marklogic.patchBuilder;
+      db.documents.patch({uri:uri2, categories:['metadata'], operations:[
+          p.collections.add('collection2/ADDED'),
+          p.collections.remove('collection2/0'),
+          p.permissions.add(
+              {'role-name':'app-user', capabilities:['read']}
+              ),
+          p.permissions.replace(
+              {'role-name':'app-builder', capabilities:['read', 'update']}
+              ),
+          p.permissions.remove('manage-user'),
+          p.properties.add('propertyADDED', 'property value ADDED'),
+          p.properties.replace('property1', 'property value MODIFIED'),
+          p.properties.remove('property0'),
+          p.quality.set(2)
+          ]})
+      .result(function(response){
+        return db.documents.read({uris:uri2, categories:['metadata']}).result();
+        })
+      .then(function(documents) {
+          documents.length.should.equal(1);
+          var document = documents[0];
+          document.collections.length.should.equal(2);
+          document.collections[0].should.equal('collection2/1');
+          document.collections[1].should.equal('collection2/ADDED');
+          document.collections[document.collections.length - 1].should.equal('collection2/ADDED');
+          document.should.have.property('permissions');
+          var foundAppUser     = false;
+          var foundAppBuilder  = false;
+          var foundManageAdmin = false;
+          var foundManageUser  = false;
+          document.permissions.forEach(function(permission){
+            switch (permission['role-name']) {
+            case 'app-user':
+              foundAppUser = true;
+              permission.capabilities.length.should.equal(1);
+              break;
+            case 'app-builder':
+              foundAppBuilder = true;
+              permission.capabilities.length.should.equal(2);
+              break;
+            case 'manage-admin':
+              foundManageAdmin = true;
+              break;
+            case 'manage-user':
+              foundManageUser = true;
+              break;
+            }
+          });
+          foundAppUser.should.equal(true);
+          foundAppBuilder.should.equal(true);
+          foundManageUser.should.equal(false);
+          foundManageAdmin.should.equal(true);
+          document.should.have.property('properties');
+          Object.keys(document.properties).length.should.equal(3);
+          document.properties.should.have.property('property1');
+          document.properties.property1.should.equal('property value MODIFIED');
+          document.properties.should.have.property('property2');
+          document.properties.property2.should.equal('property value 2');
+          document.properties.should.have.property('propertyADDED');
+          document.properties.propertyADDED.should.equal('property value ADDED');
           document.should.have.property('quality');
           document.quality.should.equal(2);
           done();
