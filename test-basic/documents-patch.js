@@ -231,12 +231,8 @@ describe('document patch', function(){
       db.documents.patch({uri:uri2, categories:['metadata'], operations:[
           p.collections.add('collection2/ADDED'),
           p.collections.remove('collection2/0'),
-          p.permissions.add(
-              {'role-name':'app-user', capabilities:['read']}
-              ),
-          p.permissions.replace(
-              {'role-name':'app-builder', capabilities:['read', 'update']}
-              ),
+          p.permissions.add('app-user', 'read'),
+          p.permissions.replace('app-builder', ['read', 'update']),
           p.permissions.remove('manage-user'),
           p.properties.add('propertyADDED', 'property value ADDED'),
           p.properties.replace('property1', 'property value MODIFIED'),
