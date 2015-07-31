@@ -19,7 +19,8 @@ var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
-
+var t = marklogic.valuesBuilder;
+var mlutil = require('../lib/mlutil.js');
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
@@ -40,6 +41,7 @@ describe('document query slice test', function(){
         price: {
              amt: 0.1
            },
+        values: [{score: 56.7}, {rate: 3}],
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
       }, { 
@@ -54,6 +56,7 @@ describe('document query slice test', function(){
         price: {
              amt: 0.12
            },
+        values: [{score: 92.45}, {rate: 5}],
         p: 'The Bush article described a device called a Memex'
         }
       }, { 
@@ -68,6 +71,7 @@ describe('document query slice test', function(){
         price: {
              amt: 1.23
            },
+        values: [{score: 33.56}, {rate: 1}],
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
       }, { 
@@ -82,6 +86,7 @@ describe('document query slice test', function(){
         price: {
              amt: 12.34
            },
+        values: [{score: 12.34}, {rate: 3}],
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
       }, { 
@@ -96,6 +101,7 @@ describe('document query slice test', function(){
           price: {
                amt: 123.45
              },
+          values: [{score: 77.678}, {rate: 2}],
           p: 'The Memex, unfortunately, had no automated search feature'
           }
         }).
@@ -207,7 +213,74 @@ describe('document query slice test', function(){
         done();
       });
   });
+it('should do document query with slice array with index 3 and offset 10', function(done){
+	mlutil.setSliceMode('array');
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(3, 10)
+      ).result(function(response) {
+        var document = response[0];
+        response.length.should.equal(1);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+  it('should do document query with slice array with negative index -3 and offset 10', function(done){
+	mlutil.setSliceMode('array');
+    db.documents.query(
+      q.where(
+        q.directory('/test/query/matchDir/')
+        ).
+      slice(-3, 10)
+      ). result(function(response) {
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+         //console.log(error);
+         error.statusCode.should.equal(400);
+         error.body.errorResponse.messageCode.should.equal('REST-INVALIDTYPE');
+         done();
+       });
 
+  });
+    it('should do values on score with slice array having index 1 and offset 10', function(done){
+	mlutil.setSliceMode('array');
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+        t.range('score', 'xs:double')
+        ).
+      where(
+        t.word('title', 'bush')
+        ).
+		slice(1, 10)
+      ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        var strData = JSON.stringify(response);
+        strData.should.containEql('"frequency":1,"distinct-value":["92.45"]');
+        done();
+      }, done);
+  });
+  it('should do values on score with slice array having index 1 and offset 1', function(done){
+	mlutil.setSliceMode('array');
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+        t.range('score', 'xs:double')
+        ).
+      where(
+        t.word('title', 'bush')
+        ).
+		slice(0, 1)
+      ).result(function(response) {
+        //console.log(JSON.stringify(response, null, 4));
+        var strData = JSON.stringify(response);
+        strData.should.containEql('"frequency":1,"distinct-value":["56.7"]');
+        done();
+      }, done);
+  });
   it('should remove all documents', function(done){
     dbAdmin.documents.removeAll({all:true}).
     result(function(response) {
