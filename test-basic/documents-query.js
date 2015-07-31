@@ -640,6 +640,30 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should report an invalid query', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample({
+              $query:    {
+                $word:{key:'value'}
+                },
+              $validate: true
+              })
+          )
+        )
+      .result(function(response) {
+        response.should.have.property('invalid-query');
+        response['invalid-query'].should.have.property('report');
+        response['invalid-query'].report.should.have.property('id');
+        response['invalid-query'].report.id.should.equal('QBE-WORDOPERATOR');
+        response['invalid-query'].report.should.have.property('_value');
+        response['invalid-query'].report._value.should.equal(
+            'Substructure not allowed inside word operator'
+            );
+        done();
+        })
+      .catch(done);
+    });
   });
   describe('for a structured query', function() {
     it('should work with a simple structured search', function(done) {
