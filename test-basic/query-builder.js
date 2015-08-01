@@ -2046,20 +2046,30 @@ describe('document query', function(){
           'key1',
           q.field('field1'),
           q.sort('key2', 'ascending'),
-          q.score('logtf'),
-          q.sort(q.score(), 'descending')
+          q.score('logtf') /* TODO: separate test
+          q.sort(q.score(), 'descending') */
       );
       built.should.have.property('orderByClause');
       built.orderByClause.should.have.property('sort-order');
-      built.orderByClause['sort-order'].length.should.equal(5);
+      built.orderByClause['sort-order'].length.should.equal(4);
       built.orderByClause['sort-order'][0]['json-property'].should.equal('key1');
       built.orderByClause['sort-order'][1].field.should.have.property('name');
       built.orderByClause['sort-order'][1].field.name.should.equal('field1');
       built.orderByClause['sort-order'][2]['json-property'].should.equal('key2');
       built.orderByClause['sort-order'][2].direction.should.equal('ascending');
-      built.orderByClause['sort-order'][3].score.should.equal('logtf');
-      built.orderByClause['sort-order'][4].should.have.property('score');
-      built.orderByClause['sort-order'][4].direction.should.equal('descending');
+      built.orderByClause['sort-order'][3].should.have.property('score');
+      built.orderByClause.should.have.property('scoreOption');
+      built.orderByClause.scoreOption.should.equal('score-logtf');
+    });
+    it('should build orderBy with a sorted score', function(){
+      var built = qlib.orderBy(
+          q.sort(q.score(), 'descending')
+      );
+      built.should.have.property('orderByClause');
+      built.orderByClause.should.have.property('sort-order');
+      built.orderByClause['sort-order'].length.should.equal(1);
+      built.orderByClause['sort-order'][0].should.have.property('score');
+      built.orderByClause['sort-order'][0].direction.should.equal('descending');
     });
     it('should build a slice clause with legacy start page and page length', function(){
       var built = qlib.slice(11, 10);
