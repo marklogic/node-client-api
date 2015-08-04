@@ -353,6 +353,30 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should order by key1 and a method for scoring', function(done){
+      db.documents.query(
+        q.where(
+            q.or(
+                q.collection('matchList'),
+                q.word('scoreKey', 'matchList')
+                )
+          ).
+        orderBy('rangeKey1', q.sort(q.score('simple'), 'descending'))
+        )
+      .result(function(response) {
+        response.length.should.equal(5);
+        var order = [3, 1, 4, 2, 5];
+        for (var i=0; i < order.length; i++) {
+          var document = response[i];
+          document.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
+          document.content.id.should.equal('matchList'+order[i]);
+        }
+        done();
+        })
+      .catch(done);
+    });
     it('should take a slice from the middle', function(done){
       db.documents.query(
         q.where(
@@ -636,6 +660,30 @@ describe('document query', function(){
         document.should.be.ok;
         document.uri.should.equal('/test/query/extraDir/doc1.xml');
         document.should.have.property('content');
+        done();
+        })
+      .catch(done);
+    });
+    it('should report an invalid query', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample({
+              $query:    {
+                $word:{key:'value'}
+                },
+              $validate: true
+              })
+          )
+        )
+      .result(function(response) {
+        response.should.have.property('invalid-query');
+        response['invalid-query'].should.have.property('report');
+        response['invalid-query'].report.should.have.property('id');
+        response['invalid-query'].report.id.should.equal('QBE-WORDOPERATOR');
+        response['invalid-query'].report.should.have.property('_value');
+        response['invalid-query'].report._value.should.equal(
+            'Substructure not allowed inside word operator'
+            );
         done();
         })
       .catch(done);
