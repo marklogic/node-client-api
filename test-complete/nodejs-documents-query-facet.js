@@ -101,7 +101,7 @@ describe('Document facet query test', function(){
     result(function(response){done();}, done);
   });
 
-  it('should query with facet', function(done){
+   it('should query with facet', function(done){
     db.documents.query(
       q.where(
         q.directory('/test/query/facet/')
@@ -260,7 +260,7 @@ describe('Document facet query test', function(){
       done();
     }, done);
   });
-
+ 
   it('should query with facet, asc orderby, and snippet', function(done){
     db.documents.query(
       q.where(
@@ -284,8 +284,124 @@ describe('Document facet query test', function(){
       done();
     }, done);
   });
+  
+    it('should query with facet, des orderby, and snippet, and score logtf', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy('popularity', q.sort(q.score('logtf'), 'descending')
+	  ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+	  response[0].results[0].score.should.equal(22528);
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+  
+  it('should query with facet, des orderby, and snippet, and score logtfidf', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy('popularity', q.sort(q.score('logtfidf'), 'descending')
+	  ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+	  response[0].results[0].score.should.equal(8448);
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+  it('should query with facet, des orderby, and snippet, and score simple', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy('popularity', q.sort(q.score('simple'), 'descending')
+	  ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+	  response[0].results[0].score.should.equal(2048);
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+  it('should query with facet, des orderby, and snippet, and score random', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy('popularity', q.sort(q.score('random'), 'descending')
+	  ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+	  response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
 
-  it('should query with facet, desc orderby, and snippet', function(done){
+   it('should query with facet, des orderby, and snippet, and score zero', function(done){
+    db.documents.query(
+      q.where(
+        q.term('the')
+      ).
+      calculate(
+        q.facet('popularity', q.facetOptions('item-frequency'))
+      ).
+      orderBy('popularity', q.sort(q.score('zero'), 'descending')
+	  ).
+      slice(q.snippet()).withOptions({categories: 'none'})
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].total.should.equal(4);
+      response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
+	  response[0].results[0].score.should.equal(0);
+      response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
+      response[0].facets.popularity.facetValues.length.should.equal(3);  
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      done();
+    }, done);
+  });
+   it('should query with facet, desc orderby, and snippet', function(done){
     db.documents.query(
       q.where(
         q.term('the')
@@ -381,7 +497,7 @@ describe('Document facet query test', function(){
       done();
     }, done);
   });
-
+ 
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({collection: 'facetCollection'}).
     result(function(response) {
