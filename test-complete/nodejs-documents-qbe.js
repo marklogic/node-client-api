@@ -206,6 +206,25 @@ describe('Document qbe test', function(){
         done();
       }, done);
 	  });
+	    it('should report wrong Query by Validate', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample({
+          $query:{
+            hello: {
+            $lt: 4
+          }
+			},
+			$format: 'json',
+			$validate: true
+         })
+      )).result(function(response) {
+        //console.log(response);
+		response.should.have.property('invalid-query');
+		response['invalid-query'].should.have.property('query-parse-errors');
+         done();
+      }, done);
+	  });
 	  it('should do query on Popularity lt diff format', function(done){
     db.documents.query(
       q.where(
