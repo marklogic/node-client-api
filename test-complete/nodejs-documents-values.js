@@ -210,12 +210,19 @@ describe('Document tuples test', function(){
   
   /* 
 //Issue with Index settings working on it
-  it('should do values on field', function(done){
+//Need to create a filed name : filed_for_valueread and a range index in it on title type string
+   it('should do values on field', function(done){
     this.timeout(10000); 
    db.values.read(
-	t.fromIndexes(t.field('New'))
-	 ).result(function (result) {
-	console.log(JSON.stringify(result, null, 2));
+	t.fromIndexes(
+		t.field('filed_for_valueread')
+		).
+		where(
+			t.word('title', 'bush'))
+        ).result(function (result) {
+	//console.log(JSON.stringify(result, null, 2));
+	result.should.have.property('values-response');
+	done();
 	}, function(error) {
 	console.log(JSON.stringify(error, null, 2));
      done();
