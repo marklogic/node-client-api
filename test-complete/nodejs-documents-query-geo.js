@@ -413,7 +413,57 @@ describe('Document geo query test', function(){
       done();
     }, done);
   });
+it('should do geo point pair query on json doc issue #176', function(done){
+    dbWriter.documents.query(
+     q.where(
+            q.collection('geoCollection')
+          ).
+        calculate(
+			q.facet('geo', q.geoProperty('gElemPoint'),
+            q.heatmap(12, 5, q.southWestNorthEast(10, 10, 60, 60)))
 
+            )
+        .slice(0)
+    ).
+    result(function(response) {
+      console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+	  response[0].should.have.property('facets');
+	  response[0].facets.should.have.property('geo');
+	  response[0].facets.geo.should.have.property('boxes');
+	  response[0].facets.geo.boxes.length.should.equal(5);
+	  response[0].facets.geo.boxes[0].count.should.equal(1);
+      response[0].facets.geo.boxes[1].count.should.equal(1);
+      response[0].facets.geo.boxes[4].count.should.equal(2);
+      done();
+    }, done);
+  });
+    it('should do geo point pair query on json doc-1 issue #176', function(done){
+    dbWriter.documents.query(
+     q.where(
+            q.collection('geoCollection')
+          ).
+        calculate(
+			q.facet('geo', q.geoProperty('gElemPoint'),
+            q.heatmap(2, 3, 1.1, 2.2, 3.3, 4.4))
+
+            )
+        .slice(0)
+    ).
+    result(function(response) {
+      console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+	  response[0].should.have.property('facets');
+	  response[0].facets.should.have.property('geo');
+	  response[0].facets.geo.should.have.property('boxes');
+	  response[0].facets.geo.boxes.length.should.equal(5);
+	  response[0].facets.geo.boxes[0].count.should.equal(1);
+      response[0].facets.geo.boxes[1].count.should.equal(1);
+      response[0].facets.geo.boxes[4].count.should.equal(2);
+      //response[0].content.title.should.equal('karl_kara');
+      done();
+    }, done);
+  });
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
