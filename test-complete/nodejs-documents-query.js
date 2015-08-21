@@ -326,7 +326,24 @@ describe('Document query test', function(){
         done();
       }, done);
   });
-
+  it('should do queries with snippet and page length 0 Issue189', function(done){
+  try {
+    db.documents.query(
+      q.where(
+        q.and(
+          q.term('Atlantic'), 
+          q.term('Monthly'),
+          q.term('Bush')
+          )
+        ).slice(1, 0, q.snippet())
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+	 }catch(error) {
+      //console.log(error);
+      error.should.be.ok;
+      done();
+    }
+  });
   it('should do query with no where clause', function(done){
     db.documents.query(
       q.document(
