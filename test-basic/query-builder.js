@@ -1239,6 +1239,18 @@ describe('query-builder', function() {
         {'term-query':{text:['foo'], weight: 2}}
         );
     assert.deepEqual(
+        q.term('foo', q.termOptions('stemmed')),
+        {'term-query':{text:['foo'], 'term-option':['stemmed']}}
+        );
+    assert.deepEqual(
+        q.term(['foo'], q.termOptions('stemmed')),
+        {'term-query':{text:['foo'], 'term-option':['stemmed']}}
+        );
+    assert.deepEqual(
+        q.term(['foo', q.termOptions('stemmed')]),
+        {'term-query':{text:['foo'], 'term-option':['stemmed']}}
+        );
+    assert.deepEqual(
         q.term('foo', 'bar'),
         {'term-query':{text:['foo', 'bar']}}
         );
@@ -1247,16 +1259,16 @@ describe('query-builder', function() {
         {'term-query':{text:['foo', 'bar']}}
         );
     assert.deepEqual(
-        q.term('foo', 'bar', q.weight(2)),
-        {'term-query':{text:['foo', 'bar'], weight: 2}}
+        q.term('foo', 'bar', q.weight(2), q.termOptions('stemmed')),
+        {'term-query':{text:['foo', 'bar'], weight: 2, 'term-option':['stemmed']}}
         );
     assert.deepEqual(
-        q.term(['foo', 'bar'], q.weight(2)),
-        {'term-query':{text:['foo', 'bar'], weight: 2}}
+        q.term(['foo', 'bar'], q.weight(2), q.termOptions('stemmed')),
+        {'term-query':{text:['foo', 'bar'], weight: 2, 'term-option':['stemmed']}}
         );
     assert.deepEqual(
-        q.term(['foo', 'bar', q.weight(2)]),
-        {'term-query':{text:['foo', 'bar'], weight: 2}}
+        q.term(['foo', 'bar', q.weight(2), q.termOptions('stemmed')]),
+        {'term-query':{text:['foo', 'bar'], weight: 2, 'term-option':['stemmed']}}
         );
   });
 
