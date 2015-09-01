@@ -112,6 +112,17 @@ describe('Document query test', function(){
         done();
       }, done);
   });
+      it('should do term query with stemmed', function(done){
+    db.documents.query(
+      q.where(
+          q.term('describe', q.termOptions('stemmed'))
+      )).result(function(response) {
+        response.length.should.equal(1);
+		response[0].content.id.should.equal('0012');
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
   it('should do word query with slice and withOptions , BUG : 31452', function(done){
     db.documents.query(
       q.where(
