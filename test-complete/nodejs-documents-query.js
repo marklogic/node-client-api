@@ -124,6 +124,7 @@ describe('Document query test', function(){
       }, done);
   });
   it('should do word query with slice and withOptions , BUG : 31452', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'bush')		
@@ -319,6 +320,7 @@ describe('Document query test', function(){
   });
 
   it('should do queries with snippet', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.and(
