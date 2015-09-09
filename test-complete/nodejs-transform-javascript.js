@@ -101,6 +101,7 @@ describe('Transform test with javascript', function(){
   
   
   it('should modify during query', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'transform')
