@@ -103,6 +103,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with include-with-ancestors', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'bush')
@@ -129,6 +130,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with exclude', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'bush')
@@ -153,6 +155,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with include', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('id', '**26', q.termOptions('wildcarded'))
@@ -177,6 +180,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with //', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'The memex')
@@ -199,6 +203,7 @@ describe('Document extract test', function(){
   });
 
   it('should do extract with deeper level', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'The memex')
