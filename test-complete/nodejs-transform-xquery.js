@@ -81,6 +81,7 @@ describe('Transform test with xquery', function(){
   });
 
   it('should modify during query', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.term('title', 'xquery')
