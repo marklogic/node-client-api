@@ -82,6 +82,7 @@ describe('Transform test', function(){
   });
 
   it('should modify during query', function(done){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.collection('employee')
