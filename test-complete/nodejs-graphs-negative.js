@@ -127,6 +127,25 @@ describe('graph negative test', function(){
     });
   });*/
 
+  it('should fail to write graph with invalid permissions', function(done){
+    this.timeout(10000);
+    db.graphs.write({
+      uri: graphUri, 
+      contentType: 'text/turtle', 
+      data: fs.createReadStream(graphPath),
+      permissions: [{'role-name': 'invalid-role', capabilities:['read']}]
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.body.errorResponse.message.should.containEql('Invalid parameter: Role invalid-role does not exist'); 
+      done();
+    });
+  });
+
   it('should delete the graph', function(done){
     this.timeout(10000);
     db.graphs.remove(graphUri).
