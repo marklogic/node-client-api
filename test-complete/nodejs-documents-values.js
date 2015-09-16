@@ -103,10 +103,33 @@ describe('Document tuples test', function(){
           values: [{score: 77.678}, {rate: 2}],
           p: 'The Memex, unfortunately, had no automated search feature'
           }
-        }).
+        },{
+         uri: '/test/query/matchList/doc6.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee><name>John</name></Employee>'
+      }, {
+         uri: '/test/query/matchList/doc7.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee xmlns="http://aaa.com" ><firstname>John</firstname><id>0081</id></Employee>'
+      }).
     result(function(response){done();}, done);
   });
-
+    it('should do values on pathindex Bug35160', function(done){
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+		t.range(t.pathIndex("/hi:Employee/hi:firstname",{hi:"http://aaa.com"}))
+        )
+      ).result(function(response) {
+		//console.log(JSON.stringify(response, null, 4));
+        var strData = JSON.stringify(response);
+         strData.should.containEql('"frequency":1,"distinct-value":["John"]');
+         // strData.should.containEql('"frequency":1,"distinct-value":["92.45"]');
+       done();
+       }, done);
+      });
   it('should do values on score', function(done){
     this.timeout(10000);
     db.values.read(
