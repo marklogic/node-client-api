@@ -29,7 +29,7 @@ describe('content type graph test', function(){
   var graphUri   = 'http://marklogic.com/graphs/content/type';
   var graphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
 
-  it('should write the graph', function(done){
+  before('should write the graph', function(done){
     this.timeout(10000);
     db.graphs.write({uri: graphUri, contentType: 'text/turtle', data: fs.createReadStream(graphPath)}).
     result(function(response){
@@ -39,6 +39,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on application/rdf+json', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'application/rdf+json', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -48,6 +49,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on text/turtle', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'text/turtle', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -57,6 +59,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on application/rdf+xml', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'application/rdf+xml', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -66,6 +69,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on text/n3', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'text/n3', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2))
@@ -75,6 +79,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on application/n-quads', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'application/n-quads', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -84,6 +89,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on application/n-triples', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'application/n-triples', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -93,6 +99,7 @@ describe('content type graph test', function(){
   });
 
   it('should read the graph on trig', function(done){
+    this.timeout(10000);
     db.graphs.read({contentType: 'application/n-triples', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2))
@@ -102,6 +109,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with application/sparql-results+xml content type', function(done){
+    this.timeout(10000);
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/graphs/content/type>\n" +
@@ -118,6 +126,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with text/csv content type', function(done){
+    this.timeout(10000);
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/graphs/content/type>\n" +
@@ -134,6 +143,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with text/html content type', function(done){
+    this.timeout(10000);
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/graphs/content/type>\n" +
@@ -151,6 +161,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with n-triples content type', function(done){
+    this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
       contentType: 'application/n-triples', 
@@ -164,6 +175,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with n-quads content type', function(done){
+    this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
       contentType: 'application/n-quads', 
@@ -177,6 +189,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with sparql-results+json content type', function(done){
+    this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
       contentType: 'application/sparql-results+json', 
@@ -190,6 +203,7 @@ describe('content type graph test', function(){
   });
 
   it('should run SPARQL query with rdf+xml content type', function(done){
+    this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
       contentType: 'application/rdf+xml', 
@@ -203,6 +217,7 @@ describe('content type graph test', function(){
   });
 
   it('should delete the graph', function(done){
+    this.timeout(10000);
     db.graphs.remove(graphUri).
     result(function(response){
       done();
