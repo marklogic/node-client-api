@@ -74,10 +74,11 @@ describe('content type graph test', function(){
     }, done);
   });
 
-  /*TO DO TO BE VERIFIED it('should read the graph on application/n-quads', function(done){
+  it('should read the graph on application/n-quads', function(done){
     db.graphs.read({contentType: 'application/n-quads', uri: graphUri}).
     result(function(response){
-      //console.log(JSON.stringify(response, null, 2))
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" ');
       done();
     }, done);
   });
@@ -85,7 +86,8 @@ describe('content type graph test', function(){
   it('should read the graph on application/n-triples', function(done){
     db.graphs.read({contentType: 'application/n-triples', uri: graphUri}).
     result(function(response){
-      //console.log(JSON.stringify(response, null, 2))
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" .');
       done();
     }, done);
   });
@@ -94,9 +96,10 @@ describe('content type graph test', function(){
     db.graphs.read({contentType: 'application/n-triples', uri: graphUri}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2))
+      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" .');
       done();
     }, done);
-  });*/
+  });
 
   it('should run SPARQL query with application/sparql-results+xml content type', function(done){
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
@@ -147,7 +150,7 @@ describe('content type graph test', function(){
     }, done);
   });
 
-  /* TO DO TO BE VERIFIED it('should run SPARQL query with content type', function(done){
+  it('should run SPARQL query with n-triples content type', function(done){
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
       contentType: 'application/n-triples', 
@@ -155,9 +158,49 @@ describe('content type graph test', function(){
     }).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
+      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/worksOn> <http://marklogicsparql.com/Inference> .');
       done();
     }, done);
-  });*/
+  });
+
+  it('should run SPARQL query with n-quads content type', function(done){
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    db.graphs.sparql({
+      contentType: 'application/n-quads', 
+      query: myQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/worksOn> <http://marklogicsparql.com/Inference> ');
+      done();
+    }, done);
+  });
+
+  it('should run SPARQL query with sparql-results+json content type', function(done){
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json', 
+      query: myQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.containEql('sem:triple(sem:iri(\"http://marklogicsparql.com/id#1111\"), sem:iri(\"http://marklogicsparql.com/worksOn\"), sem:iri(\"http://marklogicsparql.com/Inference\")),sem:triple(sem:iri(\"http://marklogicsparql.com/id#1111\"), sem:iri(\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\"), sem:iri(\"http://marklogicsparql.com/LeadEngineer\"))');
+      done();
+    }, done);
+  });
+
+  it('should run SPARQL query with rdf+xml content type', function(done){
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    db.graphs.sparql({
+      contentType: 'application/rdf+xml', 
+      query: myQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.containEql('<LeadEngineer rdf:about=\"http://marklogicsparql.com/id#1111\" xmlns=\"http://marklogicsparql.com/\"><worksOn rdf:resource=\"http://marklogicsparql.com/Inference\"/>');
+      done();
+    }, done);
+  });
 
   it('should delete the graph', function(done){
     db.graphs.remove(graphUri).
