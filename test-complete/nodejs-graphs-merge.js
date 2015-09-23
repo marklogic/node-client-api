@@ -50,16 +50,16 @@ describe('merge graph test', function(){
     }, done);
   });
 
-  /*it('should read the merged graph', function(done){
+  it('should read the merged graph', function(done){
     this.timeout(10000);
-    db.graphs.read('application/json', graphUri).
+    db.graphs.read({contentType: 'application/json', uri: graphUri}).
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       data.should.have.property('http://people.org/person12');
       //console.log(JSON.stringify(data, null, 4))
       done();
     }, done);
-  });*/
+  });
 
   it('should check the merged graph', function(done){
     this.timeout(10000);
