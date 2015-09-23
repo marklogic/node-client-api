@@ -60,6 +60,7 @@ describe('overwrite graph test', function(){
       //console.log(JSON.stringify(response, null, 4));
       var strResponse = JSON.stringify(response);
       strResponse.should.containEql('http://people.org/person9');
+      strResponse.should.not.containEql('http://people.org/person2');
       done();
     }, done);
   });
