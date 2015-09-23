@@ -44,20 +44,21 @@ describe('stream overwrite graph test', function(){
     fs.createReadStream(graphPath1).pipe(ws);
   });
 
-  /*it('should read graph as a stream', function(done){
+  it('should read graph as a stream', function(done){
     this.timeout(10000);
-    db.graphs.read(graphUri, 'text/n3').stream('chunked').
+    db.graphs.read({uri: graphUri, contentType: 'application/n-triples'}).stream('chunked').
     on('data', function(data) {
-      //console.log(data.toString());
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       var strData = data.toString();
-      strData.should.containEql('p0:person1');
-      strData.should.not.containEql('p0:person12');
+      //console.log(strData);
+      strData.should.containEql('<http://people.org/person1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://people.org/Person> .');
+      strData.should.containEql('<http://people.org/person1> <http://xmlns.com/foaf/0.1/knows> <http://people.org/person2> .');
+      strData.should.containEql('<http://people.org/person2> <http://xmlns.com/foaf/0.1/name> "Person 2" .');
       }).
     on('end', function() {
       done();
     }, done);
-  });*/
+  });
 
   it('should overwrite the existing graph with stream', function(done){
     this.timeout(10000);
@@ -73,13 +74,13 @@ describe('stream overwrite graph test', function(){
 
   it('should read overwritten graph as a stream', function(done){
     this.timeout(10000);
-    db.graphs.read(graphUri, 'text/n3').stream('chunked').
+    db.graphs.read(graphUri, 'application/rdf+json').stream('chunked').
     on('data', function(data) {
-      //console.log(data.toString());
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       var strData = data.toString();
-      strData.should.not.containEql('p0:person2');
-      strData.should.containEql('p0:person12');
+      //console.log(strData);
+      strData.should.containEql('"http://people.org/person9":{"http://xmlns.com/foaf/0.1/knows":[{"value":"http://people.org/person12", "type":"uri"}]');
+      strData.should.not.containEql('http://people.org/person2');
       }).
     on('end', function() {
       done();
