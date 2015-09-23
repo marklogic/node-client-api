@@ -45,9 +45,10 @@ describe('default graph test', function(){
   it('should read the default graph', function(done){
     this.timeout(10000);
     db.graphs.read('application/json').
-    result(function(data){
-      (!valcheck.isNullOrUndefined(data)).should.equal(true);
-      //console.log(JSON.stringify(data, null, 2))
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2))
+      var strResponse = JSON.stringify(response);
+      strResponse.should.containEql('http://people.org/person15');
       done();
     }, done);
   });
