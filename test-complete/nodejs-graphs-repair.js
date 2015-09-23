@@ -41,15 +41,16 @@ describe('repair graph test', function(){
     }, done);
   });
 
-  /*it('should read the repaired graph', function(done){
+  it('should read the repaired graph', function(done){
     this.timeout(10000);
-    db.graphs.read('application/json', graphUri).
+    db.graphs.read({contentType: 'application/json', uri: graphUri}).
     result(function(data){
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
-      //console.log(JSON.stringify(data, null, 4))
+      data.should.have.property('http://people.org/person1');
+      //console.log(JSON.stringify(data, null, 2));
       done();
     }, done);
-  });*/
+  });
 
   it('should check the repaired graph', function(done){
     this.timeout(10000);
