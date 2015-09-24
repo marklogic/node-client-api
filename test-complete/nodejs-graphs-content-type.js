@@ -26,7 +26,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('content type graph test', function(){
-  var graphUri   = 'http://marklogic.com/graphs/content/type';
+  var graphUri   = 'http://marklogic.com/graphs/content#type';
   var graphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
 
   before('should write the graph', function(done){
@@ -112,7 +112,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
-                  "FROM <http://marklogic.com/graphs/content/type>\n" +
+                  "FROM <http://marklogic.com/graphs/content#type>\n" +
                   "WHERE {?s ad:firstName 'John'}"
     db.graphs.sparql({
       contentType: 'application/sparql-results+xml', 
@@ -129,7 +129,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
-                  "FROM <http://marklogic.com/graphs/content/type>\n" +
+                  "FROM <http://marklogic.com/graphs/content#type>\n" +
                   "WHERE {?s ad:firstName 'John'}"
     db.graphs.sparql({
       contentType: 'text/csv', 
@@ -146,7 +146,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
-                  "FROM <http://marklogic.com/graphs/content/type>\n" +
+                  "FROM <http://marklogic.com/graphs/content#type>\n" +
                   "WHERE {?s ad:firstName 'John'}"
     db.graphs.sparql({
       contentType: 'text/html', 
