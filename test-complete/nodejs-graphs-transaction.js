@@ -94,8 +94,8 @@ describe('Graphs transaction combo test', function() {
     .then(function(response) {
       //console.log('Probe graph transaction 1');
       //console.log(JSON.stringify(response, null, 2));
-      response.exists.should.equal(false);
-      response.graph.uri.should.equal('marklogic.com/tx/people');
+      response.exists.should.equal(true);
+      response.graph.should.equal('marklogic.com/tx/people');
       return db.graphs.list({txid: tid}).result();
     })
     .then(function(response) {
