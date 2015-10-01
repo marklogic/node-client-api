@@ -24,6 +24,7 @@ var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('sparql query tests', function () {
 
@@ -145,7 +146,7 @@ describe('sparql query tests', function () {
             defaultGraphs: 'http://marklogic.com/semantics#default-graph'
         }).
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 response.boolean.should.equal(true);
                 done();
             });
@@ -194,7 +195,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 response.results.bindings.length.should.equal(0);
                 done();
             });
@@ -206,7 +207,7 @@ describe('sparql query tests', function () {
         db.graphs.write('http://marklogic.com/Graph1', 'text/turtle', fs.createReadStream(ttlfile)).
             result(function (response) {
                 //console.log(JSON.stringify(response, null, 2));
-                console.log(response);
+                //console.log(response);
                 response.defaultGraph.should.equal(false);
                 response.graph.should.equal('http://marklogic.com/Graph1');
                 response.graphType.should.equal('named');
@@ -223,7 +224,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 response.should.have.property('http://marklogic.com/baseball/players#158');
                 response['http://marklogic.com/baseball/players#158'].should.have.property('http://marklogic.com/baseball/players#position');
                 response['http://marklogic.com/baseball/players#158']['http://marklogic.com/baseball/players#position'][0].should.have.property('value');
@@ -245,7 +246,7 @@ describe('sparql query tests', function () {
             bindings: {firstname: {value: 'Bryan', type: 'string'}}
         }).
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 response.should.have.property('http://marklogic.com/baseball/players#121');
                 response['http://marklogic.com/baseball/players#121'].should.have.property('http://marklogic.com/baseball/players#position');
                 response['http://marklogic.com/baseball/players#121']['http://marklogic.com/baseball/players#position'][0].should.have.property('value');
@@ -267,7 +268,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 response.head.should.have.property('vars');
                 response.head.vars.length.should.equal(1);
                 response.head.vars[0].should.equal('o');
@@ -306,7 +307,7 @@ describe('sparql query tests', function () {
         this.timeout(10000);
         db.graphs.remove().
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 done();
             }, done);
     });
@@ -322,7 +323,7 @@ describe('sparql query tests', function () {
             data: fs.createReadStream(graphPath1)
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.should.have.property('graph');
                 response.graph.should.equal(graphURI);
                 done();
@@ -340,7 +341,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.results.bindings[0].should.have.property('totalcount');
                 response.results.bindings[0].totalcount.value.should.equal('15');
                 done();
@@ -358,7 +359,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.results.bindings[0].should.have.property('totalcount');
                 response.results.bindings[0].totalcount.value.should.equal('23');
                 done();
@@ -398,7 +399,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.results.bindings[0].should.have.property('totalcount');
                 response.results.bindings[0].totalcount.value.should.equal('13');
                 done();
@@ -416,7 +417,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.results.bindings[0].should.have.property('totalcount');
                 response.results.bindings[0].totalcount.value.should.equal('25');
                 done();
@@ -435,7 +436,7 @@ describe('sparql query tests', function () {
             query: myQuery
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.results.bindings[0].should.have.property('totalcount');
                 response.results.bindings[0].totalcount.value.should.equal('25');
                 done();
@@ -472,7 +473,7 @@ describe('write document with embedded triple and run docQuery', function () {
     it('should read back the value', function (done) {
         db.documents.query(q.where(q.term('testValue'))).
             result(function (documents) {
-                console.log(documents);
+                //console.log(documents);
                 documents.length.should.equal(1);
                 done();
             }, done);
@@ -488,7 +489,7 @@ describe('write document with embedded triple and run docQuery', function () {
             docQuery: docQuery
         }).
             result(function (response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 response.results.bindings[0].should.have.property('o');
                 response.results.bindings[0].o.value.should.equal('test2');
                 done();
@@ -505,9 +506,30 @@ describe('write document with embedded triple and run docQuery', function () {
             docQuery: docQuery
         }).
             result(function (response) {
-                console.log(response);
+                //console.log(response);
                 response.boolean.should.equal(true);
                 done();
             }, done);
     });
+
+  it('should delete all documents', function(done){
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
+  });
+
+  it('should drop all graphs', function(done){
+    var myData = "DROP ALL ;"
+    db.graphs.sparqlUpdate({
+      data: myData
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      done();
+    }, done);
+  });
+
 });
