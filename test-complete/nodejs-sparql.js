@@ -133,7 +133,7 @@ describe('sparql query tests', function () {
     });
 
 
-//TODO: Update after issue  #208 is fixed
+//TODO: Update after issue  #215 is fixed
 
     it('should run SPARQL ASK query', function (done) {
         this.timeout(10000);
