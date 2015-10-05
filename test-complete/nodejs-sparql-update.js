@@ -467,7 +467,8 @@ describe('sparql update test', function(){
     db.graphs.sparqlUpdate({
       data: myData,
       usingNamedGraphs: true,
-      rulesets: 'equivalentClass.rules'
+      rulesets: 'equivalentClass.rules',
+      defaultRulesets: 'include'
     }).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
