@@ -51,6 +51,22 @@ describe('sparql query tests', function () {
             }, done);
     });
 
+    it('should run SPARQL ASK query', function (done) {
+        this.timeout(10000);
+        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+            "PREFIX ppl:  <http://people.org/>" +
+            "ASK WHERE   { ?s foaf:knows ppl:person3 }";
+        db.graphs.sparql({
+           defaultGraphs: 'http://marklogic.com/semantics#default-graph',
+            contentType: 'application/json',
+            query: myQuery
+        }).
+            result(function (response) {
+                console.log(JSON.stringify(response));
+                response.boolean.should.equal(true);
+                done();
+            });
+    });
 
     it('should run SPARQL select query ', function (done) {
         this.timeout(10000);
@@ -132,24 +148,7 @@ describe('sparql query tests', function () {
     });
 
 
-//TODO: Update after issue  #208 is fixed
 
-    it('should run SPARQL ASK query', function (done) {
-        this.timeout(10000);
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "ASK WHERE {GRAPH ?g { ?s foaf:knows ppl:person3 }}";
-        db.graphs.sparql({
-            contentType: 'application/json',
-            query: myQuery,
-            defaultGraphs: 'http://marklogic.com/semantics#default-graph'
-        }).
-            result(function (response) {
-                console.log(response);
-                response.boolean.should.equal(true);
-                done();
-            });
-    });
 
     it('should run SPARQL ASK query return false', function (done) {
         this.timeout(10000);
@@ -301,7 +300,7 @@ describe('sparql query tests', function () {
      });
      });
 
-     */
+
     it('should delete the graph', function (done) {
         this.timeout(10000);
         db.graphs.remove().
@@ -310,7 +309,7 @@ describe('sparql query tests', function () {
                 done();
             }, done);
     });
-
+     */
 
     it('should write the graph', function (done) {
         this.timeout(10000);
