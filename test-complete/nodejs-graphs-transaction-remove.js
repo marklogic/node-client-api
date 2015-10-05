@@ -22,16 +22,16 @@ var marklogic = require('../');
 var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
-describe('Graphs transaction combo test', function() {
-  var graphUri   = 'marklogic.com/tx/people';
+describe('Graphs transaction remove test', function() {
+  var graphUri   = 'marklogic.com/tx/peoplerem';
   var graphPath  = './node-client-api/test-complete/data/people3.ttl';
   var graphPath2 = './node-client-api/test-complete/data/people4.ttl';
   
   var tid = 0;
   var tid2 = 0;
 
-  it('should do sparql transaction combo', function(done) {
-    db.transactions.open({transactionName: 'sparqlTransaction', timeLimit: 30})
+  it('should do graph transaction remove combo', function(done) {
+    db.transactions.open({transactionName: 'sparqlTx', timeLimit: 30})
     .result(function(response) {
       //console.log('Opening transaction 1');
       //console.log(JSON.stringify(response, null, 2));
@@ -50,7 +50,7 @@ describe('Graphs transaction combo test', function() {
     .then(function(response) {
       //console.log('Write graph with transaction 1');
       //console.log(JSON.stringify(response, null, 2));
-      response.graph.should.equal('marklogic.com/tx/people');
+      response.graph.should.equal('marklogic.com/tx/peoplerem');
       return db.graphs.read({
         uri: graphUri, 
         contentType: 'application/json', 
@@ -95,13 +95,13 @@ describe('Graphs transaction combo test', function() {
       //console.log('Probe graph transaction 1');
       //console.log(JSON.stringify(response, null, 2));
       response.exists.should.equal(true);
-      response.graph.should.equal('marklogic.com/tx/people');
+      response.graph.should.equal('marklogic.com/tx/peoplerem');
       return db.graphs.list({txid: tid}).result();
     })
     .then(function(response) {
       //console.log('List graph transaction 1');
       //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('marklogic.com/tx/people');
+      response.should.containEql('marklogic.com/tx/peoplerem');
       return db.graphs.merge({
         txid: tid,
         uri: graphUri,
@@ -116,7 +116,7 @@ describe('Graphs transaction combo test', function() {
     .then(function(response) {
       //console.log('Merge graph transaction 1');
       //console.log(JSON.stringify(response, null, 2));
-      response.graph.should.equal('marklogic.com/tx/people');
+      response.graph.should.equal('marklogic.com/tx/peoplerem');
       return db.graphs.read({uri: graphUri, contentType: 'application/json', txid: tid}).result();
     })
     .then(function(response) {
@@ -130,7 +130,7 @@ describe('Graphs transaction combo test', function() {
       //console.log('Rollback transaction 1');
       //console.log(JSON.stringify(response, null, 2));
       response.finished.should.equal('rollback');
-      return db.transactions.open({transactionName: 'sparqlTransaction2', timeLimit: 60}).result();
+      return db.transactions.open({transactionName: 'sparqlTx2', timeLimit: 60}).result();
     })
     .then(function(response) {
       //console.log('Opening transaction 2');
@@ -150,7 +150,7 @@ describe('Graphs transaction combo test', function() {
     .then(function(response) {
       //console.log('Write graph transaction 2');
       //console.log(JSON.stringify(response, null, 2));
-      response.graph.should.equal('marklogic.com/tx/people');
+      response.graph.should.equal('marklogic.com/tx/peoplerem');
       return db.graphs.read({uri: graphUri, contentType: 'application/json', txid: tid2}).result(); 
     })
     .then(function(response) {
@@ -180,32 +180,30 @@ describe('Graphs transaction combo test', function() {
         }
       });
       permissionsFound.should.equal(2);
-      return db.transactions.commit(tid2).result();
+      return db.graphs.remove({uri: graphUri, txid: tid2}).result();
     })
     .then(function(response) {
-      //console.log('Commit graph transaction 2');
+      //console.log('Remove graph transaction 2');
+      //console.log(JSON.stringify(response, null, 2));
+      response.graph.should.equal('marklogic.com/tx/peoplerem');
+      return db.graphs.probe({uri: graphUri, txid: tid2}).result(); 
+    })
+    .then(function(response) {
+      //console.log('Probe removed graph');
+      //console.log(JSON.stringify(response, null, 2));
+      response.exists.should.equal(false);
+      return db.transactions.commit(tid2).result(); 
+    })
+    .then(function(response) {
+      //console.log('Commit transaction 2');
       //console.log(JSON.stringify(response, null, 2));
       response.finished.should.equal('commit');
-      return db.graphs.read({uri: graphUri, contentType: 'application/json'}).result(); 
-    })
-    .then(function(response) {
-      //console.log('Read commited graph');
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.have.property('http://people.org/person1');
-      response.should.have.property('http://people.org/person2');
       return db.graphs.probe(graphUri).result(); 
     })
     .then(function(response) {
-      //console.log('Probe commited graph');
+      //console.log('Probe removed committed graph');
       //console.log(JSON.stringify(response, null, 2));
-      response.exists.should.equal(true);
-      response.graph.should.equal('marklogic.com/tx/people');
-      return db.graphs.remove(graphUri).result(); 
-    })
-    .then(function(response) {
-      //response.removed.should.equal(true);
-      //console.log(JSON.stringify(response, null, 2));
-      response.graph.should.equal('marklogic.com/tx/people');
+      response.exists.should.equal(false);
       done();
     }, done);
     /*.catch(function(error) {
