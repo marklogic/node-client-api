@@ -302,6 +302,30 @@ describe('sparql update test', function(){
     });
   });
 
+  /*TO BE VERIFIED it('should not do sparql update on with optimize value greater than 2', function(done){
+    var myData = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
+                 "INSERT DATA\n" +
+                 "{\n" +
+                 "  GRAPH <http://marklogic.com/sparqlupdate/baseball>" +
+                 "  {\n" +
+                 "    bb:345 bb:id 345 .\n" +
+                 "  }\n" +
+                 "}"
+    db.graphs.sparqlUpdate({
+      data: myData,
+      optimizeLevel: 3
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      console.log(JSON.stringify(error, null, 2));
+      //error.body.errorResponse.message.should.containEql('Invalid type in optimize: -10 is not a value of type unsignedInt');
+      done();
+    });
+  });*/
+
   it('should do sparql update on with default ruleset graph', function(done){
     var myData = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
                  "INSERT DATA\n" +
@@ -346,6 +370,19 @@ describe('sparql update test', function(){
     })
     .then(function(response){
       //console.log(JSON.stringify(response, null, 2));
+      var myQuery = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
+                    "SELECT *\n" +
+                    "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
+                    "WHERE {?s bb:id 987}"
+      return db.graphs.sparql({
+        contentType: 'application/sparql-results+json',
+        query: myQuery,
+        txid: tid
+      }).result();
+    })
+    .then(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.results.bindings[0].s.value.should.equal('http://marklogic.com/baseball/players#987');
       return db.transactions.commit(tid).result();
     })
     .then(function(response) {
