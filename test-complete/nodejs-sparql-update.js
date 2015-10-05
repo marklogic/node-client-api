@@ -29,6 +29,7 @@ describe('sparql update test', function(){
   var graphUri   = 'http://marklogic.com/sparqlupdate/people';
   var mlGraphUri   = 'http://marklogic.com/sparqlupdate/mladd';
   var mlGraphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
+  var inferGraphPath  = './node-client-api/test-complete/data/inferenceData.nt';
 
   before('should drop all graphs', function(done){
     var myData = "DROP ALL ;"
@@ -443,29 +444,36 @@ describe('sparql update test', function(){
     }, done);
   });
 
-  /*it('should run SPARQL update with ruleset', function(done){
-    var myData = "PREFIX ml: <http://marklogicsparql.com/>\n" +
-                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
-                 "INSERT DATA\n" +
+  it('should write graph for inference', function(done){
+    db.graphs.write({
+      uri: 'http://marklogic.com/sparqlupdate/infer', 
+      contentType: 'application/n-triples', 
+      data: fs.createReadStream(inferGraphPath)
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 4));
+      done();
+    }, done);
+  });
+
+  it('should run SPARQL update with ruleset', function(done){
+    var myData = "INSERT DATA\n" +
                  "{\n" +
-                 "  GRAPH <http://marklogic.com/sparqlupdate/people>" +
+                 "  GRAPH <http://marklogic.com/sparqlupdate/infer>" +
                  "  {\n" +
-                 "    ml:StaffEngineer rdfs:subClassOf ml:Engineer .\n" +
+                 "    <http://marklogicsparql.com/id#3333> <http://marklogicsparql.com/addressbook#firstName> 'Mark' .\n" +
                  "  }\n" +
                  "}"
     db.graphs.sparqlUpdate({
       data: myData,
       usingNamedGraphs: true,
-      rulesets: 'subClassOf.rules'
+      rulesets: 'equivalentClass.rules'
     }).
     result(function(response){
-      console.log(JSON.stringify(response, null, 2));
+      //console.log(JSON.stringify(response, null, 2));
       done();
-    }, function(error) {
-      console.log(error); 
-      done();
-    });
-  });*/
+    }, done);
+  });
 
   it('should drop all graphs', function(done){
     var myData = "DROP ALL ;"
