@@ -370,6 +370,28 @@ describe('Document query test', function(){
       }, done);
   });
 
+  it('should do term query with lang options -- BUG 35245', function(done){
+    db.documents.query(
+      q.where(
+        q.term('memex', q.termOptions('lang=de-DE-1901'))
+      )).result(function(response) {
+        response.length.should.equal(0);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do term query with lang options positive -- BUG 35245', function(done){
+    db.documents.query(
+      q.where(
+        q.term('memex', q.termOptions('lang=en-EN'))
+      )).result(function(response) {
+        response.length.should.equal(2);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
