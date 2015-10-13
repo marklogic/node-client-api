@@ -139,7 +139,7 @@ describe('sparql query tests', function () {
         this.timeout(10000);
         var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
             "PREFIX ppl:  <http://people.org/>" +
-            "ASK WHERE {GRAPH ?g { ?s foaf:knows ppl:person3 }}";
+            "ASK WHERE { ?s foaf:knows ppl:person3 }";
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery,
