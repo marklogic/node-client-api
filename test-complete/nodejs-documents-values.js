@@ -116,7 +116,7 @@ describe('Document tuples test', function(){
       }).
     result(function(response){done();}, done);
   });
-    it('should do values on pathindex Bug35160', function(done){
+    /*it('should do values on pathindex Bug35160', function(done){
     this.timeout(10000);
     db.values.read(
       t.fromIndexes(
@@ -129,7 +129,7 @@ describe('Document tuples test', function(){
          // strData.should.containEql('"frequency":1,"distinct-value":["92.45"]');
        done();
        }, done);
-      });
+      });*/
   it('should do values on score', function(done){
     this.timeout(10000);
     db.values.read(
