@@ -16,7 +16,9 @@
 var assert = require('assert');
 var should = require('should');
 
+var mlutil       = require('../lib/mlutil.js');
 var queryBuilder = require('../lib/query-builder.js');
+
 var q    = queryBuilder.builder;
 var qlib = queryBuilder.lib;
 
@@ -1237,6 +1239,18 @@ describe('query-builder', function() {
         {'term-query':{text:['foo'], weight: 2}}
         );
     assert.deepEqual(
+        q.term('foo', q.termOptions('stemmed')),
+        {'term-query':{text:['foo'], 'term-option':['stemmed']}}
+        );
+    assert.deepEqual(
+        q.term(['foo'], q.termOptions('stemmed')),
+        {'term-query':{text:['foo'], 'term-option':['stemmed']}}
+        );
+    assert.deepEqual(
+        q.term(['foo', q.termOptions('stemmed')]),
+        {'term-query':{text:['foo'], 'term-option':['stemmed']}}
+        );
+    assert.deepEqual(
         q.term('foo', 'bar'),
         {'term-query':{text:['foo', 'bar']}}
         );
@@ -1245,16 +1259,16 @@ describe('query-builder', function() {
         {'term-query':{text:['foo', 'bar']}}
         );
     assert.deepEqual(
-        q.term('foo', 'bar', q.weight(2)),
-        {'term-query':{text:['foo', 'bar'], weight: 2}}
+        q.term('foo', 'bar', q.weight(2), q.termOptions('stemmed')),
+        {'term-query':{text:['foo', 'bar'], weight: 2, 'term-option':['stemmed']}}
         );
     assert.deepEqual(
-        q.term(['foo', 'bar'], q.weight(2)),
-        {'term-query':{text:['foo', 'bar'], weight: 2}}
+        q.term(['foo', 'bar'], q.weight(2), q.termOptions('stemmed')),
+        {'term-query':{text:['foo', 'bar'], weight: 2, 'term-option':['stemmed']}}
         );
     assert.deepEqual(
-        q.term(['foo', 'bar', q.weight(2)]),
-        {'term-query':{text:['foo', 'bar'], weight: 2}}
+        q.term(['foo', 'bar', q.weight(2), q.termOptions('stemmed')]),
+        {'term-query':{text:['foo', 'bar'], weight: 2, 'term-option':['stemmed']}}
         );
   });
 
@@ -2044,26 +2058,44 @@ describe('document query', function(){
           'key1',
           q.field('field1'),
           q.sort('key2', 'ascending'),
-          q.score('logtf'),
-          q.sort(q.score(), 'descending')
+          q.score('logtf') /* TODO: separate test
+          q.sort(q.score(), 'descending') */
       );
       built.should.have.property('orderByClause');
       built.orderByClause.should.have.property('sort-order');
-      built.orderByClause['sort-order'].length.should.equal(5);
+      built.orderByClause['sort-order'].length.should.equal(4);
       built.orderByClause['sort-order'][0]['json-property'].should.equal('key1');
       built.orderByClause['sort-order'][1].field.should.have.property('name');
       built.orderByClause['sort-order'][1].field.name.should.equal('field1');
       built.orderByClause['sort-order'][2]['json-property'].should.equal('key2');
       built.orderByClause['sort-order'][2].direction.should.equal('ascending');
-      built.orderByClause['sort-order'][3].score.should.equal('logtf');
-      built.orderByClause['sort-order'][4].should.have.property('score');
-      built.orderByClause['sort-order'][4].direction.should.equal('descending');
+      built.orderByClause['sort-order'][3].should.have.property('score');
+      built.orderByClause.should.have.property('scoreOption');
+      built.orderByClause.scoreOption.should.equal('score-logtf');
     });
-    it('should build a slice clause with start page and page length', function(){
+    it('should build orderBy with a sorted score', function(){
+      var built = qlib.orderBy(
+          q.sort(q.score(), 'descending')
+      );
+      built.should.have.property('orderByClause');
+      built.orderByClause.should.have.property('sort-order');
+      built.orderByClause['sort-order'].length.should.equal(1);
+      built.orderByClause['sort-order'][0].should.have.property('score');
+      built.orderByClause['sort-order'][0].direction.should.equal('descending');
+    });
+    it('should build a slice clause with legacy start page and page length', function(){
       var built = qlib.slice(11, 10);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
+    });
+    it('should build a slice clause with array begin and end', function(){
+      mlutil.setSliceMode('array');
+      var built = qlib.slice(10, 20);
+      built.should.have.property('sliceClause');
+      built.sliceClause['page-start'].should.equal(11);
+      built.sliceClause['page-length'].should.equal(10);
+      mlutil.setSliceMode('legacy');
     });
     it('should build a slice clause with start page', function(){
       var built = qlib.slice(11);

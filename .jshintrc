@@ -2,6 +2,7 @@
   "node":   true,
   "curly":  true,
   "eqeqeq": true,
+  "eqnull": true,
   "noarg":  true,
   "nonew":  true,
   "undef":  true,

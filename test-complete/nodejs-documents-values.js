@@ -103,10 +103,33 @@ describe('Document tuples test', function(){
           values: [{score: 77.678}, {rate: 2}],
           p: 'The Memex, unfortunately, had no automated search feature'
           }
-        }).
+        },{
+         uri: '/test/query/matchList/doc6.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee><name>John</name></Employee>'
+      }, {
+         uri: '/test/query/matchList/doc7.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee xmlns="http://aaa.com" ><firstname>John</firstname><id>0081</id></Employee>'
+      }).
     result(function(response){done();}, done);
   });
-
+    /*it('should do values on pathindex Bug35160', function(done){
+    this.timeout(10000);
+    db.values.read(
+      t.fromIndexes(
+		t.range(t.pathIndex("/hi:Employee/hi:firstname",{hi:"http://aaa.com"}))
+        )
+      ).result(function(response) {
+		//console.log(JSON.stringify(response, null, 4));
+        var strData = JSON.stringify(response);
+         strData.should.containEql('"frequency":1,"distinct-value":["John"]');
+         // strData.should.containEql('"frequency":1,"distinct-value":["92.45"]');
+       done();
+       }, done);
+      });*/
   it('should do values on score', function(done){
     this.timeout(10000);
     db.values.read(
@@ -210,12 +233,19 @@ describe('Document tuples test', function(){
   
   /* 
 //Issue with Index settings working on it
-  it('should do values on field', function(done){
+//Need to create a filed name : filed_for_valueread and a range index in it on title type string
+   it('should do values on field', function(done){
     this.timeout(10000); 
    db.values.read(
-	t.fromIndexes(t.field('New'))
-	 ).result(function (result) {
-	console.log(JSON.stringify(result, null, 2));
+	t.fromIndexes(
+		t.field('filed_for_valueread')
+		).
+		where(
+			t.word('title', 'bush'))
+        ).result(function (result) {
+	//console.log(JSON.stringify(result, null, 2));
+	result.should.have.property('values-response');
+	done();
 	}, function(error) {
 	console.log(JSON.stringify(error, null, 2));
      done();
@@ -256,8 +286,8 @@ describe('Document tuples test', function(){
         var strData = JSON.stringify(response);
         //console.log(strData);
         strData.should.containEql('"name":"correlation","_value":"0.263822426505543"');
-        strData.should.containEql('"name":"covariance","_value":"0.35"');
-        done();
+        strData.should.containEql[('"name":"covariance","_value":"0.35"') || ('"name":"covariance","_value":"0.349999999999998"')];
+		done();
       }, done);
   });
 

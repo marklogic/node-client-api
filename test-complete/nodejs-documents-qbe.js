@@ -97,7 +97,17 @@ describe('Document qbe test', function(){
              },
           p: 'The Memex, unfortunately, had no automated search feature'
           }
-        }).
+        },{
+         uri: '/test/query/matchList/doc6.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee><name>John</name></Employee>'
+      }, {
+         uri: '/test/query/matchList/doc7.xml',
+         collections: ['matchList'],
+         contentType: 'application/xml',
+         content: '<Employee><firstname>John</firstname><id>0081</id></Employee>'
+      }).
     result(function(response){done();}, done);
   });
 
@@ -129,7 +139,108 @@ describe('Document qbe test', function(){
         done();
       }, done);
   });
-
+  it('should do query on firstname xml', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample({
+          $query:{
+            firstname: 'John'
+			},
+			$format: 'xml'
+         })
+      )).result(function(response) {
+        //console.log(response);
+		response.length.should.equal(1);
+        done();
+      }, done);
+	  });
+	    it('should do query on title', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample({
+          $query:{
+            title: 'The memex'
+			},
+			$format: 'json'
+         })
+      )).result(function(response) {
+        //console.log(response);
+        response.length.should.equal(1);
+        response[0].content.id.should.equal('0026');
+        done();
+      }, done);
+	  });
+  it('should do query on title string', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample(      
+		'<q:qbe xmlns:q="http://marklogic.com/appservices/querybyexample">' +
+		'  <q:format>json</q:format>' +
+		'  <q:query>' +
+		'    <title>The memex</title>' +
+		'  </q:query>' +
+		'</q:qbe>'
+)
+      )).result(function(response) {
+        //console.log(response);
+        response.length.should.equal(1);
+        response[0].content.id.should.equal('0026');
+        done();
+      }, done);
+	  });
+  it('should do query on Popularity lt', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample({
+          $query:{
+            popularity: {
+            $lt: 4
+          }
+			},
+			$format: 'json'
+         })
+      )).result(function(response) {
+        //console.log(response);
+        response.length.should.equal(1);
+        response[0].content.id.should.equal('0013');
+        done();
+      }, done);
+	  });
+	    it('should report wrong Query by Validate', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample({
+          $query:{
+            hello: {
+            $lt: 4
+          }
+			},
+			$format: 'json',
+			$validate: true
+         })
+      )).result(function(response) {
+        //console.log(response);
+		response.should.have.property('invalid-query');
+		response['invalid-query'].should.have.property('query-parse-errors');
+         done();
+      }, done);
+	  });
+	  it('should do query on Popularity lt diff format', function(done){
+    db.documents.query(
+      q.where(
+        q.byExample('<q:qbe xmlns:q="http://marklogic.com/appservices/querybyexample">' +
+		'  <q:format>json</q:format>' +
+		'  <q:query>' +
+		'    <popularity><q:lt>4</q:lt></popularity>' +
+		'  </q:query>' +
+		'</q:qbe>')
+      )).result(function(response) {
+        //console.log(response);
+        response.length.should.equal(1);
+        response[0].content.id.should.equal('0013');
+        done();
+      }, done);
+	  });
   it('should do range query', function(done){
     db.documents.query(
       q.where(
@@ -139,7 +250,7 @@ describe('Document qbe test', function(){
           }
         })
       )).result(function(response) {
-        //console.log(response, null, 4);
+        //console.log(response);
         response.length.should.equal(1);
         response[0].content.id.should.equal('0013');
         done();

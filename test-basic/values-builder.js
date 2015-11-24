@@ -16,7 +16,9 @@
 var assert = require('assert');
 var should = require('should');
 
-var t = require('../lib/values-builder.js');
+var valuesBuilder = require('../lib/values-builder.js');
+
+var t = valuesBuilder.builder;
 
 describe('values query', function(){
   describe('with value builder', function(){
@@ -53,9 +55,10 @@ describe('values query', function(){
       built.fromIndexesClause[4].range.should.have.property('json-property');
       built.fromIndexesClause[4].range['json-property'].should.equal('property4');
       built.fromIndexesClause[5].should.have.property('collection');
-      built.fromIndexesClause[6].should.have.property('field');
-      built.fromIndexesClause[6].field.should.have.property('name');
-      built.fromIndexesClause[6].field.name.should.equal('field1');
+      built.fromIndexesClause[6].should.have.property('range');
+      built.fromIndexesClause[6].range.should.have.property('field');
+      built.fromIndexesClause[6].range.field.should.have.property('name');
+      built.fromIndexesClause[6].range.field.name.should.equal('field1');
       built.fromIndexesClause[7].should.have.property('range');
       built.fromIndexesClause[7].range.should.have.property('field');
       built.fromIndexesClause[7].range.field.should.have.property('name');

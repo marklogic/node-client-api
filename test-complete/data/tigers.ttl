@@ -1,0 +1,158 @@
+prefix bb: <http://marklogic.com/baseball/players#> 
+prefix bbr: <http://marklogic.com/baseball/rules#> 
+prefix xs: <http://www.w3.org/2001/XMLSchema#> 
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+
+
+#bb:pX  bb:playerid "XX"^^xs:integer .
+#bb:XX  bb:lastname     "LASTNAME" .
+#bb:XX  bb:firstname    "FIRSTNAME" .
+#bb:XX  bb:position     "POSITION" .
+#bb:XX  bb:number       "NUMBER"^^xs:integer .
+#bb:XX  bb:team         "Athletics" .
+#bb:XX  bb:birthdate    "1989-10-26"^^xs:date .
+#bb:XX  bb:bats         "right" .
+#bb:XX  bb:throws       "right" .
+#bb:XX  bb:height       "" .
+#bb:XX  bb:weight       "220"^^xs:integer .
+#bb:XXX a       bbr:player .
+#bb:XXX a       bbr:pitcher .
+#bb:XXX a       bbr:starter .
+#bb:XXX a       bbr:setup .
+
+
+# 	Pitchers 	B/T 	Ht 	Wt 	DOB
+#36 	Joe Nathan 	R-R 	6'4" 	230 	Nov 22, 1974
+bb:107	bb:playerid	"107"^^xs:integer .
+bb:107	bb:number	"36"^^xs:integer .
+bb:107	bb:lastname	"Nathan" .
+bb:107	bb:firstname	"Joe" .
+bb:107	bb:position	"pitcher" .
+bb:107	bb:team	bbr:Tigers .
+bb:107	bb:bats	"right" .
+bb:107	bb:throws	"right" .
+bb:107	bb:weight	"230"^^xs:integer .
+bb:107	bb:date-of-birth	"1974-11-22"^^xs:date .
+bb:107	rdf:type		bbr:pitcher .
+bb:107	rdf:type		bbr:closer .
+
+#35 	Justin Verlander 	R-R 	6'5" 	225 	Feb 20, 1983
+bb:119	bb:playerid	"119"^^xs:integer .
+bb:119	bb:number	"35"^^xs:integer .
+bb:119	bb:lastname	"Verlander" .
+bb:119	bb:firstname	"Justin" .
+bb:119	bb:position	"pitcher" .
+bb:119	bb:team	bbr:Tigers .
+bb:119	bb:bats	"right" .
+bb:119	bb:throws	"right" .
+bb:119	bb:weight	"225"^^xs:integer .
+bb:119	bb:date-of-birth	"1983-02-20"^^xs:date .
+bb:119	rdf:type		bbr:pitcher .
+bb:119	rdf:type		bbr:setup .
+
+# 	Catchers 	B/T 	Ht 	Wt 	DOB
+#13 	Alex Avila 	L-R 	5'11" 	210 	Jan 29, 1987
+bb:120	bb:playerid	"120"^^xs:integer .
+bb:120	bb:number	"13"^^xs:integer .
+bb:120	bb:lastname	"Avila" .
+bb:120	bb:firstname	"Alex" .
+bb:120	bb:position	"catcher" .
+bb:120	bb:team	bbr:Tigers .
+bb:120	bb:bats	"left" .
+bb:120	bb:throws	"right" .
+bb:120	bb:weight	"210"^^xs:integer .
+bb:120	bb:date-of-birth	"1987-01-29"^^xs:date .
+bb:120	rdf:type		bbr:catcher .
+
+#50 	Bryan Holaday 	R-R 	6'0" 	205 	Nov 19, 1987
+bb:121	bb:playerid	"121"^^xs:integer .
+bb:121	bb:number	"50"^^xs:integer .
+bb:121	bb:lastname	"Holaday" .
+bb:121	bb:firstname	"Bryan" .
+bb:121	bb:position	"catcher" .
+bb:121	bb:team	bbr:Tigers .
+bb:121	bb:bats	"right" .
+bb:121	bb:throws	"right" .
+bb:121	bb:weight	"205"^^xs:integer .
+bb:121	bb:date-of-birth	"1987-11-19"^^xs:date .
+bb:121	rdf:type		bbr:catcher .
+
+
+# 	Infielders 	B/T 	Ht 	Wt 	DOB
+#24 	Miguel Cabrera 	R-R 	6'4" 	240 	Apr 18, 1983
+bb:123	bb:playerid	"123"^^xs:integer .
+bb:123	bb:number	"24"^^xs:integer .
+bb:123	bb:lastname	"Cabrera" .
+bb:123	bb:firstname	"Miguel" .
+bb:123	bb:position	"infielder" .
+bb:123	bb:team	bbr:Tigers .
+bb:123	bb:bats	"right" .
+bb:123	bb:throws	"right" .
+bb:123	bb:weight	"240"^^xs:integer .
+bb:123	bb:date-of-birth	"1983-04-18"^^xs:date .
+bb:123	rdf:type		bbr:infielder .
+
+#9 	Nick Castellanos 	R-R 	6'4" 	210 	Mar 4, 1992
+bb:124	bb:playerid	"124"^^xs:integer .
+bb:124	bb:number	"9"^^xs:integer .
+bb:124	bb:lastname	"Castellanos" .
+bb:124	bb:firstname	"Nick" .
+bb:124	bb:position	"infielder" .
+bb:124	bb:team	bbr:Tigers .
+bb:124	bb:bats	"right" .
+bb:124	bb:throws	"right" .
+bb:124	bb:weight	"210"^^xs:integer .
+bb:124	bb:date-of-birth	"1992-03-04"^^xs:date .
+bb:124	rdf:type		bbr:infielder .
+
+
+# 	Outfielders 	B/T 	Ht 	Wt 	DOB
+#	Wynton Bernard 	R-R 	6'2" 	200 	Sep 24, 1990
+bb:130	bb:playerid	"130"^^xs:integer .
+bb:130	bb:lastname	"Bernard" .
+bb:130	bb:firstname	"Wynton" .
+bb:130	bb:position	"outfielder" .
+bb:130	bb:team	bbr:Tigers .
+bb:130	bb:bats	"right" .
+bb:130	bb:throws	"right" .
+bb:130	bb:weight	"200"^^xs:integer .
+bb:130	bb:date-of-birth	"1990-09-24"^^xs:date .
+bb:130	rdf:type		bbr:outfielder .
+
+#61 	Ezequiel Carrera 	L-L 	5'10" 	185 	Jun 11, 1987
+bb:131	bb:playerid	"131"^^xs:integer .
+bb:131	bb:number	"61"^^xs:integer .
+bb:131	bb:lastname	"Carrera" .
+bb:131	bb:firstname	"Ezequiel" .
+bb:131	bb:position	"outfielder" .
+bb:131	bb:team	bbr:Tigers .
+bb:131	bb:bats	"left" .
+bb:131	bb:throws	"left" .
+bb:131	bb:weight	"185"^^xs:integer .
+bb:131	bb:date-of-birth	"1987-06-11"^^xs:date .
+bb:131	rdf:type		bbr:outfielder .
+
+#	Manager	Brad Ausmus
+bb:157	bb:lastname	"Ausmus" .
+bb:157	bb:firstname	"Brad" .
+bb:157	bb:position	"manager" .
+bb:157	bb:team	bbr:Tigers .
+bb:157	bb:number	"7"^^xs:integer .
+bb:157	bbr:coachingRole		bbr:manager .
+
+#	Coach	Gene Lamont
+bb:158	bb:lastname	"Lamont" .
+bb:158	bb:firstname	"Gene" .
+bb:158	bb:position	"coach" .
+bb:158	bb:number	"22"^^xs:integer .
+bb:158	bb:team	bbr:Tigers .
+bb:158	bbr:coachingRole		bbr:benchCoach .
+
+#	Coach	Wally Joyner
+bb:159	bb:lastname	"Joyner" .
+bb:159	bb:firstname	"Wally" .
+bb:159	bb:position	"coach" .
+bb:159	bb:number	"8"^^xs:integer .
+bb:159	bb:team	bbr:Tigers .
+bb:159	bbr:coachingRole		bbr:hittingCoach .

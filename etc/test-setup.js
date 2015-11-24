@@ -163,6 +163,28 @@ function setup(manager) {
                 };
               rangeElementIndex.push(indexdef);
             }
+
+            var geospatialElementIndex = response.data['geospatial-element-index'];
+
+            var pointGeospatialIndex = {
+                'namespace-uri':         '',
+                localname:               'point',
+                'coordinate-system':     'wgs84',
+                'range-value-positions': false,
+                'point-format':          'point',
+                'invalid-values':        'ignore'
+              };
+
+            if (valcheck.isNullOrUndefined(geospatialElementIndex)) {
+              geospatialElementIndex = [pointGeospatialIndex];
+            } else if (geospatialElementIndex.some(
+                makeIndexTester(pointGeospatialIndex.localname)
+                )) {
+              geospatialElementIndex = null;
+            } else {
+              geospatialElementIndex.push(pointGeospatialIndex);
+            }
+
             var body = {
                 'collection-lexicon':   true,
                 'triple-index':         true,
@@ -173,6 +195,10 @@ function setup(manager) {
             }
             if (valcheck.isArray(rangeElementIndex) && rangeElementIndex.length > 0) {
               body['range-element-index'] = rangeElementIndex;
+            }
+            if (valcheck.isArray(geospatialElementIndex) &&
+                geospatialElementIndex.length > 0) {
+              body['geospatial-element-index'] = geospatialElementIndex;
             }
 
             console.log('adding custom indexes for '+testconfig.testServerName);
@@ -284,4 +310,10 @@ function setup(manager) {
           JSON.parse(response.data).port);
     }
   });
+}
+
+function makeIndexTester(testLocalname) {
+  return function indexTester(index) {
+    return (index.localname === testLocalname);
+  };
 }

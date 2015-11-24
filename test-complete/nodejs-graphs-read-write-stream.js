@@ -43,17 +43,20 @@ describe('stream graph test', function(){
     fs.createReadStream(graphPath).pipe(ws);
   });
 
-  /*it('should read graph as a stream', function(done){
+  it('should read graph as a stream', function(done){
     this.timeout(10000);
     db.graphs.read(graphUri, 'text/n3').stream('chunked').
     on('data', function(data) {
       //console.log(data.toString());
+      var strData = data.toString();
+      strData.should.containEql('p0:person1      a               p0:Person ;');
+      strData.should.containEql('                foaf:knows      p0:person2 ;');
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       }).
     on('end', function() {
       done();
     }, done);
-  });*/
+  });
 
   it('should list the graph', function(done){
     this.timeout(10000);

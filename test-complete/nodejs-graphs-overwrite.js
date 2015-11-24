@@ -53,15 +53,17 @@ describe('overwrite graph test', function(){
     }, done);
   });
 
-  /*it('should read the overwritten graph', function(done){
+  it('should read the overwritten graph', function(done){
     this.timeout(10000);
     db.graphs.read({contentType: 'application/json', uri: graphUri}).
-    result(function(data){
-      (!valcheck.isNullOrUndefined(data)).should.equal(true);
-      //console.log(JSON.stringify(data, null, 4))
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 4));
+      var strResponse = JSON.stringify(response);
+      strResponse.should.containEql('http://people.org/person9');
+      strResponse.should.not.containEql('http://people.org/person2');
       done();
     }, done);
-  });*/
+  });
 
   it('should check the overwritten graph', function(done){
     this.timeout(10000);

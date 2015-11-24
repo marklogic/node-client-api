@@ -56,20 +56,22 @@ describe('merge stream graph test', function(){
     fs.createReadStream(graphPath2).pipe(ws);
   });
 
-  /*it('should read the merged graph as a stream', function(done){
+  it('should read the merged graph as a stream', function(done){
     this.timeout(10000);
     db.graphs.read(graphUri, 'text/n3').stream('chunked').
     on('data', function(data) {
-      //console.log(data);
       (!valcheck.isNullOrUndefined(data)).should.equal(true);
       var strData = data.toString();
-      strData.should.containEql('p0:person12');
-      strData.should.containEql('p0:person1');
+      //console.log(strData);
+      strData.should.containEql('p0:person1      a               p0:Person ;');
+      strData.should.containEql('                foaf:knows      p0:person2 ;');
+      strData.should.containEql('p0:person12     a               p0:Person ;');
+      strData.should.containEql('                foaf:knows      p0:person12 ;');
       }).
     on('end', function() {
       done();
     }, done);
-  });*/
+  });
 
   it('should list the merged graph', function(done){
     this.timeout(10000);

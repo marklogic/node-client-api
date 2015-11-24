@@ -165,7 +165,40 @@ describe('document patch metadata test', function(){
       }, done);
     }, done);   
   });
-
+it('should appply patch on metadata properties', function(done){
+    this.timeout(10000);
+    var uri1 = '/test/query/matchDir/doc4.json';
+    var p = marklogic.patchBuilder;
+    dbWriter.documents.patch({uri: uri1,
+      categories: ['metadata'], 
+      operations: [
+          p.collections.add('collection2/ADDED'),
+          p.collections.remove('collection2/0'),
+          p.permissions.add('app-user', 'read'),
+          p.permissions.replace('app-builder', ['read', 'update']),
+          p.permissions.remove('manage-user'),
+          p.properties.add('propertyADDED', 'property value ADDED'),
+          p.properties.replace('property1', 'property value MODIFIED'),
+          p.properties.remove('property0'),
+          p.quality.set(2)
+      ]
+    }).
+    result(function(response){
+		return db.documents.read({uris:uri1, categories:['metadata']}).result();
+		}).
+		then(function(documents) {
+      db.documents.read({uris: uri1, categories: ['metadata']}).
+      result(function(documents) {
+        //console.log(JSON.stringify(documents, null, 4));
+		documents.length.should.equal(1);
+        var document = documents[0];
+        documents[0].collections.length.should.equal(1);
+        documents[0].collections[0].should.equal('collection2/ADDED');
+        documents[0].should.have.property('permissions')
+        done();
+      }, done);
+    }, done);   
+  });
   it('should remove the document', function(done){
     dbAdmin.documents.removeAll({all: true}).
     result(function(response){

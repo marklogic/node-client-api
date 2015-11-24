@@ -29,6 +29,7 @@ describe('default graph test', function(){
   var graphUri   = 'marklogic.com/defafult/people';
   var graphPath  = './node-client-api/test-complete/data/people.ttl';
   var sparqlPath = './node-client-api/test-complete/data/people.rq';
+  var sparqlPath2 = './node-client-api/test-complete/data/people2.rq';
   var defGraphUri = 'http://marklogic.com/semantics#default-graph';
 
   it('should write the default graph', function(done){
@@ -44,9 +45,10 @@ describe('default graph test', function(){
   it('should read the default graph', function(done){
     this.timeout(10000);
     db.graphs.read('application/json').
-    result(function(data){
-      (!valcheck.isNullOrUndefined(data)).should.equal(true);
-      //console.log(JSON.stringify(data, null, 2))
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2))
+      var strResponse = JSON.stringify(response);
+      strResponse.should.containEql('http://people.org/person15');
       done();
     }, done);
   });
@@ -55,7 +57,7 @@ describe('default graph test', function(){
     this.timeout(10000);
     db.graphs.probe().
     result(function(response){
-      //console.log(response);
+      //console.log(JSON.stringify(response, null, 2))
       response.should.have.property('graph');
       response.should.have.property('exists');
       response.exists.should.equal(true);
@@ -75,7 +77,7 @@ describe('default graph test', function(){
     }, done);
   });
 
-  /*it('should run a SPARQL query against the default graph', function(done){
+  it('should run a SPARQL query against the default graph', function(done){
     this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
@@ -89,17 +91,28 @@ describe('default graph test', function(){
       var strResponse = JSON.stringify(response);
       //console.log(strResponse);
       strResponse.should.containEql('Person 1');
-      strResponse.should.containEql('Person 2');*/
-      /*response.results.bindings[0].should.have.property('personName1');
-      response.results.bindings[0].personName1.should.have.property('value');
-      response.results.bindings[0].personName1.value.should.equal('Person 1');
-      response.results.bindings[0].should.have.property('personName2');
-      response.results.bindings[0].personName2.should.have.property('value');
-      response.results.bindings[0].personName2.value.should.equal('Person 2');*/
-      //console.log(JSON.stringify(response, null, 4))
-      /*done();
+      strResponse.should.containEql('Person 2');
+      done();
     }, done);
-  });*/
+  });
+
+  it('should run another SPARQL query against the default graph', function(done){
+    this.timeout(10000);
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ?s foaf:knows ppl:person8 }" 
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json', 
+      //query: fs.createReadStream(sparqlPath2)
+      query: myQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.results.bindings[0].s.value.should.equal('http://people.org/person6');
+      done();
+    }, done);
+  });
 
   it('should delete the graph', function(done){
     this.timeout(10000);

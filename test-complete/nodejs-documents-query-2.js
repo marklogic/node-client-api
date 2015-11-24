@@ -200,6 +200,19 @@ describe('Document query test 2', function(){
     }, done);
   });
 
+  it('should do path index query without operator', function(done){
+    db.documents.query(
+      q.where(
+        q.range(q.pathIndex('price/amt'), 12.34)
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.length.should.equal(1);
+      done();
+    }, done);
+  });
+
   it('should set validate-queries to true', function(done){
     dbAdmin.config.serverprops.write({'validate-queries': true}).
     result(function(response) {

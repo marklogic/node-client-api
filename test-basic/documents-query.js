@@ -63,7 +63,8 @@ describe('document query', function(){
           id:        'matchList1',
           rangeKey1: 'aa',
           rangeKey2: 'ba',
-          scoreKey:  'unselectedWord unselectedWord unselectedWord unselectedWord'
+          scoreKey:  'unselectedWord unselectedWord unselectedWord unselectedWord',
+          point:     '10.1, 10.1'
           }
       }, {
         uri: '/test/query/matchList/doc2.json',
@@ -73,7 +74,8 @@ describe('document query', function(){
           id:        'matchList2',
           rangeKey1: 'ab',
           rangeKey2: 'ba',
-          scoreKey:  'matchList unselectedWord unselectedWord unselectedWord'
+          scoreKey:  'matchList unselectedWord unselectedWord unselectedWord',
+          point:     '20.2, 20.2'
           }
       }, {
         uri: '/test/query/matchList/doc3.json',
@@ -83,7 +85,8 @@ describe('document query', function(){
           id:        'matchList3',
           rangeKey1: 'aa',
           rangeKey2: 'bb',
-          scoreKey:  'matchList matchList unselectedWord unselectedWord'
+          scoreKey:  'matchList matchList unselectedWord unselectedWord',
+          point:     '30.3, 30.3'
           }
       }, {
         uri: '/test/query/matchList/doc4.json',
@@ -93,7 +96,8 @@ describe('document query', function(){
           id:        'matchList4',
           rangeKey1: 'ab',
           rangeKey2: 'bb',
-          scoreKey:  'matchList matchList matchList unselectedWord'
+          scoreKey:  'matchList matchList matchList unselectedWord',
+          point:     '40.4, 40.4'
           }
       }, {
         uri: '/test/query/matchList/doc5.json',
@@ -103,8 +107,14 @@ describe('document query', function(){
           id:        'matchList5',
           rangeKey1: 'ac',
           rangeKey2: 'bc',
-          scoreKey:  'matchList matchList matchList matchList matchList'
+          scoreKey:  'matchList matchList matchList matchList matchList',
+          point:     '50.5, 50.5'
           }
+      }, {
+          uri: '/test/query/extraDir/doc1.xml',
+          collections: ['extraCollection'],
+          contentType: 'application/xml',
+          content:     '<extraRoot><extraMatch>matchable extra</extraMatch></extraRoot>'
         }).result().
     then(function(response) {
       var dbModule = 'extractFirst.xqy';
@@ -252,6 +262,31 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should calculate a geospatial facet', function(done){
+      db.documents.query(
+        q.where(
+            q.collection('matchList')
+          ).
+        calculate(
+            q.facet('geo', q.geoProperty('point'),
+                q.heatmap(3, 3, q.southWestNorthEast(10, 10, 60, 60))
+                )
+            )
+        .slice(0)
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        response[0].should.have.property('facets');
+        response[0].facets.should.have.property('geo');
+        response[0].facets.geo.should.have.property('boxes');
+        response[0].facets.geo.boxes.length.should.equal(3);
+        response[0].facets.geo.boxes[0].count.should.equal(2);
+        response[0].facets.geo.boxes[1].count.should.equal(2);
+        response[0].facets.geo.boxes[2].count.should.equal(1);
+        done();
+        })
+      .catch(done);
+    });
     it('should order by key1 and key2', function(done){
       db.documents.query(
         q.where(
@@ -303,6 +338,30 @@ describe('document query', function(){
                 )
           ).
         orderBy('rangeKey1', q.sort(q.score(), 'descending'))
+        )
+      .result(function(response) {
+        response.length.should.equal(5);
+        var order = [3, 1, 4, 2, 5];
+        for (var i=0; i < order.length; i++) {
+          var document = response[i];
+          document.should.be.ok;
+          document.should.have.property('content');
+          document.content.should.have.property('id');
+          document.content.id.should.equal('matchList'+order[i]);
+        }
+        done();
+        })
+      .catch(done);
+    });
+    it('should order by key1 and a method for scoring', function(done){
+      db.documents.query(
+        q.where(
+            q.or(
+                q.collection('matchList'),
+                q.word('scoreKey', 'matchList')
+                )
+          ).
+        orderBy('rangeKey1', q.sort(q.score('simple'), 'descending'))
         )
       .result(function(response) {
         response.length.should.equal(5);
@@ -556,6 +615,75 @@ describe('document query', function(){
             document.content.id.should.equal('matchList'+order[i - 1]);
           }
         }
+        done();
+        })
+      .catch(done);
+    });
+    it('should match an XML query', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample(
+                '<q:qbe xmlns:q="http://marklogic.com/appservices/querybyexample">'+
+                '<q:format>json</q:format>'+
+                '<q:query>'+
+                    '<valueKey>match value</valueKey>'+
+                '</q:query>'+
+                '</q:qbe>'
+              )
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/matchDir/doc1.json');
+        document.should.have.property('content');
+        document.content.id.should.equal('matchDoc1');
+        done();
+        })
+      .catch(done);
+    });
+    it('should match an XML document', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample({
+              $query:{
+                extraMatch: 'matchable extra'
+                },
+              $format: 'xml'
+              })
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/extraDir/doc1.xml');
+        document.should.have.property('content');
+        done();
+        })
+      .catch(done);
+    });
+    it('should report an invalid query', function(done){
+      db.documents.query(
+        q.where(
+            q.byExample({
+              $query:    {
+                $word:{key:'value'}
+                },
+              $validate: true
+              })
+          )
+        )
+      .result(function(response) {
+        response.should.have.property('invalid-query');
+        response['invalid-query'].should.have.property('report');
+        response['invalid-query'].report.should.have.property('id');
+        response['invalid-query'].report.id.should.equal('QBE-WORDOPERATOR');
+        response['invalid-query'].report.should.have.property('_value');
+        response['invalid-query'].report._value.should.equal(
+            'Substructure not allowed inside word operator'
+            );
         done();
         })
       .catch(done);

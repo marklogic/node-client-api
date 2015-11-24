@@ -112,7 +112,19 @@ describe('Document query test', function(){
         done();
       }, done);
   });
+      it('should do term query with stemmed', function(done){
+    db.documents.query(
+      q.where(
+          q.term('describe', q.termOptions('stemmed'))
+      )).result(function(response) {
+        response.length.should.equal(1);
+		response[0].content.id.should.equal('0012');
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
   it('should do word query with slice and withOptions , BUG : 31452', function(done){
+    this.timeout(20000);
     db.documents.query(
       q.where(
         q.word('title', 'bush')		
@@ -308,6 +320,7 @@ describe('Document query test', function(){
   });
 
   it('should do queries with snippet', function(done){
+    this.timeout(20000);
     db.documents.query(
       q.where(
         q.and(
@@ -326,7 +339,24 @@ describe('Document query test', function(){
         done();
       }, done);
   });
-
+  it('should do queries with snippet and page length 0 Issue189', function(done){
+  try {
+    db.documents.query(
+      q.where(
+        q.and(
+          q.term('Atlantic'), 
+          q.term('Monthly'),
+          q.term('Bush')
+          )
+        ).slice(1, 0, q.snippet())
+      ).should.equal('SHOULD HAVE FAILED');
+      done();
+	 }catch(error) {
+      //console.log(error);
+      error.should.be.ok;
+      done();
+    }
+  });
   it('should do query with no where clause', function(done){
     db.documents.query(
       q.document(
@@ -335,6 +365,28 @@ describe('Document query test', function(){
     ).result(function(response) {
         var document = response[0];
         response.length.should.equal(5);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do term query with lang options -- BUG 35245', function(done){
+    db.documents.query(
+      q.where(
+        q.term('memex', q.termOptions('lang=de-DE-1901'))
+      )).result(function(response) {
+        response.length.should.equal(0);
+        //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+  it('should do term query with lang options positive -- BUG 35245', function(done){
+    db.documents.query(
+      q.where(
+        q.term('memex', q.termOptions('lang=en-EN'))
+      )).result(function(response) {
+        response.length.should.equal(2);
         //console.log(JSON.stringify(response, null, 4));
         done();
       }, done);

@@ -100,7 +100,8 @@ describe('Transform test with javascript', function(){
   }); 
   
   
-  it('should modify during query', function(done){
+  it('should modify during query', function(){
+    this.timeout(10000);
     db.documents.query(
       q.where(
         q.word('title', 'transform')
@@ -111,9 +112,22 @@ describe('Transform test with javascript', function(){
       //console.log(JSON.stringify(response, null, 4));
       response[0].content.should.have.property('timestamp');
       response[0].content.userName.should.equal('rest-reader');
-      done();
-    }, done);
+    });
   });
+  /*it('should modify during query - synch', function(){
+    this.timeout(10000);
+    db.documents.query(
+      q.where(
+        q.word('title', 'transform')
+      ).
+      slice(1, 10, q.transform(transformName))
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 4));
+      response[0].content.should.have.property('timestamp');
+      response[0].content.userName.should.equal('rest-reader');
+    });
+  });*/
   it('should modify during query , slice without paging parameters, Bug 111', function(done){
     db.documents.query(
       q.where(
