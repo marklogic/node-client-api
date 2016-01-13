@@ -33,6 +33,9 @@ var restWriterPassword = 'x';
 var restEvaluatorUser     = 'rest-evaluator';
 var restEvaluatorPassword = 'x';
 
+var configAdminUser     = 'admin';
+var configAdminPassword = 'admin';
+
 var testServerName = 'node-client-api-rest-server';
 
 // For SSL without client cert, use rejectUnauthorized: false
@@ -74,6 +77,13 @@ module.exports = {
         user:     restAdminUser,
         password: restAdminPassword,
         authType: manageAuthType
+    },
+    configAdminConnection: {
+        host:     testHost,
+        port:     restPort,
+        user:     configAdminUser,
+        password: configAdminPassword,
+        authType: restAuthType
     },
     restSslConnection: {
         host:     testHost,
