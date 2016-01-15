@@ -115,6 +115,7 @@ describe('Document query test', function(){
   });
 
   it('should set database stemmed searches to basic', function(done){
+    this.timeout(20000);
     var src = "var admin = require('/MarkLogic/admin.xqy');" +
               "var c = admin.getConfiguration();" +
               "c = admin.databaseSetStemmedSearches(c, xdmp.database('node-client-api-rest-server'), 'basic');" +
@@ -129,8 +130,13 @@ describe('Document query test', function(){
     });
   });
 
+  it('should wait for set stemmed searches on database', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
+
   it('should do term query with stemmed', function(done){
-    this.timeout(20000);
     db.documents.query(
       q.where(
           q.term('describe', q.termOptions('stemmed'))
@@ -139,7 +145,7 @@ describe('Document query test', function(){
 		response[0].content.id.should.equal('0012');
         //console.log(JSON.stringify(response, null, 4));
         done();
-      }, 20000);
+      });
   });
 
   it('should do word query with slice and withOptions , BUG : 31452', function(done){
