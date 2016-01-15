@@ -85,7 +85,7 @@ describe('merge graph test', function(){
   });
 
   it('should run a SPARQL query against the merged graph', function(done){
-    this.timeout(10000);
+    this.timeout(20000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');
