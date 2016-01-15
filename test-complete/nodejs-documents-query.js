@@ -440,4 +440,10 @@ it('should delete all documents', function(done){
       done();
     });
   });
+
+  it('should wait for set stemmed searches on database', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
 });
