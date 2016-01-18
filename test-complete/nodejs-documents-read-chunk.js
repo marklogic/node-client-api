@@ -61,6 +61,12 @@ describe('Binary documents test', function(){
     }, done);   
   });
 
+  it('should wait for the document to be written', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
+
   it('should read the binary in chunk', function(done){
     this.timeout(10000);
     var uri = '/test/write/somePdfFile.pdf';
