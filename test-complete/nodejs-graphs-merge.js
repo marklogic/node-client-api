@@ -50,6 +50,12 @@ describe('merge graph test', function(){
     }, done);
   });
 
+  it('should wait for the graphs to get merged', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
+
   it('should read the merged graph', function(done){
     this.timeout(10000);
     db.graphs.read({contentType: 'application/json', uri: graphUri}).
