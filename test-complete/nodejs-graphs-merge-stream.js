@@ -56,6 +56,12 @@ describe('merge stream graph test', function(){
     fs.createReadStream(graphPath2).pipe(ws);
   });
 
+  it('should wait for the graphs to get merged', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
+
   it('should read the merged graph as a stream', function(done){
     this.timeout(10000);
     db.graphs.read(graphUri, 'text/n3').stream('chunked').
