@@ -42,7 +42,7 @@ describe('merge graph test', function(){
   });
 
   it('should merge the graph', function(done){
-    this.timeout(10000);
+    this.timeout(20000);
     db.graphs.merge(graphUri, 'text/turtle', fs.createReadStream(graphPath2)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4))
