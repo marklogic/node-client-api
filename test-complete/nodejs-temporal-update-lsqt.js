@@ -58,7 +58,7 @@ function validateData(response) {
     
     if ((validStartTime.indexOf("2003-01-01T00:00:00") !== -1) && (validEndTime.indexOf("2008-12-31T23:59:59") !== -1)) {
       systemStartTime.should.containEql("2011-01-01T00:00:01");
-      systemEndTime.should.containEql("9999-12-31T23:59:59");
+      systemEndTime.should.containEql("9999-12-31T11:59:59Z");
 
       // This is the updated document
       // Permissions
@@ -79,7 +79,7 @@ function validateData(response) {
     }
     else  if ((validStartTime.indexOf("2001-01-01T00:00:00") !== -1) && (validEndTime.indexOf("2003-01-01T00:00:00") !== -1)) {
       systemStartTime.should.containEql("2011-01-01T00:00:01");
-      systemEndTime.should.containEql("9999-12-31T23:59:59");
+      systemEndTime.should.containEql("9999-12-31T11:59:59Z");
 
       permissions.forEach(function(permission) {
         switch(permission['role-name']) {
