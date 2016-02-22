@@ -33,6 +33,9 @@ var restWriterPassword = 'x';
 var restEvaluatorUser     = 'rest-evaluator';
 var restEvaluatorPassword = 'x';
 
+var restTemporalUser     = 'rest-temporal-writer';
+var restTemporalPassword = 'x';
+
 var testServerName = 'unittest-nodeapi';
 
 // For SSL without client cert, use rejectUnauthorized: false
@@ -67,6 +70,13 @@ module.exports = {
       port:     restPort,
       user:     restEvaluatorUser,
       password: restEvaluatorPassword,
+      authType: restAuthType
+    },
+    restTemporalConnection: {
+      host:     testHost,
+      port:     restPort,
+      user:     restTemporalUser,
+      password: restTemporalPassword,
       authType: restAuthType
     },
     manageAdminConnection: {

@@ -25,7 +25,7 @@ var testutil   = require('./test-util.js');
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 
 /* ASSUMPTION: this test will not be run more frequently
  * than once every 10 seconds. To run more frequently,
