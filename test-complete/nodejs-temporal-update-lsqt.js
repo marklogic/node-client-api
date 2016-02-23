@@ -25,7 +25,7 @@ testconfig.manageAdminConnection.password = "admin";
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
