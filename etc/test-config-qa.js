@@ -33,6 +33,9 @@ var restWriterPassword = 'x';
 var restEvaluatorUser     = 'rest-evaluator';
 var restEvaluatorPassword = 'x';
 
+var restTemporalUser     = 'rest-temporal-writer';
+var restTemporalPassword = 'x';
+
 var configAdminUser     = 'admin';
 var configAdminPassword = 'admin';
 
@@ -69,6 +72,13 @@ module.exports = {
       port:     restPort,
       user:     restEvaluatorUser,
       password: restEvaluatorPassword,
+      authType: restAuthType
+    },
+    restTemporalConnection: {
+      host:     testHost,
+      port:     restPort,
+      user:     restTemporalUser,
+      password: restTemporalPassword,
       authType: restAuthType
     },
     manageAdminConnection: {
