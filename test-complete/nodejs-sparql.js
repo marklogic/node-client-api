@@ -127,7 +127,7 @@ describe('sparql query tests', function () {
             end: 3
         }).
             result(function (response) {
-                response.results.bindings.length.should.equal(0);
+                response.should.be.empty;
                 done();
             }, done);
     });
@@ -196,7 +196,7 @@ describe('sparql query tests', function () {
         }).
             result(function (response) {
                 //console.log(response);
-                response.results.bindings.length.should.equal(0);
+                response.should.be.empty;
                 done();
             });
     });
