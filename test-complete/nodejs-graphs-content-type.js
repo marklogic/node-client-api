@@ -188,7 +188,7 @@ describe('content type graph test', function(){
     }, done);
   });
 
-  it('should run SPARQL query with sparql-results+json content type', function(done){
+  it('should run SPARQL query with sparql-results+json content type -ve', function(done){
     this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
@@ -197,8 +197,11 @@ describe('content type graph test', function(){
     }).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('sem:triple(sem:iri(\"http://marklogicsparql.com/id#1111\"), sem:iri(\"http://marklogicsparql.com/worksOn\"), sem:iri(\"http://marklogicsparql.com/Inference\")),sem:triple(sem:iri(\"http://marklogicsparql.com/id#1111\"), sem:iri(\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\"), sem:iri(\"http://marklogicsparql.com/LeadEngineer\"))');
       done();
+    },function(err){
+    //console.log(JSON.stringify(err, null, 2));
+	err.statusCode.should.equal(406);
+    done();
     }, done);
   });
 
