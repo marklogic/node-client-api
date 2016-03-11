@@ -127,8 +127,9 @@ describe('sparql query tests', function () {
             end: 3
         }).
             result(function (response) {
-                response.should.be.empty;
-                done();
+              response.head.vars.should.be.empty;
+              response.results.bindings.should.be.empty;
+            done();
             }, done);
     });
 
