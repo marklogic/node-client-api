@@ -42,7 +42,7 @@ gulp.task('doc', function() {
       {
         path:              'etc/marklogic-template',
         systemName:        'MarkLogic Node.js API',
-        copyright:         'Copyright 2014-2015 MarkLogic Corporation',
+        copyright:         'Copyright 2014-2016 MarkLogic Corporation',
         theme:             'marklogic',
         inverseNav:        true,
         navType:           'vertical',
