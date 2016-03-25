@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ testconfig.manageAdminConnection.user     = "admin";
 testconfig.manageAdminConnection.password = "admin";
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+//var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 

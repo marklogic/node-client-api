@@ -14,7 +14,7 @@ from Node.js applications.
 
 ## Status
 
-Release 1.0.4 of the MarkLogic Node.js API
+Release 1.0.5 of the MarkLogic Node.js API
 
 ## Sample
 

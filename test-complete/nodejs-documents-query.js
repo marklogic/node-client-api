@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
+var dbConfigAdmin = marklogic.createDatabaseClient(testconfig.configAdminConnection);
 
 describe('Document query test', function(){
   before(function(done){
@@ -112,7 +113,30 @@ describe('Document query test', function(){
         done();
       }, done);
   });
-      it('should do term query with stemmed', function(done){
+
+  it('should set database stemmed searches to basic', function(done){
+    this.timeout(20000);
+    var src = "var admin = require('/MarkLogic/admin.xqy');" +
+              "var c = admin.getConfiguration();" +
+              "c = admin.databaseSetStemmedSearches(c, xdmp.database('node-client-api-rest-server'), 'basic');" +
+              "admin.saveConfiguration(c);"
+    dbConfigAdmin.eval(src)
+    .result(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      done();
+    }, function(error) {
+      console.log(JSON.stringify(error, null, 2));
+      done();
+    });
+  });
+
+  it('should wait for set stemmed searches on database', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
+
+  it('should do term query with stemmed', function(done){
     db.documents.query(
       q.where(
           q.term('describe', q.termOptions('stemmed'))
@@ -121,8 +145,9 @@ describe('Document query test', function(){
 		response[0].content.id.should.equal('0012');
         //console.log(JSON.stringify(response, null, 4));
         done();
-      }, done);
+      });
   });
+
   it('should do word query with slice and withOptions , BUG : 31452', function(done){
     this.timeout(20000);
     db.documents.query(
@@ -399,5 +424,26 @@ it('should delete all documents', function(done){
     result(function(response) {
       done();
     }, done);
-  }); 
+  });
+ 
+  it('should set database stemmed searches back to off', function(done){
+    var src = "var admin = require('/MarkLogic/admin.xqy');" +
+              "var c = admin.getConfiguration();" +
+              "c = admin.databaseSetStemmedSearches(c, xdmp.database('node-client-api-rest-server'), 'off');" +
+              "admin.saveConfiguration(c);"
+    dbConfigAdmin.eval(src)
+    .result(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      done();
+    }, function(error) {
+      console.log(JSON.stringify(error, null, 2));
+      done();
+    });
+  });
+
+  it('should wait for set stemmed searches on database', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
+  });
 });

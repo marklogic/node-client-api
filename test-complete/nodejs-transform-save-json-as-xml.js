@@ -27,30 +27,25 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Transform test with javascript', function(){
+describe('Transform save json as xml', function(){
   before(function(done){
     this.timeout(10000);
     dbWriter.documents.write({
-      uri: '/test/transform/jstransform.json',
+      uri: '/test/transform/savejsonasxmltransform.xml',
       contentType: 'application/json',
-      content: {title: 'transform test with javascript'} 
-    },
-	{
-      uri: '/test/transform/jstransform2.json',
-      contentType: 'application/json',
-      content: {title: 'exapmle test with javascript'} 
+      content: {name: 'bob'} 
     }).
     result(function(response){done();}, done);
   });
 
-  var transformName = 'timestamp';
-  var transformPath = './node-client-api/test-complete/data/timestampTransform.js';
+  var transformName = 'to-xml';
+  var transformPath = './node-client-api/test-complete/data/to-xml.xqy';
 
   it('should write the transform', function(done){
     this.timeout(10000);
     fs.createReadStream(transformPath).
     pipe(concatStream({encoding: 'string'}, function(source) {
-      dbAdmin.config.transforms.write(transformName, 'javascript', source).
+      dbAdmin.config.transforms.write(transformName, 'xquery', source).
       result(function(response){done();}, done);
     }));
   });
@@ -71,94 +66,57 @@ describe('Transform test with javascript', function(){
     }, done);
   });
   
-  var uri = '/test/transform/jstransform.json'; 
+  var uri = '/test/transform/savejsonasxmltransform.xml'; 
 
   it('should modify during read', function(done){
     db.documents.read({
       uris: uri,
-      transform: transformName
+      transform: [transformName]
     }).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
+      response[0].content.should.containEql('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<name>bob</name>\n');
+      response[0].format.should.equal('xml');
       done();
     }, done);
   });
 
-   it('should  query', function(done){
-    db.documents.query(
-      q.where(
-        q.word('title', 'test')
-      )
-    ).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-	  response.length.should.equal(2);
-      done();
-    }, done);
-  }); 
-  
-  
-  it('should modify during query', function(){
+  it('should modify during query', function(done){
     this.timeout(10000);
     db.documents.query(
       q.where(
-        q.word('title', 'transform')
+        q.and(
+          q.directory('/test/transform/'),
+          q.term('name', 'bob')
+        )
       ).
       slice(1, 10, q.transform(transformName))
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
-    });
-  });
-  /*it('should modify during query - synch', function(){
-    this.timeout(10000);
-    db.documents.query(
-      q.where(
-        q.word('title', 'transform')
-      ).
-      slice(1, 10, q.transform(transformName))
-    ).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
-    });
-  });*/
-  it('should modify during query , slice without paging parameters, Bug 111', function(done){
-    db.documents.query(
-      q.where(
-        q.word('title', 'transform')
-      ).
-      slice(q.transform(transformName))
-    ).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
+      response[0].content.should.containEql('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<name>bob</name>');
+      response[0].format.should.equal('xml');
       done();
     }, done);
   });
-  /*it('should modify during write', function(done){
+
+  it('should modify during write', function(done){
     dbWriter.documents.write({
-      uri: '/test/transform/write/jstransform.json',
+      uri: '/test/transform/write/savejsonasxmltransform.xml',
       contentType: 'application/json',
-      content: {readKey: 'after write'},
-      transform: transformName
+      content: {name: 'bob'},
+      transform: [transformName]
     }).
     result(function(response) {
-      db.documents.read('/test/transform/write/jstransform.json').
-      result(function(documents) {
-        console.log(JSON.stringify(documents, null, 4));
-        documents[0].content.should.have.property('timestamp');
-        documents[0].content.userName.should.equal('rest-reader');
+      db.documents.read('/test/transform/write/savejsonasxmltransform.xml').
+      result(function(response) {
+        //console.log(JSON.stringify(documents, null, 4));
+        response[0].content.should.containEql('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<name>bob</name>\n');
+        response[0].format.should.equal('xml');
         done();
       }, done);
     }, done);
-  });*/
+  });
 
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({

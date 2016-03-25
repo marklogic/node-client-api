@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,8 +127,9 @@ describe('sparql query tests', function () {
             end: 3
         }).
             result(function (response) {
-                response.results.bindings.length.should.equal(0);
-                done();
+              response.head.vars.should.be.empty;
+              response.results.bindings.should.be.empty;
+            done();
             }, done);
     });
 
@@ -196,7 +197,7 @@ describe('sparql query tests', function () {
         }).
             result(function (response) {
                 //console.log(response);
-                response.results.bindings.length.should.equal(0);
+                response.should.be.empty;
                 done();
             });
     });

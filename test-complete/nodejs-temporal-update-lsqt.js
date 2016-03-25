@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ testconfig.manageAdminConnection.password = "admin";
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
@@ -58,7 +58,7 @@ function validateData(response) {
     
     if ((validStartTime.indexOf("2003-01-01T00:00:00") !== -1) && (validEndTime.indexOf("2008-12-31T23:59:59") !== -1)) {
       systemStartTime.should.containEql("2011-01-01T00:00:01");
-      systemEndTime.should.containEql("9999-12-31T23:59:59");
+      systemEndTime.should.containEql("9999-12-31T11:59:59Z");
 
       // This is the updated document
       // Permissions
@@ -79,7 +79,7 @@ function validateData(response) {
     }
     else  if ((validStartTime.indexOf("2001-01-01T00:00:00") !== -1) && (validEndTime.indexOf("2003-01-01T00:00:00") !== -1)) {
       systemStartTime.should.containEql("2011-01-01T00:00:01");
-      systemEndTime.should.containEql("9999-12-31T23:59:59");
+      systemEndTime.should.containEql("9999-12-31T11:59:59Z");
 
       permissions.forEach(function(permission) {
         switch(permission['role-name']) {

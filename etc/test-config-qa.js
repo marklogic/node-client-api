@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,12 @@ var restWriterPassword = 'x';
 
 var restEvaluatorUser     = 'rest-evaluator';
 var restEvaluatorPassword = 'x';
+
+var restTemporalUser     = 'rest-temporal-writer';
+var restTemporalPassword = 'x';
+
+var configAdminUser     = 'admin';
+var configAdminPassword = 'admin';
 
 var testServerName = 'node-client-api-rest-server';
 
@@ -68,12 +74,26 @@ module.exports = {
       password: restEvaluatorPassword,
       authType: restAuthType
     },
+    restTemporalConnection: {
+      host:     testHost,
+      port:     restPort,
+      user:     restTemporalUser,
+      password: restTemporalPassword,
+      authType: restAuthType
+    },
     manageAdminConnection: {
         host:     testHost,
         port:     managePort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: manageAuthType
+    },
+    configAdminConnection: {
+        host:     testHost,
+        port:     restPort,
+        user:     configAdminUser,
+        password: configAdminPassword,
+        authType: restAuthType
     },
     restSslConnection: {
         host:     testHost,

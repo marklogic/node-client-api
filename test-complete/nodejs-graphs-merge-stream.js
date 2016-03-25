@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,12 @@ describe('merge stream graph test', function(){
       done();
     }, done);
     fs.createReadStream(graphPath2).pipe(ws);
+  });
+
+  it('should wait for the graphs to get merged', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
   });
 
   it('should read the merged graph as a stream', function(done){

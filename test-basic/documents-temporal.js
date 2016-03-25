@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ var testutil   = require('./test-util.js');
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 
 /* ASSUMPTION: this test will not be run more frequently
  * than once every 10 seconds. To run more frequently,

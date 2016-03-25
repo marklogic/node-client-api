@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,12 +42,18 @@ describe('merge graph test', function(){
   });
 
   it('should merge the graph', function(done){
-    this.timeout(10000);
+    this.timeout(20000);
     db.graphs.merge(graphUri, 'text/turtle', fs.createReadStream(graphPath2)).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4))
       done();
     }, done);
+  });
+
+  it('should wait for the graphs to get merged', function(done) { 
+    setTimeout(function() {
+      done();
+    }, 10000);
   });
 
   it('should read the merged graph', function(done){
@@ -85,7 +91,7 @@ describe('merge graph test', function(){
   });
 
   it('should run a SPARQL query against the merged graph', function(done){
-    this.timeout(10000);
+    this.timeout(20000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
       response.should.have.property('head');

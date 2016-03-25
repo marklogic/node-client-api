@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2016 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,6 +77,33 @@ function setupUsers(manager, done) {
   }).
   then(function(response) {
     return manager.get({
+      endpoint: '/manage/v2/roles/'+encodeURIComponent('rest-temporal-writer')
+      }).result();
+  }).
+  then(function(response) {
+    if (response.statusCode < 400) {
+      return this;
+    }
+    return manager.post({
+      endpoint: '/manage/v2/roles',
+      body: {
+        'role-name': 'rest-temporal-writer',
+        description: 'REST writer with temporal privileges',
+        role: [
+          'rest-writer'
+        ],
+        privilege: [
+          {
+            'privilege-name': 'temporal-statement-set-system-time',
+            action: 'http://marklogic.com/xdmp/privileges/temporal-statement-set-system-time',
+            kind: 'execute'
+          }
+        ]
+      }
+      }).result();      
+  }).
+  then(function(response) {
+    return manager.get({
       endpoint: '/manage/v2/users'
       }).result();
   }).
@@ -111,6 +138,13 @@ function setupUsers(manager, done) {
       'user-name': userName,
       description: 'rest-writer user with evaluate privileges',
       password:    testconfig.restEvaluatorConnection.password
+      };
+    userName = testconfig.restTemporalConnection.user;
+    requiredUsers[userName]  = {
+      role:        'rest-temporal-writer',
+      'user-name': userName,
+      description: 'rest-writer user with temporal privileges',
+      password:    testconfig.restTemporalConnection.password
       };
 
     response.data['user-default-list']['list-items']['list-item'].
