@@ -5414,3 +5414,10 @@ code {
   line-height: 15px;
   padding: 12px 4px !important;
 }
+
+/* Offset empty span anchors to account for fixed navbar */
+span:empty {
+  display: block;
+  position: relative;
+  top: -40px; /* height of navbar */
+}
