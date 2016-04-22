@@ -252,7 +252,7 @@ describe('sparql update test', function(){
       done();
     }, function(error) {
       //console.log(error); 
-      error.body.errorResponse.message.should.containEql('Invalid content: No query to execute');
+      error.body.errorResponse.message.should.containEql('Unexpected token syntax error, unexpected {, expecting DELETE or INSERT');
       done();
     });
   });
@@ -474,6 +474,21 @@ describe('sparql update test', function(){
       //console.log(JSON.stringify(response, null, 2));
       done();
     }, done);
+  });
+  
+  it('should create the graph-Bug38274', function(done){
+    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;"
+    db.graphs.sparqlUpdate('CREATE GRAPH <http://marklogic.com/sparqlupdate/peoplqe> ;').
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.defaultGraph.should.equal(false);
+      (response.graph === null).should.be.true;
+      response.graphType.should.equal('inline');
+      done();
+    },function(error){
+     //console.log(JSON.stringify(error, null, 2));
+     done();
+   });
   });
 
   it('should drop all graphs', function(done){
