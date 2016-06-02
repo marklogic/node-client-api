@@ -108,7 +108,9 @@ Use `git rebase` (not `git merge`) to sync your work from time to time to make s
 
 Be sure to run the tests before submitting your pull request. PRs with failing tests won’t be accepted. 
 
-    $ TODO
+    $ node etc/test-setup.js
+    $ mocha test-basic
+    $ node etc/test-teardown.js
 
 #### Push your changes
 
