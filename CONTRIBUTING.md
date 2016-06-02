@@ -43,14 +43,14 @@ A pull request is the standard way to submit changes to a repository to which yo
 
 Before we can accept your pull request, you need to sign a [Contributor License Agreement](http://developer.marklogic.com/products/cla).  
 
-#### Fork the Java Client API
+#### Fork the Node.js Client API
 
-Fork the project [on GitHub](https://github.com/marklogic/java-client-api/fork) 
+Fork the project [on GitHub](https://github.com/marklogic/node-client-api/fork) 
 and clone your copy.
 
-    $ git clone git@github.com:username/java-client-api.git
-    $ cd java-client-api
-    $ git remote add upstream git://github.com/marklogic/java-client-api.git
+    $ git clone git@github.com:username/node-client-api.git
+    $ cd node-client-api
+    $ git remote add upstream git://github.com/marklogic/node-client-api.git
 
 All bug fixes and new features go into the `develop` branch.
 
