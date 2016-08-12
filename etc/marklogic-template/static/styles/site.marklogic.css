@@ -2477,14 +2477,14 @@ table th[class*="span"],
 .dropdown-submenu:focus > a {
   text-decoration: none;
   color: #555555;
-  background-color: #f9e3e0;
-  background-image: -moz-linear-gradient(top, #fbebe9, #f7d7d3);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbebe9), to(#f7d7d3));
-  background-image: -webkit-linear-gradient(top, #fbebe9, #f7d7d3);
-  background-image: -o-linear-gradient(top, #fbebe9, #f7d7d3);
-  background-image: linear-gradient(to bottom, #fbebe9, #f7d7d3);
+  background-color: #5599eb;
+  background-image: -moz-linear-gradient(top, #5599eb, #5599eb);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5599eb), to(#5599eb));
+  background-image: -webkit-linear-gradient(top, #5599eb, #5599eb);
+  background-image: -o-linear-gradient(top, #5599eb, #5599eb);
+  background-image: linear-gradient(to bottom, #5599eb, #5599eb);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffbebe9', endColorstr='#fff7d7d3', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5599eb', endColorstr='#5599eb', GradientType=0);
 }
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
@@ -5413,4 +5413,11 @@ code {
   font-size: 12px;
   line-height: 15px;
   padding: 12px 4px !important;
+}
+
+/* Offset empty span anchors to account for fixed navbar */
+span:empty {
+  display: block;
+  position: relative;
+  top: -40px; /* height of navbar */
 }

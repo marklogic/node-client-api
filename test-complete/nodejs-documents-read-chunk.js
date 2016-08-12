@@ -70,6 +70,7 @@ describe('Binary documents test', function(){
   it('should read the binary in chunk', function(done){
     this.timeout(10000);
     var uri = '/test/write/somePdfFile.pdf';
+	setTimeout(function() {
     dbReader.documents.read(uri).stream('chunked').
     on('data', function(data) {
       var strData = data.toString();
@@ -78,6 +79,7 @@ describe('Binary documents test', function(){
     on('end', function() {
       done();
     }, done);   
+	}, 3000);
   });
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({

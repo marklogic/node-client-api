@@ -107,7 +107,31 @@ describe('Document qbe test', function(){
          collections: ['matchList'],
          contentType: 'application/xml',
          content: '<Employee><firstname>John</firstname><id>0081</id></Employee>'
-      }).
+      },{
+        uri: '/test/query/matchList/doc8.json',
+        id: '33f028a3-351e-485a-928a-a45885a964b3',
+        type: 'person',
+        subtype: ['customer'],
+        schema: [
+            'person_1.0',
+            'customer_1.2'
+        ],
+        content: {
+        name: 'Josh Bowers',
+        gender: 'male',
+        customerSince: '2003-03-03Z',
+        reviewerRank: 33333,
+        vipCustomer: null,
+        topSpends: 300000,
+        lastVisits: '2013-03-03',
+        favoriteFoods: 'steak PIZZA-PIE tacos cake cookies yum8me',
+        popularity1: 'Awesome',
+        nicknames: [
+            'Joshua',
+            'JaJa',
+            'Math Wizard',
+            'Taco'
+        ]}}).
     result(function(response){done();}, done);
   });
 
@@ -387,6 +411,21 @@ describe('Document qbe test', function(){
         done();
       }, done);
   });
+it('should do qbe bug38619', function(done){
+    db.documents.query(
+	  q.where(
+		q.byExample({
+			$word: 'awesome',
+			$stemmed: false
+		})
+	 )
+	).result(function(response) {
+	//  console.log(response);
+        response.length.should.equal(1);
+        response[0].content.popularity1.should.equal('Awesome');
+        done();
+      }, done);
+});
 
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({

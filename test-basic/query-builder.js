@@ -536,6 +536,15 @@ describe('query-builder', function() {
         );
   });
 
+  it('should create geo-region-path queries', function(){
+    assert.deepEqual(
+        q.geospatialRegion(q.geoPath('foo'), 'contains', q.polygon([1.1, 2.2], [3.3, 4.4])),
+        {'geo-region-path-query':{'path-index':{text: 'foo', namespaces: ''},
+          'geospatial-operator':'contains',
+          polygon:{point:[{latitude:1.1, longitude:2.2}, {latitude:3.3, longitude:4.4}]}}}
+        );
+  });
+
   it('should create geo-json-property queries', function(){
     assert.deepEqual(
         q.geospatial(q.geoProperty('property1'), q.latlon(1.1, 2.2)),
