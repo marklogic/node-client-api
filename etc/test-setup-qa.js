@@ -200,6 +200,14 @@ function setup(manager) {
                     'point-format': 'point',
                     'range-value-positions': false,
                     'invalid-values': 'reject' 
+                  },
+                  { 
+                    'namespace-uri': '',
+                    localname: 'gElemPointWgs84Double',
+                    'coordinate-system': 'wgs84/double',
+                    'point-format': 'point',
+                    'range-value-positions': false,
+                    'invalid-values': 'reject' 
                   }
                 ],
                 'geospatial-element-child-index': [ 
@@ -209,6 +217,16 @@ function setup(manager) {
                     'namespace-uri': '',
                     localname: 'gElemChildPoint',
                     'coordinate-system': 'wgs84',
+                    'point-format': 'point',
+                    'range-value-positions': false,
+                    'invalid-values': 'reject' 
+                  }, 
+                  {  
+                    'parent-namespace-uri': '',
+                    'parent-localname': 'gElemChildParentEtrs89Double',
+                    'namespace-uri': '',
+                    localname: 'gElemChildPointEtrs89Double',
+                    'coordinate-system': 'etrs89/double',
                     'point-format': 'point',
                     'range-value-positions': false,
                     'invalid-values': 'reject' 
@@ -223,6 +241,17 @@ function setup(manager) {
                     'longitude-namespace-uri': '',
                     'longitude-localname': 'longitude',
                     'coordinate-system': 'wgs84',
+                    'range-value-positions': false,
+                    'invalid-values': 'reject' 
+                  }, 
+                  { 
+                    'parent-namespace-uri': '',
+                    'parent-localname': 'gElemPairRawDouble',
+                    'latitude-namespace-uri': '',
+                    'latitude-localname': 'latitudeRawDouble',
+                    'longitude-namespace-uri': '',
+                    'longitude-localname': 'longitudeRawDouble',
+                    'coordinate-system': 'raw/double',
                     'range-value-positions': false,
                     'invalid-values': 'reject' 
                   } 
@@ -240,6 +269,50 @@ function setup(manager) {
                     'invalid-values': 'reject' 
                   } 
                 ],
+                'geospatial-region-path-index': [
+                  {
+                    'path-expression': '/root/item/point',
+                    'coordinate-system': 'wgs84',
+                    'geohash-precision': 1,
+                    'invalid-values': 'reject'
+                  },
+                  {
+                    'path-expression': '/root/item/linestring',
+                    'coordinate-system': 'wgs84/double',
+                    'geohash-precision': 2,
+                    'invalid-values': 'ignore'
+                  },
+                  {
+                    'path-expression': '/root/item/circle',
+                    'coordinate-system': 'wgs84/double',
+                    'geohash-precision': 1,
+                    'invalid-values': 'reject'
+                  },
+                  {
+                    'path-expression': '/root/item/circle',
+                    'coordinate-system': 'wgs84',
+                    'geohash-precision': 1,
+                    'invalid-values': 'reject'
+                  },
+                  {
+                    'path-expression': '/root/item/box',
+                    'coordinate-system': 'wgs84/double',
+                    'geohash-precision': 2,
+                    'invalid-values': 'ignore'
+                  },
+                  {
+                    'path-expression': '/root/item/polygon',
+                    'coordinate-system': 'wgs84',
+                    'geohash-precision': 3,
+                    'invalid-values': 'reject'
+                  },
+                  {
+                    'path-expression': '/root/item/complex-polygon',
+                    'coordinate-system': 'wgs84',
+                    'geohash-precision': 1,
+                    'invalid-values': 'ignore'
+                  }
+                ]
             };
             if (valcheck.isArray(elementWordLexicon) && elementWordLexicon.length > 0) {
               body['element-word-lexicon'] = elementWordLexicon;
