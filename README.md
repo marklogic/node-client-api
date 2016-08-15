@@ -11,6 +11,7 @@ from Node.js applications.
 *  Single transactions and multi-statement transactions for database changes
 *  Writing, reading, and deleting graphs and executing SPARQL queries over graphs
 *  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
+*  Basic, digest, and [Kerberos](KERBEROS.md) authentication
 
 ## Status
 
