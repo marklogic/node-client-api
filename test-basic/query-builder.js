@@ -507,7 +507,7 @@ describe('query-builder', function() {
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
-        q.geospatial(q.geoPath('foo', 'wgs84/double'), q.latlon(1.1, 2.2)),
+        q.geospatial(q.geoPath('foo', q.coordSystem('wgs84/double')), q.latlon(1.1, 2.2)),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           coord:'wgs84/double', point:[{latitude:1.1, longitude:2.2}]}}
         );
