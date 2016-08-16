@@ -479,7 +479,7 @@ describe('Document geo query test', function(){
   });
 
 
-  /*it('TEST 15 - geospatial region with properties fragment scope', function(done){
+  it('TEST 17 - geospatial region with properties fragment scope', function(done){
     dbWriter.documents.query(
       q.where(
         q.geospatialRegion(
@@ -493,12 +493,10 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(2);
-      response[0].uri.should.equal('/geo/region/test/Equator.xml');
-      response[1].uri.should.equal('/geo/region/test/Equator-json.json');
+      response.length.should.equal(0);
       done();
     }, done);
-  });*/
+  });
 
 
   it('should delete all documents', function(done){
