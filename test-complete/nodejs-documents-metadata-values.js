@@ -200,13 +200,13 @@ describe('Document Metadata values test', function() {
     }, done);
   });
 
-  /*it('should delete all documents', function(done){
+  it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       collection: 'metadataValuesColl'
     }).
     result(function(response) {
       done();
     }, done);
-  });*/
+  });
 
 });
