@@ -200,6 +200,44 @@ describe('Document Metadata values test', function() {
     }, done);
   });
 
+  it('TEST 13 - negative: non-string on values', function(done) {
+    try {
+      db.documents.patch({
+        uri: '/test/metadata/values/doc1.json', 
+        categories:['metadata-values'],
+        operations: [
+          p.metadataValues.add('metaNegNonString', 1001.6789)
+        ]
+      })
+      .should.equal('SHOULD HAVE FAILED');
+      done();
+    } catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('Error: metadataValues.add() takes a string name and string value');
+      done();
+    }
+  });
+
+  it('TEST 14 - negative: non-string on names', function(done) {
+    try {
+      db.documents.patch({
+        uri: '/test/metadata/values/doc1.json', 
+        categories:['metadata-values'],
+        operations: [
+          p.metadataValues.add(negativeMeta, 'invValues')
+        ]
+      })
+      .should.equal('SHOULD HAVE FAILED');
+      done();
+    } catch(error) {
+      //console.log(error.toString());
+      var strErr = error.toString();
+      strErr.should.equal('ReferenceError: negativeMeta is not defined');
+      done();
+    }
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       collection: 'metadataValuesColl'
