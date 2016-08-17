@@ -498,6 +498,112 @@ describe('Document geo query test', function(){
     }, done);
   });
 
+  it('TEST 18 - negative: invalid coordinate system', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geospatialRegion(
+          q.geoPath('/root/item/box', q.coordSystem('invCoordSys')),
+          'covered-by',
+          q.polygon(q.point(70, -50), q.point(90, 120), q.point(-10, 100), q.point(-20, -60), q.point(70,-50))
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      error.body.errorResponse.message.should.containEql('Invalid coordinate system invCoordSys');
+      done();
+    });
+  });
+
+  it('TEST 19 - negative: invalid path', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geospatialRegion(
+          q.geoPath('/root/item/inv', q.coordSystem('wgs84/double')),
+          'covered-by',
+          q.polygon(q.point(70, -50), q.point(90, 120), q.point(-10, 100), q.point(-20, -60), q.point(70,-50))
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      error.body.errorResponse.message.should.containEql('XDMP-GEOREGIONIDX-NOTFOUND');
+      done();
+    });
+  });
+
+  it('TEST 20 - negative: invalid operator', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geospatialRegion(
+          q.geoPath('/root/item/box', q.coordSystem('wgs84/double')),
+          'invalid',
+          q.polygon(q.point(70, -50), q.point(90, 120), q.point(-10, 100), q.point(-20, -60), q.point(70,-50))
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      error.body.errorResponse.message.should.containEql('XDMP-OPERATION');
+      done();
+    });
+  });
+
+  it('TEST 21 - negative: invalid options', function(done){
+    dbWriter.documents.query(
+      q.where(
+        q.geospatialRegion(
+          q.geoPath('/root/item/box', q.coordSystem('wgs84/double')),
+          'covered-by',
+          q.polygon(q.point(70, -50), q.point(90, 120), q.point(-10, 100), q.point(-20, -60), q.point(70,-50)),
+          q.geoOptions(['invalid-opt'])
+        )
+      )
+    ).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      error.body.errorResponse.message.should.containEql('Invalid option');
+      done();
+    });
+  });
+
+  it('TEST 22 - negative: invalid scope', function(done){
+    try {
+      dbWriter.documents.query(
+        q.where(
+          q.geospatialRegion(
+            q.geoPath('/root/item/box', q.coordSystem('wgs84/double')),
+            'covered-by',
+            q.polygon(q.point(70, -50), q.point(90, 120), q.point(-10, 100), q.point(-20, -60), q.point(70,-50)),
+            q.fragmentScope('invalidScope')
+          )
+        )
+      )
+      .should.equal('SHOULD HAVE FAILED');
+      done();
+    } catch(error) {
+        //console.log(error.toString());
+        var strErr = error.toString();
+        strErr.should.equal('Error: invalid scope for fragment scope: string invalidScope');
+        done();
+    }
+  });
 
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
