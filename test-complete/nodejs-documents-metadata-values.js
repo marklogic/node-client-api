@@ -146,6 +146,60 @@ describe('Document Metadata values test', function() {
     }, done);
   });
 
+  it('TEST 9 - add patch on metadataValues', function(done) {
+    db.documents.patch({
+      uri: '/test/metadata/values/doc1.json', 
+      categories:['metadata-values'],
+      operations: [
+        p.metadataValues.add('metaAddNumber', '123.456'),
+        p.metadataValues.add('metaAddBoolean', 'false')
+      ]
+    }).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents.uri.should.equal('/test/metadata/values/doc1.json');
+      done();
+    }, done);
+  });
+
+  it('TEST 10 - read the added patch metadata values', function(done) {
+    db.documents.read({
+      uris: ['/test/metadata/values/doc1.json'], 
+      categories:['metadataValues']
+    }).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents[0].metadataValues.metaAddNumber.should.equal(123.456);
+      documents[0].metadataValues.metaAddBoolean.should.equal(false);
+      done();
+    }, done);
+  });
+
+  it('TEST 11 - replace patch on metadataValues', function(done) {
+    db.documents.patch({
+      uri: '/test/metadata/values/doc1.json', 
+      categories:['metadata-values'],
+      operations: [
+        p.metadataValues.replace('metaAddNumber', '678.999'),
+        p.metadataValues.replace('metaAddBoolean', 'true')
+      ]
+    }).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents.uri.should.equal('/test/metadata/values/doc1.json');
+      done();
+    }, done);
+  });
+
+  it('TEST 12 - read the replaced patch metadata values', function(done) {
+    db.documents.read({
+      uris: ['/test/metadata/values/doc1.json'], 
+      categories:['metadataValues']
+    }).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents[0].metadataValues.metaAddNumber.should.equal(678.999);
+      documents[0].metadataValues.metaAddBoolean.should.equal(true);
+      done();
+    }, done);
+  });
+
   /*it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       collection: 'metadataValuesColl'
