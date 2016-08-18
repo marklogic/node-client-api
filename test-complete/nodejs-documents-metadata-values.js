@@ -74,7 +74,7 @@ describe('Document Metadata values test', function() {
   it('TEST 3 - insert patch on metadata values', function(done) {
     db.documents.patch({
       uri: '/test/metadata/values/doc1.json', 
-      categories:['metadata-values'],
+      categories:['metadataValues'],
       operations: [
         p.insert('metadataValues', 'last-child', {meta6: 'added patch'})
       ]
@@ -99,7 +99,7 @@ describe('Document Metadata values test', function() {
   it('TEST 5 - remove patch on metadata values', function(done) {
     db.documents.patch({
       uri: '/test/metadata/values/doc1.json', 
-      categories:['metadata-values'],
+      categories:['metadataValues'],
       operations: [
         p.remove('meta6')
       ]
@@ -124,7 +124,7 @@ describe('Document Metadata values test', function() {
   it('TEST 7 - insert patch on existing metadata values', function(done) {
     db.documents.patch({
       uri: '/test/metadata/values/doc1.json', 
-      categories:['metadata-values'],
+      categories:['metadataValues'],
       operations: [
         p.insert('metadataValues', 'last-child', {meta1: 'this is the date'})
       ]
@@ -149,7 +149,7 @@ describe('Document Metadata values test', function() {
   it('TEST 9 - add patch on metadataValues', function(done) {
     db.documents.patch({
       uri: '/test/metadata/values/doc1.json', 
-      categories:['metadata-values'],
+      categories:['metadataValues'],
       operations: [
         p.metadataValues.add('metaAddNumber', '123.456'),
         p.metadataValues.add('metaAddBoolean', 'false')
@@ -176,7 +176,7 @@ describe('Document Metadata values test', function() {
   it('TEST 11 - replace patch on metadataValues', function(done) {
     db.documents.patch({
       uri: '/test/metadata/values/doc1.json', 
-      categories:['metadata-values'],
+      categories:['metadataValues'],
       operations: [
         p.metadataValues.replace('metaAddNumber', '678.999'),
         p.metadataValues.replace('metaAddBoolean', 'true')
@@ -204,7 +204,7 @@ describe('Document Metadata values test', function() {
     try {
       db.documents.patch({
         uri: '/test/metadata/values/doc1.json', 
-        categories:['metadata-values'],
+        categories:['metadataValues'],
         operations: [
           p.metadataValues.add('metaNegNonString', 1001.6789)
         ]
@@ -223,7 +223,7 @@ describe('Document Metadata values test', function() {
     try {
       db.documents.patch({
         uri: '/test/metadata/values/doc1.json', 
-        categories:['metadata-values'],
+        categories:['metadataValues'],
         operations: [
           p.metadataValues.add(negativeMeta, 'invValues')
         ]
