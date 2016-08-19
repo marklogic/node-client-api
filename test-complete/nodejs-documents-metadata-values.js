@@ -19,7 +19,7 @@ var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var p = marklogic.patchBuilder;
-
+var fs = require('fs');
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
@@ -237,6 +237,36 @@ describe('Document Metadata values test', function() {
       done();
     }
   });
+it('TEST 15 - write document content and metadata as write stream', function(done) {
+ this.timeout(3000);
+ var binaryPath = './test-complete/data/samplejson.json';
+ var ws = db.documents.createWriteStream({
+ uri: '/test/metadata/values/doch1.json',
+      collections: ['metadataValuesColl'],
+      contentType: 'application/json',
+      quality: 250,
+      properties: {
+        prop1:'bar',
+        prop2:1981
+      },
+      metadataValues: {
+        meta1: 'super plastic',
+        meta2: 45.89,
+        meta3: true,
+        meta4: null,
+        meta5: undefined,
+        metaDateTime: '2011-12-31T23:59:59'
+      }
+ });
+ ws.result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.documents[0].uri.should.equal('/test/metadata/values/doch1.json');
+      done();
+    }, function(error){
+        //console.log(JSON.stringify(error, null, 2));
+        done();
+    });fs.createReadStream(binaryPath).pipe(ws);
+});
 
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
