@@ -237,36 +237,49 @@ describe('Document Metadata values test', function() {
       done();
     }
   });
-it('TEST 15 - write document content and metadata as write stream', function(done) {
- this.timeout(3000);
- var binaryPath = './test-complete/data/samplejson.json';
- var ws = db.documents.createWriteStream({
- uri: '/test/metadata/values/doch1.json',
+
+  it('TEST 15 - write document content and metadata as write stream', function(done) {
+    this.timeout(3000);
+    var ws = db.documents.createWriteStream({
+      uri: '/test/metadata/values/doc2.json',
       collections: ['metadataValuesColl'],
       contentType: 'application/json',
-      quality: 250,
+      quality: 125,
       properties: {
-        prop1:'bar',
-        prop2:1981
+        prop1:'baz',
+        prop2:1998
       },
       metadataValues: {
-        meta1: 'super plastic',
-        meta2: 45.89,
+        meta1: 'metal',
+        meta2: 65.98,
         meta3: true,
         meta4: null,
         meta5: undefined,
-        metaDateTime: '2011-12-31T23:59:59'
+        metaDateTime: '2012-04-31T23:59:59'
       }
- });
- ws.result(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
-      response.documents[0].uri.should.equal('/test/metadata/values/doch1.json');
+    });
+
+    ws.result(function(response) {
       done();
-    }, function(error){
-        //console.log(JSON.stringify(error, null, 2));
-        done();
-    });fs.createReadStream(binaryPath).pipe(ws);
-});
+    }, done);
+    ws.write('{"name": "wrench"}', 'utf8');
+    ws.end();
+  });
+
+  it('TEST 16 - read the content and metadata values', function(done) {
+    db.documents.read({
+      uris: ['/test/metadata/values/doc2.json'], 
+      categories:['content', 'metadataValues']
+    }).result(function(documents) {
+      //console.log(JSON.stringify(documents, null, 4));
+      documents[0].metadataValues.meta1.should.equal('metal');
+      documents[0].metadataValues.meta2.should.equal(65.98);
+      documents[0].metadataValues.meta3.should.equal(true);
+      documents[0].metadataValues.meta4.should.be.empty;
+      documents[0].metadataValues.metaDateTime.should.equal('2012-04-31T23:59:59');
+      done();
+    }, done);
+  });
 
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
