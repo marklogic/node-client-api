@@ -21,6 +21,8 @@ var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
+var YAgent = require('yakaa');
+
 // TODO: setup should create user with eval-in role
 var connection = {
     user:     'admin',
@@ -43,7 +45,17 @@ Object.keys(connection).forEach(function(key){
   }
 });
 var otherDb = marklogic.createDatabaseClient(otherConnection);
-    
+
+var agentConnection = {
+  agent: new YAgent({keepAlive: true, keepAliveTimeoutMsecs: 1000})
+}
+Object.keys(otherConnection).forEach(function(key){
+  if (agentConnection[key] === undefined) {
+    agentConnection[key] = otherConnection[key];
+  }
+});
+var agentDb = marklogic.createDatabaseClient(agentConnection);
+
 describe('database clients', function() {
   it('should write in a default db and read in a specified db', function(done) {
     db.documents.write({
@@ -80,5 +92,13 @@ describe('database clients', function() {
       done();
       })
     .catch(done);
+  });
+  it('should use a default agent', function(done) {
+    otherDb.connectionParams.agent.options.keepAlive.should.equal(true);
+    done();
+  });
+  it('should use a custom agent', function(done) {
+    agentDb.connectionParams.agent.options.keepAliveTimeoutMsecs.should.equal(1000);
+    done();
   });
 });
