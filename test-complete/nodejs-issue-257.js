@@ -37,7 +37,7 @@ describe('issue 257', function() {
     }, done);
   });
 
-  it('should throw error on post without document property', function(done){
+  it('should post without document property', function(done){
     db.resources.post({
       name: serviceName 
     }).result(function(response) {
