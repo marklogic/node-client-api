@@ -15,7 +15,16 @@ from Node.js applications.
 
 ## Status
 
-Release 1.0.5 of the MarkLogic Node.js API
+Release 2.0.0 Early Access 3 of the MarkLogic Node.js API
+
+## New Features in Release 2.0.0 Early Access 3
+
+- Geospatial region search
+- Double precision values for geospatial queries
+- Kerberos authentication
+- Metadata values
+
+For more information about these features, see the [Early Access site](https://ea.marklogic.com/features/additional-enhancements/node-js/).
 
 ## Sample
 
