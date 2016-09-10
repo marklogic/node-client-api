@@ -24,9 +24,9 @@ Release 2.0.0 Early Access 3 of the MarkLogic Node.js API
 - Kerberos authentication
 - Metadata values
 
-For more information about these features, see the Early Access site here:
+For more information about these features, see the [Early Access site](https://ea.marklogic.com/features/additional-enhancements/node-js/).
 
-https://ea.marklogic.com/features/additional-enhancements/node-js/
+
 
 ## Sample
 
