@@ -35,7 +35,7 @@
     "url": "http://github.com/marklogic/node-client-api.git"
   },
   "engines": {
-    "node": ">=0.10.26"
+    "node": ">=6.3.1"
   },
   "devDependencies": {
     "bunyan": "^1.3.3",
