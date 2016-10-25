@@ -58,6 +58,7 @@ describe('document transform', function(){
       restAdminDB.config.transforms.read(xqyTransformName)
       .result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
+        (typeof source).should.equal('string');
         done();
         })
       .catch(done);
