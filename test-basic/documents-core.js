@@ -681,7 +681,7 @@ describe('document metadata', function(){
           collections: ['collection2/0', 'collection2/1'],
           permissions: [
             {'role-name':'app-user',    capabilities:['read', 'update']},
-            {'role-name':'app-builder', capabilities:['execute']}
+            {'role-name':'app-builder', capabilities:['node-update']}
             ],
           properties: {
             property1: 'property value 1',
@@ -720,7 +720,7 @@ describe('document metadata', function(){
               case 'app-builder':
                 permissionsFound++;
                 permission.capabilities.length.should.equal(1);
-                permission.capabilities[0].should.equal('execute');
+                permission.capabilities[0].should.equal('node-update');
                 break;
               }
             });
@@ -775,7 +775,7 @@ describe('document metadata', function(){
               case 'app-builder':
                 permissionsFound++;
                 permission.capabilities.length.should.equal(1);
-                permission.capabilities[0].should.equal('execute');
+                permission.capabilities[0].should.equal('node-update');
                 break;
               }
             });
