@@ -702,21 +702,21 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar')], 3, q.weight(4)),
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar'), 3, q.weight(4)]),
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near(q.collection('foo'), q.collection('bar'), 3, q.weight(4),
@@ -724,7 +724,7 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar')], 3, q.weight(4),
@@ -732,7 +732,7 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar'), 3, q.weight(4),
@@ -740,7 +740,16 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
+        );
+    assert.deepEqual(
+        q.near(q.collection('foo'), q.collection('bar'), 3, q.weight(4),
+                q.ordered(true), q.minDistance(1)),
+        {'near-query':{queries:[
+          {'collection-query': {uri:['foo']}},
+          {'collection-query': {uri:['bar']}}
+          ], distance: 3, 'distance-weight': 4, ordered: true,
+                'minimum-distance': 1}}
         );
   });
 
