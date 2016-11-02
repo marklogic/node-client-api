@@ -167,6 +167,20 @@ describe('Temporal protect test', function() {
     }, done);
   });
 
+  /*it('should protect the document with expire time', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'temporalCollection',
+      level: 'noUpdate',
+      //duration: 'P1D',
+      expireTime: '2016-11-03T19:56:17.681154-07:00'
+    }).result(function(response) {
+      //console.log(response);
+      response.level.should.equal('noUpdate');
+      done();
+    }, function(error) {console.log(error); done(); });
+  });*/
+
   it('negative - protect document with invalid duration', function(done) {
     db.documents.protect({
       uri: docuri,
@@ -180,6 +194,41 @@ describe('Temporal protect test', function() {
     }, function(error) {
       //console.log(error);
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
+      done();
+    });
+  });
+
+  it('negative - protect document with invalid path', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'temporalCollection',
+      level: 'noUpdate',
+      duration: 'P1D',
+      archivePath: '/invalidFolder/invalidFile.json'
+    }).result(function(response) {
+      //console.log(response);
+      response.level.should.equal('noUpdate');
+      done();
+    }, function(error) {
+      //console.log(error);
+      //error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
+      done();
+    });
+  });
+
+  it('negative - protect the document with expire time', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'temporalCollection',
+      level: 'noUpdate',
+      expireTime: '2099-06-03T19:56:17.681154-07:00'
+    }).result(function(response) {
+      //console.log(response);
+      response.level.should.equal('noUpdate');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDEXPTIME');
       done();
     });
   });
