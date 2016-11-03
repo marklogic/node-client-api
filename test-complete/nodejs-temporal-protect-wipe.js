@@ -32,7 +32,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 describe('Temporal protect wipe test', function() {
   
-  var docuri = 'temporalDoc.json';
+  var docuri = 'temporalWipeDoc1.json';
 
   before(function(done) {
     this.timeout(10000);
@@ -77,7 +77,7 @@ describe('Temporal protect wipe test', function() {
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noWipe',
-      duration: 'P1D'
+      duration: 'P1DT5H'
     }).result(function(response) {
       //console.log(response);
       response.level.should.equal('noWipe');
@@ -145,7 +145,7 @@ describe('Temporal protect wipe test', function() {
     }, function(error) {
       //console.log(JSON.stringify(error, null, 2)); 
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
-      error.body.errorResponse.message.should.containEql('The document temporalDoc.json is protected noWipe');
+      error.body.errorResponse.message.should.containEql('The document temporalWipeDoc1.json is protected noWipe');
       done();
     });
   });
@@ -195,7 +195,7 @@ describe('Temporal protect wipe test', function() {
       done();
     }, function(error) { 
       //console.log(error); 
-      error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalDoc.json is protected noUpdate');
+      error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalWipeDoc1.json is protected noUpdate');
       done(); 
     });
   });
@@ -211,7 +211,7 @@ describe('Temporal protect wipe test', function() {
     }, function(error) {
       console.log(JSON.stringify(error, null, 2)); 
       //error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
-      //error.body.errorResponse.message.should.containEql('The document temporalDoc.json is protected noWipe');
+      //error.body.errorResponse.message.should.containEql('The document temporalWipeDoc1.json is protected noWipe');
       done();
     });
   });*/
