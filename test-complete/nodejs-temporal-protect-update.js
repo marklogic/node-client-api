@@ -189,7 +189,6 @@ describe('Temporal protect update test', function() {
       duration: '12H'
     }).result(function(response) {
       //console.log(response);
-      response.level.should.equal('noUpdate');
       done();
     }, function(error) {
       //console.log(error);
@@ -198,7 +197,7 @@ describe('Temporal protect update test', function() {
     });
   });
 
-  it('negative - protect document with invalid path', function(done) {
+  /*it('negative - protect document with invalid path', function(done) {
     db.documents.protect({
       uri: docuri,
       temporalCollection: 'temporalCollection',
@@ -207,14 +206,14 @@ describe('Temporal protect update test', function() {
       archivePath: '/invalidFolder/invalidFile.json'
     }).result(function(response) {
       //console.log(response);
-      response.level.should.equal('noUpdate');
+      response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
       //console.log(error);
       //error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
       done();
     });
-  });
+  });*/
 
   it('negative - protect the document with expire time', function(done) {
     db.documents.protect({
@@ -224,11 +223,28 @@ describe('Temporal protect update test', function() {
       expireTime: '2099-06-03T19:56:17.681154-07:00'
     }).result(function(response) {
       //console.log(response);
-      response.level.should.equal('noUpdate');
+      response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
       //console.log(error);
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDEXPTIME');
+      done();
+    });
+  });
+
+  it('negative - change level on protected document', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'temporalCollection',
+      level: 'noWipe',
+      duration: 'P1D'
+    }).result(function(response) {
+      //console.log(response);
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
       done();
     });
   });
