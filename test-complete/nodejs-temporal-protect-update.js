@@ -32,7 +32,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 describe('Temporal protect update test', function() {
   
-  var docuri = 'temporalDoc.json';
+  var docuri = 'temporalUpdateDoc1.json';
 
   before(function(done) {
     this.timeout(10000);
@@ -77,7 +77,7 @@ describe('Temporal protect update test', function() {
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noUpdate',
-      duration: 'P1D'
+      duration: 'P1DT10H3M5S'
     }).result(function(response) {
       //console.log(response);
       response.level.should.equal('noUpdate');
@@ -117,7 +117,7 @@ describe('Temporal protect update test', function() {
       done();
     }, function(error) { 
       //console.log(error); 
-      error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalDoc.json is protected noUpdate');
+      error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalUpdateDoc1.json is protected noUpdate');
       done(); 
     });
   });
