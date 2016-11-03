@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 var should = require('should');
+var fs = require('fs');
 var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
 var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);var should = require('should');
 
 describe('temporal protect', function() {
   var DEFAULT_LEVEL = 'noDelete';
+  var archiveFile = __dirname + '/temp.txt';
   var content = {
     property1:       'original',
     systemStartTime: '1111-11-11T11:11:11Z',
@@ -87,6 +89,7 @@ describe('temporal protect', function() {
         temporalCollection: 'temporalCollection'
       }).result();
     }).then(function(response){
+      fs.unlinkSync(archiveFile);
       done();
     }).catch(done);
   });
@@ -149,7 +152,7 @@ describe('temporal protect', function() {
       uri: 'tempDoc3.json',
       temporalCollection: 'temporalCollection',
       duration: 'PT0S',
-      archivePath: '/temp/temp.txt'
+      archivePath: archiveFile
     }).result(function(response) {
       response.uri.should.equal('tempDoc3.json');
       response.temporalCollection.should.equal('temporalCollection');
@@ -164,8 +167,6 @@ describe('temporal protect', function() {
       m.metadataValues.should.have.property('temporalDocURI');
       m.metadataValues.temporalDocURI.should.equal('tempDoc3.json');
       m.metadataValues.should.have.property('temporalArchiveRecords');
-      // TODO Set up legit archivePath
-      //m.metadataValues.temporalArchiveRecords.should.equal('');
       done();
     }).catch(done);
   });
