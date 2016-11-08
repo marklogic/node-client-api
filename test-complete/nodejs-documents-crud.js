@@ -35,7 +35,7 @@ describe('Write Document Test', function() {
       contentType: 'application/json',
       quality: 10,
       permissions: [
-        {'role-name':'app-user', capabilities:['read']},
+        {'role-name':'app-user', capabilities:['read', 'node-update']},
         {'role-name':'app-builder', capabilities:['read', 'update']}
       ],
       properties: {prop1:'foo', prop2:25},
@@ -46,7 +46,7 @@ describe('Write Document Test', function() {
       contentType: 'application/json',
       quality: 10,
       permissions: [
-        {'role-name':'app-user', capabilities:['read']},
+        {'role-name':'app-user', capabilities:['read', 'node-update']},
         {'role-name':'app-builder', capabilities:['read', 'update']}
       ],
       properties: {prop1:'bar', prop2:33},
@@ -102,8 +102,9 @@ describe('Write Document Test', function() {
         switch(permission['role-name']) {
           case 'app-user':
             permissionsCount++;
-            permission.capabilities.length.should.equal(1);
+            permission.capabilities.length.should.equal(2);
             permission.capabilities[0].should.equal('read');
+            permission.capabilities[1].should.equal('node-update');
             break;
           case 'app-builder':
             permissionsCount++;
