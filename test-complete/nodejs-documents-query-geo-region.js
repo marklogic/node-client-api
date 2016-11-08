@@ -424,7 +424,7 @@ describe('Document geo query test', function(){
           q.geoPath('/root/item/point', q.geoOptions(['coordinate-system=wgs84'])),
           'equals', 
           q.point(0, -66.09374),
-          q.geoOptions(['tolerance=1']),
+          q.geoOptions(['slope-factor=1']),
           q.fragmentScope(['documents'])
         )
       )
@@ -486,7 +486,7 @@ describe('Document geo query test', function(){
           q.geoPath('/root/item/point', q.geoOptions(['coordinate-system=wgs84'])),
           'equals', 
           q.point(0, -66.09374),
-          q.geoOptions(['tolerance=1']),
+          q.geoOptions(['slope-factor=1']),
           q.fragmentScope('properties')
         )
       )
