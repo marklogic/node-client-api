@@ -103,8 +103,8 @@ describe('Write Document Test', function() {
           case 'app-user':
             permissionsCount++;
             permission.capabilities.length.should.equal(2);
-            permission.capabilities[0].should.equal('read');
-            permission.capabilities[1].should.equal('node-update');
+            permission.capabilities[0].should.match(/read|node-update/);
+            permission.capabilities[1].should.match(/read|node-update/);
             break;
           case 'app-builder':
             permissionsCount++;
