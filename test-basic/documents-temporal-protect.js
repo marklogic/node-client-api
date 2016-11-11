@@ -53,39 +53,34 @@ describe('temporal protect', function() {
         temporalCollection: 'temporalCollection'
       }).result()
     }).then(function(response){
+      return db.documents.write({
+        documents:{
+          uri: 'tempDoc4.json',
+          content: content
+        },
+        temporalCollection: 'temporalCollection'
+      }).result()
+    }).then(function(response){
         done();
     }).catch(done);
   });
   after(function(done){
-    db.documents.protect({
-      uri: 'tempDoc1.json',
-      temporalCollection: 'temporalCollection',
-      duration: 'PT0S'
-    }).result(function(response){
-      return db.documents.wipe({
+    db.documents.wipe({
         uri: 'tempDoc1.json',
         temporalCollection: 'temporalCollection'
-      }).result();
-    }).then(function(response){
-      return db.documents.protect({
-        uri: 'tempDoc2.json',
-        temporalCollection: 'temporalCollection',
-        duration: 'PT0S'
-      }).result();
-    }).then(function(response){
+    }).result(function(response){
       return db.documents.wipe({
         uri: 'tempDoc2.json',
         temporalCollection: 'temporalCollection'
       }).result();
     }).then(function(response){
-      return db.documents.protect({
+      return db.documents.wipe({
         uri: 'tempDoc3.json',
-        temporalCollection: 'temporalCollection',
-        duration: 'PT0S'
+        temporalCollection: 'temporalCollection'
       }).result();
     }).then(function(response){
       return db.documents.wipe({
-        uri: 'tempDoc3.json',
+        uri: 'tempDoc4.json',
         temporalCollection: 'temporalCollection'
       }).result();
     }).then(function(response){
@@ -165,7 +160,35 @@ describe('temporal protect', function() {
       m.should.have.property('metadataValues');
       m.metadataValues.should.have.property('temporalDocURI');
       m.metadataValues.temporalDocURI.should.equal('tempDoc3.json');
-      m.metadataValues.should.have.property('temporalArchiveRecords');
+      m.metadataValues.should.have.property('temporalArchivePaths');
+      m.metadataValues.temporalArchivePaths.should.equal(archiveFile);
+      m.metadataValues.should.have.property('temporalArchiveStatus');
+      m.metadataValues.temporalArchiveStatus.should.equal('succeeded');
+      m.metadataValues.should.have.property('temporalArchiveTime');
+      done();
+    }).catch(done);
+  });
+  it('should protect a temporal document twice', function(done) {
+    db.documents.protect({
+      uri: 'tempDoc4.json',
+      temporalCollection: 'temporalCollection',
+      expireTime: '2016-01-01T12:34:56.7890-07:00',
+      level: 'noUpdate'
+    }).result(function(response) {
+      response.uri.should.equal('tempDoc4.json');
+      response.temporalCollection.should.equal('temporalCollection');
+      response.level.should.equal('noUpdate');
+      return db.documents.protect({
+        uri: 'tempDoc4.json',
+        temporalCollection: 'temporalCollection',
+        expireTime: '2016-01-01T12:34:56.7890-07:00',
+        level: 'noUpdate',
+        archivePath: archiveFile
+      }).result();
+    }).then(function(response){
+      response.uri.should.equal('tempDoc4.json');
+      response.temporalCollection.should.equal('temporalCollection');
+      response.level.should.equal('noUpdate');
       done();
     }).catch(done);
   });
