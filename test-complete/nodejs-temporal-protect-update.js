@@ -129,8 +129,6 @@ describe('Temporal protect update test', function() {
     }).result(function(response) {
       //console.log(response);
       response[0].content.Address.should.equal('999 Skyway Park');
-      response[0].metadataValues.temporalArchiveRecords.should.not.be.empty;
-      response[0].metadataValues.temporalArchiveRecords.should.containEql('undefined');
       response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
       response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
       response[0].metadataValues.temporalDocURI.should.equal(docuri);
@@ -215,7 +213,7 @@ describe('Temporal protect update test', function() {
     });
   });*/
 
-  it('negative - protect the document with expire time', function(done) {
+  /*it('negative - protect the document with expire time', function(done) {
     db.documents.protect({
       uri: docuri,
       temporalCollection: 'temporalCollection',
@@ -230,7 +228,7 @@ describe('Temporal protect update test', function() {
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDEXPTIME');
       done();
     });
-  });
+  });*/
 
   it('negative - change level on protected document', function(done) {
     db.documents.protect({
