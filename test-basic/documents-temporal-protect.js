@@ -136,7 +136,6 @@ describe('temporal protect', function() {
       m.metadataValues.should.have.property('temporalProtectLevel');
       m.metadataValues.temporalProtectLevel.should.equal('noWipe');
       m.metadataValues.should.have.property('temporalProtectExTime');
-      // Bug: https://bugtrack.marklogic.com/42632
       m.metadataValues.temporalProtectExTime.should.equal(
         '2016-06-03T19:56:17.681154-07:00'
       );
