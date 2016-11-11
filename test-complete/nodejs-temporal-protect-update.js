@@ -33,6 +33,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 describe('Temporal protect update test', function() {
   
   var docuri = 'temporalUpdateDoc1.json';
+  var expTime = '2026-11-03T19:56:17.681154-07:00';
 
   before(function(done) {
     this.timeout(10000);
@@ -77,7 +78,8 @@ describe('Temporal protect update test', function() {
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noUpdate',
-      duration: 'P1DT10H3M5S'
+      duration: 'P1DT10H3M5S',
+      expireTime: expTime
     }).result(function(response) {
       //console.log(response);
       response.level.should.equal('noUpdate');
@@ -130,6 +132,7 @@ describe('Temporal protect update test', function() {
       //console.log(response);
       response[0].content.Address.should.equal('999 Skyway Park');
       response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
+      response[0].metadataValues.temporalProtectExTime.should.equal(expTime);
       response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
       response[0].metadataValues.temporalDocURI.should.equal(docuri);
       done();
