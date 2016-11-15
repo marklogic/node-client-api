@@ -471,9 +471,9 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(10);
-      response[0].uri.should.equal('/geo/region/test/International-Date-Line.xml');
-      response[9].uri.should.equal('/geo/region/test/South-More.xml');
+      response.length.should.equal(6);
+      response[0].uri.should.equal('/geo/region/test/Tropic-of-Cancer-json.json');
+      response[5].uri.should.equal('/geo/region/test/Prime-Meridian-json.json');
       done();
     }, done);
   });
