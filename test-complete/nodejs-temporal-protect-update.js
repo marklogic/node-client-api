@@ -78,8 +78,7 @@ describe('Temporal protect update test', function() {
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noUpdate',
-      duration: 'P1DT10H3M5S',
-      expireTime: expTime
+      duration: 'P1D'
     }).result(function(response) {
       //console.log(response);
       response.level.should.equal('noUpdate');
@@ -132,11 +131,23 @@ describe('Temporal protect update test', function() {
       //console.log(response);
       response[0].content.Address.should.equal('999 Skyway Park');
       response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
-      response[0].metadataValues.temporalProtectExTime.should.equal(expTime);
       response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
       response[0].metadataValues.temporalDocURI.should.equal(docuri);
       done();
     }, done);
+  });
+
+  it('should protect the document with longer duration', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'temporalCollection',
+      level: 'noUpdate',
+      duration: 'P1DT10H3M5S'
+    }).result(function(response) {
+      //console.log(response);
+      response.level.should.equal('noUpdate');
+      done();
+    }, function(error) { console.log(error); done(); });
   });
 
   it('should protect the document with archive path', function(done) {
@@ -144,7 +155,7 @@ describe('Temporal protect update test', function() {
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noUpdate',
-      duration: 'P1D',
+      duration: 'P1DT11H3M5S',
       archivePath: '/tmp/archiveDoc.json'
     }).result(function(response) {
       //console.log(response);
@@ -159,8 +170,7 @@ describe('Temporal protect update test', function() {
       categories: ['metadata']
     }).result(function(response) {
       //console.log(response);
-      response[0].metadataValues.temporalArchiveRecords.should.not.be.empty;
-      response[0].metadataValues.temporalArchiveRecords.should.containEql('/tmp/archiveDoc.json');
+      response[0].metadataValues.temporalArchivePaths.should.equal('/tmp/archiveDoc.json');
       response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
       response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
       response[0].metadataValues.temporalDocURI.should.equal(docuri);
@@ -168,19 +178,36 @@ describe('Temporal protect update test', function() {
     }, done);
   });
 
-  /*it('should protect the document with expire time', function(done) {
+  it('should protect the document with expire time and different path', function(done) {
     db.documents.protect({
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noUpdate',
-      //duration: 'P1D',
-      expireTime: '2016-11-03T19:56:17.681154-07:00'
+      duration: 'P2Y5M',
+      archivePath: '/tmp/archiveDoc1.json',
+      expireTime: expTime
     }).result(function(response) {
       //console.log(response);
       response.level.should.equal('noUpdate');
       done();
-    }, function(error) {console.log(error); done(); });
-  });*/
+    }, done);
+  });
+
+  it('should verify the document metadata with expire time and different path', function(done) {
+    db.documents.read({
+      uris: docuri,
+      categories: ['metadata']
+    }).result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response[0].metadataValues.temporalArchivePaths.should.equal('/tmp/archiveDoc.json,/tmp/archiveDoc1.json');
+      response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
+      response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
+      response[0].metadataValues.temporalDocURI.should.equal(docuri);
+      response[0].metadataValues.temporalArchiveStatus.should.equal('succeeded,succeeded');
+      response[0].metadataValues.temporalProtectExTime.should.equal(expTime);
+      done();
+    }, done);
+  });
 
   it('negative - protect document with invalid duration', function(done) {
     db.documents.protect({
@@ -198,30 +225,12 @@ describe('Temporal protect update test', function() {
     });
   });
 
-  /*it('negative - protect document with invalid path', function(done) {
+  it('negative - protect the document with invalid expire time', function(done) {
     db.documents.protect({
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noUpdate',
-      duration: 'P1D',
-      archivePath: '/invalidFolder/invalidFile.json'
-    }).result(function(response) {
-      //console.log(response);
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      //error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
-      done();
-    });
-  });*/
-
-  /*it('negative - protect the document with expire time', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      expireTime: '2099-06-03T19:56:17.681154-07:00'
+      expireTime: '1890-06-03'
     }).result(function(response) {
       //console.log(response);
       response.should.equal('SHOULD HAVE FAILED');
@@ -231,14 +240,14 @@ describe('Temporal protect update test', function() {
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDEXPTIME');
       done();
     });
-  });*/
+  });
 
   it('negative - change level on protected document', function(done) {
     db.documents.protect({
       uri: docuri,
       temporalCollection: 'temporalCollection',
       level: 'noWipe',
-      duration: 'P1D'
+      duration: 'P2D'
     }).result(function(response) {
       //console.log(response);
       response.should.equal('SHOULD HAVE FAILED');
