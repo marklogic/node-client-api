@@ -52,7 +52,7 @@ describe('Document CRUD negative test', function(){
 	 (valcheck.isNullOrUndefined(response.documents[0].contentType)).should.equal(true);
       done();
     }, function(error) {
-      console.log(error);
+      //console.log(error);
       error.body.errorResponse.messageCode.should.equal('XDMP-DOCNOENDTAG');
       error.statusCode.should.equal(400);
       done();

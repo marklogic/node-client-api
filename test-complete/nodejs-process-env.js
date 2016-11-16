@@ -39,7 +39,8 @@ describe('Process Env Test', function() {
     return db.documents.read(uri).result();
   };
   var resolve = function(document) {
-    console.log(document);
+    //console.log(document);
+    document.should.be.empty;
   };
   var reject = function(error) {
     console.log(error);
