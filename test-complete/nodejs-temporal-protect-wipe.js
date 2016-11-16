@@ -125,8 +125,6 @@ describe('Temporal protect wipe test', function() {
     }).result(function(response) {
       //console.log(response);
       response[0].content.Address.should.equal('888 Skyway Park');
-      response[0].metadataValues.temporalArchiveRecords.should.not.be.empty;
-      response[0].metadataValues.temporalArchiveRecords.should.containEql('undefined');
       response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
       response[0].metadataValues.temporalProtectLevel.should.equal('noWipe');
       response[0].metadataValues.temporalDocURI.should.equal(docuri);
@@ -200,7 +198,7 @@ describe('Temporal protect wipe test', function() {
     });
   });
 
-  /*it('negative - invalid temporal collection (segfault)', function(done) {
+  it('negative - invalid temporal collection (segfault)', function(done) {
     db.documents.wipe({
       uri: docuri,
       temporalCollection: 'invalidTemporalCollection'
@@ -209,12 +207,12 @@ describe('Temporal protect wipe test', function() {
       //response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      console.log(JSON.stringify(error, null, 2)); 
-      //error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
-      //error.body.errorResponse.message.should.containEql('The document temporalWipeDoc1.json is protected noWipe');
+      //console.log(JSON.stringify(error, null, 2)); 
+      error.body.errorResponse.messageCode.should.equal('TEMPORAL-COLLECTIONNOTFOUND');
+      error.body.errorResponse.message.should.containEql('Temporal collection invalidTemporalCollection is not found');
       done();
     });
-  });*/
+  });
 
   after(function(done) {
    return adminManager.post({
