@@ -270,7 +270,7 @@ describe('Temporal protect update test', function() {
       done();
     }, function(error) {
       //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
+      error.body.errorResponse.messageCode.should.equal('TEMPORAL-COLLECTIONNOTFOUND');
       done();
     });
   });
