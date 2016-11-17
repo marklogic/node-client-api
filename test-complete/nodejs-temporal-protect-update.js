@@ -259,6 +259,22 @@ describe('Temporal protect update test', function() {
     });
   });
 
+  it('negative - protect document with invalid temporal collection', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'invalidTemporalCollection',
+      level: 'noUpdate',
+      duration: 'P12Y'
+    }).result(function(response) {
+      //console.log(response);
+      done();
+    }, function(error) {
+      //console.log(error);
+      error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
+      done();
+    });
+  });
+
 
   after(function(done) {
    return adminManager.post({
