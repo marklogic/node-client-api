@@ -222,6 +222,24 @@ describe('Temporal protect delete test', function() {
     }, done);
   });
 
+  it('negative - invalid collection', function(done) {
+    db.documents.protect({
+      uri: docuri,
+      temporalCollection: 'invalidTemporalCollection',
+      level: 'noDelete',
+      duration: 'P12Y'
+    }).result(function(response) {
+      //console.log(response);
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      error.body.errorResponse.messageCode.should.equal('TEMPORAL-COLLECTIONNOTFOUND');
+      error.body.errorResponse.message.should.containEql('Temporal collection invalidTemporalCollection is not found');
+      done();
+    });
+  });
+
   after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
