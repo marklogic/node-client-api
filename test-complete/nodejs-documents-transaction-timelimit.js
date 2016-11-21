@@ -27,7 +27,7 @@ var tid = null;
 describe('Document transaction test', function() {
   
   // Set transaction time limit to be 1 second
-  it('should commit the write document', function(done) {
+ /* it('should commit the write document', function(done) {
     db.transactions.open({transactionName: "nodeTransaction", timeLimit: 1}).result().
     then(function(response) {
       tid = response.txid;
@@ -48,6 +48,35 @@ describe('Document transaction test', function() {
       response['transaction-status']['time-limit'].should.equal('1');
       done();
     }, done);
+  });
+*/
+  var tid = 0;
+it('should commit the write document', function(done) {
+    db.transactions.open({transactionName: "nodeTransaction", timeLimit: 1})
+     .result(function(response) {
+     tid = response.txid;
+      return db.documents.write({
+      txid: tid,
+        uri: '/test/transaction/doc1.json',
+        contentType: 'application/json',
+        content: {firstname: "John", lastname: "Doe", txKey: tid}
+        }).result();
+    })
+     .then(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.documents[0].uri.should.equal('/test/transaction/doc1.json');
+      return db.transactions.read(tid).result();
+    })
+      .then(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+     response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
+      response['transaction-status']['time-limit'].should.equal('1');
+    done();
+    }, done);
+    /*.catch(function(error) {
+      console.log(error);
+      done();
+    }, done);*/
   });
 
  // Wait for 3 seconds so that transaction can time out
