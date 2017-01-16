@@ -11,11 +11,17 @@ from Node.js applications.
 *  Single transactions and multi-statement transactions for database changes
 *  Writing, reading, and deleting graphs and executing SPARQL queries over graphs
 *  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
-*  Basic, digest, and [Kerberos](KERBEROS.md) authentication
+*  Basic, digest, certificate, and [Kerberos](KERBEROS.md) authentication
 
 ## Status
 
-Release 2.0.0 Early Access 3 of the MarkLogic Node.js API
+Release 2.0.0 Early Access 4 of the MarkLogic Node.js API
+
+## New Features in Release 2.0.0 Early Access 4
+
+- Certificate-based authentication
+- Temporal operations, including protect and wipe
+- Specifying a minimum distance for near queries
 
 ## New Features in Release 2.0.0 Early Access 3
 
