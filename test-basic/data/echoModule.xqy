@@ -1,6 +1,6 @@
 xquery version "1.0-ml";
 (:
- : Copyright 2014-2016 MarkLogic Corporation
+ : Copyright 2014-2017 MarkLogic Corporation
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ return (
     if (not($cases =  9)) then () else xs:dateTime("2010-10-08T10:17:15.125Z"),
     if (not($cases = 10)) then () else (1 to 10),
     if (not($cases = 11)) then () else attribute att {"attribute value"},
-    
+
     if (exists($extra))
     then $extra
     else if (not($cases = 0)) then ()
