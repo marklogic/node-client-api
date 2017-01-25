@@ -180,32 +180,6 @@ describe('document content', function(){
           .catch(done);
       });
     });
-    describe('a language-specified XML string', function(){
-      var uri = '/test/write/lang1.xml';
-      before(function(done){
-        db.documents.write({
-          uri: uri,
-          contentType: 'application/xml',
-          lang: 'fr',
-          content: '<doc>oui</doc>'
-          })
-        .result(function(response){done();})
-        .catch(done);
-      });
-      it('should read back the content', function(done){
-        db.documents.read(uri)
-          .result(function(documents) {
-            valcheck.isArray(documents).should.equal(true);
-            documents.length.should.equal(1);
-            var document = documents[0];
-            valcheck.isUndefined(document).should.equal(false);
-            document.should.have.property('content');
-            document.content.should.containEql('<doc xml:lang="fr">oui</doc>');
-            done();
-            })
-          .catch(done);
-      });
-    });
     describe('a text string', function(){
       before(function(done){
         db.documents.write({
