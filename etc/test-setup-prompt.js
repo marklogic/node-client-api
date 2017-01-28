@@ -22,7 +22,7 @@ function adminUserPrompt() {
     read({
       prompt: 'admin user (default=admin): '
       },
-      mlutil.callbackOn(self, adminUserCallback)
+      adminUserCallback.bind(self)
       );
   } else {
     self.passwordPrompt();
@@ -46,7 +46,7 @@ function adminPasswordPrompt() {
       replace:   '*',
       edit:      false
       },
-      mlutil.callbackOn(self, adminPasswordCallback)
+      adminPasswordCallback.bind(self)
       );
   } else {
     self.finish();
@@ -62,10 +62,10 @@ function adminPasswordCallback(error, result) {
       this.password = 'admin';
     } else {
       console.log('no admin password specified, so cannot setup');
-      process.exit(1);      
+      process.exit(1);
     }
   } else {
-    this.password = result;    
+    this.password = result;
   }
   this.finish();
 }
