@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ describe('Document CRUD negative test', function(){
 	 (valcheck.isNullOrUndefined(response.documents[0].contentType)).should.equal(true);
       done();
     }, function(error) {
-      console.log(error);
+      //console.log(error);
       error.body.errorResponse.messageCode.should.equal('XDMP-DOCNOENDTAG');
       error.statusCode.should.equal(400);
       done();

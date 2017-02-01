@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ describe('document patch', function(){
           done();
         })
       .catch(done);
-    });    
+    });
   });
   describe('with XPath', function() {
     before(function(done){
@@ -108,8 +108,8 @@ describe('document patch', function(){
           done();
         })
       .catch(done);
-    });    
-  });    
+    });
+  });
   describe('for metadata', function() {
     before(function(done){
       db.documents.write({
@@ -127,6 +127,11 @@ describe('document patch', function(){
           property2: 'property value 2'
           },
         quality: 1,
+        metadataValues: {
+          meta0: 'metadata value 0',
+          meta1: 'metadata value 1',
+          meta2: 'metadata value 2'
+          },
         content: {key1: 'value 1'}
         },{
         uri: uri2,
@@ -143,6 +148,11 @@ describe('document patch', function(){
           property2: 'property value 2'
           },
         quality: 1,
+        metadataValues: {
+          meta0: 'metadata value 0',
+          meta1: 'metadata value 1',
+          meta2: 'metadata value 2'
+          },
         content: {key1: 'value 1'}
         })
       .result(function(response){done();})
@@ -169,7 +179,13 @@ describe('document patch', function(){
               {propertyINSERTED_LAST: 'property value INSERTED_LAST'}),
           p.replace('/properties/property1', 'property value MODIFIED'),
           p.remove('/properties/property0'),
-          p.replace('/quality', 2)
+          p.replace('/quality', 2),
+          p.insert('/metadataValues/meta2', 'before',
+              {metaINSERTED_BEFORE2: 'metadata value INSERTED_BEFORE'}),
+          p.insert('/node("metadataValues")', 'last-child',
+              {metaINSERTED_LAST: 'metadata value INSERTED_LAST'}),
+          p.replace('/metadataValues/meta1', 'metadata value MODIFIED'),
+          p.remove('/metadataValues/meta0'),
           ]})
       .result(function(response){
         return db.documents.read({uris:uri1, categories:['metadata']}).result();
@@ -222,10 +238,22 @@ describe('document patch', function(){
             equal('property value INSERTED_LAST');
           document.should.have.property('quality');
           document.quality.should.equal(2);
+          document.should.have.property('metadataValues');
+          Object.keys(document.metadataValues).length.should.equal(4);
+          document.metadataValues.should.have.property('metaINSERTED_BEFORE2');
+          document.metadataValues.metaINSERTED_BEFORE2.should.
+            equal('metadata value INSERTED_BEFORE');
+          document.metadataValues.should.have.property('meta1');
+          document.metadataValues.meta1.should.equal('metadata value MODIFIED');
+          document.metadataValues.should.have.property('meta2');
+          document.metadataValues.meta2.should.equal('metadata value 2');
+          document.metadataValues.should.have.property('metaINSERTED_LAST');
+          document.metadataValues.metaINSERTED_LAST.should.
+            equal('metadata value INSERTED_LAST');
           done();
         })
       .catch(done);
-    });    
+    });
     it('should insert, replace, and delete with built operations', function(done) {
       var p = marklogic.patchBuilder;
       db.documents.patch({uri:uri2, categories:['metadata'], operations:[
@@ -237,7 +265,10 @@ describe('document patch', function(){
           p.properties.add('propertyADDED', 'property value ADDED'),
           p.properties.replace('property1', 'property value MODIFIED'),
           p.properties.remove('property0'),
-          p.quality.set(2)
+          p.quality.set(2),
+          p.metadataValues.add('metaADDED', 'metadata value ADDED'),
+          p.metadataValues.replace('meta1', 'metadata value MODIFIED'),
+          p.metadataValues.remove('meta0')
           ]})
       .result(function(response){
         return db.documents.read({uris:uri2, categories:['metadata']}).result();
@@ -286,11 +317,18 @@ describe('document patch', function(){
           document.properties.propertyADDED.should.equal('property value ADDED');
           document.should.have.property('quality');
           document.quality.should.equal(2);
+          Object.keys(document.metadataValues).length.should.equal(3);
+          document.metadataValues.should.have.property('meta1');
+          document.metadataValues.meta1.should.equal('metadata value MODIFIED');
+          document.metadataValues.should.have.property('meta2');
+          document.metadataValues.meta2.should.equal('metadata value 2');
+          document.metadataValues.should.have.property('metaADDED');
+          document.metadataValues.metaADDED.should.equal('metadata value ADDED');
           done();
         })
       .catch(done);
-    });    
-  });    
+    });
+  });
   describe('as raw positional params', function() {
     var jsonUri = '/test/patch/raw1.json';
     var xmlUri  = '/test/patch/raw1.xml';
@@ -372,8 +410,8 @@ describe('document patch', function(){
           done();
       })
     .catch(done);
-    });    
-  });    
+    });
+  });
   describe('as raw named params', function() {
     var jsonUri = '/test/patch/raw2.json';
     var xmlUri  = '/test/patch/raw2.xml';
@@ -458,7 +496,7 @@ describe('document patch', function(){
           done();
         })
       .catch(done);
-    });    
-  });    
-  // NOTE: patch library tested in extlibs.js 
+    });
+  });
+  // NOTE: patch library tested in extlibs.js
 });

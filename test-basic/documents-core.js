@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -180,32 +180,6 @@ describe('document content', function(){
           .catch(done);
       });
     });
-    describe('a language-specified XML string', function(){
-      var uri = '/test/write/lang1.xml';
-      before(function(done){
-        db.documents.write({
-          uri: uri,
-          contentType: 'application/xml',
-          lang: 'fr',
-          content: '<doc>oui</doc>'
-          })
-        .result(function(response){done();})
-        .catch(done);
-      });
-      it('should read back the content', function(done){
-        db.documents.read(uri)
-          .result(function(documents) {
-            valcheck.isArray(documents).should.equal(true);
-            documents.length.should.equal(1);
-            var document = documents[0];
-            valcheck.isUndefined(document).should.equal(false);
-            document.should.have.property('content');
-            document.content.should.containEql('<doc xml:lang="fr">oui</doc>');
-            done();
-            })
-          .catch(done);
-      });
-    });
     describe('a text string', function(){
       before(function(done){
         db.documents.write({
@@ -243,7 +217,7 @@ describe('document content', function(){
           documents.length.should.equal(1);
           var document = documents[0];
           valcheck.isUndefined(document).should.equal(false);
-          document.should.have.property('uri');          
+          document.should.have.property('uri');
           return db.documents.read(document.uri).result();
           })
         .then(function(documents){
@@ -501,6 +475,10 @@ describe('document metadata', function(){
             {'role-name':'app-builder', capabilities:['read', 'update']}
             ],
           quality: 1,
+          metadataValues: {
+            'metadataKey1': 'metadataValue 1',
+            'metadataKey2': 'metadataValue 2'
+            },
           content: {key1: 'value 1'}
           })
         .result(function(response) {
@@ -533,6 +511,9 @@ describe('document metadata', function(){
           });
           permissionsFound.should.equal(2);
           document.quality.should.equal(1);
+          document.should.have.property('metadataValues');
+          document.metadataValues.metadataKey1.should.equal('metadataValue 1');
+          document.metadataValues.metadataKey2.should.equal('metadataValue 2');
           document.content.key1.should.equal('value 1');
           done();
           })
@@ -554,6 +535,10 @@ describe('document metadata', function(){
             property2: 'property value 2'
             },
           quality: 1,
+          metadataValues: {
+            'metadataKey1': 'metadataValue 1',
+            'metadataKey2': 'metadataValue 2'
+            },
           content: {key1: 'value 1'}
           },
         {contentType: 'application/json',
@@ -566,7 +551,11 @@ describe('document metadata', function(){
             propertyDefault1: 'default property value 1',
             propertyDefault2: 'default property value 2'
             },
-          quality: 2
+          quality: 2,
+          metadataValues: {
+            'metadataKey3': 'metadataValue 3',
+            'metadataKey4': 'metadataValue 4'
+            }
           },
         {uri: '/test/write/metaContent2.json',
           contentType: 'application/json',
@@ -609,6 +598,9 @@ describe('document metadata', function(){
             document.properties.should.have.property('property2');
             document.properties.property2.should.equal('property value 2');
             document.quality.should.equal(1);
+            document.should.have.property('metadataValues');
+            document.metadataValues.metadataKey1.should.equal('metadataValue 1');
+            document.metadataValues.metadataKey2.should.equal('metadataValue 2');
             document.content.key1.should.equal('value 1');
             done();
             })
@@ -648,6 +640,9 @@ describe('document metadata', function(){
             document.properties.should.have.property('propertyDefault2');
             document.properties.propertyDefault2.should.equal('default property value 2');
             document.quality.should.equal(2);
+            document.should.have.property('metadataValues');
+            document.metadataValues.metadataKey3.should.equal('metadataValue 3');
+            document.metadataValues.metadataKey4.should.equal('metadataValue 4');
             document.content.key2.should.equal('value 2');
             done();
             }, done);
@@ -660,13 +655,17 @@ describe('document metadata', function(){
           collections: ['collection2/0', 'collection2/1'],
           permissions: [
             {'role-name':'app-user',    capabilities:['read', 'update']},
-            {'role-name':'app-builder', capabilities:['execute']}
+            {'role-name':'app-builder', capabilities:['node-update']}
             ],
           properties: {
             property1: 'property value 1',
             property2: 'property value 2'
             },
-          quality: 2
+          quality: 2,
+          metadataValues: {
+            'metadataKey5': 'metadataValue 5',
+            'metadataKey6': 'metadataValue 6'
+            }
           })
         .result(function(response){done();})
         .catch(done);
@@ -695,7 +694,7 @@ describe('document metadata', function(){
               case 'app-builder':
                 permissionsFound++;
                 permission.capabilities.length.should.equal(1);
-                permission.capabilities[0].should.equal('execute');
+                permission.capabilities[0].should.equal('node-update');
                 break;
               }
             });
@@ -707,6 +706,9 @@ describe('document metadata', function(){
             document.properties.property2.should.equal('property value 2');
             document.should.have.property('quality');
             document.quality.should.equal(2);
+            document.should.have.property('metadataValues');
+            document.metadataValues.metadataKey5.should.equal('metadataValue 5');
+            document.metadataValues.metadataKey6.should.equal('metadataValue 6');
             document.should.not.have.property('content');
             done();
             })
@@ -747,7 +749,7 @@ describe('document metadata', function(){
               case 'app-builder':
                 permissionsFound++;
                 permission.capabilities.length.should.equal(1);
-                permission.capabilities[0].should.equal('execute');
+                permission.capabilities[0].should.equal('node-update');
                 break;
               }
             });
@@ -781,6 +783,20 @@ describe('document metadata', function(){
             var document = documents[0];
             document.should.have.property('quality');
             document.quality.should.equal(2);
+            document.should.not.have.property('content');
+            done();
+            })
+          .catch(done);
+      });
+      it('should read back the metadata values', function(done){
+        db.documents.read({uris:'/test/write/metaContent1.json', categories:'metadataValues'})
+          .result(function(documents) {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(1);
+            var document = documents[0];
+            document.should.have.property('metadataValues');
+            document.metadataValues.metadataKey5.should.equal('metadataValue 5');
+            document.metadataValues.metadataKey6.should.equal('metadataValue 6');
             document.should.not.have.property('content');
             done();
             })

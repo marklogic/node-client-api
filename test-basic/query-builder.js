@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -507,6 +507,11 @@ describe('query-builder', function() {
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
+        q.geospatial(q.geoPath('foo', q.coordSystem('wgs84/double')), q.latlon(1.1, 2.2)),
+        {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
+          coord:'wgs84/double', point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
         q.geospatial(q.geoPath('foo'), [1.1, 2.2]),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           point:[{latitude:1.1, longitude:2.2}]}}
@@ -533,6 +538,15 @@ describe('query-builder', function() {
           point:[{latitude:1.1, longitude:2.2}],
           'fragment-scope': 'documents',
           'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-region-path queries', function(){
+    assert.deepEqual(
+        q.geospatialRegion(q.geoPath('foo'), 'contains', q.polygon([1.1, 2.2], [3.3, 4.4])),
+        {'geo-region-path-query':{'path-index':{text: 'foo', namespaces: ''},
+          'geospatial-operator':'contains',
+          polygon:{point:[{latitude:1.1, longitude:2.2}, {latitude:3.3, longitude:4.4}]}}}
         );
   });
 
@@ -688,21 +702,21 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar')], 3, q.weight(4)),
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar'), 3, q.weight(4)]),
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near(q.collection('foo'), q.collection('bar'), 3, q.weight(4),
@@ -710,7 +724,7 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar')], 3, q.weight(4),
@@ -718,7 +732,7 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar'), 3, q.weight(4),
@@ -726,7 +740,16 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
+        );
+    assert.deepEqual(
+        q.near(q.collection('foo'), q.collection('bar'), 3, q.weight(4),
+                q.ordered(true), q.minDistance(1)),
+        {'near-query':{queries:[
+          {'collection-query': {uri:['foo']}},
+          {'collection-query': {uri:['bar']}}
+          ], distance: 3, 'distance-weight': 4, ordered: true,
+                'minimum-distance': 1}}
         );
   });
 

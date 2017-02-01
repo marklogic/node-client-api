@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ describe('when configuring resource services', function(){
     restAdminDB.config.resources.read(serviceName)
     .result(function(source){
       (!valcheck.isNullOrUndefined(source)).should.equal(true);
+      (typeof source).should.equal('string');
       done();
       })
     .catch(done);

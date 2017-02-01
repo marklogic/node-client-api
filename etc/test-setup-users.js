@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ function setupUsers(manager, done) {
           }
         ]
       }
-      }).result();      
+      }).result();
   }).
   then(function(response) {
     return manager.get({
@@ -97,10 +97,20 @@ function setupUsers(manager, done) {
             'privilege-name': 'temporal-statement-set-system-time',
             action: 'http://marklogic.com/xdmp/privileges/temporal-statement-set-system-time',
             kind: 'execute'
+          },
+          {
+            'privilege-name': 'temporal-document-protect',
+            action: 'http://marklogic.com/xdmp/privileges/temporal-document-protect',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'temporal-document-wipe',
+            action: 'http://marklogic.com/xdmp/privileges/temporal-document-wipe',
+            kind: 'execute'
           }
         ]
       }
-      }).result();      
+      }).result();
   }).
   then(function(response) {
     return manager.get({
@@ -203,7 +213,7 @@ function addUser(manager, users, next, done) {
       addUser(manager, users, next + 1, done);
     } else {
       console.log('REST user setup failed with HTTP status: '+response.statusCode);
-      console.log(response.data);        
+      console.log(response.data);
       process.exit();
     }
   });

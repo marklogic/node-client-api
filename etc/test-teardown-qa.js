@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,13 +42,33 @@ function setup(manager) {
       console.log(testconfig.testServerName+' not found - nothing to delete');
     } else {
       console.log('removing database and REST server for '+testconfig.testServerName);
-      manager.post({
-        endpoint: '/manage/v2/databases/' + testconfig.testServerName,
-        contentType: 'application/json',
-        accept: 'application/json',
-        body: {'operation': 'clear-database'}
-        }).result().
-      then(function(response) { 
+      manager.put({
+        endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+        params: {
+          format: 'json'
+        },
+        body: {
+          'schema-database': 'Schemas'
+        },
+        hasResponse: true  
+      }).result().
+      then(function(response) {
+        return manager.post({
+          endpoint: '/manage/v2/databases/' + testconfig.testServerName,
+          contentType: 'application/json',
+          accept: 'application/json',
+          body: {'operation': 'clear-database'}
+        }).result();
+      }).
+      then(function(response) {
+        return manager.post({
+          endpoint: '/manage/v2/databases/' + testconfig.testServerName+'-modules',
+          contentType: 'application/json',
+          accept: 'application/json',
+          body: {'operation': 'clear-database'}
+        }).result();
+      }).
+      /*then(function(response) { 
         return manager.remove({
           endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections?collection=temporalCollection'
           }).result();
@@ -67,7 +87,7 @@ function setup(manager) {
         return manager.remove({
           endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
           }).result();
-        }).
+        }).*/
       then(function(response) {
         return manager.remove({
           endpoint: '/manage/v2/users/rest-evaluator'
@@ -90,12 +110,23 @@ function setup(manager) {
         }).
       then(function(response) {
         return manager.remove({
+          endpoint: '/manage/v2/users/rest-temporal-writer'
+          }).result();
+        }).
+      then(function(response) {
+        return manager.remove({
           endpoint: '/manage/v2/roles/rest-evaluator'
+          }).result();
+        }).
+      then(function(response) {
+        return manager.remove({
+          endpoint: '/manage/v2/roles/rest-temporal-writer'
           }).result();
         }).
       then(function(response) {
         return       manager.remove({
           endpoint: '/v1/rest-apis/'+testconfig.testServerName,
+          accept:   'application/json',
           params:   {include: ['content', 'modules']}
           }).result();
         }).

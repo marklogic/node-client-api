@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,8 @@ describe('Process Env Test', function() {
     return db.documents.read(uri).result();
   };
   var resolve = function(document) {
-    console.log(document);
+    //console.log(document);
+    document.should.be.empty;
   };
   var reject = function(error) {
     console.log(error);

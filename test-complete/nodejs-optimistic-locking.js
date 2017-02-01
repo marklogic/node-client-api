@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,7 +158,10 @@ describe('Optimistic locking test', function() {
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      error.statusCode.should.equal(403)
+      //console.log(JSON.stringify(error, null, 2));
+      error.statusCode.should.equal(428);
+      error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+      error.body.errorResponse.message.should.containEql('No content version supplied');
       done();
     });
   });
@@ -190,8 +193,10 @@ describe('Optimistic locking test', function() {
       response.should.be('SHOULD BE FAILED');
       done();
     }, function(error) { 
-      //console.log(error);
-      error.statusCode.should.equal(403);
+      //console.log(JSON.stringify(error, null, 2));
+      error.statusCode.should.equal(428);
+      error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+      error.body.errorResponse.message.should.containEql('No content version supplied');
       done();
     });
   });
@@ -300,8 +305,10 @@ describe('Optimistic locking test', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        //console.log(error);
-        error.statusCode.should.equal(403);
+        //console.log(JSON.stringify(error, null, 2));
+        error.statusCode.should.equal(428);
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+        error.body.errorResponse.message.should.containEql('No content version supplied');
         done();
       });
     });
