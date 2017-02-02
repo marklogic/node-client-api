@@ -2107,31 +2107,32 @@ describe('document query', function(){
       built.orderByClause['sort-order'][0].direction.should.equal('descending');
     });
     it('should build a slice clause with legacy start page and page length', function(){
+      mlutil.setSliceMode('legacy');
       var built = qlib.slice(11, 10);
+      console.log(built);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
+      mlutil.setSliceMode('array');
     });
     it('should build a slice clause with array begin and end', function(){
-      mlutil.setSliceMode('array');
       var built = qlib.slice(10, 20);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
-      mlutil.setSliceMode('legacy');
     });
     it('should build a slice clause with start page', function(){
-      var built = qlib.slice(11);
+      var built = qlib.slice(10);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
     });
     it('should build a slice clause without a page', function(){
-      var built = qlib.slice(0);
+      var built = qlib.slice(0, 0);
       built.should.have.property('sliceClause');
       built.sliceClause['page-length'].should.equal(0);
     });
     it('should build a slice clause with a page and a snippet transform', function(){
-      var built = qlib.slice(11, 10,
+      var built = qlib.slice(10, 20,
         q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'
@@ -2167,7 +2168,7 @@ describe('document query', function(){
           q.facet('key2')
       ).orderBy(
           'key3'
-      ).slice(11, 10);
+      ).slice(10, 20);
       built.should.have.property('whereClause');
       built.whereClause.should.have.property('query');
       built.whereClause.query.should.have.property('queries');
@@ -2192,7 +2193,7 @@ describe('document query', function(){
       );
       var marshalled = JSON.stringify(seed);
       var unmarshalled = JSON.parse(marshalled);
-      var built = q.copyFrom(unmarshalled).slice(11, 10);
+      var built = q.copyFrom(unmarshalled).slice(10, 20);
       built.should.have.property('whereClause');
       built.whereClause.should.have.property('query');
       built.whereClause.query.should.have.property('queries');

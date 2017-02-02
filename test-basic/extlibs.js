@@ -145,7 +145,7 @@ describe('extension libraries', function(){
           calculate(
               q.facet('directories', q.calculateFunction('directoryConstraint.xqy'))
               ).
-          slice(0)
+          slice(0, 0)
           )
         .result(function(response) {
           response.length.should.equal(1);
@@ -171,7 +171,7 @@ describe('extension libraries', function(){
               q.facet('range', 'rangeKey1', q.facetOptions('item-frequency')),
               q.facet('dirs', q.calculateFunction('directoryConstraint.xqy'))
               ).
-          slice(0)
+          slice(0, 0)
           )
         .result(function(response) {
           response.length.should.equal(1);

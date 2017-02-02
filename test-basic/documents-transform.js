@@ -129,7 +129,7 @@ describe('document transform', function(){
           q.where(
             q.document(uri)
             ).
-          slice(1, 10,
+          slice(0, 10,
             q.transform(xqyTransformName, {flag:'tested3'})
             )
           )
@@ -197,7 +197,7 @@ describe('document transform', function(){
           q.where(
             q.document(readUri)
             ).
-          slice(1, 10,
+          slice(0, 10,
             q.transform(jsTransformName)
             )
           )

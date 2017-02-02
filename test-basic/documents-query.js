@@ -213,7 +213,7 @@ describe('document query', function(){
         calculate(
             q.facet('rangeKey1'),
             q.facet('rangeKey2')).
-        slice(0)
+        slice(0, 0)
         )
       .result(function(response) {
         response.length.should.equal(1);
@@ -272,7 +272,7 @@ describe('document query', function(){
                 q.heatmap(3, 3, q.southWestNorthEast(10, 10, 60, 60))
                 )
             )
-        .slice(0)
+        .slice(0, 0)
         )
       .result(function(response) {
         response.length.should.equal(1);
@@ -382,7 +382,7 @@ describe('document query', function(){
         q.where(
             q.word('scoreKey', 'matchList')
           ).
-        slice(2, 3)
+        slice(1, 4)
         )
       .result(function(response) {
         response.length.should.equal(3);
@@ -402,7 +402,7 @@ describe('document query', function(){
         q.where(
             q.word('scoreKey', 'matchList')
           ).
-        slice(3)
+        slice(2)
         )
       .result(function(response) {
         response.length.should.equal(2);
@@ -422,7 +422,7 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.extract({
+        slice(0, 1, q.extract({
           selected:'include-with-ancestors',
           paths:'/node("a1")/node("a2")/node("extractMatch")'
           }))
@@ -445,7 +445,7 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.snippet()).
+        slice(0, 1, q.snippet()).
         withOptions({categories: 'none'})
         )
       .result(function(response) {
@@ -466,7 +466,7 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.snippet('extractFirst.xqy'))
+        slice(0, 1, q.snippet('extractFirst.xqy'))
         )
       .result(function(response) {
         response.length.should.equal(2);
