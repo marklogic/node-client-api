@@ -88,11 +88,11 @@ function setup(manager) {
           endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/validTime'
           }).result();
         }).*/
-      then(function(response) {
+      then(setTimeout(function(response) {
         return manager.remove({
           endpoint: '/manage/v2/users/rest-evaluator'
           }).result();
-        }).
+        }, 3000)).
       then(function(response) {
         return manager.remove({
           endpoint: '/manage/v2/users/rest-admin'
@@ -130,13 +130,13 @@ function setup(manager) {
           params:   {include: ['content', 'modules']}
           }).result();
         }).
-      then(function(response) {
+      then(setTimeout(function(response) {
         console.log('teardown succeeded - restart the server');
         },
         function(error) {
           console.log('failed to tear down '+testconfig.testServerName+' server:\n'+
               JSON.stringify(error));
-        });
+        }, 10000));
     }
   });
 }
