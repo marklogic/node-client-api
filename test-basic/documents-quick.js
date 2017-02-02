@@ -133,8 +133,9 @@ describe('quick path', function(){
   it('should remove a document', function(done) {
     var docUri = '/test/quick/object1.json';
     db.remove(docUri)
-    .result(function(uri) {
-      docUri.should.eql(uri);
+    .result(function(response) {
+      response.should.be.an.Array;
+      response.length.should.equal(1);
       return db.probe(docUri).result();
       })
     .then(function(exists) {
