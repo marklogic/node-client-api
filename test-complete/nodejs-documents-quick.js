@@ -197,8 +197,17 @@ describe('quick path', function(){
       done();
       }, done);
   });
+
   it('should probe', function(done){
     dbWriter.probe('/test/query/matchDir/doc3.json').
+    result(function(exists) {
+      exists.should.eql(false);
+      done();
+      }, done);
+  });
+
+  it('should probe with object', function(done){
+    dbWriter.probe({'uri': '/test/query/matchDir/doc3.json'}).
     result(function(exists) {
       exists.should.eql(false);
       done();
