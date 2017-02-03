@@ -129,6 +129,15 @@ describe('Optimistic locking test', function() {
     }, done);
   });
 
+  it('should contain version id on probe with object', function(done) {
+    dbWriter.documents.probe({'uri': '/test/optlock/doc5.json'}).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.versionId.should.not.equal(null);
+      done();
+    }, done);
+  });
+
   it('should contain version id on read', function(done) {
     dbWriter.documents.read('/test/optlock/doc5.json').
     result(function(response) {
