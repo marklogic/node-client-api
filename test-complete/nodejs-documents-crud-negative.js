@@ -42,6 +42,23 @@ describe('Document CRUD negative test', function(){
       });
   });
 
+  it('verify the stack property', function(done){
+    dbWriter.documents.write({
+      uri: '/test/negative/invalidDoc.json',
+      contentType: 'application/json',
+      content: '{"invalid"}'
+      }).
+    result(function(response) {
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error.stack, null, 2))
+      error.stack.should.not.be.null;
+      error.stack.should.containEql('Operation.makeError');
+      done();
+      });
+  });
+
   it('should fail to create invalid xml document', function(done){
     dbWriter.documents.write({
       uri: '/test/negative/invalidXmlDoc.xml',
