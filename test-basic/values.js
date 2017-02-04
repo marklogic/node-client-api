@@ -199,7 +199,7 @@ describe('values query', function(){
         where(
           t.collection('valuesCollection1')
           ).
-        slice(2, 3)
+        slice(1, 4)
         )
       .result(function(values) {
         values.should.have.property('values-response');
@@ -224,7 +224,7 @@ describe('values query', function(){
         where(
           t.collection('valuesCollection1')
           ).
-        slice(0).
+        slice(0, 0).
         aggregates('correlation', 'covariance')
         )
       .result(function(values) {
@@ -248,7 +248,7 @@ describe('values query', function(){
         where(
           t.collection('valuesCollection1')
           ).
-        slice(2, 3).
+        slice(1, 4).
         withOptions({values:['descending']})
         )
       .result(function(values) {
