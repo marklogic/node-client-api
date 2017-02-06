@@ -423,7 +423,7 @@ it('should do geo point pair query on json doc issue #176', function(done){
             q.heatmap(12, 5, q.southWestNorthEast(10, 10, 60, 60)))
 
             )
-        .slice(0)
+        .slice(-1)
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
@@ -448,7 +448,7 @@ it('should do geo point pair query on json doc issue #176', function(done){
             q.heatmap(2, 3, 1.1, 2.2, 3.3, 4.4))
 
             )
-        .slice(0)
+        .slice(-1)
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
