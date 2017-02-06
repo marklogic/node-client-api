@@ -86,7 +86,7 @@ describe('Transform test with xquery', function(){
       q.where(
         q.term('title', 'xquery')
       ).
-      slice(1, 10, q.transform(transformName, {flag: 'world'}))
+      slice(0, 10, q.transform(transformName, {flag: 'world'}))
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 4));
