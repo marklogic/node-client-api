@@ -492,7 +492,7 @@ describe('Temporal update lsqt test', function() {
 
   it('should delete the document', function(done) {
     db.documents.remove({
-      uri: docuri,
+      uris: [docuri],
       temporalCollection: temporalCollectionName
     }).result(function(document) {
 
