@@ -154,7 +154,7 @@ describe('Document query test', function(){
       q.where(
         q.word('title', 'bush')		
       ).
-		slice(1, 1, q.snippet()).
+		slice(0, 1, q.snippet()).
 		withOptions({categories: 'none'})
 	).
 	  result(function(response) {
@@ -353,7 +353,7 @@ describe('Document query test', function(){
           q.term('Monthly'),
           q.term('Bush')
           )
-        ).slice(1, 100, q.snippet())
+        ).slice(0, 100, q.snippet())
       ).result(function(response) {
         //console.log(JSON.stringify(response, null, 2));
         response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('Bush');
