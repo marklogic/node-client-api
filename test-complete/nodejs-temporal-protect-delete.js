@@ -167,7 +167,7 @@ describe('Temporal protect delete test', function() {
 
   it('should not be able to delete document', function(done) {
     db.documents.remove({
-      uri: docuri,
+      uris: [docuri],
       temporalCollection: 'temporalCollection'
     }).result(function(response) {
       //console.log(response);
@@ -182,7 +182,7 @@ describe('Temporal protect delete test', function() {
 
   it('should not be able to delete document without specifying temporal collection', function(done) {
     db.documents.remove({
-      uri: docuri
+      uris: [docuri]
     }).result(function(response) {
       //console.log(response);
       response.should.equal('SHOULD HAVE FAILED');
