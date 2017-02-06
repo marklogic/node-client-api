@@ -107,7 +107,7 @@ describe('extract negative test', function(){
       q.where(
         q.word('title', 'bush')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.extract({
           selected:'include-with-ancestors',
           paths:[
