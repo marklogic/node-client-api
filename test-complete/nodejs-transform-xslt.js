@@ -87,7 +87,7 @@ describe('Transform test', function(){
       q.where(
         q.collection('employee')
       ).
-      slice(1, 10, q.transform(transformName))
+      slice(0, 10, q.transform(transformName))
     ).
     result(function(response) {
       //console.log(response);
