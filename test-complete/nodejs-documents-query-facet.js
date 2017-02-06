@@ -436,7 +436,7 @@ describe('Document facet query test', function(){
       orderBy(
         q.sort('popularity', 'ascending')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.snippet(),
         q.extract({
           selected: 'include-with-ancestors',
@@ -476,7 +476,7 @@ describe('Document facet query test', function(){
       orderBy(
         q.sort('popularity', 'ascending')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.snippet(),
         q.extract({
           selected: 'include-with-ancestors',
