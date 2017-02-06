@@ -186,7 +186,7 @@ describe('quick path', function(){
       });
   }); 
   it('should remove a document', function(done) {
-    var docUri = '/test/query/matchDir/doc3.json';
+    var docUri = [ '/test/query/matchDir/doc3.json' ];
     dbWriter.remove(docUri).
     result(function(uri) {
       docUri.should.eql(uri);
