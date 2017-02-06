@@ -113,7 +113,7 @@ describe('document query slice test', function(){
       q.where(
         q.directory('/test/query/matchDir/')
         ).
-      slice(1, 10)
+      slice(0, 10)
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(4);
@@ -122,12 +122,12 @@ describe('document query slice test', function(){
       }, done);
   });
 
-  it('should do document query with slice with index 3 and page 10', function(done){
+  it('should do document query with slice with index 2 and page 10', function(done){
     db.documents.query(
       q.where(
         q.directory('/test/query/matchDir/')
         ).
-      slice(3, 10)
+      slice(2, 10)
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(2);
@@ -136,12 +136,12 @@ describe('document query slice test', function(){
       }, done);
   });
 
-  it('should do document query with slice with index 5 and page 10', function(done){
+  it('should do document query with slice with index 4 and page 10', function(done){
     db.documents.query(
       q.where(
         q.directory('/test/query/matchDir/')
         ).
-      slice(5, 10)
+      slice(4, 10)
       ).result(function(response) {
         var document = response[0];
         response.length.should.equal(0);
@@ -158,7 +158,7 @@ describe('document query slice test', function(){
       slice(-1, 10)
       ).
       result(function(response) {
-        response.should.equal('SHOULD HAVE FAILED');
+        response.should.not.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
         //console.log(error);
@@ -189,11 +189,14 @@ describe('document query slice test', function(){
         ).
       slice(3, 2)
       ).result(function(response) {
-        var document = response[0];
-        response.length.should.equal(2);
-        //console.log(JSON.stringify(response, null, 4));
+        response.should.not.equal('SHOULD HAVE FAILED');
         done();
-      }, done);
+      }, function(error) {
+        //console.log(error);
+        //error.body.errorResponse.message.should.equal('REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type in start: -1 is not a value of type unsignedLong');
+        error.statusCode.should.equal(400);
+        done();
+      });
   });
 
   it('should do document query with slice with negative page', function(done){
