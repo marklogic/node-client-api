@@ -258,7 +258,7 @@ describe('Temporal update test', function() {
 
   it('should delete the document', function(done) {
     db.documents.remove({
-      uri: docuri,
+      uris: [docuri],
       temporalCollection: 'temporalCollection'
     }).result(function(response) {
       //console.log("Document = " + JSON.stringify(response, null, 2));
