@@ -179,7 +179,7 @@ describe('Optimistic locking test', function() {
     dbWriter.documents.probe('/test/optlock/doc6.json').result().
     then(function(response) {
       dbWriter.documents.remove({
-        uri: '/test/optlock/doc6.json',
+        uris: ['/test/optlock/doc6.json'],
         versionId: response.versionId
       }).
       result(function(response) {
