@@ -117,7 +117,7 @@ describe('extract negative test', function(){
       )
     ).result(function(response) {
       response.length.should.equal(2);
-      response[0].content.should.containEql(null);
+      response[0].content.should.be.empty;
       //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);
