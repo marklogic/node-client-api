@@ -29,6 +29,7 @@ var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnectio
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal insert test', function() {
   
@@ -149,7 +150,7 @@ describe('Temporal insert test', function() {
     }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -164,6 +165,15 @@ describe('Temporal insert test', function() {
       console.log(err); done();
     },
     done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
   
 });
