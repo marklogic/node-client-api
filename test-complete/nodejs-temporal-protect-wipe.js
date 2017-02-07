@@ -29,6 +29,7 @@ var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnectio
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal protect wipe test', function() {
   
@@ -214,7 +215,7 @@ describe('Temporal protect wipe test', function() {
     });
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -229,6 +230,15 @@ describe('Temporal protect wipe test', function() {
       console.log(err); done();
     },
     done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    }, done);
   });
   
 });
