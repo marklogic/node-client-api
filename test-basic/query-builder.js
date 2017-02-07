@@ -1988,6 +1988,20 @@ describe('query-builder', function() {
         {'suggest-option':['case-sensitive', 'diacritic-sensitive']}
         );
   });
+
+  it('should create a true-query', function(){
+    assert.deepEqual(
+        q.trueQuery(),
+        {'true-query':null}
+        );
+  });
+  it('should create a false-query', function(){
+    assert.deepEqual(
+        q.falseQuery(),
+        {'false-query':null}
+        );
+  });
+
 });
 
 describe('document query', function(){

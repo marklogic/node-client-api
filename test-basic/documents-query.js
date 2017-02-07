@@ -193,6 +193,32 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should match all documents', function(done){
+      db.documents.query(
+        q.where(
+          q.trueQuery()
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(8);
+        var document = response[0];
+        document.should.be.ok;
+        done();
+        })
+      .catch(done);
+    });
+    it('should match no documents', function(done){
+      db.documents.query(
+        q.where(
+          q.falseQuery()
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(0);
+        done();
+        })
+      .catch(done);
+    });
     it('should support an empty result set', function(done){
       db.documents.query(
         q.where(
