@@ -417,6 +417,26 @@ describe('Document query test', function(){
       }, done);
   });
 
+   it('should do true query', function(done){
+    db.documents.query(
+      q.where(
+        q.trueQuery()
+      )).result(function(response) {
+        response.length.should.equal(5);
+        done();
+      }, done);
+  });
+
+   it('should do false query', function(done){
+    db.documents.query(
+      q.where(
+        q.falseQuery()
+      )).result(function(response) {
+        response.length.should.equal(0);
+        done();
+      }, done);
+  });
+
 it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
