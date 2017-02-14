@@ -1,9 +1,9 @@
-Examples for MarkLogic Client for node.js
+Examples for the MarkLogic Node.js Client API
 
 Prerequisite:
 
-Install MarkLogic Server, Node.js, and the MarkLogic Node.js API and its
-dependencies.
+Install MarkLogic Server, Node.js, and the MarkLogic Node.js Client API and
+its dependencies.
 
 The directory structure should be
 

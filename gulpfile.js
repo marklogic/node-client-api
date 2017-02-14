@@ -16,7 +16,7 @@
 var gulp      = require('gulp');
 var jshint    = require('gulp-jshint');
 var mocha     = require('gulp-mocha');
-var jsdoc     = require('gulp-jsdoc');
+var jsdoc     = require('gulp-jsdoc3');
 
 gulp.task('lint', function() {
   gulp.src('lib/*')
@@ -36,26 +36,9 @@ gulp.task('test', function() {
 
 gulp.task('doc', function() {
   // TODO: clear the directory first
+  var config = require('./jsdoc.json');
   gulp.src(['./lib/*.js', 'README.md'])
-    .pipe(jsdoc.parser())
-    .pipe(jsdoc.generator('doc',
-      {
-        path:              'etc/marklogic-template',
-        systemName:        'MarkLogic Node.js API',
-        copyright:         'Copyright 2014-2017 MarkLogic Corporation',
-        theme:             'marklogic',
-        inverseNav:        true,
-        navType:           'vertical',
-        outputSourceFiles: false,
-        outputSourcePath:  false
-        },
-      {
-        'private':         false,
-        monospaceLinks:    false,
-        cleverLinks:       false,
-        outputSourceFiles: false
-        }
-      ));
+    .pipe(jsdoc(config));
 });
 
 gulp.task('default', ['lint']);
