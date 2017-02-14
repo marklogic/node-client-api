@@ -200,7 +200,7 @@ describe('document query', function(){
           )
         )
       .result(function(response) {
-        response.length.should.equal(8);
+        response.length.should.aboveOrEqual(8);
         var document = response[0];
         document.should.be.ok;
         done();
