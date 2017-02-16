@@ -1,17 +1,17 @@
-# Contributing to the Node.js Client API
+# Contributing to the MarkLogic Node.js Client API
 
-The MarkLogic Node.js Client API welcomes new contributors. This document will guide you 
+The MarkLogic Node.js Client API welcomes new contributors. This document will guide you
 through the process.
 
  - [Question or Problem?](#question)
  - [Issues and Bugs](#issue)
  - [Feature Requests](#feature)
  - [Submission Guidelines](#submit)
- 
+
 ## <a name="question"></a> Have a Question or Problem?
 
-If you have questions about how to use the Node.js Client API, you can ask on 
-[StackOverflow](http://stackoverflow.com/tags/marklogic), tagging the question 
+If you have questions about how to use the Node.js Client API, you can ask on
+[StackOverflow](http://stackoverflow.com/tags/marklogic), tagging the question
 with MarkLogic.
 
 ## <a name="issue"></a> Found an Issue?
@@ -32,7 +32,7 @@ Providing the following information will increase the chances of your issue bein
 * **Overview of the Issue** - If an error is being thrown a stack trace helps
 * **Motivation for or Use Case** - Explain why this is a bug for you
 * **Environment** - Which [version of MarkLogic](https://docs.marklogic.com/xdmp.version)? Which version of the Node.js Client API? Mac, Windows, Linux?  Details help.
-* **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point 
+* **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point
 to what might be causing the problem (line of code or commit)
 
 ### Submitting a Pull Request
@@ -41,11 +41,11 @@ A pull request is the standard way to submit changes to a repository to which yo
 
 #### Fill in the CLA
 
-Before we can accept your pull request, you need to sign a [Contributor License Agreement](http://developer.marklogic.com/products/cla).  
+Before we can accept your pull request, you need to sign a [Contributor License Agreement](http://developer.marklogic.com/products/cla).
 
 #### Fork the Node.js Client API
 
-Fork the project [on GitHub](https://github.com/marklogic/node-client-api/fork) 
+Fork the project [on GitHub](https://github.com/marklogic/node-client-api/fork)
 and clone your copy.
 
     $ git clone git@github.com:username/node-client-api.git
@@ -84,7 +84,7 @@ A good commit log looks like this:
 ```
 Fixes #123: Makes the whatchamajigger work in MarkLogic 8
 
-Body of commit message is a few lines of text, explaining things 
+Body of commit message is a few lines of text, explaining things
 in more detail, possibly giving some background about the issue
 being fixed, etc etc.
 
@@ -106,7 +106,7 @@ Use `git rebase` (not `git merge`) to sync your work from time to time to make s
 
 #### Test your code
 
-Be sure to run the tests before submitting your pull request. PRs with failing tests won’t be accepted. 
+Be sure to run the tests before submitting your pull request. PRs with failing tests won’t be accepted.
 
     $ node etc/test-setup.js
     $ mocha test-basic
@@ -127,10 +127,10 @@ That’s it. Thanks in advance for your contribution.
 
 #### After your pull request is merged
 
-After your pull request is merged, you can safely delete your branch and pull 
+After your pull request is merged, you can safely delete your branch and pull
 the changes from the main (upstream) repository:
 
-* Delete the remote branch on GitHub either through the GitHub web UI or your 
+* Delete the remote branch on GitHub either through the GitHub web UI or your
 local shell as follows:
 
     $ git push origin --delete issue/123

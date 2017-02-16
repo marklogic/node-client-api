@@ -1,6 +1,6 @@
-# MarkLogic Client API for Node.js
+# MarkLogic Node.js Client API
 
-The MarkLogic Client API for Node.js provides access to the MarkLogic database
+The MarkLogic Node.js Client API provides access to the MarkLogic database
 from Node.js applications.
 
 ## Features
@@ -11,11 +11,11 @@ from Node.js applications.
 *  Single transactions and multi-statement transactions for database changes
 *  Writing, reading, and deleting graphs and executing SPARQL queries over graphs
 *  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
-*  Basic, digest, certificate, and [Kerberos](KERBEROS.md) authentication
+*  Basic, digest, certificate, and Kerberos authentication
 
 ## Status
 
-Release 2.0.0 Early Access 4 of the MarkLogic Node.js API
+Release 2.0.0 Early Access 4 of the MarkLogic Node.js Client API
 
 ## New Features in Release 2.0.0 Early Access 4
 
@@ -70,7 +70,7 @@ Other calls can create additional documents for the same collection.
 
 ## Getting started
 
-Here are some resources that walk you through working with MarkLogic using the Node.js API:
+Here are some resources that walk you through working with MarkLogic using the Node.js Client API:
 
 * http://developer.marklogic.com/features/node-client-api
 * http://docs.marklogic.com/guide/node-dev/intro#id_68052
@@ -78,13 +78,13 @@ Here are some resources that walk you through working with MarkLogic using the N
 The instructions describe:
 
 * installing the MarkLogic database and setting up an admin user
-* installing the Node.js API using npm
+* installing the Node.js Client API using npm
 * working through some initial examples to get familiar with the API
 
 ### Example setup
 
-The Node.js API also distributes with some additional examples to supplement
-the examples from the Getting Started introduction.
+The Node.js Client API also distributes with some additional examples
+to supplement the examples from the Getting Started introduction.
 
 Follow the instructions in the example distribution:
 
@@ -92,8 +92,9 @@ Follow the instructions in the example distribution:
 
 ### Documentation setup
 
-After installing the dependencies including gulp, you can also build the reference
-documentation locally from the root directory of the marklogic package:
+After installing the dependencies including gulp, you can also build
+the reference documentation locally from the root directory of the
+marklogic package:
 
     gulp doc
 
@@ -119,7 +120,7 @@ requests through GitHub. This input is critical and will be carefully
 considered, but we can’t promise a specific resolution or timeframe for
 any request. In addition, MarkLogic provides technical support
 for [release tags](https://github.com/marklogic/node-client-api/releases)
-of the Node Client API to licensed customers under the terms outlined
+of the Node.js Client API to licensed customers under the terms outlined
 in the [Support Handbook](http://www.marklogic.com/files/Mark_Logic_Support_Handbook.pdf).
 For more information or to sign up for support,
 visit [help.marklogic.com](http://help.marklogic.com).
