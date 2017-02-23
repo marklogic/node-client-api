@@ -115,7 +115,8 @@ describe('Document geo query test', function(){
   before(function(done){
     this.timeout(10000);
     dbWriter.documents.write(geoDataFiles).
-    result(function(response){done();}, done);
+    result(function(response){done();})
+    .catch(done);
   });
 
   it('TEST 1 - geospatial region point contains point', function(done){
@@ -606,12 +607,14 @@ describe('Document geo query test', function(){
   });
 
   it('should delete all documents', function(done){
+    this.timeout(5000);
     dbAdmin.documents.removeAll({
       collection: '/geo/region/test'
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
 
 });
