@@ -4,10 +4,6 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
-/*
- * Theme for the MarkLogic Node.js Client API is based on the DocStrap v1.3.0
- * "cerulean" theme with minor changes (see comments).
- */
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -1179,7 +1175,7 @@ h6,
 .h6 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.1;
   color: #317EAC;
 }
 h1 small,
@@ -6728,7 +6724,7 @@ button.close {
     display: none !important;
   }
 }
-.navbar-default {
+.navbar {
   background-image: -webkit-linear-gradient(#54b4eb, #2FA4E7 60%, #1d9ce5);
   background-image: -o-linear-gradient(#54b4eb, #2FA4E7 60%, #1d9ce5);
   background-image: linear-gradient(#54b4eb, #2FA4E7 60%, #1d9ce5);
@@ -6862,19 +6858,49 @@ button.close {
   padding-left: 20px;
   padding-right: 20px;
 }
+.navbar .dropdown-menu {
+  padding: 20px;
+  max-height: 300px;
+  overflow: auto;
+  width: 300px;
+  background-color: #033C73;
+}
+.navbar .dropdown-menu a,
+.navbar .dropdown-menu a:visited {
+  color: #fff;
+}
+.navbar .dropdown-menu a:hover {
+  color: #fff;
+  background-color: #022f5a;
+}
+.navbar .dropdown-menu a:active {
+  color: #fff;
+  background-color: #022f5a;
+}
+.navbar .dropdown-menu a {
+  padding-left: 0;
+  padding-right: 5px;
+  font-weight: 500;
+  font-size: 115%;
+}
 img.branding-logo {
   max-height: 30px;
   display: inline-block;
   padding: 0px;
   margin: -3px 5px 0 0;
 }
+/* TODO - just make toc use bootstrap elements and classes for its template?*/
 #toc {
   position: fixed;
   top: 62px;
   right: 0;
   max-height: 82%;
-  max-height: calc(100% - 72px);
   overflow: auto;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  border: 1px #2FA4E7 solid;
   padding: 5px;
 }
 #toc .toc-h1 {
@@ -6921,8 +6947,9 @@ footer {
   padding-top: 15px;
 }
 code {
-  background-color: inherit;
+  background-color: none;
   border: none;
+  color: orange;
 }
 .buffered-name {
   padding-top: 62px;
@@ -6973,41 +7000,4 @@ code {
   font-size: 12px;
   line-height: 15px;
   padding: 9.5px 4px !important;
-}
-.dropdown-menu {
-  overflow-y: auto;
-  max-height: 150px;
-}
-@media (min-height: 300px) {
-  .dropdown-menu {
-    max-height: 238px;
-  }
-}
-@media (min-height: 400px) {
-  .dropdown-menu {
-    max-height: 338px;
-  }
-}
-@media (min-height: 500px) {
-  .dropdown-menu {
-    max-height: 438px;
-  }
-}
-@media (min-height: 600px) {
-  .dropdown-menu {
-    max-height: 538px;
-  }
-}
-@media (min-height: 700px) {
-  .dropdown-menu {
-    max-height: 638px;
-  }
-}
-.dropdown-menu {
-  max-height: calc(100vh - 62px);
-}
-@media (max-width: 768px) {
-  .dropdown-menu {
-    max-height: none;
-  }
 }
