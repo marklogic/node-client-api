@@ -33,23 +33,25 @@
 			</li>
 			<?js }); ?>
 		</ul>
+    <?js if (this.navOptions.search) { ?>
 		<div class="col-sm-3 col-md-3">
-            <form class="navbar-form" role="search">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
-                    </div>
+        <form class="navbar-form" role="search">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
+    <?js } ?>
 	</div>
 
 </div>
 </div>
 
 
-<div class="container">
+<div class="container" id="toc-content">
 <div class="row">
 
 	<?js if(docs && docs[0].kind !== "source"){ ?>
@@ -106,7 +108,9 @@
 
 <script src="scripts/docstrap.lib.js"></script>
 <script src="scripts/toc.js"></script>
+<?js if (this.navOptions.search) { ?>
 <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+<?js } ?>
 
 <script src="scripts/extracted/highlight.js"></script>
 
@@ -122,7 +126,9 @@
 <script src="scripts/extracted/analytics.js"></script>
 <?js } ?>
 
+<?js if (this.navOptions.search) { ?>
 <script src="scripts/extracted/search.js"></script>
+<?js } ?>
 
 </body>
 </html>

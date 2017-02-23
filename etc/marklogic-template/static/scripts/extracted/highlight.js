@@ -41,7 +41,7 @@ $( function () {
             var id = $( heading ).attr( "id" );
             return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
         },
-        selectors   : "h1,h2,h3,h4",
+        selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
         showAndHide : false,
                 navbarOffset: 10,
         smoothScrolling: true
