@@ -25,14 +25,12 @@ var template = require('jsdoc/template'),
   conf = env.conf.templates || {},
   data,
   view,
-  outdir = env.opts.destination,
-  searchEnabled = conf.search !== false;
+  outdir = env.opts.destination;
 
 var globalUrl = helper.getUniqueFilename('global');
 var indexUrl = helper.getUniqueFilename('index');
 
 var navOptions = {
-  includeDate: conf.includeDate !== false,
   logoFile: conf.logoFile,
   systemName: conf.systemName || "Documentation",
   navType: conf.navType || "vertical",
@@ -45,13 +43,10 @@ var navOptions = {
   inverseNav: conf.inverseNav,
   outputSourceFiles: conf.outputSourceFiles === true,
   sourceRootPath: conf.sourceRootPath,
-  disablePackagePath: conf.disablePackagePath,
   outputSourcePath: conf.outputSourcePath,
   dateFormat: conf.dateFormat,
   analytics: conf.analytics || null,
-  methodHeadingReturns: conf.methodHeadingReturns === true,
-  sort: conf.sort,
-  search: searchEnabled
+  methodHeadingReturns: conf.methodHeadingReturns === true
 };
 var searchableDocuments = {};
 
@@ -159,25 +154,9 @@ function needsSignature(doclet) {
 }
 
 function addSignatureParams(f) {
-  var optionalClass = 'optional';
-  var params = helper.getSignatureParams(f, optionalClass);
+  var params = helper.getSignatureParams(f, 'optional');
 
-  f.signature = (f.signature || '') + '(';
-
-  for (var i = 0, l = params.length; i < l; i++) {
-    var element = params[i];
-    var seperator = (i > 0) ? ', ' : '';
-
-    if (!new RegExp("class=[\"|']"+optionalClass+"[\"|']").test(element)) {
-      f.signature += seperator + element;
-    } else {
-      var regExp = new RegExp("<span class=[\"|']"+optionalClass+"[\"|']>(.*?)<\\/span>", "i");
-      f.signature += element.replace(regExp, " $`["+seperator+"$1$']");
-    }
-
-  }
-
-  f.signature += ')';
+  f.signature = (f.signature || '') + '(' + params.join(', ') + ')';
 }
 
 function addSignatureReturns(f) {
@@ -271,13 +250,11 @@ function generate(docType, title, docs, filename, resolveLinks) {
     html = helper.resolveLinks(html); // turn {@link foo} into <a href="foodoc.html">foo</a>
   }
 
-  if (searchEnabled) {
-    searchableDocuments[filename] = {
-      "id": filename,
-      "title": title,
-      "body": searchData(html)
-    };
-  }
+  searchableDocuments[filename] = {
+    "id": filename,
+    "title": title,
+    "body": searchData(html)
+  };
 
   fs.writeFileSync(outpath, html, 'utf8');
 }
@@ -432,7 +409,7 @@ function buildNav(members) {
 
   }
 
-  if (members.interfaces && members.interfaces.length) {
+  if (members.interfaces.length) {
 
     members.interfaces.forEach(function(m) {
       if (!hasOwnProp.call(seen, m.longname)) {
@@ -503,22 +480,13 @@ exports.publish = function(taffyData, opts, tutorials) {
   helper.registerLink('global', globalUrl);
 
   // set up templating
-  // set up templating
-  view.layout = conf['default'].layoutFile ?
-    path.getResourcePath(path.dirname(conf['default'].layoutFile),
-    path.basename(conf['default'].layoutFile) ) : 'layout.tmpl';
+  view.layout = 'layout.tmpl';
 
   // set up tutorials for helper
   helper.setTutorials(tutorials);
 
   data = helper.prune(data);
-
-  var sortOption = navOptions.sort === undefined ? opts.sort : navOptions.sort;
-  sortOption = sortOption === undefined ? true : sortOption;
-  sortOption = sortOption === true ? 'longname, version, since' : sortOption;
-  if (sortOption) {
-    data.sort(sortOption);
-  }
+  data.sort('longname, version, since');
   helper.addEventListeners(data);
 
   var sourceFiles = {};
@@ -530,10 +498,9 @@ exports.publish = function(taffyData, opts, tutorials) {
       doclet.examples = doclet.examples.map(function(example) {
         var caption, lang;
 
-        // allow using a markdown parser on the examples captions (surrounded by useless HTML p tags)
-        if (example.match(/^\s*(<p>)?<caption>([\s\S]+?)<\/caption>(\s*)([\s\S]+?)(<\/p>)?$/i)) {
-          caption = RegExp.$2;
-          example = RegExp.$4 + (RegExp.$1 ? '' : RegExp.$5);
+        if (example.match(/^\s*<caption>([\s\S]+?)<\/caption>(\s*[\n\r])([\s\S]+)$/i)) {
+          caption = RegExp.$1;
+          example = RegExp.$3;
         }
 
         var lang = /{@lang (.*?)}/.exec(example);
@@ -568,11 +535,8 @@ exports.publish = function(taffyData, opts, tutorials) {
         shortened: null
       };
 
-      //Check to see if the array of source file paths already contains
-      // the source path, if not then add it
-      if (sourceFilePaths.indexOf(sourcePath) === -1) {
-          sourceFilePaths.push(sourcePath)
-      }
+      sourceFilePaths.push(sourcePath);
+
     }
   });
 
@@ -580,12 +544,8 @@ exports.publish = function(taffyData, opts, tutorials) {
   var packageInfo = (find({
     kind: 'package'
   }) || [])[0];
-  if (navOptions.disablePackagePath !== true && packageInfo && packageInfo.name) {
-    if (packageInfo.version) {
-      outdir = path.join(outdir, packageInfo.name, packageInfo.version);
-    } else {
-      outdir = path.join(outdir, packageInfo.name);
-    }
+  if (packageInfo && packageInfo.name) {
+    outdir = path.join(outdir, packageInfo.name, packageInfo.version);
   }
   fs.mkPath(outdir);
 
@@ -853,13 +813,11 @@ exports.publish = function(taffyData, opts, tutorials) {
     // yes, you can use {@link} in tutorials too!
     html = helper.resolveLinks(html); // turn {@link foo} into <a href="foodoc.html">foo</a>
 
-    if (searchEnabled) {
-      searchableDocuments[filename] = {
-        "id": filename,
-        "title": title,
-        "body": searchData(html)
-      };
-    }
+    searchableDocuments[filename] = {
+      "id": filename,
+      "title": title,
+      "body": searchData(html)
+    };
 
     fs.writeFileSync(tutorialPath, html, 'utf8');
   }
@@ -867,7 +825,7 @@ exports.publish = function(taffyData, opts, tutorials) {
   // tutorials can have only one parent so there is no risk for loops
   function saveChildren(node) {
     node.children.forEach(function(child) {
-      generateTutorial('Tutorial: ' + child.title, child, helper.tutorialToUrl(child.name));
+      generateTutorial('tutorial' + child.title, child, helper.tutorialToUrl(child.name));
       saveChildren(child);
     });
   }
@@ -888,8 +846,5 @@ exports.publish = function(taffyData, opts, tutorials) {
   }
 
   saveChildren(tutorials);
-
-  if (searchEnabled) {
-      generateQuickTextSearch(templatePath + '/tmpl', searchableDocuments, navOptions);
-  }
+  generateQuickTextSearch(templatePath + '/tmpl', searchableDocuments, navOptions);
 };
