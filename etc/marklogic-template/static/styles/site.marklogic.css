@@ -3969,6 +3969,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   position: relative;
   display: block;
   padding: 10px 15px;
+  color: #555;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
@@ -6854,7 +6855,12 @@ button.close {
 #main {
   margin-top: 62px;
 }
-.navbar-fixed-top .navbar-inner {
+/* Let boostrap handle dropdown save for scroll */
+.navbar .dropdown-menu {
+  max-height: 300px;
+  overflow: auto;
+}
+/* .navbar-fixed-top .navbar-inner {
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -6882,7 +6888,7 @@ button.close {
   padding-right: 5px;
   font-weight: 500;
   font-size: 115%;
-}
+} */
 img.branding-logo {
   max-height: 30px;
   display: inline-block;
@@ -6900,7 +6906,8 @@ img.branding-logo {
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
   border-top-left-radius: 5px;
-  border: 1px #2FA4E7 solid;
+  /* border: 1px #2FA4E7 solid; */
+  border: 1px #CCC solid; /* Gray border around TOC */
   padding: 5px;
 }
 #toc .toc-h1 {
