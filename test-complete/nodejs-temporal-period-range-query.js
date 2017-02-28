@@ -60,7 +60,8 @@ describe('Temporal period range query test', function() {
         name: 'Jason'
       }
     }
-    ).result(function(response){done();}, done);
+    ).result(function(response){done();})
+    .catch(done);
   });
 
   it('should update the document content', function(done) { 
@@ -125,7 +126,8 @@ describe('Temporal period range query test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
 
 });
