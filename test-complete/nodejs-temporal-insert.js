@@ -63,7 +63,8 @@ describe('Temporal insert test', function() {
         name: 'Jason'
       }
     }
-    ).result(function(response){done();}, done);
+    ).result(function(response){done();})
+    .catch(done);
   });
 
   it('should read the document content name', function(done) {
@@ -173,7 +174,8 @@ describe('Temporal insert test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
   
 });
