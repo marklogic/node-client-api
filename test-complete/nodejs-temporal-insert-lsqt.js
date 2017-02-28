@@ -47,7 +47,9 @@ describe('Temporal insert lsqt test', function() {
           "enabled": true
         }
       }
-    }).result(function(response){done();}, done);
+    })
+    .result(function(response){done();})
+    .catch(done); 
   });
 
    it('should write the document content', function(done) {
@@ -189,7 +191,8 @@ describe('Temporal insert lsqt test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
 
 });
