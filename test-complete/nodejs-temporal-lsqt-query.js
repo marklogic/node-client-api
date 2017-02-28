@@ -43,7 +43,8 @@ describe('LSQT query (lsqtQuery) Test', function() {
           "enabled": true
         }
       }
-    }).result(function(response){done();}, done);
+    }).result(function(response){done();})
+    .catch(done);
   });
 
   it('should update the document content', function(done) { 
@@ -155,7 +156,8 @@ describe('LSQT query (lsqtQuery) Test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
 
 });
