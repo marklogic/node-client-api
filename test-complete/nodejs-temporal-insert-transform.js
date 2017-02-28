@@ -47,7 +47,8 @@ describe('Temporal insert transform test', function() {
     fs.createReadStream(transformPath1).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName1, 'xquery', source).
-      result(function(response){done();}, done);
+      result(function(response){done();})
+      .catch(done)
     }));
   });
 
@@ -251,7 +252,8 @@ describe('Temporal insert transform test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
   
 });
