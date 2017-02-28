@@ -63,7 +63,8 @@ describe('Temporal patch test', function() {
         id: 12, 
         name: 'Jason'
       }
-    }).result(function(response){done();}, done);
+    }).result(function(response){done();})
+    .catch(done);
   });
 
   // Cannot set collections on a temporal document
@@ -159,7 +160,8 @@ describe('Temporal patch test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
 
 });
