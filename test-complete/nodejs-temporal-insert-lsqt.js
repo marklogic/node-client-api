@@ -39,6 +39,7 @@ describe('Temporal insert lsqt test', function() {
   var docuri = 'temporalDoc.json'; 
 
   before(function(done) {
+    this.timeout(20000);
     adminManager.put({
       endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
       body: {
