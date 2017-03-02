@@ -38,8 +38,8 @@ describe('Temporal insert lsqt test', function() {
   
   var docuri = 'temporalDoc.json'; 
 
-  before(function(done) {
-    this.timeout(20000);
+  it('enable lsqt', function(done) {
+    this.timeout(10000);
     adminManager.put({
       endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
       body: {
@@ -49,8 +49,7 @@ describe('Temporal insert lsqt test', function() {
         }
       }
     })
-    .result(function(response){done();})
-    .catch(done); 
+    .result(function(response){done();}, done);
   });
 
    it('should write the document content', function(done) {
@@ -186,14 +185,14 @@ describe('Temporal insert lsqt test', function() {
     done);
   });*/
 
-  after(function(done) {
+  it('remove all documents', function(done) {
+    this.timeout(10000);
     dbAdmin.documents.removeAll({
       all: true
     }).
     result(function(response) {
       done();
-    })
-    .catch(done);
+    }, done);
   });
 
 });
