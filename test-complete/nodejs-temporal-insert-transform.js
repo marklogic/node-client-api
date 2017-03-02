@@ -44,6 +44,7 @@ describe('Temporal insert transform test', function() {
   var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
 
   before(function(done) {
+    this.timeout(10000);
     fs.createReadStream(transformPath1).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName1, 'xquery', source).
