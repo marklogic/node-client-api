@@ -229,7 +229,8 @@ describe('graph operations', function(){
   it('should run a bound SPARQL update', function(done) {
     this.timeout(3000);
     db.graphs.sparqlUpdate({
-        usingNamedGraphs: true,
+        usingDefaultGraphs: graph3Uri, // for coverage, superfluous given the query
+        usingNamedGraphs: [graph2Uri, graph3Uri], // for coverage, superfluous given the query
         data:
           'CREATE GRAPH <'+graph3Uri+'> ; '+
           'INSERT { GRAPH <'+graph3Uri+'> { ?s ?p "literal2" } } '+
