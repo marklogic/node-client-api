@@ -2123,7 +2123,6 @@ describe('document query', function(){
     it('should build a slice clause with legacy start page and page length', function(){
       mlutil.setSliceMode('legacy');
       var built = qlib.slice(11, 10);
-      console.log(built);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
