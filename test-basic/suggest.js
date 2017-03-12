@@ -59,6 +59,7 @@ describe('suggest', function() {
     .catch(done);
   });
   it('should handle default criteria', function(done) {
+    this.timeout(3000);
     db.documents.suggest(
         'aSuggest',
         q.where(
