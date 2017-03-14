@@ -32,7 +32,7 @@ describe('repair graph test', function(){
 
   it('should write the graph with repair is true', function(done){
     this.timeout(10000);
-    db.graphs.write(graphUri, true, 'text/turtle', fs.createReadStream(graphPath)).
+    db.graphs.write({uri: graphUri, contentType: 'text/turtle', repair: 'true', data: fs.createReadStream(graphPath)}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4));
       response.should.have.property('graph');
