@@ -15,7 +15,9 @@ from Node.js applications.
 
 ## Status
 
-Release 2.0.1 of the MarkLogic Node.js Client API
+Release 2.0.1 of the MarkLogic Node.js Client API, tested to work with MarkLogic
+versions 8.0-6.3 and 9.0-1. To use the new features available in release 2.0.1,
+you will need to run MarkLogic version 9.
 
 ## New Features in Release 2.0.1
 
