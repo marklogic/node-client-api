@@ -75,7 +75,7 @@ in the online resources. To run the examples, follow the instructions here:
 
 ### Generating Documentation
 
-After installing the project dependencies (including the gulp build system),
+After installing the project dependencies (including the [gulp](http://gulpjs.com/) build system),
 you can build the reference documentation locally from the root directory of the
 marklogic package:
 
