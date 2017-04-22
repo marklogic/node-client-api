@@ -50,21 +50,14 @@ db.createCollection(
   });
 ```
 
-Other calls can create additional documents for the same collection.
-
 ### Resources
 
-Here are some online resources that walk you through working with MarkLogic
-using the Node.js Client API:
-
-* [MarkLogic Node.js Client API](http://developer.marklogic.com/features/node-client-api)
-* [Introduction to the Node.js Client API - Getting Started](http://docs.marklogic.com/guide/node-dev/intro#id_68052)
-
-The instructions describe:
-
-* installing the MarkLogic database and setting up an admin user
-* installing the Node.js Client API using npm
-* working through some initial examples to get familiar with the API
+* [Node.js Client API Documentation](https://docs.marklogic.com/jsdoc/index.html)
+* [Feature Overview of the Node.js Client API](http://developer.marklogic.com/features/node-client-api)
+* [The Node.js Client API in 5 Minutes](https://developer.marklogic.com/learn/node-in-5-minutes)
+* [Node.js Application Developer's Guide](http://docs.marklogic.com/guide/node-dev)
+* [MarkLogic Training for the Node.js Client API](http://www.marklogic.com/training-courses/developing-marklogic-applications-i-node-js/)
+* [MarkLogic On-Demand Courses for Node.js](https://mlu.marklogic.com/ondemand/index.xqy?q=Series%3A%22Node.js%22)
 
 ### Code Examples
 
@@ -73,11 +66,11 @@ in the online resources. To run the examples, follow the instructions here:
 
     examples/1readme.txt
 
-### Generating Documentation
+### Generating Documentation Locally
 
-After installing the project dependencies (including the [gulp](http://gulpjs.com/) build system),
-you can build the reference documentation locally from the root directory of the
-marklogic package:
+After installing the project dependencies (including the [gulp](http://gulpjs.com/) 
+build system), you can build the reference documentation locally from the root 
+directory of the marklogic package:
 
     gulp doc
 
