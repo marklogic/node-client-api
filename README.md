@@ -74,7 +74,8 @@ directory of the marklogic package:
 
     gulp doc
 
-The documentation is generated in a doc subdirectory.
+The documentation is generated in a doc subdirectory. The documentation can also be
+accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
 
 ### Running Tests
 
