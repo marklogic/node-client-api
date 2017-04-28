@@ -259,6 +259,58 @@ function setup(manager) {
               }).result();
             }).
           then(function(response) {
+            console.log('adding path namespace for '+testconfig.testServerName);
+            return manager.put({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+              params:   {
+                format: 'json'
+                },
+              body: {
+                'path-namespaces': { 
+                  'path-namespace': {
+                    'prefix': 'hi',
+                    'namespace-uri': 'http://aaa.com'
+                  }
+                }
+              },
+              hasResponse: true
+            }).result();
+          }).
+          then(function(response) {
+            console.log('adding range path index for '+testconfig.testServerName);
+            return manager.put({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+              params:   {
+                format: 'json'
+                },
+              body: {
+                'range-path-indexes': {
+                  'range-path-index': {
+                    'scalar-type': 'string',
+                    'path-expression': '/hi:Employee/hi:firstname',
+                    'collation': 'http://marklogic.com/collation/',
+                    'range-value-positions': false,
+                    'invalid-values': 'reject'
+                  }
+                }
+              },
+              hasResponse: true
+            }).result();
+          }).
+          then(function(response) {
+            console.log('enable word searches for '+testconfig.testServerName);
+            return manager.put({
+              endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/properties',
+              params:   {
+                format: 'json'
+                },
+              body: {
+                'word-searches': true
+              },
+              hasResponse: true
+            }).result();
+          }).
+          then(function(response) {
             return manager.get({
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/axes/systemTime'
               }).result();
