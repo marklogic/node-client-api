@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,10 +44,12 @@ describe('Temporal insert transform test', function() {
   var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
 
   before(function(done) {
+    this.timeout(10000);
     fs.createReadStream(transformPath1).
     pipe(concatStream({encoding: 'string'}, function(source) {
       dbAdmin.config.transforms.write(transformName1, 'xquery', source).
-      result(function(response){done();}, done);
+      result(function(response){done();})
+      .catch(done)
     }));
   });
 
@@ -251,7 +253,8 @@ describe('Temporal insert transform test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
   
 });

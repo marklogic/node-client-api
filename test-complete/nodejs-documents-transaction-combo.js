@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,11 @@ describe('Transaction combo test', function() {
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.documents[0].uri.should.equal('/test/transaction/doc1.json');
+      return db.documents.probe({uri: '/test/transaction/doc1.json', txid: tid}).result();
+    })
+    .then(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.uri.should.equal('/test/transaction/doc1.json');
       return db.transactions.read(tid).result();
     })
     .then(function(response) {

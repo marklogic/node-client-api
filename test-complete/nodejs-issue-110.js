@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ describe('Document extract test', function(){
       q.where(
         q.word('title', 'bush')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.extract({
           selected:'include-with-ancestors',
           paths:[
@@ -125,7 +125,7 @@ describe('Document extract test', function(){
       q.where(
         q.word('title', 'bush')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.extract({
           selected:'exclude',
           paths:[
@@ -149,7 +149,7 @@ describe('Document extract test', function(){
       q.where(
         q.word('id', '**26', q.termOptions('wildcarded'))
       ).withOptions({search:['filtered']})
-      .slice(1, 10,
+      .slice(0, 10,
         q.extract({
           selected:'include',
           paths:[
@@ -173,7 +173,7 @@ describe('Document extract test', function(){
       q.where(
         q.word('title', 'The memex')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.extract({
           selected:'include-with-ancestors',
           paths:[
@@ -195,7 +195,7 @@ describe('Document extract test', function(){
       q.where(
         q.word('title', 'The memex')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.extract({
           selected:'include-with-ancestors',
           paths:[

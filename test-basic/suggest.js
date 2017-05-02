@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,7 @@ describe('suggest', function() {
     .catch(done);
   });
   it('should handle default criteria', function(done) {
+    this.timeout(3000);
     db.documents.suggest(
         'aSuggest',
         q.where(

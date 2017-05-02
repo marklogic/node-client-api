@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,8 @@ describe('Temporal insert lsqt test', function() {
   
   var docuri = 'temporalDoc.json'; 
 
-  before(function(done) {
+  it('enable lsqt', function(done) {
+    this.timeout(10000);
     adminManager.put({
       endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
       body: {
@@ -47,7 +48,8 @@ describe('Temporal insert lsqt test', function() {
           "enabled": true
         }
       }
-    }).result(function(response){done();}, done);
+    })
+    .result(function(response){done();}, done);
   });
 
    it('should write the document content', function(done) {
@@ -183,7 +185,8 @@ describe('Temporal insert lsqt test', function() {
     done);
   });*/
 
-  after(function(done) {
+  it('remove all documents', function(done) {
+    this.timeout(10000);
     dbAdmin.documents.removeAll({
       all: true
     }).

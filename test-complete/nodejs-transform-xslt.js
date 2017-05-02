@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ describe('Transform test', function(){
       q.where(
         q.collection('employee')
       ).
-      slice(1, 10, q.transform(transformName))
+      slice(0, 10, q.transform(transformName))
     ).
     result(function(response) {
       //console.log(response);

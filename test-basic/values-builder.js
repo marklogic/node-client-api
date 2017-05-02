@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,7 +143,7 @@ describe('values query', function(){
     });
     it('should build a slice clause with start page and page length', function(){
       var built = t.fromIndexes('property1').
-      slice(11, 10);
+      slice(10, 20);
       built.should.have.property('fromIndexesClause');
       built.fromIndexesClause.length.should.equal(1);
       built.fromIndexesClause[0].should.have.property('range');
@@ -155,7 +155,7 @@ describe('values query', function(){
     });
     it('should build a slice clause with start page', function(){
       var built = t.fromIndexes('property1').
-      slice(11);
+      slice(10);
       built.should.have.property('fromIndexesClause');
       built.fromIndexesClause.length.should.equal(1);
       built.fromIndexesClause[0].should.have.property('range');

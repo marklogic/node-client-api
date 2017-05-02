@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -258,7 +258,7 @@ describe('Temporal update test', function() {
 
   it('should delete the document', function(done) {
     db.documents.remove({
-      uri: docuri,
+      uris: [docuri],
       temporalCollection: 'temporalCollection'
     }).result(function(response) {
       //console.log("Document = " + JSON.stringify(response, null, 2));

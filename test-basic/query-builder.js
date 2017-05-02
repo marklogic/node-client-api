@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -507,6 +507,11 @@ describe('query-builder', function() {
           point:[{latitude:1.1, longitude:2.2}]}}
         );
     assert.deepEqual(
+        q.geospatial(q.geoPath('foo', q.coordSystem('wgs84/double')), q.latlon(1.1, 2.2)),
+        {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
+          coord:'wgs84/double', point:[{latitude:1.1, longitude:2.2}]}}
+        );
+    assert.deepEqual(
         q.geospatial(q.geoPath('foo'), [1.1, 2.2]),
         {'geo-path-query':{'path-index':{text: 'foo', namespaces: ''},
           point:[{latitude:1.1, longitude:2.2}]}}
@@ -533,6 +538,15 @@ describe('query-builder', function() {
           point:[{latitude:1.1, longitude:2.2}],
           'fragment-scope': 'documents',
           'geo-option':['boundaries-included']}}
+        );
+  });
+
+  it('should create geo-region-path queries', function(){
+    assert.deepEqual(
+        q.geospatialRegion(q.geoPath('foo'), 'contains', q.polygon([1.1, 2.2], [3.3, 4.4])),
+        {'geo-region-path-query':{'path-index':{text: 'foo', namespaces: ''},
+          'geospatial-operator':'contains',
+          polygon:{point:[{latitude:1.1, longitude:2.2}, {latitude:3.3, longitude:4.4}]}}}
         );
   });
 
@@ -688,21 +702,21 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar')], 3, q.weight(4)),
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar'), 3, q.weight(4)]),
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4}}
+          ], distance: 3, 'distance-weight': 4}}
         );
     assert.deepEqual(
         q.near(q.collection('foo'), q.collection('bar'), 3, q.weight(4),
@@ -710,7 +724,7 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar')], 3, q.weight(4),
@@ -718,7 +732,7 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
         );
     assert.deepEqual(
         q.near([q.collection('foo'), q.collection('bar'), 3, q.weight(4),
@@ -726,7 +740,16 @@ describe('query-builder', function() {
         {'near-query':{queries:[
           {'collection-query': {uri:['foo']}},
           {'collection-query': {uri:['bar']}}
-          ], distance: 3, weight: 4, ordered: true}}
+          ], distance: 3, 'distance-weight': 4, ordered: true}}
+        );
+    assert.deepEqual(
+        q.near(q.collection('foo'), q.collection('bar'), 3, q.weight(4),
+                q.ordered(true), q.minDistance(1)),
+        {'near-query':{queries:[
+          {'collection-query': {uri:['foo']}},
+          {'collection-query': {uri:['bar']}}
+          ], distance: 3, 'distance-weight': 4, ordered: true,
+                'minimum-distance': 1}}
         );
   });
 
@@ -1965,6 +1988,20 @@ describe('query-builder', function() {
         {'suggest-option':['case-sensitive', 'diacritic-sensitive']}
         );
   });
+
+  it('should create a true-query', function(){
+    assert.deepEqual(
+        q.trueQuery(),
+        {'true-query':null}
+        );
+  });
+  it('should create a false-query', function(){
+    assert.deepEqual(
+        q.falseQuery(),
+        {'false-query':null}
+        );
+  });
+
 });
 
 describe('document query', function(){
@@ -2084,31 +2121,31 @@ describe('document query', function(){
       built.orderByClause['sort-order'][0].direction.should.equal('descending');
     });
     it('should build a slice clause with legacy start page and page length', function(){
+      mlutil.setSliceMode('legacy');
       var built = qlib.slice(11, 10);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
+      mlutil.setSliceMode('array');
     });
     it('should build a slice clause with array begin and end', function(){
-      mlutil.setSliceMode('array');
       var built = qlib.slice(10, 20);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
       built.sliceClause['page-length'].should.equal(10);
-      mlutil.setSliceMode('legacy');
     });
     it('should build a slice clause with start page', function(){
-      var built = qlib.slice(11);
+      var built = qlib.slice(10);
       built.should.have.property('sliceClause');
       built.sliceClause['page-start'].should.equal(11);
     });
     it('should build a slice clause without a page', function(){
-      var built = qlib.slice(0);
+      var built = qlib.slice(0, 0);
       built.should.have.property('sliceClause');
       built.sliceClause['page-length'].should.equal(0);
     });
     it('should build a slice clause with a page and a snippet transform', function(){
-      var built = qlib.slice(11, 10,
+      var built = qlib.slice(10, 20,
         q.snippet('foo.xqy', {
           'max-matches': 5,
           'bar':         'baz'
@@ -2144,7 +2181,7 @@ describe('document query', function(){
           q.facet('key2')
       ).orderBy(
           'key3'
-      ).slice(11, 10);
+      ).slice(10, 20);
       built.should.have.property('whereClause');
       built.whereClause.should.have.property('query');
       built.whereClause.query.should.have.property('queries');
@@ -2169,7 +2206,7 @@ describe('document query', function(){
       );
       var marshalled = JSON.stringify(seed);
       var unmarshalled = JSON.parse(marshalled);
-      var built = q.copyFrom(unmarshalled).slice(11, 10);
+      var built = q.copyFrom(unmarshalled).slice(10, 20);
       built.should.have.property('whereClause');
       built.whereClause.should.have.property('query');
       built.whereClause.query.should.have.property('queries');

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,8 @@ describe('Temporal patch test', function() {
         id: 12, 
         name: 'Jason'
       }
-    }).result(function(response){done();}, done);
+    }).result(function(response){done();})
+    .catch(done);
   });
 
   // Cannot set collections on a temporal document
@@ -159,7 +160,8 @@ describe('Temporal patch test', function() {
     }).
     result(function(response) {
       done();
-    }, done);
+    })
+    .catch(done);
   });
 
 });

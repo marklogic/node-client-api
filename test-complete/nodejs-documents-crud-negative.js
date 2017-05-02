@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,23 @@ describe('Document CRUD negative test', function(){
       });
   });
 
+  it('verify the stack property', function(done){
+    dbWriter.documents.write({
+      uri: '/test/negative/invalidDoc.json',
+      contentType: 'application/json',
+      content: '{"invalid"}'
+      }).
+    result(function(response) {
+      response.should.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error.stack, null, 2))
+      error.stack.should.not.be.null;
+      error.stack.should.containEql('Operation.makeError');
+      done();
+      });
+  });
+
   it('should fail to create invalid xml document', function(done){
     dbWriter.documents.write({
       uri: '/test/negative/invalidXmlDoc.xml',
@@ -52,7 +69,7 @@ describe('Document CRUD negative test', function(){
 	 (valcheck.isNullOrUndefined(response.documents[0].contentType)).should.equal(true);
       done();
     }, function(error) {
-      console.log(error);
+      //console.log(error);
       error.body.errorResponse.messageCode.should.equal('XDMP-DOCNOENDTAG');
       error.statusCode.should.equal(400);
       done();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -186,7 +186,7 @@ describe('quick path', function(){
       });
   }); 
   it('should remove a document', function(done) {
-    var docUri = '/test/query/matchDir/doc3.json';
+    var docUri = [ '/test/query/matchDir/doc3.json' ];
     dbWriter.remove(docUri).
     result(function(uri) {
       docUri.should.eql(uri);
@@ -197,8 +197,17 @@ describe('quick path', function(){
       done();
       }, done);
   });
+
   it('should probe', function(done){
     dbWriter.probe('/test/query/matchDir/doc3.json').
+    result(function(exists) {
+      exists.should.eql(false);
+      done();
+      }, done);
+  });
+
+  it('should probe with object', function(done){
+    dbWriter.probe({'uri': '/test/query/matchDir/doc3.json'}).
     result(function(exists) {
       exists.should.eql(false);
       done();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ describe('extract negative test', function(){
       q.where(
         q.word('title', 'bush')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.extract({
           selected:'include-with-ancestors',
           paths:[
@@ -117,7 +117,7 @@ describe('extract negative test', function(){
       )
     ).result(function(response) {
       response.length.should.equal(2);
-      response[0].content.should.containEql(null);
+      response[0].content.should.be.empty;
       //console.log(JSON.stringify(response, null, 4));
       done();
     }, done);

@@ -1,0 +1,22 @@
+{
+  "opts": {
+    "destination":          "./doc",
+    "template":             "./etc/marklogic-template"
+  },
+  "templates": {
+    "theme":                "marklogic",
+    "systemName":           "MarkLogic Node.js Client API",
+    "copyright":            "Copyright 2014-2017 MarkLogic Corporation",
+    "navType":              "vertical",
+    "inverseNav":           true,
+    "includeDate":          false,
+    "cleverLinks":          false,
+    "monospaceLinks":       false,
+    "linenums":             true,
+    "search":               false,
+    "sort":                 true,
+    "outputSourceFiles":    false,
+    "outputSourcePath":     false,
+    "methodHeadingReturns": true
+  }
+}

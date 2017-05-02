@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ describe('Transform test with xquery', function(){
       q.where(
         q.term('title', 'xquery')
       ).
-      slice(1, 10, q.transform(transformName, {flag: 'world'}))
+      slice(0, 10, q.transform(transformName, {flag: 'world'}))
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 4));

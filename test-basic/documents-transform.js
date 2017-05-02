@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ describe('document transform', function(){
       restAdminDB.config.transforms.read(xqyTransformName)
       .result(function(source){
         (!valcheck.isNullOrUndefined(source)).should.equal(true);
+        (typeof source).should.equal('string');
         done();
         })
       .catch(done);
@@ -128,7 +129,7 @@ describe('document transform', function(){
           q.where(
             q.document(uri)
             ).
-          slice(1, 10,
+          slice(0, 10,
             q.transform(xqyTransformName, {flag:'tested3'})
             )
           )
@@ -196,7 +197,7 @@ describe('document transform', function(){
           q.where(
             q.document(readUri)
             ).
-          slice(1, 10,
+          slice(0, 10,
             q.transform(jsTransformName)
             )
           )

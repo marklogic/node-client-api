@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ describe('extension libraries', function(){
           calculate(
               q.facet('directories', q.calculateFunction('directoryConstraint.xqy'))
               ).
-          slice(0)
+          slice(0, 0)
           )
         .result(function(response) {
           response.length.should.equal(1);
@@ -171,7 +171,7 @@ describe('extension libraries', function(){
               q.facet('range', 'rangeKey1', q.facetOptions('item-frequency')),
               q.facet('dirs', q.calculateFunction('directoryConstraint.xqy'))
               ).
-          slice(0)
+          slice(0, 0)
           )
         .result(function(response) {
           response.length.should.equal(1);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,7 +154,7 @@ describe('Document query test', function(){
       q.where(
         q.word('title', 'bush')		
       ).
-		slice(1, 1, q.snippet()).
+		slice(0, 1, q.snippet()).
 		withOptions({categories: 'none'})
 	).
 	  result(function(response) {
@@ -353,7 +353,7 @@ describe('Document query test', function(){
           q.term('Monthly'),
           q.term('Bush')
           )
-        ).slice(1, 100, q.snippet())
+        ).slice(0, 100, q.snippet())
       ).result(function(response) {
         //console.log(JSON.stringify(response, null, 2));
         response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('Bush');
@@ -413,6 +413,26 @@ describe('Document query test', function(){
       )).result(function(response) {
         response.length.should.equal(2);
         //console.log(JSON.stringify(response, null, 4));
+        done();
+      }, done);
+  });
+
+   it('should do true query', function(done){
+    db.documents.query(
+      q.where(
+        q.trueQuery()
+      )).result(function(response) {
+        response.length.should.equal(5);
+        done();
+      }, done);
+  });
+
+   it('should do false query', function(done){
+    db.documents.query(
+      q.where(
+        q.falseQuery()
+      )).result(function(response) {
+        response.length.should.equal(0);
         done();
       }, done);
   });

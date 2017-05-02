@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,6 +129,15 @@ describe('Optimistic locking test', function() {
     }, done);
   });
 
+  it('should contain version id on probe with object', function(done) {
+    dbWriter.documents.probe({'uri': '/test/optlock/doc5.json'}).
+    result(function(response) {
+      //console.log(JSON.stringify(response, null, 2));
+      response.versionId.should.not.equal(null);
+      done();
+    }, done);
+  });
+
   it('should contain version id on read', function(done) {
     dbWriter.documents.read('/test/optlock/doc5.json').
     result(function(response) {
@@ -158,7 +167,10 @@ describe('Optimistic locking test', function() {
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      error.statusCode.should.equal(403)
+      //console.log(JSON.stringify(error, null, 2));
+      error.statusCode.should.equal(428);
+      error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+      error.body.errorResponse.message.should.containEql('No content version supplied');
       done();
     });
   });
@@ -167,7 +179,7 @@ describe('Optimistic locking test', function() {
     dbWriter.documents.probe('/test/optlock/doc6.json').result().
     then(function(response) {
       dbWriter.documents.remove({
-        uri: '/test/optlock/doc6.json',
+        uris: ['/test/optlock/doc6.json'],
         versionId: response.versionId
       }).
       result(function(response) {
@@ -190,8 +202,10 @@ describe('Optimistic locking test', function() {
       response.should.be('SHOULD BE FAILED');
       done();
     }, function(error) { 
-      //console.log(error);
-      error.statusCode.should.equal(403);
+      //console.log(JSON.stringify(error, null, 2));
+      error.statusCode.should.equal(428);
+      error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+      error.body.errorResponse.message.should.containEql('No content version supplied');
       done();
     });
   });
@@ -300,8 +314,10 @@ describe('Optimistic locking test', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        //console.log(error);
-        error.statusCode.should.equal(403);
+        //console.log(JSON.stringify(error, null, 2));
+        error.statusCode.should.equal(428);
+        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+        error.body.errorResponse.message.should.containEql('No content version supplied');
         done();
       });
     });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnectio
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal insert test', function() {
   
@@ -62,7 +63,8 @@ describe('Temporal insert test', function() {
         name: 'Jason'
       }
     }
-    ).result(function(response){done();}, done);
+    ).result(function(response){done();})
+    .catch(done);
   });
 
   it('should read the document content name', function(done) {
@@ -149,7 +151,7 @@ describe('Temporal insert test', function() {
     }, done);
   });
 
-  after(function(done) {
+  /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -164,6 +166,16 @@ describe('Temporal insert test', function() {
       console.log(err); done();
     },
     done);
+  });*/
+
+  after(function(done) {
+    dbAdmin.documents.removeAll({
+      all: true
+    }).
+    result(function(response) {
+      done();
+    })
+    .catch(done);
   });
   
 });

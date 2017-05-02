@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -436,7 +436,7 @@ describe('Document facet query test', function(){
       orderBy(
         q.sort('popularity', 'ascending')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.snippet(),
         q.extract({
           selected: 'include-with-ancestors',
@@ -476,7 +476,7 @@ describe('Document facet query test', function(){
       orderBy(
         q.sort('popularity', 'ascending')
       ).
-      slice(1, 10,
+      slice(0, 10,
         q.snippet(),
         q.extract({
           selected: 'include-with-ancestors',

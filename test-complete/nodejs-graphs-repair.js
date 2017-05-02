@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ describe('repair graph test', function(){
 
   it('should write the graph with repair is true', function(done){
     this.timeout(10000);
-    db.graphs.write(graphUri, true, 'text/turtle', fs.createReadStream(graphPath)).
+    db.graphs.write({uri: graphUri, contentType: 'text/turtle', repair: 'true', data: fs.createReadStream(graphPath)}).
     result(function(response){
       //console.log(JSON.stringify(response, null, 4));
       response.should.have.property('graph');

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2016 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -193,6 +193,32 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should match all documents', function(done){
+      db.documents.query(
+        q.where(
+          q.trueQuery()
+          )
+        )
+      .result(function(response) {
+        response.length.should.aboveOrEqual(8);
+        var document = response[0];
+        document.should.be.ok;
+        done();
+        })
+      .catch(done);
+    });
+    it('should match no documents', function(done){
+      db.documents.query(
+        q.where(
+          q.falseQuery()
+          )
+        )
+      .result(function(response) {
+        response.length.should.equal(0);
+        done();
+        })
+      .catch(done);
+    });
     it('should support an empty result set', function(done){
       db.documents.query(
         q.where(
@@ -213,7 +239,7 @@ describe('document query', function(){
         calculate(
             q.facet('rangeKey1'),
             q.facet('rangeKey2')).
-        slice(0)
+        slice(0, 0)
         )
       .result(function(response) {
         response.length.should.equal(1);
@@ -272,7 +298,7 @@ describe('document query', function(){
                 q.heatmap(3, 3, q.southWestNorthEast(10, 10, 60, 60))
                 )
             )
-        .slice(0)
+        .slice(0, 0)
         )
       .result(function(response) {
         response.length.should.equal(1);
@@ -382,7 +408,7 @@ describe('document query', function(){
         q.where(
             q.word('scoreKey', 'matchList')
           ).
-        slice(2, 3)
+        slice(1, 4)
         )
       .result(function(response) {
         response.length.should.equal(3);
@@ -402,7 +428,7 @@ describe('document query', function(){
         q.where(
             q.word('scoreKey', 'matchList')
           ).
-        slice(3)
+        slice(2)
         )
       .result(function(response) {
         response.length.should.equal(2);
@@ -422,7 +448,7 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.extract({
+        slice(0, 1, q.extract({
           selected:'include-with-ancestors',
           paths:'/node("a1")/node("a2")/node("extractMatch")'
           }))
@@ -445,7 +471,7 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.snippet()).
+        slice(0, 1, q.snippet()).
         withOptions({categories: 'none'})
         )
       .result(function(response) {
@@ -466,7 +492,7 @@ describe('document query', function(){
         q.where(
             q.word('wordKey', 'matchWord1')
           ).
-        slice(1, 1, q.snippet('extractFirst.xqy'))
+        slice(0, 1, q.snippet('extractFirst.xqy'))
         )
       .result(function(response) {
         response.length.should.equal(2);
