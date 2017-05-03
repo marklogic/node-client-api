@@ -1,6 +1,6 @@
 # Kerberos Authentication
 
-In addition to basic, digest, and certificate authentication, the Node.js Client API supports [Kerberos authentication](https://docs.marklogic.com/guide/security/external-auth) for MarkLogic servers that have been so configured.
+In addition to basic, digest, and certificate authentication, the Node.js Client API supports [Kerberos authentication](https://docs.marklogic.com/guide/security/external-auth) on MarkLogic servers.
 
 The Node.js Client API uses the [kerberos](https://www.npmjs.com/package/kerberos) module to support Kerberos authentication and requires (on Linux):
 
@@ -11,6 +11,6 @@ The Node.js Client API uses the [kerberos](https://www.npmjs.com/package/kerbero
 
 Windows requires additional libraries. See the [kerberos documentation](https://www.npmjs.com/package/kerberos) for details.
 
-The [kerberos](https://www.npmjs.com/package/kerberos) module is listed as an optional dependency in the Node Client API package.json. To skip installing optional modules during [npm install](https://docs.npmjs.com/cli/install), use the --no-optional flag:
+The [kerberos](https://www.npmjs.com/package/kerberos) module is listed as an optional dependency in the Node.js Client API package.json. To skip installing optional modules during [npm install](https://docs.npmjs.com/cli/install), use the --no-optional flag:
 
     npm install --no-optional

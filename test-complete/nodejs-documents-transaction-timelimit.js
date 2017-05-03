@@ -52,7 +52,7 @@ describe('Document transaction test', function() {
 */
   var tid = 0;
 it('should commit the write document', function(done) {
-    db.transactions.open({transactionName: "nodeTransaction", timeLimit: 1})
+    db.transactions.open({transactionName: "nodeTransaction", timeLimit: 2})
      .result(function(response) {
      tid = response.txid;
       return db.documents.write({
@@ -70,7 +70,7 @@ it('should commit the write document', function(done) {
       .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
      response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
-      response['transaction-status']['time-limit'].should.equal('1');
+      response['transaction-status']['time-limit'].should.equal('2');
     done();
     }, done);
     /*.catch(function(error) {
