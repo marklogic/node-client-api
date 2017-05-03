@@ -13,23 +13,6 @@ from Node.js applications.
 *  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
 *  Basic, digest, certificate, and Kerberos authentication
 
-## Status
-
-Release 2.0.1 of the MarkLogic Node.js Client API, tested to work with MarkLogic
-versions 8.0-6.3 and 9.0-1. To use the new features available in release 2.0.1,
-you will need to run MarkLogic version 9.
-
-## New Features in Release 2.0.1
-
-- Certificate authentication
-- Kerberos authentication
-- Geospatial region search
-- Double precision values for geospatial queries
-- Temporal operations, including protect and wipe
-- Metadata values
-- Specifying a minimum distance for near queries
-- Bug fixes and documentation enhancements
-
 ## Getting Started
 
 You can install the marklogic package as a dependency for your Node.js project
@@ -67,21 +50,14 @@ db.createCollection(
   });
 ```
 
-Other calls can create additional documents for the same collection.
-
 ### Resources
 
-Here are some online resources that walk you through working with MarkLogic
-using the Node.js Client API:
-
-* [MarkLogic Node.js Client API](http://developer.marklogic.com/features/node-client-api)
-* [Introduction to the Node.js Client API - Getting Started](http://docs.marklogic.com/guide/node-dev/intro#id_68052)
-
-The instructions describe:
-
-* installing the MarkLogic database and setting up an admin user
-* installing the Node.js Client API using npm
-* working through some initial examples to get familiar with the API
+* [Node.js Client API Documentation](https://docs.marklogic.com/jsdoc/index.html)
+* [Feature Overview of the Node.js Client API](http://developer.marklogic.com/features/node-client-api)
+* [The Node.js Client API in 5 Minutes](https://developer.marklogic.com/learn/node-in-5-minutes)
+* [Node.js Application Developer's Guide](http://docs.marklogic.com/guide/node-dev)
+* [MarkLogic Training for the Node.js Client API](http://www.marklogic.com/training-courses/developing-marklogic-applications-i-node-js/)
+* [MarkLogic On-Demand Courses for Node.js](https://mlu.marklogic.com/ondemand/index.xqy?q=Series%3A%22Node.js%22)
 
 ### Code Examples
 
@@ -90,15 +66,16 @@ in the online resources. To run the examples, follow the instructions here:
 
     examples/1readme.txt
 
-### Generating Documentation
+### Generating Documentation Locally
 
-After installing the project dependencies (including the gulp build system),
-you can build the reference documentation locally from the root directory of the
-marklogic package:
+After installing the project dependencies (including the [gulp](http://gulpjs.com/) 
+build system), you can build the reference documentation locally from the root 
+directory of the marklogic package:
 
     gulp doc
 
-The documentation is generated in a doc subdirectory.
+The documentation is generated in a doc subdirectory. The documentation can also be
+accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
 
 ### Running Tests
 
