@@ -113,7 +113,7 @@ var geoDataFiles = [
 
 describe('Document geo query test', function(){
   before(function(done){
-    this.timeout(10000);
+    this.timeout(30000);
     dbWriter.documents.write(geoDataFiles).
     result(function(response){done();})
     .catch(done);
@@ -314,13 +314,11 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(6);
+      response.length.should.equal(4);
       response[0].uri.should.equal('/geo/region/test/South-More-json.json');
       response[1].uri.should.equal('/geo/region/test/Equator.xml');
       response[2].uri.should.equal('/geo/region/test/Equator-json.json');
       response[3].uri.should.equal('/geo/region/test/South-More.xml');
-      response[4].uri.should.equal('/geo/region/test/Prime-Meridian.xml');
-      response[5].uri.should.equal('/geo/region/test/Prime-Meridian-json.json');
       done();
     }, done);
   });
@@ -451,11 +449,9 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(4);
-      response[0].uri.should.equal('/geo/region/test/Tropic-of-Capricorn-json.json');
-      response[1].uri.should.equal('/geo/region/test/Tropic-of-Cancer-json.json');
-      response[2].uri.should.equal('/geo/region/test/Tropic-of-Capricorn.xml');
-      response[3].uri.should.equal('/geo/region/test/Tropic-of-Cancer.xml');
+      response.length.should.equal(8);
+      response[0].uri.should.equal('/geo/region/test/International-Date-Line.xml');
+      response[7].uri.should.equal('/geo/region/test/North-West.xml');
       done();
     }, done);
   });
@@ -557,7 +553,7 @@ describe('Document geo query test', function(){
       done();
     }, function(error) {
       //console.log(JSON.stringify(error, null, 2));
-      error.body.errorResponse.message.should.containEql('XDMP-OPERATION');
+      error.body.errorResponse.message.should.containEql('XDMP-INVGEOOP');
       done();
     });
   });
