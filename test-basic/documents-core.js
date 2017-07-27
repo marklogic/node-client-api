@@ -414,7 +414,7 @@ describe('document content', function(){
           .result(function(response){done();})
           .catch(done);
         });
-        it('should not exist', function(done){
+        it('should be removed and no longer exist', function(done){
           db.documents.remove(
               '/test/remove/doc1.json',
               '/test/remove/doc2.json'
@@ -422,12 +422,25 @@ describe('document content', function(){
             .result(function(response) {
               response.should.have.property('uris');
               response.uris.length.should.equal(2);
+              response.removed.should.equal(true);
               return db.documents.probe(response.uris[0]).result();
               })
             .then(function(document) {
               valcheck.isUndefined(document).should.equal(false);
               document.should.have.property('exists');
               document.exists.should.eql(false);
+              done();
+              })
+            .catch(done);
+        });
+      });
+      describe('a nonexistent document', function(){
+        it('should not be removed', function(done){
+          db.documents.remove('/test/remove/noExist.json')
+            .result(function(response) {
+              response.should.have.property('uris');
+              response.uris.length.should.equal(1);
+              response.removed.should.equal(false);
               done();
               })
             .catch(done);
