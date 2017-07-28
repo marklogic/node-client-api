@@ -174,15 +174,6 @@ function setup(manager) {
                 'collection-lexicon':   true,
                 'triple-index':         true,
                 'schema-database':      testconfig.testServerName+'-modules',
-                'range-path-index': [
-                  { 
-                    'scalar-type': 'decimal',
-                    'path-expression': 'price/amt',
-                    collation: '',
-                    'range-value-positions': false,
-                    'invalid-values': 'reject' 
-                  }
-                ],
                 'geospatial-path-index': [
                   {
                     'path-expression': 'gElemChildParent/gElemChildPoint',
@@ -284,15 +275,22 @@ function setup(manager) {
                 format: 'json'
                 },
               body: {
-                'range-path-indexes': {
-                  'range-path-index': {
+                'range-path-index': [
+                  {  
                     'scalar-type': 'string',
                     'path-expression': '/hi:Employee/hi:firstname',
                     'collation': 'http://marklogic.com/collation/',
                     'range-value-positions': false,
                     'invalid-values': 'reject'
+                  },
+                  {  
+                    'scalar-type': 'decimal',
+                    'path-expression': 'price/amt',
+                    'collation': '',
+                    'range-value-positions': false,
+                    'invalid-values': 'reject'
                   }
-                }
+                ]
               },
               hasResponse: true
             }).result();
