@@ -243,7 +243,7 @@ it('should do document query with slice array with index 3 and offset 10', funct
     }, function(error) {
          //console.log(error);
          error.statusCode.should.equal(400);
-         error.body.errorResponse.messageCode.should.equal('REST-INVALIDTYPE');
+         error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
          done();
        });
 
