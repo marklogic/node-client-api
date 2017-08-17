@@ -141,7 +141,7 @@ describe('graph negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.body.errorResponse.message.should.containEql('Invalid parameter: Role invalid-role does not exist'); 
+      error.body.errorResponse.message.should.containEql('Role does not exist: role-name = invalid-role'); 
       done();
     });
   });
