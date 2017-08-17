@@ -117,7 +117,7 @@ describe('Document CRUD negative test', function(){
       done();
     }, function(error) {
       //console.log(error.body);
-      error.body.errorResponse.messageCode.should.equal('REST-FAILEDAUTH');
+      error.body.errorResponse.messageCode.should.equal('SEC-PRIV');
       error.statusCode.should.equal(403);
       done();
       });
