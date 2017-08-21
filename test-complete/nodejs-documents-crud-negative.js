@@ -133,7 +133,7 @@ describe('Document CRUD negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('REST-REQUIREDPARAM');
+      error.body.errorResponse.messageCode.should.equal('RESTAPI-INVALIDREQ');
       error.statusCode.should.equal(400);
       done();
       });
