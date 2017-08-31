@@ -44,6 +44,7 @@
     "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": "^2.0.4",
     "gulp-mocha": "^4.1.0",
+    "intercept-stdout": "^0.1.2",
     "jsdoc": "^3.4.3",
     "jshint": "^2.6.0",
     "mocha": "^3.2.0",
