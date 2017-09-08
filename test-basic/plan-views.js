@@ -20,7 +20,6 @@ const should = require('should');
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
-const doExport = pbb.doExport;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -463,19 +462,19 @@ describe('view', function() {
   });
   describe('serialize', function() {
     it('export', function(done) {
-      const value = doExport(
+      const value =
         p.fromView('opticUnitTest', 'master')
             .orderBy('id')
-        );
+          .export();
       should(value).deepEqual(exportedView);
       done();
     });
     it('export query', function(done) {
-      const value = doExport(
+      const value =
         p.fromView('opticUnitTest', 'musician')
             .where(p.cts.jsonPropertyWordQuery('instrument', 'trumpet'))
             .orderBy('lastName')
-        );
+          .export();
       should(value).deepEqual(exportedQueryView);
       done();
     });

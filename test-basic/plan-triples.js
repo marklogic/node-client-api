@@ -20,7 +20,6 @@ const should = require('should');
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
-const doExport = pbb.doExport;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -298,23 +297,23 @@ describe('triples', function() {
   describe('serialize', function() {
     describe('export', function() {
       it('with bare patterns', function(done) {
-        const value = doExport(
+        const value =
           p.fromTriples([
                     p.pattern(datastore, typeProp,  datastoreType),  
                     p.pattern(datastore, titleProp, titleCol)
                 ])
-          );
+            .export();
         should(value).deepEqual(exportedTriplesBarePatterns);
         done();
       });
       it('with graph column', function(done) {
-        const value = doExport(
+        const value =
           p.fromTriples([
                   p.pattern(datastore, typeProp,  datastoreType, p.graphCol('sourceGraph')), 
                   p.pattern(datastore, titleProp, titleCol)
                   ])
               .orderBy(['sourceGraph', 'title'])
-          );
+            .export();
         should(value).deepEqual(exportedTriplesGraphColumn);
         done();
       });

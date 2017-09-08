@@ -20,7 +20,6 @@ const should = require('should');
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
-const doExport = pbb.doExport;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 const makeSelectCall   = pbb.makeSelectCall;
@@ -28,9 +27,8 @@ const makeSelectExport = pbb.makeSelectExport;
 
 describe('expressions', function() {
   it('col() identifier', function(done) {
-    const value = doExport(
-      makeSelectCall(p.col('val'))
-      );
+    const value =
+      makeSelectCall(p.col('val')).export();
     should(value).deepEqual(
       makeSelectExport(
         {ns:'op', fn:'col', args:['val']}
@@ -38,9 +36,8 @@ describe('expressions', function() {
     done();
   });
   it('viewCol() identifier', function(done) {
-    const value = doExport(
-      makeSelectCall(p.viewCol('docview', 'val'))
-      );
+    const value =
+      makeSelectCall(p.viewCol('docview', 'val')).export();
     should(value).deepEqual(
       makeSelectExport(
         {ns:'op', fn:'view-col', args:['docview', 'val']}
@@ -48,9 +45,8 @@ describe('expressions', function() {
     done();
   });
   it('schemaCol() identifier', function(done) {
-    const value = doExport(
-      makeSelectCall(p.schemaCol('docschema', 'docview', 'val'))
-      );
+    const value =
+      makeSelectCall(p.schemaCol('docschema', 'docview', 'val')).export();
     should(value).deepEqual(
       makeSelectExport(
         {ns:'op', fn:'schema-col', args:['docschema', 'docview', 'val']}

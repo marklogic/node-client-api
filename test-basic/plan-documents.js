@@ -20,7 +20,6 @@ const should = require('should');
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
-const doExport = pbb.doExport;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
