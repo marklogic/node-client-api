@@ -20,7 +20,6 @@ const should = require('should');
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
-const doExport = pbb.doExport;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -164,14 +163,14 @@ describe('lexicons', function() {
   });
   describe('serialize', function() {
     it('on export', function(done) {
-      const value = doExport(
+      const value =
         p.fromLexicons({
                 uri:p.cts.uriReference(),
                 number:p.cts.jsonPropertyReference('srchNumber'),
                 city:p.cts.jsonPropertyReference('srchCity')
               }, 
               'docRange')
-        );
+          .export();
       should(value).deepEqual(exportedLexicon);
       done();
     });

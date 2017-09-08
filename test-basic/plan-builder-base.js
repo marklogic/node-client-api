@@ -25,7 +25,6 @@ const dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection)
 // TODO: remove temporary hack
 const PlanBuilder = require('../lib/plan-builder');
 const planBuilder = PlanBuilder.builder;
-const doExport    = PlanBuilder.doExport;
 
 /* TODO: remove temporary hack
 const testlib = require('../etc/test-lib');
@@ -70,13 +69,13 @@ function execPlan(query, bindings) {
         return `${sep}bind:${bindName}=${encodeURIComponent(bindValue)}`;
         }).join('');
 // console.log(endpoint);
-// console.log(JSON.stringify(doExport(query),null,2));
     return rowMgr.post({
         endpoint: endpoint,
-        body:     doExport(query)
+        body:     query.export()
     });
     */
-  const plan = JSON.stringify(doExport(query));
+// console.log(JSON.stringify(query.export(),null,2));
+  const plan = JSON.stringify(query.export());
   if (bindings === void 0) {
     return rowMgr.query(plan, {format: 'json', output: 'object'});
   }
@@ -115,7 +114,6 @@ module.exports = {
     dbReader:         dbReader,
     dbWriter:         dbWriter,
     planBuilder:      planBuilder,
-    doExport:         doExport,
     execPlan:         execPlan,
     getResult:        getResult,
     getResults:       getResults,
