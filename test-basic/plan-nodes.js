@@ -20,7 +20,6 @@ const should = require('should');
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
-const doExport = pbb.doExport;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -588,7 +587,7 @@ describe('nodes', function() {
   });
   describe('serialization', function() {
     it('JSON export', function(done) {
-      const value = doExport(
+      const value =
           p.fromLiterals([{s:'a', n:1}])
             .select(p.as('o',p.jsonDocument(
                 p.jsonObject([
@@ -598,19 +597,19 @@ describe('nodes', function() {
                         ]))
                     ])
                 )))
-          );
+            .export();
       should(value).deepEqual(exportedJson);
       done();
     });
     it('XML export', function(done) {
-      const value =  doExport(
+      const value =
           p.fromLiterals([{s:'a', n:1}])
             .select(p.as('c', p.xmlDocument(
                 p.xmlElement('e', p.xmlAttribute('a', p.col('s')),
                     p.xmlText(p.col('n'))
                     )
                 )))
-            );
+            .export();
       should(value).deepEqual(exportedXml);
       done();
     });
