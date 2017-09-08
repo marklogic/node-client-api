@@ -27,9 +27,12 @@ const PlanBuilder = require('../lib/plan-builder');
 const planBuilder = PlanBuilder.builder;
 const doExport    = PlanBuilder.doExport;
 
-// TODO: remove temporary hack
+/* TODO: remove temporary hack
 const testlib = require('../etc/test-lib');
 const rowMgr = testlib.createManager(dbReader);
+ */
+
+const rowMgr = dbReader.rows;
 
 const lit = planBuilder.fromLiterals({rowId:1});
 
@@ -43,6 +46,7 @@ function makeTest(input, expression) {
     return input.select(planBuilder.as('t', expression));
 }
 function execPlan(query, bindings) {
+/* TODO: delete temporary hack
     const endpoint = (bindings === void 0) ? '/v1/rows' :
       '/v1/rows'+Object.keys(bindings).map((key, i) => {
         const sep       = (i === 0) ? '?' : '&';
@@ -65,13 +69,18 @@ function execPlan(query, bindings) {
           name;
         return `${sep}bind:${bindName}=${encodeURIComponent(bindValue)}`;
         }).join('');
-// TODO: delete
 // console.log(endpoint);
 // console.log(JSON.stringify(doExport(query),null,2));
     return rowMgr.post({
         endpoint: endpoint,
         body:     doExport(query)
     });
+    */
+  const plan = JSON.stringify(doExport(query));
+  if (bindings === void 0) {
+    return rowMgr.query(plan, {format: 'json', output: 'object'});
+  }
+  return rowMgr.query(plan, {format: 'json', output: 'object', bindings:bindings});
 }
 function testPlan(values, expression) {
     return execPlan(makeTest(makeInput(values), expression));
@@ -82,13 +91,9 @@ function getResults(response) {
     err.response = response;
     throw err;
   }
-  const data = response.data;
-  if (data === void 0) {
-    return response;
-  }
-  const rows = data.rows;
+  const rows = response.rows;
   if (rows === void 0) {
-    return data;
+    return response;
   }
   return rows;
 }
