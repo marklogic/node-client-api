@@ -17,12 +17,11 @@
 
 const should = require('should');
 
-const restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
-
 // TODO: replace temporary workaround
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
 const execPlan = pbb.execPlan;
+const execPlanOld = pbb.execPlanOld;
 const getResults = pbb.getResults;
 
 describe('processor', function() {
@@ -74,8 +73,9 @@ describe('processor', function() {
             {id:1, val: 2}, 
             {id:2, val: 4} 
             ])
-          .orderBy('id')
-// object
+          .orderBy('id'),
+        null,
+        'object'
         )
       .result(function(response) {
         const output = getResults(response);
@@ -94,20 +94,17 @@ describe('processor', function() {
           {id:1, val: 2}, 
           {id:2, val: 4} 
           ])
-        .orderBy('id')
-// array
+        .orderBy('id'),
+        null,
+        'array'
         )
-      .result(function(response) {
-        const output = getResults(response);
+      .result(function(output) {
         should(output.length).equal(3);
-        should.exist(output[0].value);
-        should(output[0].length.value).equal(2);
-        should(output[0].value).containEql('id');
-        should(output[0].value).containEql('val');
+        should(output[0].length).equal(2);
         let idPos  = 0;
         let valPos = 0;
         for (let i=0; i < 2; i++) {
-          switch(output[0][i].value) {
+          switch(output[0][i].name) {
           case "id":
             idPos = i;
             break;
@@ -115,10 +112,12 @@ describe('processor', function() {
             valPos = i;
             break;
           default:
-            should(output[0][i].value).equal('SHOULD NOT EXIST');
+            should(output[0][i]).equal('SHOULD NOT EXIST');
             break;
           }
         }
+        should(idPos).be.greaterThanOrEqual(0);
+        should(valPos).be.greaterThanOrEqual(0);
         should(output[1][idPos].value).equal(1);
         should(output[1][valPos].value).equal(2);
         should(output[2][idPos].value).equal(2);
@@ -151,15 +150,6 @@ describe('processor', function() {
     });
   });
   describe('function', function() {
-    const sjsArrayMapperPath = '/etc/test-basic/rowArrayMapper.sjs';
-    before(function(done){
-      this.timeout(3000);
-      restAdminDB.config.extlibs.write(sjsArrayMapperPath, [
-        {'role-name':'rest-reader',    capabilities:['execute']}
-        ], 'application/vnd.marklogic-javascript', fs.createReadStream(fsPath))
-        .result(function(response){done();})
-        .catch(done);
-    });
     it('as array mapper', function(done) {
       execPlan(
         p.fromLiterals([
@@ -167,28 +157,18 @@ describe('processor', function() {
           {id:2, val: 4}
           ])
         .orderBy('id')
-        .map(function(row) {
-          const result = row.concat();
-          result.push((typeof result[0] === 'string') ? 'seconds' :
-                  fn.floor(fn.secondsFromDateTime(fn.currentDateTime()))
-                );
-              return result;
-              })
-// array
+        .map(p.resolveFunction('arrayMapper', '/etc/optic/rowPostProcessors.sjs')),
+        null,
+        'array'
         )
-      .result(function(response) {
-        const output = getResults(response);
-        should(output[0].length.value).equal(3);
-        should.exist(output[0][0].value);
-        should(output[0][0].value.length).equal(3);
-        should(output[0][0].value).containEql('id');
-        should(output[0][0].value).containEql('val');
-        should(output[0][0].value).containEql('seconds');
-        let idPos  = 0;
-        let valPos = 0;
-        let secondsPos = 0;
-        for (let i=0; i < 2; i++) {
-          switch(output[0][0].value[i]) {
+      .result(function(output) {
+        should(output.length).equal(3);
+        should(output[0].length).equal(3);
+        let idPos  = -1;
+        let valPos = -1;
+        let secondsPos = -1;
+        for (let i=0; i < 3; i++) {
+          switch(output[0][i].name) {
           case "id":
             idPos = i;
             break;
@@ -199,18 +179,21 @@ describe('processor', function() {
             secondsPos = i;
             break;
           default:
-            should(output[0][0].value[i]).equal('SHOULD NOT EXIST');
+            should(output[0][i]).equal('SHOULD NOT EXIST');
             break;
           }
         }
-        should(output[0][1].value[idPos]).equal(1);
-        should(output[0][1].value[valPos]).equal(2);
-        should(output[0][1].value[secondsPos]).be.greaterThanOrEqual(0);
-        should(output[0][1].value[secondsPos]).be.lessThanOrEqual(59);
-        should(output[0][2].value[idPos]).equal(2);
-        should(output[0][2].value[valPos]).equal(4);
-        should(output[0][2].value[secondsPos]).be.greaterThanOrEqual(0);
-        should(output[0][2].value[secondsPos]).be.lessThanOrEqual(59);
+        should(idPos).be.greaterThanOrEqual(0);
+        should(valPos).be.greaterThanOrEqual(0);
+        should(secondsPos).be.greaterThanOrEqual(0);
+        should(output[1][idPos].value).equal(1);
+        should(output[1][valPos].value).equal(2);
+        should(output[1][secondsPos].value).be.greaterThanOrEqual(0);
+        should(output[1][secondsPos].value).be.lessThanOrEqual(59);
+        should(output[2][idPos].value).equal(2);
+        should(output[2][valPos].value).equal(4);
+        should(output[2][secondsPos].value).be.greaterThanOrEqual(0);
+        should(output[2][secondsPos].value).be.lessThanOrEqual(59);
         done();
         })
       .catch(done);
@@ -222,27 +205,25 @@ describe('processor', function() {
           {id:2, val: 4} 
           ])
         .orderBy('id')
-        .map(secondsMapper)
+        .map(p.resolveFunction('secondsMapper', '/etc/optic/rowPostProcessors.sjs'))
         )
       .result(function(response) {
         const output = getResults(response);
-        should(output.length).equal(1);
-        should.exist(output[0].value);
-        should(output[0].length.value).equal(2);
-        should(output[0][0].value.id).equal(1);
-        should(output[0][0].value.val).equal(2);
-        should(output[0][0].value.seconds).be.greaterThanOrEqual(0);
-        should(output[0][0].value.seconds).be.lessThanOrEqual(59);
-        should(output[0][1].value.id).equal(2);
-        should(output[0][1].value.val).equal(4);
-        should(output[0][1].value.seconds).be.greaterThanOrEqual(0);
-        should(output[0][1].value.seconds).be.lessThanOrEqual(59);
+        should(output.length).equal(2);
+        should(output[0].id.value).equal(1);
+        should(output[0].val.value).equal(2);
+        should(output[0].seconds.value).be.greaterThanOrEqual(0);
+        should(output[0].seconds.value).be.lessThanOrEqual(59);
+        should(output[1].id.value).equal(2);
+        should(output[1].val.value).equal(4);
+        should(output[1].seconds.value).be.greaterThanOrEqual(0);
+        should(output[1].seconds.value).be.lessThanOrEqual(59);
         done();
         })
       .catch(done);
     });
     it('as array reducer', function(done) {
-      execPlan(
+      execPlanOld(
         p.fromLiterals([
           {val:  2}, 
           {val:  4}, 
@@ -250,16 +231,13 @@ describe('processor', function() {
           {val:  8} 
           ])
         .orderBy('val')
-        .reduce(function(previous, row) {
-          const val = (previous === void 0) ? 0 : previous + row[0];
-            return val;
-            })
-// array
+        .reduce(p.resolveFunction('arrayReducer', '/etc/optic/rowPostProcessors.sjs')),
+        null,
+        'array'
         )
       .result(function(response) {
-        const output = getResults(response);
-        should(output.length).equal(1);
-        should(output[0][0].value).equal(20);
+        const output = response.data;
+        should(output).equal(20);
         done();
         })
       .catch(done);
@@ -275,7 +253,7 @@ describe('processor', function() {
           {val: 12} 
           ])
         .orderBy('val')
-        .reduce(fibReducer)
+        .reduce(p.resolveFunction('fibReducer', '/etc/optic/rowPostProcessors.sjs'))
         )
       .result(function(response) {
         const output = getResults(response);
@@ -304,33 +282,35 @@ describe('processor', function() {
     });
   });
   it('explain default', function(done) {
-    execPlan(
+    execPlanOld(
       p.fromLiterals([
             {id:1, val: 2}, 
             {id:2, val: 4} 
-            ])
-// explain()
+            ]),
+      null,
+      'explain'
       )
     .result(function(response) {
-      const output = getResults(response);
-      should(output.length).equal(1);
-      should.exist(output[0].value);
+      const output = response.data;
+      should(output.node).equal('plan');
+      should.exist(output.expr);
       done();
       })
     .catch(done);
   });
   it('explain xml', function(done) {
-    execPlan(
+    execPlanOld(
       p.fromLiterals([
             {id:1, val: 2}, 
             {id:2, val: 4} 
-            ])
-// explain('xml')
+            ]),
+      null,
+      'explain',
+      'application/xml'
       )
     .result(function(response) {
-      const output = getResults(response);
-      should(output.length).equal(1);
-      should.exist(output[0].value);
+      const output = response.data;
+      should.exist(output);
       done();
       })
     .catch(done);
