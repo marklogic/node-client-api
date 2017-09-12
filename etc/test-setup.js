@@ -30,7 +30,7 @@ const moduleFiles = [
     contentType:'application/vnd.marklogic-tde+xml',
     permissions: [
       {'role-name':'app-user',                           capabilities:['read']},
-      {'role-name':'app-builder',                        capabilities:['read', 'update']},
+      {'role-name':'app-builder',                        capabilities:['read']},
       {'role-name':testconfig.restReaderConnection.user, capabilities:['read']},
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'update']}
     ],
@@ -41,11 +41,21 @@ const moduleFiles = [
     contentType:'application/vnd.marklogic-tde+xml',
     permissions: [
       {'role-name':'app-user',                           capabilities:['read']},
-      {'role-name':'app-builder',                        capabilities:['read', 'update']},
+      {'role-name':'app-builder',                        capabilities:['read']},
       {'role-name':testconfig.restReaderConnection.user, capabilities:['read']},
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'update']}
     ],
     content:fs.createReadStream('./etc/data/musician.tdex')
+  },{
+    uri:'/etc/optic/rowPostProcessors.sjs',
+    contentType:'application/vnd.marklogic-javascript',
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/rowPostProcessors.sjs')
   }];
 
 const dataFiles = [

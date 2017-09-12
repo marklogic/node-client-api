@@ -26,10 +26,9 @@ const dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection)
 const PlanBuilder = require('../lib/plan-builder');
 const planBuilder = PlanBuilder.builder;
 
-/* TODO: remove temporary hack
+// TODO: remove temporary hack
 const testlib = require('../etc/test-lib');
-const rowMgr = testlib.createManager(dbReader);
- */
+const rowMgrOld = testlib.createManager(dbReader);
 
 const rowMgr = dbReader.rows;
 
@@ -44,42 +43,50 @@ function makeInput(values) {
 function makeTest(input, expression) {
     return input.select(planBuilder.as('t', expression));
 }
-function execPlan(query, bindings) {
-/* TODO: delete temporary hack
-    const endpoint = (bindings === void 0) ? '/v1/rows' :
-      '/v1/rows'+Object.keys(bindings).map((key, i) => {
-        const sep       = (i === 0) ? '?' : '&';
-        const binding   = bindings[key];
-        const isSimple  = (typeof binding !== 'object' || (binding instanceof String) ||
-          (binding instanceof Number) || (binding instanceof Boolean) || binding === null);
-        const bindValue = isSimple ? binding : binding.value;
-        if (bindValue === void 0) {
-          throw new Error(`binding for ${key} without value: ${binding}`);
-        }
-        const type      = isSimple ? (void 0) : binding.type;
-        const lang      = isSimple ? (void 0) : binding.lang;
-        if (type !== void 0 && lang !== void 0) {
-          throw new Error(`binding for ${key} with type and lang: ${binding}`);
-        }
-        const name      = encodeURIComponent(key);
-        const bindName  =
-          (type !== void 0) ? name+':'+type :
+// TODO: delete temporary hack
+function execPlanOld(query, bindings, output, accept) {
+  const rowOutput = (output === void 0 || output === null) ? 'object' : output;
+  const baseEndpoint = '/v1/rows?output='+rowOutput;
+  const endpoint  = (bindings === void 0 || bindings === null) ? baseEndpoint :
+    baseEndpoint+Object.keys(bindings).map(key => {
+      const binding   = bindings[key];
+      const isSimple  = (typeof binding !== 'object' || (binding instanceof String) ||
+        (binding instanceof Number) || (binding instanceof Boolean) || binding === null);
+      const bindValue = isSimple ? binding : binding.value;
+      if (bindValue === void 0) {
+        throw new Error(`binding for ${key} without value: ${binding}`);
+      }
+      const type      = isSimple ? (void 0) : binding.type;
+      const lang      = isSimple ? (void 0) : binding.lang;
+      if (type !== void 0 && lang !== void 0) {
+        throw new Error(`binding for ${key} with type and lang: ${binding}`);
+      }
+      const name      = encodeURIComponent(key);
+      const bindName  =
+        (type !== void 0) ? name+':'+type :
           (lang !== void 0) ? name+'@'+lang :
-          name;
-        return `${sep}bind:${bindName}=${encodeURIComponent(bindValue)}`;
-        }).join('');
+            name;
+      return `&bind:${bindName}=${encodeURIComponent(bindValue)}`;
+    }).join('');
+// console.log(JSON.stringify(query.export(),null,2));
 // console.log(endpoint);
-    return rowMgr.post({
-        endpoint: endpoint,
-        body:     query.export()
-    });
-    */
+  return rowMgrOld.post({
+    endpoint: endpoint,
+    headers: {
+      'content-type': 'application/json',
+      accept:         (accept === void 0 || accept === null) ? 'application/json' : accept
+      },
+    body:     query.export()
+  });
+}
+function execPlan(query, bindings, output) {
 // console.log(JSON.stringify(query.export(),null,2));
   const plan = JSON.stringify(query.export());
-  if (bindings === void 0) {
-    return rowMgr.query(plan, {format: 'json', output: 'object'});
+  const rowOutput = (output === void 0 || output === null) ? 'object' : output;
+  if (bindings === void 0 || bindings === null) {
+    return rowMgr.query(plan, {format: 'json', output: rowOutput});
   }
-  return rowMgr.query(plan, {format: 'json', output: 'object', bindings:bindings});
+  return rowMgr.query(plan, {format: 'json', output: rowOutput, bindings:bindings});
 }
 function testPlan(values, expression) {
     return execPlan(makeTest(makeInput(values), expression));
@@ -115,6 +122,7 @@ module.exports = {
     dbWriter:         dbWriter,
     planBuilder:      planBuilder,
     execPlan:         execPlan,
+    execPlanOld:      execPlanOld, // TODO: delete temporary hack
     getResult:        getResult,
     getResults:       getResults,
     makeInput:        makeInput,
