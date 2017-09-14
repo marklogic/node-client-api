@@ -22,6 +22,7 @@ const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
 const execPlan = pbb.execPlan;
 const execPlanOld = pbb.execPlanOld;
+const explainPlan = pbb.explainPlan;
 const getResults = pbb.getResults;
 
 describe('processor', function() {
@@ -89,7 +90,7 @@ describe('processor', function() {
       .catch(done);
     });
     it('as array sequence', function(done) {
-      execPlan(
+      execPlanOld(
         p.fromLiterals([
           {id:1, val: 2}, 
           {id:2, val: 4} 
@@ -98,7 +99,8 @@ describe('processor', function() {
         null,
         'array'
         )
-      .result(function(output) {
+      .result(function(response) {
+        const output = response.data;
         should(output.length).equal(3);
         should(output[0].length).equal(2);
         let idPos  = 0;
@@ -127,7 +129,7 @@ describe('processor', function() {
       .catch(done);
     });
     it('with placeholder parameter', function(done) {
-      execPlan(
+      execPlanOld(
         p.fromLiterals([
           {id:1, val: 2}, 
           {id:2, val: 4}, 
@@ -137,10 +139,12 @@ describe('processor', function() {
         .offsetLimit(p.param('start'), p.param('length'))
         .where(p.gt(p.col('val'), p.param('floor')))
         .select(['id', p.as('incremented', p.add(p.col('val'), p.param('increment')))]),
-        {start:1, length:2, floor:4, increment:1}
+        {
+          start:1, length:2, floor:4, increment:1
+          }
         )
       .result(function(response) {
-        const output = getResults(response);
+        const output = response.data.rows;
         should(output.length).equal(1);
         should(output[0].id.value).equal(3);
         should(output[0].incremented.value).equal(7);
@@ -151,7 +155,7 @@ describe('processor', function() {
   });
   describe('function', function() {
     it('as array mapper', function(done) {
-      execPlan(
+      execPlanOld(
         p.fromLiterals([
           {id:1, val: 2},
           {id:2, val: 4}
@@ -161,7 +165,8 @@ describe('processor', function() {
         null,
         'array'
         )
-      .result(function(output) {
+      .result(function(response) {
+        const output = response.data;
         should(output.length).equal(3);
         should(output[0].length).equal(3);
         let idPos  = -1;
@@ -282,16 +287,13 @@ describe('processor', function() {
     });
   });
   it('explain default', function(done) {
-    execPlanOld(
+    explainPlan(
       p.fromLiterals([
             {id:1, val: 2}, 
             {id:2, val: 4} 
-            ]),
-      null,
-      'explain'
+            ])
       )
-    .result(function(response) {
-      const output = response.data;
+    .result(function(output) {
       should(output.node).equal('plan');
       should.exist(output.expr);
       done();
@@ -299,17 +301,14 @@ describe('processor', function() {
     .catch(done);
   });
   it('explain xml', function(done) {
-    execPlanOld(
+    explainPlan(
       p.fromLiterals([
             {id:1, val: 2}, 
             {id:2, val: 4} 
             ]),
-      null,
-      'explain',
-      'application/xml'
+      'xml'
       )
-    .result(function(response) {
-      const output = response.data;
+    .result(function(output) {
       should.exist(output);
       done();
       })
