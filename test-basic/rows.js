@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var should   = require('should'),
-    fs       = require('fs'),
-    valcheck = require('core-util-is');
+const should   = require('should'),
+      fs       = require('fs'),
+      valcheck = require('core-util-is');
 
-var testconfig = require('../etc/test-config.js');
+const testconfig = require('../etc/test-config.js');
 
-var marklogic = require('../');
+const marklogic = require('../');
 
-var planPath = './test-basic/data/literals.json';
-var planPathBindings = './test-basic/data/literalsBindings.json';
+const planPath = './test-basic/data/literals.json';
+const planPathBindings = './test-basic/data/literalsBindings.json';
 
-var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 //db.setLogger('debug');
 
 describe('rows', function(){
 
-  var plan = fs.readFileSync(planPath);
-  var planBindings = fs.readFileSync(planPathBindings);
+  const plan = fs.readFileSync(planPath);
+  const planBindings = fs.readFileSync(planPathBindings);
 
   describe('read as a promise', function(){
 
@@ -40,14 +40,14 @@ describe('rows', function(){
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
           response.length.should.equal(3);
-          var obj1 = response[0];
+          const obj1 = response[0];
           valcheck.isObject(obj1).should.equal(true);
           valcheck.isArray(obj1).should.equal(false);
           obj1.should.have.property('columns');
           valcheck.isArray(obj1['columns']).should.equal(true);
           obj1['columns'][0].should.have.property('name');
           obj1['columns'][0].should.not.have.property('type');
-          var obj2 = response[1];
+          const obj2 = response[1];
           valcheck.isObject(obj2).should.equal(true);
           valcheck.isArray(obj2).should.equal(false);
           obj2.should.have.property('date');
@@ -64,7 +64,7 @@ describe('rows', function(){
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
           response.length.should.equal(3);
-          var obj1 = response[0];
+          const obj1 = response[0];
           valcheck.isObject(obj1).should.equal(true);
           valcheck.isArray(obj1).should.equal(false);
           obj1.should.have.property('columns');
@@ -99,10 +99,10 @@ describe('rows', function(){
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
           response.length.should.equal(3);
-          var str1 = response[0];
+          const str1 = response[0];
           valcheck.isString(str1).should.equal(true);
           str1.should.startWith('<t:columns');
-          var str2 = response[1];
+          const str2 = response[1];
           valcheck.isString(str2).should.equal(true);
           str2.should.startWith('<t:row');
           done();
@@ -116,7 +116,7 @@ describe('rows', function(){
 
     it('of chunked JSON', function(done){
 
-      var chunks = 0,
+      let chunks = 0,
           length = 0;
 
       db.rows.query(plan, {format: 'json'})
