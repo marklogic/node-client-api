@@ -339,7 +339,7 @@ describe('document content', function(){
           })
         .catch(done);
       });
-      it('should read as a stream', function(done){
+      it('should read as a chunked stream', function(done){
         db.documents.read(uri).stream('chunked').on('error', done).
           pipe(
             concatStream({encoding: 'buffer'}, function(value) {
@@ -398,6 +398,57 @@ describe('document content', function(){
           done();
           })
         .catch(done);
+      });
+      it('should read as an object stream with content and metadata', function(done){
+        var count = 0;
+        db.documents.read({
+            uris: ['/test/write/arrayString1.json', '/test/write/arrayObject2.json'],
+            categories: ['content', 'quality']
+        }).stream('object').on('error', done).
+          on('data', function (data) {
+            count++;
+            valcheck.isObject(data).should.equal(true);
+            data.should.have.property('content');
+            data.should.have.property('quality');
+          }).
+          on('end', function () {
+            count.should.equal(2);
+            done();
+          });
+      });
+      it('should read as an object stream with content only', function(done){
+        var count = 0;
+        db.documents.read({
+            uris: ['/test/write/arrayString1.json', '/test/write/arrayObject2.json'],
+            categories: ['content']
+        }).stream('object').on('error', done).
+          on('data', function (data) {
+            count++;
+            valcheck.isObject(data).should.equal(true);
+            data.should.have.property('content');
+            data.should.not.have.property('quality');
+          }).
+          on('end', function () {
+            count.should.equal(2);
+            done();
+          });
+      });
+      it('should read as an object stream with metadata only', function(done){
+        var count = 0;
+        db.documents.read({
+            uris: ['/test/write/arrayString1.json', '/test/write/arrayObject2.json'],
+            categories: ['quality']
+        }).stream('object').on('error', done).
+          on('data', function (data) {
+            count++;
+            valcheck.isObject(data).should.equal(true);
+            data.should.not.have.property('content');
+            data.should.have.property('quality');
+          }).
+          on('end', function () {
+            count.should.equal(2);
+            done();
+          });
       });
     });
     describe('a JSON document in two chunks', function(){

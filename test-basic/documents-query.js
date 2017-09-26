@@ -504,6 +504,24 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should get the query as an object stream with initial summary', function(done){
+      this.timeout(3000);
+      var objects = [];
+      db.documents.query(
+        q.where(
+          q.value('valueKey', 'match value')
+        ).withOptions({metrics: true})
+      ).stream('object')
+      .on('error', done)
+      .on('data', function (object) {
+        objects.push(object);
+      }).
+      on('end', function () {
+        objects[0].should.have.property('snippet-format');
+        objects[1].should.have.property('uri');
+        done();
+      });
+    });
   });
   describe('for a where clause with a parsed query', function() {
     it('should match a value query', function(done){
