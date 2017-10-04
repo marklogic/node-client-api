@@ -81,7 +81,7 @@ function execPlanOld(query, bindings, output, accept) {
 }
 function execPlan(query, bindings, output) {
   const plan = JSON.stringify(query.export());
-// console.log(JSON.stringify(plan,null,2));
+// console.log(plan);
   const rowOutput = (output === void 0 || output === null) ? 'object' : output;
   if (bindings === void 0 || bindings === null) {
     return rowMgr.query(plan, {format: 'json', output: rowOutput});
