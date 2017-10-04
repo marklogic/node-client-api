@@ -25,7 +25,7 @@ const planPath = './test-basic/data/literals.json';
 const planPathBindings = './test-basic/data/literalsBindings.json';
 
 const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-//db.setLogger('debug');
+db.setLogger('debug');
 
 const p = marklogic.planBuilder;
 
@@ -42,7 +42,7 @@ describe('rows', function(){
 
   describe('read as a promise', function(){
 
-    it('as an array of JSON objects using plan builder as an input', function(done){
+    it('as an array of JSON objects using plan builder object', function(done){
       db.rows.query(planFromBuilder, {format: 'json'})
         .result(function(response) {
           //console.log(JSON.stringify(response, null, 2));
@@ -66,7 +66,7 @@ describe('rows', function(){
         .catch(done);
     });
 
-    it('as an array of JSON objects using JSON as an input', function(done){
+    it('as an array of JSON objects using JSON plan', function(done){
       db.rows.query(planFromJSON, {format: 'json'})
         .result(function(response) {
           //console.log(JSON.stringify(response, null, 2));
@@ -128,7 +128,7 @@ describe('rows', function(){
     it('as an array of XML elements', function(done){
       db.rows.query(planFromJSON, {format: 'xml'})
         .result(function(response) {
-          //console.log(JSON.stringify(response, null, 2));
+          console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
           response.length.should.equal(3);
           const str1 = response[0];
