@@ -15,7 +15,8 @@
  */
 const should   = require('should'),
       fs       = require('fs'),
-      valcheck = require('core-util-is');
+      valcheck = require('core-util-is')
+      eol      = require('os').EOL;
 
 const testconfig = require('../etc/test-config.js');
 
@@ -125,22 +126,32 @@ describe('rows', function(){
         .catch(done);
     });
 
-    // it('as an array of XML elements', function(done){
-    //   db.rows.query(planFromJSON, {format: 'xml'})
-    //     .result(function(response) {
-    //       console.log(JSON.stringify(response, null, 2));
-    //       valcheck.isArray(response).should.equal(true);
-    //       response.length.should.equal(3);
-    //       const str1 = response[0];
-    //       valcheck.isString(str1).should.equal(true);
-    //       str1.should.startWith('<t:columns');
-    //       const str2 = response[1];
-    //       valcheck.isString(str2).should.equal(true);
-    //       str2.should.startWith('<t:row');
-    //       done();
-    //       })
-    //     .catch(done);
-    // });
+    it('as an array of XML elements', function(done){
+      db.rows.query(planFromJSON, {format: 'xml'})
+        .result(function(response) {
+          //console.log(JSON.stringify(response, null, 2));
+          valcheck.isArray(response).should.equal(true);
+          response.length.should.equal(3);
+          const str1 = response[0];
+          valcheck.isString(str1).should.equal(true);
+          str1.should.startWith('<t:columns');
+          const str2 = response[1];
+          valcheck.isString(str2).should.equal(true);
+          str2.should.startWith('<t:row');
+          done();
+          })
+        .catch(done);
+    });
+
+    it('as CSV', function(done){
+      db.rows.query(planFromJSON, {format: 'csv'})
+        .result(function(response) {
+          //console.log(response);
+          valcheck.isString(response).should.equal(true);
+          done();
+          })
+        .catch(done);
+    });
 
   });
 
@@ -186,6 +197,50 @@ describe('rows', function(){
         done();
       }, done);
       // TODO Possible bug in responder handling multipart-to-object streams
+
+    });
+
+    it('of chunked XML', function(done){
+
+      let chunks = 0,
+          length = 0;
+
+      db.rows.query(planFromJSON, {format: 'xml'})
+        .stream('chunked').
+      on('data', function(chunk){
+        // console.log(chunk.toString());
+        // console.log(chunk.length);
+        valcheck.isBuffer(chunk).should.equal(true);
+        chunks++;
+        length += chunk.length;
+      }).
+      on('end', function(){
+        // console.log('read '+ chunks + ' chunks of ' + length + ' length');
+        chunks.should.be.greaterThan(0);
+        done();
+      }, done);
+
+    });
+
+    it('of chunked CSV', function(done){
+
+      let chunks = 0,
+          length = 0;
+
+      db.rows.query(planFromJSON, {format: 'csv'})
+        .stream('chunked').
+      on('data', function(chunk){
+        // console.log(chunk.toString());
+        // console.log(chunk.length);
+        valcheck.isBuffer(chunk).should.equal(true);
+        chunks++;
+        length += chunk.length;
+      }).
+      on('end', function(){
+        //console.log('read '+ chunks + ' chunks of ' + length + ' length');
+        chunks.should.be.greaterThan(0);
+        done();
+      }, done);
 
     });
 
