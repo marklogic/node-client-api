@@ -1,0 +1,178 @@
+{
+  "$optic": {
+    "args": [
+      {
+        "args": [
+          [
+            {
+              "bool": true,
+              "gp": 1,
+              "nm": "alpha",
+              "num": 10,
+              "row": 1,
+              "str": "a"
+            },
+            {
+              "bool": false,
+              "gp": 1,
+              "nm": "beta",
+              "num": 20,
+              "row": 2,
+              "str": "b"
+            },
+            {
+              "bool": true,
+              "gp": 2,
+              "nm": "gamma",
+              "num": 30,
+              "row": 3,
+              "str": "c"
+            },
+            {
+              "bool": false,
+              "gp": 2,
+              "nm": "delta",
+              "num": 40,
+              "row": 4,
+              "str": "d"
+            }
+          ],
+          null
+        ],
+        "fn": "from-literals",
+        "ns": "op"
+      },
+      {
+        "args": [
+          {
+            "args": [
+              {
+                "args": [
+                  "gp"
+                ],
+                "fn": "col",
+                "ns": "op"
+              },
+              1
+            ],
+            "fn": "eq",
+            "ns": "op"
+          }
+        ],
+        "fn": "where",
+        "ns": "op"
+      },
+      {
+        "args": [
+          [
+            {
+              "args": [
+                "row"
+              ],
+              "fn": "col",
+              "ns": "op"
+            },
+            {
+              "args": [
+                "node",
+                {
+                  "args": [
+                    {
+                      "args": [
+                        {
+                          "args": [
+                            "nm"
+                          ],
+                          "fn": "col",
+                          "ns": "op"
+                        },
+                        null,
+                        [
+                          {
+                            "args": [
+                              {
+                                "args": [
+                                  "str"
+                                ],
+                                "fn": "col",
+                                "ns": "op"
+                              },
+                              null,
+                              [
+                                {
+                                  "args": [
+                                    {
+                                      "args": [
+                                        "bool"
+                                      ],
+                                      "fn": "col",
+                                      "ns": "op"
+                                    }
+                                  ],
+                                  "fn": "xml-text",
+                                  "ns": "op"
+                                }
+                              ]
+                            ],
+                            "fn": "xml-element",
+                            "ns": "op"
+                          }
+                        ]
+                      ],
+                      "fn": "xml-element",
+                      "ns": "op"
+                    }
+                  ],
+                  "fn": "xml-document",
+                  "ns": "op"
+                }
+              ],
+              "fn": "as",
+              "ns": "op"
+            },
+            {
+              "args": [
+                "kind",
+                {
+                  "args": [
+                    {
+                      "args": [
+                        "node"
+                      ],
+                      "fn": "col",
+                      "ns": "op"
+                    }
+                  ],
+                  "fn": "node-kind",
+                  "ns": "xdmp"
+                }
+              ],
+              "fn": "as",
+              "ns": "op"
+            }
+          ],
+          null
+        ],
+        "fn": "select",
+        "ns": "op"
+      },
+      {
+        "args": [
+          [
+            {
+              "args": [
+                "row"
+              ],
+              "fn": "col",
+              "ns": "op"
+            }
+          ]
+        ],
+        "fn": "order-by",
+        "ns": "op"
+      }
+    ],
+    "fn": "operators",
+    "ns": "op"
+  }
+}
