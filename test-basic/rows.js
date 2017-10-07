@@ -24,6 +24,7 @@ const marklogic = require('../');
 
 const planPath = './test-basic/data/literals.json';
 const planPathBindings = './test-basic/data/literalsBindings.json';
+const planPathAttachments = './test-basic/data/literalsAttachments.json';
 
 const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 //db.setLogger('debug');
@@ -34,6 +35,7 @@ describe('rows', function(){
 
   const planFromJSON = fs.readFileSync(planPath, 'utf8');
   const planFromJSONBindings = fs.readFileSync(planPathBindings, 'utf8');
+  const planFromJSONAttachments = fs.readFileSync(planPathAttachments, 'utf8');
   const planFromBuilder = p.fromLiterals([
             {"id": 1,"name": "Master 1","date": "2015-12-01"},
             {"id": 2,"name": "Master 2","date": "2015-12-02"},
@@ -43,114 +45,80 @@ describe('rows', function(){
 
   describe('read as a promise', function(){
 
-    it('as an array of JSON objects using plan builder object', function(done){
-      db.rows.query(planFromBuilder, {format: 'json'})
-        .result(function(response) {
-          //console.log(JSON.stringify(response, null, 2));
-          valcheck.isArray(response).should.equal(true);
-          response.length.should.equal(3);
-          const obj1 = response[0];
-          valcheck.isObject(obj1).should.equal(true);
-          valcheck.isArray(obj1).should.equal(false);
-          obj1.should.have.property('columns');
-          valcheck.isArray(obj1['columns']).should.equal(true);
-          obj1['columns'][0].should.have.property('name');
-          obj1['columns'][0].should.not.have.property('type');
-          const obj2 = response[1];
-          valcheck.isObject(obj2).should.equal(true);
-          valcheck.isArray(obj2).should.equal(false);
-          obj2.should.have.property('date');
-          obj2['date'].should.have.property('type');
-          obj2['date'].should.have.property('value');
-          done();
-          })
-        .catch(done);
+    it('as a JSON object using plan builder object', function(){
+      return db.rows.query(planFromBuilder)
+        .then(function (response) {
+          //console.log(response);
+          valcheck.isObject(response).should.equal(true);
+          valcheck.isArray(response).should.equal(false);
+          response.should.have.property('columns');
+        });
     });
 
-    it('as an array of JSON objects using JSON plan', function(done){
-      db.rows.query(planFromJSON, {format: 'json'})
-        .result(function(response) {
+    it('as a JSON object using JSON plan', function(){
+      return db.rows.query(planFromJSON)
+        .then(function(response) {
           //console.log(JSON.stringify(response, null, 2));
-          valcheck.isArray(response).should.equal(true);
-          response.length.should.equal(3);
-          const obj1 = response[0];
-          valcheck.isObject(obj1).should.equal(true);
-          valcheck.isArray(obj1).should.equal(false);
-          obj1.should.have.property('columns');
-          valcheck.isArray(obj1['columns']).should.equal(true);
-          obj1['columns'][0].should.have.property('name');
-          obj1['columns'][0].should.not.have.property('type');
-          const obj2 = response[1];
-          valcheck.isObject(obj2).should.equal(true);
-          valcheck.isArray(obj2).should.equal(false);
-          obj2.should.have.property('date');
-          obj2['date'].should.have.property('type');
-          obj2['date'].should.have.property('value');
-          done();
-          })
-        .catch(done);
+          valcheck.isObject(response).should.equal(true);
+          valcheck.isArray(response).should.equal(false);
+        });
     });
 
-    it('as an array of JSON objects with header column types', function(done){
-      db.rows.query(planFromJSON, {format: 'json', columnTypes: 'header'})
-        .result(function(response) {
+    it('as a JSON array', function(){
+      return db.rows.query(planFromJSON, {format: 'json', output: 'array'})
+        .then(function(response) {
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
-          response.length.should.equal(3);
-          const obj1 = response[0];
-          valcheck.isObject(obj1).should.equal(true);
-          valcheck.isArray(obj1).should.equal(false);
-          obj1.should.have.property('columns');
-          valcheck.isArray(obj1['columns']).should.equal(true);
-          obj1['columns'][0].should.have.property('name');
-          obj1['columns'][0].should.have.property('type');
-          done();
-          })
-        .catch(done);
+        });
     });
 
-    it('as an array of JSON objects with bindings', function(done){
-      db.rows.query(planFromJSONBindings, {
+    it('as a JSON object with header column types', function(){
+      return db.rows.query(planFromJSON, {format: 'json', columnTypes: 'header'})
+        .then(function(response) {
+          //console.log(JSON.stringify(response, null, 2));
+          valcheck.isObject(response).should.equal(true);
+          valcheck.isArray(response).should.equal(false);
+          response.should.have.property('columns');
+          const cols = response['columns'];
+          valcheck.isArray(cols).should.equal(true);;
+          cols[0].should.have.property('name');
+          cols[0].should.have.property('type');
+        });
+    });
+
+    it('as a JSON object with bindings', function(){
+      return db.rows.query(planFromJSONBindings, {
         format: 'json',
         bindings: {
           'limit': {value: 2, type: 'integer'},
           'foo': {value: 'bar', lang: 'en'}
         }
       })
-        .result(function(response) {
-          //console.log(JSON.stringify(response, null, 2));
-          valcheck.isArray(response).should.equal(true);
-          response.length.should.equal(2);
-          done();
-          })
-        .catch(done);
+        .then(function(response) {
+          //console.log(response);
+          valcheck.isObject(response).should.equal(true);
+          valcheck.isArray(response).should.equal(false);
+          response.should.have.property('columns');
+          response.should.have.property('rows');
+          response['rows'].length.should.equal(1);
+        });
     });
 
-    it('as an array of XML elements', function(done){
-      db.rows.query(planFromJSON, {format: 'xml'})
-        .result(function(response) {
-          //console.log(JSON.stringify(response, null, 2));
-          valcheck.isArray(response).should.equal(true);
-          response.length.should.equal(3);
-          const str1 = response[0];
-          valcheck.isString(str1).should.equal(true);
-          str1.should.startWith('<t:columns');
-          const str2 = response[1];
-          valcheck.isString(str2).should.equal(true);
-          str2.should.startWith('<t:row');
-          done();
-          })
-        .catch(done);
-    });
-
-    it('as CSV', function(done){
-      db.rows.query(planFromJSON, {format: 'csv'})
-        .result(function(response) {
+    it('as an XML string', function(){
+      return db.rows.query(planFromJSON, {format: 'xml', columnsTypes: 'rows'})
+        .then(function(response) {
           //console.log(response);
           valcheck.isString(response).should.equal(true);
-          done();
-          })
-        .catch(done);
+          response.should.startWith('<t:table');
+        });
+    });
+
+    it('as CSV', function(){
+      return db.rows.query(planFromJSON, {format: 'csv'})
+        .then(function(response) {
+          //console.log(response);
+          valcheck.isString(response).should.equal(true);
+        });
     });
 
   });
@@ -162,16 +130,16 @@ describe('rows', function(){
       let chunks = 0,
           length = 0;
 
-      db.rows.query(planFromJSON, {format: 'json'})
-        .stream('chunked').
-      on('data', function(chunk){
+      db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'json'})
+      .on('data', function(chunk){
+        // console.log(chunk);
         // console.log(JSON.parse(chunk));
         // console.log(chunk.length);
         valcheck.isBuffer(chunk).should.equal(true);
         chunks++;
         length += chunk.length;
-      }).
-      on('end', function(){
+      })
+      .on('end', function(){
         //console.log('read '+ chunks + ' chunks of ' + length + ' length');
         chunks.should.be.greaterThan(0);
         done();
@@ -184,14 +152,13 @@ describe('rows', function(){
 
       var objects = 0;
 
-      db.rows.query(planFromJSON, {format: 'json'})
-        .stream('object').
-      on('data', function(obj){
+      db.rows.queryAsStream(planFromJSON, 'object', {format: 'json'})
+      .on('data', function(obj){
         //console.log(obj);
         valcheck.isObject(obj).should.equal(true);
         objects++;
-      }).
-      on('end', function(){
+      })
+      .on('end', function(){
         //console.log('objects: ' + objects);
         objects.should.be.greaterThan(0);
         done();
@@ -200,21 +167,84 @@ describe('rows', function(){
 
     });
 
+    it('of JSON objects with attachments inline', function(done){
+
+      var objects = 0;
+
+      db.rows.queryAsStream(planFromJSONAttachments, 'object', {
+        format: 'json',
+        nodeColumns: 'inline'
+      })
+      .on('data', function(obj){
+        //console.log(JSON.stringify(obj, null, 2));
+        //console.log(obj);
+        valcheck.isObject(obj).should.equal(true);
+        objects++;
+      })
+      .on('end', function(){
+        //console.log('objects: ' + objects);
+        objects.should.be.greaterThan(0);
+        done();
+      }, done);
+    });
+
+    it('of JSON objects with attachments reference', function(done){
+
+      var objects = 0;
+
+      db.rows.queryAsStream(planFromJSONAttachments, 'object', {
+        format: 'json',
+        nodeColumns: 'reference'
+      })
+      .on('data', function(obj){
+        //console.log(JSON.stringify(obj, null, 2));
+        //console.log(obj);
+        valcheck.isObject(obj).should.equal(true);
+        objects++;
+      })
+      .on('end', function(){
+        //console.log('objects: ' + objects);
+        objects.should.be.greaterThan(0);
+        done();
+      }, done);
+    });
+
+    it('of JSON objects with binary attachments reference', function(done){
+
+      var objects = 0;
+
+      db.rows.queryAsStream(planFromJSONAttachments, 'object', {
+        format: 'json',
+        nodeColumns: 'reference'
+      })
+      .on('data', function(obj){
+        //console.log(JSON.stringify(obj, null, 2));
+        //console.log(obj);
+        valcheck.isObject(obj).should.equal(true);
+        objects++;
+      })
+      .on('end', function(){
+        //console.log('objects: ' + objects);
+        objects.should.be.greaterThan(0);
+        done();
+      }, done);
+    });
+
     it('of chunked XML', function(done){
 
       let chunks = 0,
           length = 0;
 
-      db.rows.query(planFromJSON, {format: 'xml'})
-        .stream('chunked').
-      on('data', function(chunk){
+      db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'xml'})
+      .on('data', function(chunk){
+        // console.log(chunk);
         // console.log(chunk.toString());
         // console.log(chunk.length);
         valcheck.isBuffer(chunk).should.equal(true);
         chunks++;
         length += chunk.length;
-      }).
-      on('end', function(){
+      })
+      .on('end', function(){
         // console.log('read '+ chunks + ' chunks of ' + length + ' length');
         chunks.should.be.greaterThan(0);
         done();
@@ -227,17 +257,17 @@ describe('rows', function(){
       let chunks = 0,
           length = 0;
 
-      db.rows.query(planFromJSON, {format: 'csv'})
-        .stream('chunked').
-      on('data', function(chunk){
+      db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'csv'})
+      .on('data', function(chunk){
+        // console.log(chunk);
         // console.log(chunk.toString());
         // console.log(chunk.length);
         valcheck.isBuffer(chunk).should.equal(true);
         chunks++;
         length += chunk.length;
-      }).
-      on('end', function(){
-        //console.log('read '+ chunks + ' chunks of ' + length + ' length');
+      })
+      .on('end', function(){
+        // console.log('read '+ chunks + ' chunks of ' + length + ' length');
         chunks.should.be.greaterThan(0);
         done();
       }, done);
@@ -248,28 +278,24 @@ describe('rows', function(){
 
   describe('explain', function(){
 
-    it('a plan as JSON', function(done){
-      db.rows.explain(planFromJSON, {format: 'json'})
-        .result(function(response) {
+    it('a plan as JSON', function(){
+      return db.rows.explain(planFromJSON, 'json')
+        .then(function(response) {
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isObject(response).should.equal(true);
           valcheck.isArray(response).should.equal(false);
           response.should.have.property('node');
           response.should.have.property('expr');
-          done();
           })
-        .catch(done);
     });
 
-    it('a plan as XML', function(done){
-      db.rows.explain(planFromJSON, {format: 'xml'})
-        .result(function(response) {
+    it('a plan as XML', function(){
+      return db.rows.explain(planFromJSON, 'xml')
+        .then(function(response) {
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isString(response).should.equal(true);
           response.should.startWith('<plan:plan');
-          done();
           })
-        .catch(done);
     });
 
   });
