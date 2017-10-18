@@ -230,6 +230,29 @@ describe('rows', function(){
       }, done);
     });
 
+    it('of JSON text sequence', function(done){
+
+      var objects = 0;
+
+      db.rows.queryAsStream(planFromJSON, 'sequence', {format: 'json'})
+      .on('data', function(chunk){
+        valcheck.isBuffer(chunk).should.equal(true);
+        // check for record separator
+        let firstChar = chunk.toString()[0];
+        firstChar.should.equal('\x1e')
+        // substr(1) removes initial record separator
+        let object = JSON.parse(chunk.toString().substr(1));
+        valcheck.isObject(object).should.equal(true);
+        objects++;
+      })
+      .on('end', function(){
+        //console.log('objects: ' + objects);
+        objects.should.be.greaterThan(0);
+        done();
+      }, done);
+
+    });
+
     it('of chunked XML', function(done){
 
       let chunks = 0,
