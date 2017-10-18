@@ -65,7 +65,7 @@ describe('rows', function(){
     });
 
     it('as a JSON array', function(){
-      return db.rows.query(planFromJSON, {format: 'json', output: 'array'})
+      return db.rows.query(planFromJSON, {format: 'json', structure: 'array'})
         .then(function(response) {
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
