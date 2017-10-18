@@ -1,0 +1,62 @@
+{
+  "$optic": {
+    "args": [
+      {
+        "args": [
+          [
+            {
+              "id": 1,
+              "uri": "/test/binary/test1.png",
+              "val": 2
+            },
+            {
+              "id": 2,
+              "uri": "/test/write/stream1.png",
+              "val": 4
+            }
+          ],
+          null
+        ],
+        "fn": "from-literals",
+        "ns": "op"
+      },
+      {
+        "args": [
+          [
+            {
+              "args": [
+                "id"
+              ],
+              "fn": "col",
+              "ns": "op"
+            }
+          ]
+        ],
+        "fn": "order-by",
+        "ns": "op"
+      },
+      {
+        "args": [
+          {
+            "args": [
+              "doc"
+            ],
+            "fn": "col",
+            "ns": "op"
+          },
+          {
+            "args": [
+              "uri"
+            ],
+            "fn": "col",
+            "ns": "op"
+          }
+        ],
+        "fn": "join-doc",
+        "ns": "op"
+      }
+    ],
+    "fn": "operators",
+    "ns": "op"
+  }
+}

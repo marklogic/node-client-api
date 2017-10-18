@@ -25,6 +25,7 @@ const marklogic = require('../');
 const planPath = './test-basic/data/literals.json';
 const planPathBindings = './test-basic/data/literalsBindings.json';
 const planPathAttachments = './test-basic/data/literalsAttachments.json';
+const planPathBinaryAttachments = './test-basic/data/literalsBinaryAttachments.json';
 
 const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 //db.setLogger('debug');
@@ -36,6 +37,7 @@ describe('rows', function(){
   const planFromJSON = fs.readFileSync(planPath, 'utf8');
   const planFromJSONBindings = fs.readFileSync(planPathBindings, 'utf8');
   const planFromJSONAttachments = fs.readFileSync(planPathAttachments, 'utf8');
+  const planFromJSONBinaryAttachments = fs.readFileSync(planPathBinaryAttachments, 'utf8');
   const planFromBuilder = p.fromLiterals([
             {"id": 1,"name": "Master 1","date": "2015-12-01"},
             {"id": 2,"name": "Master 2","date": "2015-12-02"},
@@ -126,10 +128,8 @@ describe('rows', function(){
   describe('read as a stream', function(){
 
     it('of chunked JSON', function(done){
-
       let chunks = 0,
           length = 0;
-
       db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'json'})
       .on('data', function(chunk){
         // console.log(chunk);
@@ -144,96 +144,79 @@ describe('rows', function(){
         chunks.should.be.greaterThan(0);
         done();
       }, done);
-
     });
 
-
     it('of JSON objects', function(done){
-
-      var objects = 0;
-
+      var count = 0;
       db.rows.queryAsStream(planFromJSON, 'object', {format: 'json'})
       .on('data', function(obj){
         //console.log(obj);
         valcheck.isObject(obj).should.equal(true);
-        objects++;
+        count++;
       })
       .on('end', function(){
-        //console.log('objects: ' + objects);
-        objects.should.be.greaterThan(0);
+        //console.log('objects: ' + count);
+        count.should.be.greaterThan(0);
         done();
       }, done);
-      // TODO Possible bug in responder handling multipart-to-object streams
-
     });
 
     it('of JSON objects with attachments inline', function(done){
-
-      var objects = 0;
-
+      var count = 0;
       db.rows.queryAsStream(planFromJSONAttachments, 'object', {
         format: 'json',
         nodeColumns: 'inline'
       })
       .on('data', function(obj){
-        //console.log(JSON.stringify(obj, null, 2));
-        //console.log(obj);
+        // console.log(obj);
         valcheck.isObject(obj).should.equal(true);
-        objects++;
+        count++;
       })
       .on('end', function(){
-        //console.log('objects: ' + objects);
-        objects.should.be.greaterThan(0);
+        // console.log('objects: ' + count);
+        count.should.be.greaterThan(0);
         done();
       }, done);
     });
 
     it('of JSON objects with attachments reference', function(done){
-
-      var objects = 0;
-
+      var count = 0;
       db.rows.queryAsStream(planFromJSONAttachments, 'object', {
         format: 'json',
-        nodeColumns: 'reference'
+        complexValues: 'reference'
       })
       .on('data', function(obj){
-        //console.log(JSON.stringify(obj, null, 2));
         //console.log(obj);
         valcheck.isObject(obj).should.equal(true);
-        objects++;
+        count++;
       })
       .on('end', function(){
-        //console.log('objects: ' + objects);
-        objects.should.be.greaterThan(0);
+        //console.log('objects: ' + count);
+        count.should.be.greaterThan(0);
         done();
       }, done);
     });
 
     it('of JSON objects with binary attachments reference', function(done){
-
-      var objects = 0;
-
-      db.rows.queryAsStream(planFromJSONAttachments, 'object', {
+      var count = 0;
+      db.rows.queryAsStream(planFromJSONBinaryAttachments, 'object', {
         format: 'json',
-        nodeColumns: 'reference'
+        complexValues: 'reference'
       })
       .on('data', function(obj){
-        //console.log(JSON.stringify(obj, null, 2));
         //console.log(obj);
         valcheck.isObject(obj).should.equal(true);
-        objects++;
+        count++;
       })
       .on('end', function(){
-        //console.log('objects: ' + objects);
-        objects.should.be.greaterThan(0);
+        //console.log('objects: ' + count);
+        count.should.be.greaterThan(0);
         done();
       }, done);
     });
 
     it('of JSON text sequence', function(done){
-
-      var objects = 0;
-
+      var count = 0;
       db.rows.queryAsStream(planFromJSON, 'sequence', {format: 'json'})
       .on('data', function(chunk){
         valcheck.isBuffer(chunk).should.equal(true);
@@ -243,24 +226,20 @@ describe('rows', function(){
         // substr(1) removes initial record separator
         let object = JSON.parse(chunk.toString().substr(1));
         valcheck.isObject(object).should.equal(true);
-        objects++;
+        count++;
       })
       .on('end', function(){
-        //console.log('objects: ' + objects);
-        objects.should.be.greaterThan(0);
+        //console.log('objects: ' + count);
+        count.should.be.greaterThan(0);
         done();
       }, done);
-
     });
 
     it('of chunked XML', function(done){
-
       let chunks = 0,
           length = 0;
-
       db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'xml'})
       .on('data', function(chunk){
-        // console.log(chunk);
         // console.log(chunk.toString());
         // console.log(chunk.length);
         valcheck.isBuffer(chunk).should.equal(true);
@@ -272,17 +251,13 @@ describe('rows', function(){
         chunks.should.be.greaterThan(0);
         done();
       }, done);
-
     });
 
     it('of chunked CSV', function(done){
-
       let chunks = 0,
           length = 0;
-
       db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'csv'})
       .on('data', function(chunk){
-        // console.log(chunk);
         // console.log(chunk.toString());
         // console.log(chunk.length);
         valcheck.isBuffer(chunk).should.equal(true);
@@ -294,7 +269,6 @@ describe('rows', function(){
         chunks.should.be.greaterThan(0);
         done();
       }, done);
-
     });
 
   });
