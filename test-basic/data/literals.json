@@ -1,0 +1,52 @@
+{
+  "$optic": {
+    "ns": "op",
+    "fn": "operators",
+    "args": [
+      {
+        "ns": "op",
+        "fn": "from-literals",
+        "args": [
+          [
+            {
+              "id": 1,
+              "name": "Master 1",
+              "date": "2015-12-01"
+            },
+            {
+              "id": 2,
+              "name": "Master 2",
+              "date": "2015-12-02"
+            },
+            {
+              "id": 3,
+              "name": "Master 3",
+              "date": "2015-12-03"
+            }
+          ],
+          null
+        ]
+      },
+      {
+        "ns": "op",
+        "fn": "where",
+        "args": [
+          {
+            "ns": "op",
+            "fn": "gt",
+            "args": [
+              {
+                "ns": "op",
+                "fn": "col",
+                "args": [
+                  "id"
+                ]
+              },
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
