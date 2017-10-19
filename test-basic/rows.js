@@ -123,6 +123,19 @@ describe('rows', function(){
         });
     });
 
+    it('should fail with no plan argument', function(done){
+      try {
+        return db.rows.query()
+          .then(function (response) {
+            should.fail('expected error not thrown')
+          });
+      }
+      catch (error) {
+       // Error thrown, test succeeded
+       done();
+      }
+    });
+
   });
 
   describe('read as a stream', function(){
@@ -186,7 +199,7 @@ describe('rows', function(){
         complexValues: 'reference'
       })
       .on('data', function(obj){
-        //console.log(obj);
+        //console.log(JSON.stringify(obj, null, 2));
         valcheck.isObject(obj).should.equal(true);
         count++;
       })
@@ -267,6 +280,16 @@ describe('rows', function(){
       .on('end', function(){
         // console.log('read '+ chunks + ' chunks of ' + length + ' length');
         chunks.should.be.greaterThan(0);
+        done();
+      }, done);
+    });
+
+    it('should pass with no stream type argument', function(done){
+      db.rows.queryAsStream(planFromJSON, {format: 'json'})
+      .on('data', function(chunk){
+        valcheck.isBuffer(chunk).should.equal(true);
+      })
+      .on('end', function(){
         done();
       }, done);
     });
