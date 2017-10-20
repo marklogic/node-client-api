@@ -59,6 +59,24 @@ describe('modifier', function() {
         })
       .catch(done);
     });
+    it('with SQL condition where', function(done) {
+      execPlan(
+        p.fromLiterals([
+            {id:1, name:'Master 1', date:'2015-12-01'},
+            {id:2, name:'Master 2', date:'2015-12-02'}
+            ])
+          .where(p.sqlCondition('id BETWEEN 0.5 AND 1.5'))
+        )
+      .result(function (response) {
+        const output = getResults(response);
+        should(output.length).equal(1);
+        should(output[0].id.value).equal(1);
+        should(output[0].name.value).equal('Master 1');
+        should(output[0].date.value).equal('2015-12-01');
+        done();
+      })
+        .catch(done);
+    });
     it('with whereDistinct', function(done) {
       execPlan(
           p.fromLiterals([
