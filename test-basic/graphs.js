@@ -32,6 +32,7 @@ describe('graph operations', function(){
   var graphUri   = 'marklogic.com/people';
   var graph2Uri  = 'marklogic.com/graph2';
   var graph3Uri  = 'marklogic.com/graph3';
+  var graph4Uri  = 'marklogic.com/graph4';
   var graphPath  = './test-basic/data/people.ttl';
   var sparqlPath = './test-basic/data/people.rq';
   it('should write the default graph', function(done){
@@ -65,6 +66,7 @@ describe('graph operations', function(){
   it('should list the default graph', function(done){
     db.graphs.list()
     .result(function(collections){
+      console.log(collections);
       collections.some(function(collection){
         return collection === 'http://marklogic.com/semantics#default-graph';
         }).should.equal(true);

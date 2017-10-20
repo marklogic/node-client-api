@@ -101,4 +101,9 @@ describe('database clients', function() {
     agentDb.connectionParams.agent.options.keepAliveTimeoutMsecs.should.equal(1000);
     done();
   });
+  it('should create a timestamp', function(done) {
+    let timestamp = db.createTimestamp('123');
+    timestamp.value.should.equal('123');
+    done();
+  });
 });
