@@ -35,7 +35,7 @@ describe('documents', function() {
           .orderBy(p.desc('lastName'))
           .select(null, '')
           )
-        .result(function(response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].lastName.value).equal('Davis');
@@ -59,7 +59,7 @@ describe('documents', function() {
           .orderBy(p.desc('lastName'))
           .select(null, '')
           )
-        .result(function(response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].lastName.value).equal('Davis');
@@ -83,7 +83,7 @@ describe('documents', function() {
           .orderBy(p.desc('lastName'))
           .select(['lastName', 'firstName', p.as('nodes', p.xpath('musicianDoc', '/musician/(dob|instrument)'))], '')
           )
-        .result(function(response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].lastName.value).equal('Davis');
@@ -109,7 +109,7 @@ describe('documents', function() {
           .orderBy(p.desc('lastName'))
           .select(['lastName', 'firstName', p.as('tag', p.xdmp.nodeCollections(p.col('musicianDoc')))], '')
           )
-        .result(function(response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].lastName.value).equal('Davis');
@@ -134,7 +134,7 @@ describe('documents', function() {
           .joinDoc('musicianDoc', p.col('musicianDocUri'))
           .orderBy('id')
           )
-        .result(function(response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].id.value).equal(1);

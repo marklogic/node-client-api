@@ -42,7 +42,7 @@ describe('composers', function() {
               )
             .orderBy(['masterId', 'detailId'])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(3);
           should(output[0].masterId.value).equal(1);
@@ -78,7 +78,7 @@ describe('composers', function() {
               )
             .orderBy(['masterId', 'detailId'])
       )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
           should(output.length).equal(4);
           should(output[0].masterId.value).equal(1);
@@ -119,7 +119,7 @@ describe('composers', function() {
               )
             .orderBy(['primaryKey', 'detailId'])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(3);
           should(output[0].primaryKey.value).equal(1);
@@ -160,7 +160,7 @@ describe('composers', function() {
               )
             .orderBy(['masterId', 'detailId'])
       )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
           should(output.length).equal(3);
           should(output[0].masterId.value).equal(1);
@@ -193,7 +193,7 @@ describe('composers', function() {
               )
             .orderBy(['masterId', 'detailId'])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(4);
           should(output[0].masterId.value).equal(1);
@@ -230,7 +230,7 @@ describe('composers', function() {
               )
             .orderBy('id')
           )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
           should(output.length).equal(4);
           should(output[0].id.value).equal(1);
@@ -261,7 +261,7 @@ describe('composers', function() {
               )
             .orderBy('id')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].id.value).equal(2);
@@ -285,7 +285,7 @@ describe('composers', function() {
               )
             .orderBy('id')
       )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].id.value).equal(2);

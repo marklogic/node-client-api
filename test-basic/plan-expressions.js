@@ -63,7 +63,7 @@ describe('expressions', function() {
           .where(p.or(p.eq(p.col('str'), 'two'), p.eq(p.col('num'), 1)))
           .orderBy('row')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].row.value).equal(1);
@@ -89,7 +89,7 @@ describe('expressions', function() {
             }))
           .orderBy('row')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].row.value).equal(1);
@@ -111,7 +111,7 @@ describe('expressions', function() {
             ])
           .where(p.and(p.ne(p.col('str'), 'two'), p.ne(p.col('num'), 1)))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(3);
@@ -131,7 +131,7 @@ describe('expressions', function() {
           .where(p.or(p.gt(p.col('num'), 2), p.lt(p.col('num'), 2)))
           .orderBy('row')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].row.value).equal(1);
@@ -153,7 +153,7 @@ describe('expressions', function() {
             ])
           .where(p.and(p.ge(p.col('num'), 2), p.le(p.col('num'), 2)))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(2);
@@ -173,7 +173,7 @@ describe('expressions', function() {
           .where(p.not(p.eq(p.col('num'), 1)))
           .orderBy('row')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].row.value).equal(2);
@@ -209,7 +209,7 @@ describe('expressions', function() {
               )
             )
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(2);
@@ -227,7 +227,7 @@ describe('expressions', function() {
             ])
           .where(p.eq(p.fn.concat(p.col('num'), 1), '11'))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(1);
@@ -246,7 +246,7 @@ describe('expressions', function() {
             ])
           .where(p.or(p.eq(p.add(p.col('num'), 1), 2), p.eq(p.subtract(3, p.col('num')), 2)))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(1);
@@ -265,7 +265,7 @@ describe('expressions', function() {
             ])
           .where(p.and(p.eq(p.multiply(p.col('num'), 1), 2), p.eq(p.divide(4, p.col('num')), 2)))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(2);
@@ -284,7 +284,7 @@ describe('expressions', function() {
             ])
           .where(p.eq(p.modulo(4, p.col('num')), 1))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].row.value).equal(3);
@@ -308,7 +308,7 @@ describe('expressions', function() {
               p.as('concatted',     p.fn.concat(p.col('low'), p.col('high')))
               ])
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].added.value).equal(12);
@@ -338,7 +338,7 @@ describe('expressions', function() {
               p.as('iffed', p.sem.if(p.eq(p.col('row'), 2), 'even', 'odd'))
               ])
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].row.value).equal(1);
@@ -364,7 +364,7 @@ describe('expressions', function() {
               'otherwise'
               ))])
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].row.value).equal(1);
@@ -388,7 +388,7 @@ describe('expressions', function() {
               p.as('defcheck', p.sem.if(p.isDefined(p.col('sparse')), 'present', 'absent'))
               ])
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].row.value).equal(1);
@@ -414,7 +414,7 @@ describe('expressions', function() {
           .select(['row', p.as('pos', p.fn.indexOf([p.col('one'), p.col('two'), p.col('three')], 'b'))])
           .orderBy('row')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].row.value).equal(1);
@@ -440,7 +440,7 @@ describe('expressions', function() {
               }))])
           .orderBy('row')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].row.value).equal(1);

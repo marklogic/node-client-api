@@ -86,7 +86,7 @@ describe('triples', function() {
               ], 
               'tripview')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0]['tripview.datastore'].value).equal('/datastore/id#A');
@@ -109,7 +109,7 @@ describe('triples', function() {
                   ))
               .orderBy('identified')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].identified.value).equal('/master/id#1');
@@ -126,7 +126,7 @@ describe('triples', function() {
                   p.pattern(datastore, altProp,   p.col('alternative'))
               ])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].datastore.value).equal('/datastore/id#A');
@@ -146,7 +146,7 @@ describe('triples', function() {
                   p.pattern(datastore, altProp, p.col('alternative'))
                   ))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].datastore.value).equal('/datastore/id#A');
@@ -168,7 +168,7 @@ describe('triples', function() {
               .select(['datastore','title','sourceDocId',
                   p.as('sourceDocCheck',p.isDefined(p.fragmentIdCol('sourceDocId')))])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].datastore.value).equal('/datastore/id#A');
@@ -195,7 +195,7 @@ describe('triples', function() {
           .orderBy('title')
           .limit(2)
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0]['tripview.title'].value).equal('The A datastore');
@@ -214,7 +214,7 @@ describe('triples', function() {
           .where(p.cts.jsonPropertyWordQuery('style', 'avantgarde'))
           .orderBy('albumName')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(4);
         should(output[0].albumName.value).equal('A Ballad For Many');
@@ -232,7 +232,7 @@ describe('triples', function() {
           ),
         {albumName:'Crescent'}
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].albumId.value).equal('/optic/test/albums3_2');
@@ -248,7 +248,7 @@ describe('triples', function() {
           .where(p.cts.jsonPropertyWordQuery('style', 'avantgarde'))
           .orderBy('albumName')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(4);
         should(output[0].albumName.value).equal('A Ballad For Many');
@@ -267,7 +267,7 @@ describe('triples', function() {
           .where(p.sem.store("document", p.cts.jsonPropertyWordQuery('style', 'avantgarde')))
           .orderBy('albumName')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(4);
         should(output[0].albumName.value).equal('A Ballad For Many');
@@ -287,7 +287,7 @@ describe('triples', function() {
          .where(p.eq(p.col('sourceGraph'), '/graphs/inventory'))
          .orderBy(['sourceGraph', 'title'])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].sourceGraph.value).equal('/graphs/inventory');
@@ -306,7 +306,7 @@ describe('triples', function() {
           'SELECT ?datastore ?title '+
           'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0]['datastore'].value).equal('/datastore/id#A');
@@ -324,7 +324,7 @@ describe('triples', function() {
           'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}',
           'sparqlsel')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0]['sparqlsel.datastore'].value).equal('/datastore/id#A');
