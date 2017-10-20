@@ -84,15 +84,13 @@ function execPlan(query, bindings, output) {
 // console.log(plan);
   const rowOutput = (output === void 0 || output === null) ? 'object' : output;
   if (bindings === void 0 || bindings === null) {
-    return rowMgr.query(plan, {format: 'json', output: rowOutput});
+    return rowMgr.query(plan, {format: 'json', structure: rowOutput});
   }
-  return rowMgr.query(plan, {format: 'json', output: rowOutput, bindings:bindings});
+  return rowMgr.query(plan, {format: 'json', structure: rowOutput, bindings:bindings});
 }
 function explainPlan(query, format) {
   const plan = JSON.stringify(query.export());
-  return rowMgr.explain(plan, {
-    format: (format === void 0 || format === null) ? 'json' : format
-    });
+  return rowMgr.explain(plan, (format === void 0 || format === null) ? 'json' : format);
 }
 function testPlan(values, expression) {
     return execPlan(makeTest(makeInput(values), expression));
@@ -106,14 +104,11 @@ function getResults(response) {
   if (Array.isArray(response) && response.length > 0 && Array.isArray(response[0].columns)) {
     return response.slice(1);
   }
-/*
   const rows = response.rows;
   if (rows === void 0) {
     return response;
   }
   return rows;
- */
-  return response;
 }
 function getResult(response) {
   return getResults(response)[0].t;
@@ -134,7 +129,6 @@ module.exports = {
     dbWriter:         dbWriter,
     planBuilder:      planBuilder,
     execPlan:         execPlan,
-    execPlanOld:      execPlanOld, // TODO: delete temporary hack
     explainPlan:      explainPlan,
     getResult:        getResult,
     getResults:       getResults,

@@ -33,7 +33,7 @@ describe('modifier', function() {
               ])
             .where(p.eq(p.col('id'),1))
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].id.value).equal(1);
@@ -50,7 +50,7 @@ describe('modifier', function() {
             ])
             .where(p.col('condition'))
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].id.value).equal(1);
@@ -67,7 +67,7 @@ describe('modifier', function() {
             ])
           .where(p.sqlCondition('id BETWEEN 0.5 AND 1.5'))
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].id.value).equal(1);
@@ -91,7 +91,7 @@ describe('modifier', function() {
             .whereDistinct()
             .orderBy('color')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].color.value).equal('blue');
@@ -108,7 +108,7 @@ describe('modifier', function() {
             ])
             .select(['id', 'name'])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].id.value).equal(1);
@@ -129,7 +129,7 @@ describe('modifier', function() {
             ])
             .select(['id', 'name'], 'selqual')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0]['selqual.id'].value).equal(1);
@@ -154,7 +154,7 @@ describe('modifier', function() {
             ])
             .orderBy(['masterId', 'id'])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(6);
           should(output[0].id.value).equal(1);
@@ -186,7 +186,7 @@ describe('modifier', function() {
             .groupBy('masterId', [p.count('detailCount', 'id'), p.sum('detailSum', 'id')])
             .orderBy(['masterId'])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].masterId.value).equal(1);
@@ -211,7 +211,7 @@ describe('modifier', function() {
             ])
             .groupBy(null, [p.count('detailCount', 'id'), p.sum('detailSum', 'id')])
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].detailCount.value).equal(6);
@@ -231,7 +231,7 @@ describe('modifier', function() {
             .orderBy('id')
             .offsetLimit(1, 2)
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].id.value).equal(2);
@@ -252,7 +252,7 @@ describe('modifier', function() {
             .orderBy('id')
             .offset(1)
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].id.value).equal(2);
@@ -273,7 +273,7 @@ describe('modifier', function() {
             .orderBy('id')
             .limit(2)
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].id.value).equal(2);
@@ -302,7 +302,7 @@ describe('modifier', function() {
             .select({columns:['masterId', 'detailCount']})
             .offsetLimit(1, 1)
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].masterId.value).equal(2);
@@ -322,7 +322,7 @@ describe('modifier', function() {
               ])
             .select(p.as('added', p.add(p.col('row'), p.col('val'))))
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(3);
           should(output[0].added.value).equal(9);
@@ -341,7 +341,7 @@ describe('modifier', function() {
               ])
             .orderBy(p.as('added', p.add(p.col('row'), p.col('val'))))
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(3);
           should(output[0].added.value).equal(7);
@@ -369,7 +369,7 @@ describe('modifier', function() {
             .groupBy(p.as('added', p.add(p.col('partA'), p.col('partB'))), p.count('partCount', 'partB'))
             .orderBy('added')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].added.value).equal(5);
@@ -392,7 +392,7 @@ describe('modifier', function() {
             .orderBy('group')
             .groupBy('group', p.sum('partSum', p.as('added', p.add(p.col('partA'), p.col('partB')))))
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].group.value).equal(1);
@@ -416,7 +416,7 @@ describe('modifier', function() {
           .groupBy('group', ['groupVal', 'detail'])
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -439,7 +439,7 @@ describe('modifier', function() {
             ])
           .orderBy([p.asc('keyA'), p.desc('keyB')])
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(4);
         should(output[0].row.value).equal(4);

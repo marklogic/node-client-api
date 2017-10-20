@@ -21,7 +21,6 @@ const should = require('should');
 const pbb = require('./plan-builder-base');
 const p = pbb.planBuilder;
 const execPlan = pbb.execPlan;
-const execPlanOld = pbb.execPlanOld;
 const explainPlan = pbb.explainPlan;
 const getResults = pbb.getResults;
 
@@ -36,7 +35,7 @@ describe('processor', function() {
         .orderBy('id')
         .prepare(2)
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].id.value).equal(1);
@@ -57,7 +56,7 @@ describe('processor', function() {
             ])
           .orderBy('id')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].id.value).equal(1);
@@ -78,7 +77,7 @@ describe('processor', function() {
         null,
         'object'
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].id.value).equal(1);
@@ -90,7 +89,7 @@ describe('processor', function() {
       .catch(done);
     });
     it('as array sequence', function(done) {
-      execPlanOld(
+      execPlan(
         p.fromLiterals([
           {id:1, val: 2}, 
           {id:2, val: 4} 
@@ -99,8 +98,8 @@ describe('processor', function() {
         null,
         'array'
         )
-      .result(function(response) {
-        const output = response.data;
+      .then(function(response) {
+        const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].length).equal(2);
         let idPos  = 0;
@@ -129,7 +128,7 @@ describe('processor', function() {
       .catch(done);
     });
     it('with placeholder parameter', function(done) {
-      execPlanOld(
+      execPlan(
         p.fromLiterals([
           {id:1, val: 2}, 
           {id:2, val: 4}, 
@@ -143,8 +142,8 @@ describe('processor', function() {
           start:1, length:2, floor:4, increment:1
           }
         )
-      .result(function(response) {
-        const output = response.data.rows;
+      .then(function(response) {
+        const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].id.value).equal(3);
         should(output[0].incremented.value).equal(7);
@@ -155,7 +154,7 @@ describe('processor', function() {
   });
   describe('function', function() {
     it('as array mapper', function(done) {
-      execPlanOld(
+      execPlan(
         p.fromLiterals([
           {id:1, val: 2},
           {id:2, val: 4}
@@ -165,8 +164,8 @@ describe('processor', function() {
         null,
         'array'
         )
-      .result(function(response) {
-        const output = response.data;
+      .then(function(response) {
+        const output = getResults(response);
         should(output.length).equal(3);
         should(output[0].length).equal(3);
         let idPos  = -1;
@@ -212,7 +211,7 @@ describe('processor', function() {
         .orderBy('id')
         .map(p.resolveFunction('secondsMapper', '/etc/optic/rowPostProcessors.sjs'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].id.value).equal(1);
@@ -228,7 +227,7 @@ describe('processor', function() {
       .catch(done);
     });
     it('as array reducer', function(done) {
-      execPlanOld(
+      execPlan(
         p.fromLiterals([
           {val:  2}, 
           {val:  4}, 
@@ -240,8 +239,8 @@ describe('processor', function() {
         null,
         'array'
         )
-      .result(function(response) {
-        const output = response.data;
+      .then(function(response) {
+        const output = getResults(response);
         should(output).equal(20);
         done();
         })
@@ -260,7 +259,7 @@ describe('processor', function() {
         .orderBy('val')
         .reduce(p.resolveFunction('fibReducer', '/etc/optic/rowPostProcessors.sjs'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(6);
         should(output[0].i.value).equal(0);
@@ -293,7 +292,7 @@ describe('processor', function() {
             {id:2, val: 4} 
             ])
       )
-    .result(function(output) {
+    .then(function(output) {
       should(output.node).equal('plan');
       should.exist(output.expr);
       done();
@@ -308,7 +307,7 @@ describe('processor', function() {
             ]),
       'xml'
       )
-    .result(function(output) {
+    .then(function(output) {
       should.exist(output);
       done();
       })

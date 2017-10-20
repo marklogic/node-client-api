@@ -34,7 +34,7 @@ describe('literals', function() {
             ], 
             'lit')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output[0]['lit.orderId'].value).equal(1);
         should(output[0]['lit.orderExtra'].value).equal('First extra');
@@ -54,7 +54,7 @@ describe('literals', function() {
                 ] 
             })
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].orderId.value).equal(1);
@@ -74,7 +74,7 @@ describe('literals', function() {
         colPlan
           .select(colPlan.col('orderId'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0]['lit.orderId'].value).equal(1);
