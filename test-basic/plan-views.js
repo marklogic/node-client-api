@@ -55,7 +55,7 @@ describe('view', function() {
         p.fromView('opticUnitTest', 'master')
               .orderBy(p.schemaCol('opticUnitTest', 'master', 'id'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'master.id',   1);
@@ -77,7 +77,7 @@ describe('view', function() {
         p.fromView('opticUnitTest', 'master', 'optimast')
               .orderBy(p.viewCol('optimast', 'id'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0]['optimast.id'].value).equal(1);
@@ -98,7 +98,7 @@ describe('view', function() {
           .orderBy('id')
           .limit(2)
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0]['idview.id'].value).equal(1);
@@ -115,7 +115,7 @@ describe('view', function() {
               .where(p.cts.jsonPropertyWordQuery('instrument', 'trumpet'))
               .orderBy('lastName')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'musician.lastName',  'Armstrong');
@@ -136,7 +136,7 @@ describe('view', function() {
                 p.as('sourceDocCheck',p.isDefined(p.col('sourceDocId')))],
                 '')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0].id.value).equal(1);
@@ -154,7 +154,7 @@ describe('view', function() {
         p.fromView('opticUnitTest', 'master')
             .where(p.eq(p.schemaCol('opticUnitTest', 'master', 'id'), 1))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         testValue(output[0], 'master.id', 1);
@@ -171,7 +171,7 @@ describe('view', function() {
             .whereDistinct()
             .orderBy(p.schemaCol('opticUnitTest', 'detail', 'color'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'detail.color', 'blue');
@@ -187,7 +187,7 @@ describe('view', function() {
                 p.schemaCol('opticUnitTest', 'master', 'name')])
             .orderBy(p.schemaCol('opticUnitTest', 'master', 'id'))
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'master.id', 1);
@@ -206,7 +206,7 @@ describe('view', function() {
               .select(null, '')
               .orderBy('id')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].id.value).equal(1);
@@ -229,7 +229,7 @@ describe('view', function() {
             .orderBy([p.schemaCol('opticUnitTest', 'detail', 'masterId'), 
                 p.schemaCol('opticUnitTest', 'detail', 'id')])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(6);
         testValue(output[0], 'detail.id', 1);
@@ -255,7 +255,7 @@ describe('view', function() {
                 p.count('detailCount', p.schemaCol('opticUnitTest', 'detail', 'id')))
             .orderBy([p.schemaCol('opticUnitTest', 'detail', 'masterId')])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'detail.masterId', 1);
@@ -272,7 +272,7 @@ describe('view', function() {
             .orderBy(p.schemaCol('opticUnitTest', 'detail', 'id'))
             .offsetLimit(1, 2)
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'detail.id', 2);
@@ -296,7 +296,7 @@ describe('view', function() {
             .orderBy([p.schemaCol('opticUnitTest', 'master', 'id'), 
                 p.schemaCol('opticUnitTest', 'detail', 'id')])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(6);
         testValue(output[0], 'master.id', 1);
@@ -355,7 +355,7 @@ describe('view', function() {
                 )
             .orderBy(['unionName', 'unionId'])
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(8);
         should(output[0].unionId.value).equal(1);
@@ -388,7 +388,7 @@ describe('view', function() {
                 )
             .orderBy('unionId')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].unionId.value).equal(1);
@@ -407,7 +407,7 @@ describe('view', function() {
                 )
             .orderBy('unionId')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(4);
         should(output[0].unionId.value).equal(3);
@@ -446,7 +446,7 @@ describe('view', function() {
                 )
             .orderBy(masterId)
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         testValue(output[0], 'master.id', 1);
@@ -471,7 +471,7 @@ describe('view', function() {
       execPlan(
         p.fromSQL('SELECT id, name, date FROM master WHERE id = 1')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         testValue(output[0], 'master.id', 1);
@@ -485,7 +485,7 @@ describe('view', function() {
       execPlan(
         p.fromSQL('SELECT id, name, date FROM master WHERE id = 1', 'sqlsel')
         )
-      .result(function(response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(1);
         should(output[0]['sqlsel.id'].value).equal(1);

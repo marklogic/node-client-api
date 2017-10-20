@@ -81,7 +81,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.jsonString(p.col('str'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -101,7 +101,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.jsonNumber(p.col('num'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -121,7 +121,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.jsonBoolean(p.col('bool'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -141,7 +141,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.jsonNull()), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -166,7 +166,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -202,7 +202,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -241,7 +241,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -280,7 +280,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -321,7 +321,7 @@ describe('nodes', function() {
                     ]))
                 )
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].container.value.group).equal(1);
@@ -353,7 +353,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.xmlText(p.col('str'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -373,7 +373,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.xmlComment(p.col('str'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -393,7 +393,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.xmlPi(p.col('str'), p.col('num'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -413,7 +413,7 @@ describe('nodes', function() {
             .select(['row', p.as('node', p.xmlElement(p.col('str'))), p.as('kind', p.xdmp.nodeKind(p.col('node')))])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -436,7 +436,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -459,7 +459,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -482,7 +482,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -509,7 +509,7 @@ describe('nodes', function() {
                 ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
@@ -540,7 +540,7 @@ describe('nodes', function() {
               ])
             .orderBy('row')
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].row.value).equal(1);
@@ -571,7 +571,7 @@ describe('nodes', function() {
                     ))
                 )
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].container.value).equal(
@@ -618,7 +618,7 @@ describe('nodes', function() {
       execPlan(
           p.import(exportedJson)
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].o.p1.value).equal('a');
@@ -632,7 +632,7 @@ describe('nodes', function() {
       execPlan(
           p.import(exportedXml)
           )
-        .result(function (response) {
+        .then(function(response) {
           const output = getResults(response);
           should(output.length).equal(1);
           should(output[0].c.value).equal('<?xml version="1.0" encoding="UTF-8"?>\n<e a="a">1</e>');

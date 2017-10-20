@@ -43,7 +43,7 @@ describe('lexicons', function() {
             })
           .orderBy('number')
       )
-    .result(function(response) {
+    .then(function(response) {
       const output = getResults(response);
       should(output.length).equal(3);
       should(output[0].uri.value).equal('/optic/test/queryDoc3.json');
@@ -74,7 +74,7 @@ describe('lexicons', function() {
           .select(['uri', 'number', 'sourceDocId',
               p.as('sourceDocCheck', p.isDefined(p.col('sourceDocId')))])
       )
-    .result(function(response) {
+    .then(function(response) {
       const output = getResults(response);
       should(output.length).equal(3);
       should(output[0].uri.value).equal('/optic/test/queryDoc3.json');
@@ -105,7 +105,7 @@ describe('lexicons', function() {
         .orderBy('number')
         .limit(2)
       )
-    .result(function(response) {
+    .then(function(response) {
       const output = getResults(response);
       should(output.length).equal(2);
       should(output[0]['urinum.number'].value).equal(1);
@@ -124,7 +124,7 @@ describe('lexicons', function() {
             })
           .orderBy('uri')
       )
-    .result(function(response) {
+    .then(function(response) {
       const output = getResults(response);
       should(output.length).equal(13);
       for (let i=0; i < 9; i++) {
@@ -150,7 +150,7 @@ describe('lexicons', function() {
           .where(p.cts.jsonPropertyWordQuery('srchColA', 'common'))
           .orderBy('uri')
       )
-    .result(function(response) {
+    .then(function(response) {
       const output = getResults(response);
       should(output.length).equal(2);
       should(output[0].uri.value).equal('/optic/test/queryDoc1.json');
