@@ -43,6 +43,12 @@ describe('view', function() {
       {ns:'op', fn:'where',     args:[{ns:'cts', fn:'json-property-word-query', args:['instrument', 'trumpet']}]},
       {ns:'op', fn:'order-by',  args:['lastName']}
       ]}};
+  const exportedFromSQL =
+    {$optic:{ns:'op', fn:'operators', args:[
+      {ns:'op', fn:'from-sql', args:[
+        'SELECT id, name, date FROM master WHERE id = 1'
+      ]}
+    ]}};
   describe('accessors', function() {
     it('basic', function(done) {
       execPlan(
@@ -460,6 +466,36 @@ describe('view', function() {
       .catch(done);
     });
   });
+  describe('from SQL', function() {
+    it('basic', function(done) {
+      execPlan(
+        p.fromSQL('SELECT id, name, date FROM master WHERE id = 1')
+        )
+      .result(function(response) {
+        const output = getResults(response);
+        should(output.length).equal(1);
+        testValue(output[0], 'master.id', 1);
+        testValue(output[0], 'master.name', 'Master 1');
+        testValue(output[0], 'master.date', '2015-12-01');
+        done();
+      })
+        .catch(done);
+    });
+    it('with qualifier', function(done) {
+      execPlan(
+        p.fromSQL('SELECT id, name, date FROM master WHERE id = 1', 'sqlsel')
+        )
+      .result(function(response) {
+        const output = getResults(response);
+        should(output.length).equal(1);
+        should(output[0]['sqlsel.id'].value).equal(1);
+        should(output[0]['sqlsel.name'].value).equal('Master 1');
+        should(output[0]['sqlsel.date'].value).equal('2015-12-01');
+        done();
+      })
+        .catch(done);
+    });
+  });
   describe('serialize', function() {
     it('export', function(done) {
       const value =
@@ -476,6 +512,13 @@ describe('view', function() {
             .orderBy('lastName')
           .export();
       should(value).deepEqual(exportedQueryView);
+      done();
+    });
+    it('export from SQL', function(done) {
+      const value =
+        p.fromSQL('SELECT id, name, date FROM master WHERE id = 1')
+         .export();
+      should(value).deepEqual(exportedFromSQL);
       done();
     });
   });

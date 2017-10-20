@@ -68,6 +68,14 @@ describe('triples', function() {
       ]},
     {ns:'op', fn:'order-by', args:[['sourceGraph','title']]}
     ]}};
+  const exportedFromSPARQL =
+    {$optic:{ns:'op', fn:'operators', args:[
+      {ns:'op', fn:'from-sparql', args:[
+        'PREFIX dc: <http://purl.org/dc/terms/> '+
+        'SELECT ?datastore ?title '+
+        'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}'
+      ]}
+    ]}};
   describe('accessors', function() {
     it('with bare patterns', function(done) {
       execPlan(
@@ -196,30 +204,27 @@ describe('triples', function() {
         })
       .catch(done);
     });
-/* TODO: uncomment after fix for https://bugtrack.marklogic.com/43726
     it('with graph iri', function(done) {
-      db.invoke(runnerMod, {
-          moduleName:   'basic.sjs',
-          functionName: 'doEval',
-          testArg:      `p.fromTriples(
-                  p.pattern(p.col('albumId'), sem.iri('/optic/test/albumName'),  p.col('albumName')),
-                  null,
-                  '/optic/music'
-                  )
-              .where(p.cts.jsonPropertyWordQuery('style', 'avantgarde'))
-              .orderBy('albumName')
-              .result();`
-        }).result(function(output) {
-          should(output.length).equal(4);
-          should(output[0].albumName.value).equal('A Ballad For Many');
-          should(output[1].albumName.value).equal('Crescent');
-          should(output[2].albumName.value).equal('Four Thoughts on Marvin Gaye');
-          should(output[3].albumName.value).equal('Impressions');
-          done();
+      execPlan(
+        p.fromTriples(
+            p.pattern(p.col('albumId'), p.sem.iri('/optic/test/albumName'),  p.col('albumName')),
+            null,
+            '/optic/music'
+            )
+          .where(p.cts.jsonPropertyWordQuery('style', 'avantgarde'))
+          .orderBy('albumName')
+        )
+      .result(function(response) {
+        const output = getResults(response);
+        should(output.length).equal(4);
+        should(output[0].albumName.value).equal('A Ballad For Many');
+        should(output[1].albumName.value).equal('Crescent');
+        should(output[2].albumName.value).equal('Four Thoughts on Marvin Gaye');
+        should(output[3].albumName.value).equal('Impressions');
+        done();
         })
       .catch(done);
     });
- */
     it('with param', function(done) {
       execPlan(
         p.fromTriples(
@@ -294,6 +299,43 @@ describe('triples', function() {
       .catch(done);
     });
   });
+  describe('from SPARQL', function() {
+    it('basic', function(done) {
+      execPlan(
+        p.fromSPARQL('PREFIX dc: <http://purl.org/dc/terms/> '+
+          'SELECT ?datastore ?title '+
+          'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}')
+        )
+      .result(function(response) {
+        const output = getResults(response);
+        should(output.length).equal(2);
+        should(output[0]['datastore'].value).equal('/datastore/id#A');
+        should(output[0]['title'].value).equal('The A datastore');
+        should(output[1]['datastore'].value).equal('/datastore/id#B');
+        should(output[1]['title'].value).equal('The B datastore');
+        done();
+      })
+        .catch(done);
+    });
+    it('with qualifier', function(done) {
+      execPlan(
+        p.fromSPARQL('PREFIX dc: <http://purl.org/dc/terms/> '+
+          'SELECT ?datastore ?title '+
+          'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}',
+          'sparqlsel')
+        )
+      .result(function(response) {
+        const output = getResults(response);
+        should(output.length).equal(2);
+        should(output[0]['sparqlsel.datastore'].value).equal('/datastore/id#A');
+        should(output[0]['sparqlsel.title'].value).equal('The A datastore');
+        should(output[1]['sparqlsel.datastore'].value).equal('/datastore/id#B');
+        should(output[1]['sparqlsel.title'].value).equal('The B datastore');
+        done();
+      })
+        .catch(done);
+    });
+  });
   describe('serialize', function() {
     describe('export', function() {
       it('with bare patterns', function(done) {
@@ -315,6 +357,15 @@ describe('triples', function() {
               .orderBy(['sourceGraph', 'title'])
             .export();
         should(value).deepEqual(exportedTriplesGraphColumn);
+        done();
+      });
+      it('from SPARQL', function(done) {
+        const value =
+          p.fromSPARQL('PREFIX dc: <http://purl.org/dc/terms/> '+
+              'SELECT ?datastore ?title '+
+              'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}')
+            .export();
+        should(value).deepEqual(exportedFromSPARQL);
         done();
       });
     });
