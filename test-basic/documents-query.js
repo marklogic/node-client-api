@@ -19,8 +19,6 @@ var fs = require('fs');
 
 var testconfig = require('../etc/test-config.js');
 
-var valcheck     = require('core-util-is');
-
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
