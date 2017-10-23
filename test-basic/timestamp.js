@@ -269,7 +269,7 @@ describe('point-in-time with timestamp', function(){
   describe('values', function(){
     before(function(done){
       this.timeout(3000);
-      // NOTE: must create a string range index on rangeKey1 and rangeKey2
+      // NOTE: must create a string range index on rangeKey5
       db.documents.write({
           uri: '/values/point-in-time1.json',
           collections: ['valuesCollection1'],
@@ -277,8 +277,8 @@ describe('point-in-time with timestamp', function(){
           content: {
             id:        'valuesList1',
             values:    [
-              {rangeKey3: 31},
-              {rangeKey3: 32}
+              {rangeKey5: 31},
+              {rangeKey5: 32}
               ]
             }
         }, {
@@ -288,8 +288,8 @@ describe('point-in-time with timestamp', function(){
           content: {
             id:        'valuesList2',
             values:    [
-              {rangeKey3: 31},
-              {rangeKey3: 32}
+              {rangeKey5: 31},
+              {rangeKey5: 32}
               ]
             }
         }, {
@@ -299,7 +299,7 @@ describe('point-in-time with timestamp', function(){
           content: {
             id:        'valuesList3',
             values:    [
-              {rangeKey3: 31}
+              {rangeKey5: 31}
               ]
             }
         }, {
@@ -309,7 +309,7 @@ describe('point-in-time with timestamp', function(){
           content: {
             id:        'valuesList4',
             values:    [
-              {rangeKey3: 33}
+              {rangeKey5: 33}
               ]
             }
           })
@@ -330,12 +330,12 @@ describe('point-in-time with timestamp', function(){
       it('should set and use timestamp', function(done){
         var timestamp = db.createTimestamp();
         valcheck.isNull(timestamp.value).should.equal(true);
-        db.values.read(t.fromIndexes(t.range('rangeKey3')), timestamp)
+        db.values.read(t.fromIndexes(t.range('rangeKey5')), timestamp)
         .result(function(values) {
           valcheck.isString(timestamp.value).should.equal(true);
           values['values-response'].tuple.length.should.be.above(0);
           return db.values.read(
-            t.fromIndexes(t.range('rangeKey3')), timestamp
+            t.fromIndexes(t.range('rangeKey5')), timestamp
           ).result();
           })
         .then(function(values) {
@@ -343,7 +343,7 @@ describe('point-in-time with timestamp', function(){
           values['values-response'].tuple.length.should.be.above(0);
           timestamp.value = bigInt(timestamp.value).minus(99999).toString();
           return db.values.read(
-            t.fromIndexes(t.range('rangeKey3')), timestamp
+            t.fromIndexes(t.range('rangeKey5')), timestamp
           ).result();
         })
         .then(function(values) {

@@ -128,6 +128,7 @@ function setup(manager) {
                 rangeKey2:       'string',
                 rangeKey3:       'int',
                 rangeKey4:       'int',
+                rangeKey5:       'int',
                 systemStartTime: 'dateTime',
                 systemEndTime:   'dateTime',
                 validStartTime:  'dateTime',
@@ -301,7 +302,7 @@ function setup(manager) {
             });
         } else {
           console.log(testconfig.testServerName+' setup failed with HTTP status: '+response.statusCode);
-          console.log(response.data);        
+          console.log(response.data);
           process.exit(1);
         }
       });
