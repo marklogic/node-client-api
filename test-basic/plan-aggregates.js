@@ -36,7 +36,7 @@ describe('aggregates', function() {
           .groupBy('group', p.avg('valAvg', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -59,7 +59,7 @@ describe('aggregates', function() {
           .groupBy('group', p.count('valCount', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -82,7 +82,7 @@ describe('aggregates', function() {
           .groupBy('group', p.count('valCount'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -105,7 +105,7 @@ describe('aggregates', function() {
           .groupBy('group', p.arrayAggregate('valArray', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -134,7 +134,7 @@ describe('aggregates', function() {
           .groupBy('group', p.groupConcat('valGroupConcat', 'val', {separator:'-', values:'distinct'}))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -157,7 +157,7 @@ describe('aggregates', function() {
           .groupBy('group', p.sequenceAggregate('valSequence', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -185,7 +185,7 @@ describe('aggregates', function() {
           .groupBy('group', p.max('valMax', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -208,7 +208,7 @@ describe('aggregates', function() {
           .groupBy('group', p.min('valMin', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -231,7 +231,7 @@ describe('aggregates', function() {
           .groupBy('group', [p.sample('checkSample', 'check'), p.avg('valAvg', 'val')])
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -256,7 +256,7 @@ describe('aggregates', function() {
           .groupBy('group', p.sum('valSum', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -281,7 +281,7 @@ describe('aggregates', function() {
           .groupBy('group', p.count('valCount', 'val'))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
@@ -306,7 +306,7 @@ describe('aggregates', function() {
           .groupBy('group', p.count('valCount', 'val', {values:'distinct'}))
           .orderBy('group')
         )
-      .result(function (response) {
+      .then(function(response) {
         const output = getResults(response);
         should(output.length).equal(2);
         should(output[0].group.value).equal(1);
