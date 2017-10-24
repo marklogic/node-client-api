@@ -142,6 +142,36 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should match a directory query using combined query', function(done){
+      var combined = {
+        options: {
+          'search-option': [
+            'unfiltered'
+          ]
+        },
+        search: {
+          query: {
+            queries: [{
+              "directory-query": {
+                uri: ["/test/query/matchDir/"]
+              }
+            }]
+          },
+          qtext: ''
+        }
+      };
+      db.documents.query(combined)
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/matchDir/doc1.json');
+        document.should.have.property('content');
+        document.content.id.should.equal('matchDoc1');
+        done();
+        })
+      .catch(done);
+    });
     it('should match a collection query', function(done){
       db.documents.query(
         q.where(
