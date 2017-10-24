@@ -26,6 +26,7 @@ var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('graph operations', function(){
   var graphUri   = 'marklogic.com/people';
@@ -262,5 +263,92 @@ describe('graph operations', function(){
       done();
       })
     .catch(done);
+  });
+
+  describe('write document with embedded triple and docQuery', function () {
+    before(function (done) {
+      this.timeout(10000);
+      var writeStream = db.documents.createWriteStream({
+        uri: '/test/docquery/query.xml',
+        contentType: 'application/xml'
+      });
+      writeStream.result(function (response) {
+        done();
+      }, done);
+      writeStream.write("<xml>" +
+        "<test2>testValue</test2>" +
+        "<sem:triples xmlns:sem='http://marklogic.com/semantics'>" +
+        "<sem:triple>" +
+        "<sem:subject>http://example.org/s2</sem:subject>" +
+        "<sem:predicate>http://example.org/p2</sem:predicate>" +
+        "<sem:object datatype='http://www.w3.org/2001/XMLSchema#string'>" +
+        "test2</sem:object>" +
+        "</sem:triple>" +
+        "</sem:triples>" +
+        "</xml>", 'utf8');
+      writeStream.end();
+    });
+    it('should run SPARQL query with docQuery', function (done) {
+      this.timeout(10000);
+      var myQuery = "SELECT ?o WHERE {?s ?p ?o .}";
+      var docQuery = q.where(q.term('testValue'));
+      db.graphs.sparql({
+        contentType: 'application/json',
+        query: myQuery,
+        docQuery: docQuery
+      }).
+      result(function (response) {
+        response.results.bindings[0].should.have.property('o');
+        response.results.bindings[0].o.value.should.equal('test2');
+        done();
+      }, done);
+    });
+
+    it('should run SPARQL query with docQuery in combined query form', function (done) {
+      this.timeout(10000);
+      var myQuery = "SELECT ?o WHERE {?s ?p ?o .}";
+      var combinedQuery = {
+        search: {
+          options: {
+            'search-option': [
+              'unfiltered'
+            ]
+          },
+          query: {
+            queries: [{
+              'term-query': {
+                text: ['testValue']
+              }
+            }]
+          }
+        },
+        qtext: ''
+      };
+      db.graphs.sparql({
+        contentType: 'application/json',
+        query: myQuery,
+        docQuery: combinedQuery
+      }).
+      result(function (response) {
+        response.results.bindings[0].should.have.property('o');
+        response.results.bindings[0].o.value.should.equal('test2');
+        done();
+      }, done);
+    });
+    it('should delete test document', function(done){
+      restAdminDB.documents.remove('/test/docquery/query.xml').
+      result(function(response) {
+        done();
+      }, done);
+    });
+    it('should drop all graphs', function(done){
+      var myData = "DROP ALL ;"
+      db.graphs.sparqlUpdate({
+        data: myData
+      }).
+      result(function(response){
+        done();
+      }, done);
+    });
   });
 });
