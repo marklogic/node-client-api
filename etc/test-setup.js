@@ -256,13 +256,14 @@ function setup(manager) {
           then(function(response) {
             return manager.get({
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+
-              '/temporal/collections/LSQT/properties?collection=temporalCollection'
+              '/temporal/collections/lsqt/properties?collection=temporalCollection'
               }).result();
             }).
           then(function(response) {
-            if (response.statusCode < 400) {
-              return this;
-            }
+            // 2017-10-24: Commenting out, LSQT enablement required for LSQT testing
+            // if (response.statusCode < 400) {
+            //   return this;
+            // }
             return manager.put({
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+
                 '/temporal/collections/lsqt/properties?collection=temporalCollection',
@@ -301,7 +302,7 @@ function setup(manager) {
             });
         } else {
           console.log(testconfig.testServerName+' setup failed with HTTP status: '+response.statusCode);
-          console.log(response.data);        
+          console.log(response.data);
           process.exit(1);
         }
       });
