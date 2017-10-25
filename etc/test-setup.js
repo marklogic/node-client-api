@@ -128,6 +128,7 @@ function setup(manager) {
                 rangeKey2:       'string',
                 rangeKey3:       'int',
                 rangeKey4:       'int',
+                rangeKey5:       'int',
                 systemStartTime: 'dateTime',
                 systemEndTime:   'dateTime',
                 validStartTime:  'dateTime',
