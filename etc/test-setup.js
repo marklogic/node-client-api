@@ -437,17 +437,11 @@ function setup(manager) {
               }).result();
             }).
           then(function(response) {
-<<<<<<< 59c04c766c77fd2a347b1c8b4563ab36b5455c2f
             // 2017-10-24: Commenting out, LSQT enablement required for LSQT testing
             // if (response.statusCode < 400) {
             //   return this;
             // }
-=======
-            if (response.statusCode < 400) {
-              return this;
-            }
             console.log('configuring LSQT');
->>>>>>> initial plan builder for Optic feature
             return manager.put({
               endpoint: '/manage/v2/databases/'+testconfig.testServerName+
                 '/temporal/collections/lsqt/properties?collection=temporalCollection',
