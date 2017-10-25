@@ -1,10 +1,11 @@
 {
-  "node":   true,
-  "curly":  true,
-  "eqeqeq": true,
-  "eqnull": true,
-  "noarg":  true,
-  "nonew":  true,
-  "undef":  true,
-  "unused": true
+  "esversion": 6,
+  "node":      true,
+  "curly":     true,
+  "eqeqeq":    true,
+  "eqnull":    true,
+  "noarg":     true,
+  "nonew":     true,
+  "undef":     true,
+  "unused":    true
 }
