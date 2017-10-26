@@ -23,6 +23,7 @@ var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
 var t = marklogic.valuesBuilder;
+var p = marklogic.planBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 //db.setLogger('debug');
@@ -351,6 +352,25 @@ describe('point-in-time with timestamp', function(){
           done();
         })
         .catch(done);
+      });
+    });
+  });
+
+  describe('rows', function(){
+    const planFromBuilder = p.fromLiterals([
+        {"id": 1,"name": "Master 1","date": "2015-12-01"},
+        {"id": 2,"name": "Master 2","date": "2015-12-02"},
+        {"id": 3,"name": "Master 3","date": "2015-12-03"},
+      ])
+    .where(p.gt(p.col('id'), 1));
+    describe('rows query', function(){
+      it('should set and use timestamp', function(){
+        var timestamp = db.createTimestamp();
+        valcheck.isNull(timestamp.value).should.equal(true);
+        return db.rows.query(planFromBuilder, {timestamp: timestamp})
+          .then(function (response) {
+            valcheck.isNull(timestamp.value).should.equal(false);
+          })
       });
     });
   });
