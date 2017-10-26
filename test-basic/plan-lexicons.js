@@ -122,6 +122,7 @@ describe('lexicons', function() {
               uri:p.cts.uriReference(),
               number:p.cts.jsonPropertyReference('srchNumber', 'nullable')
             })
+          .where(p.cts.directoryQuery('/optic/test/'))
           .orderBy('uri')
       )
     .then(function(response) {
