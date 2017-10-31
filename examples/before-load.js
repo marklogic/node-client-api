@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 var fs = require('fs');
+var PromisePlus  = require('../lib/bluebird-plus.js');
 
 var marklogic = require('../');
 
@@ -25,27 +26,33 @@ var fsdir = 'examples/data/';
 var dbdir = '/countries/';
 
 var batchSize = 100;
+var files = [];
 
 var collections = ['/countries', '/facts/geographic'];
 
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
-  fs.readFile(fsdir+filename, function (err, content) {
-    if (err) {
-      throw err;
-    }
 
-    buffer.push({
-      uri:         dbdir+filename,
-      category:    'content',
-      contentType: 'application/json',
-      collections: collections,
-      content:     content.toString()
-      });
+  files.push(new PromisePlus((resolve, reject) => {
+    fs.readFile(fsdir+filename, function (err, content) {
+      if (err) {
+        throw err;
+      }
+      var document = ({
+        uri:         dbdir+filename,
+        category:    'content',
+        contentType: 'application/json',
+        collections: collections,
+        content:     content.toString()
+        });
+      resolve(document);
+    })
+  }));
 
-    if (isLast) {
-      console.log('loading batch from '+buffer[0].uri+' to '+filename);
-      db.documents.write(buffer).result(function(response) {
+  if (isLast) {
+    PromisePlus.all(files).then(function(documents) {
+      console.log('loading batch from '+documents[0].uri+' to '+filename);
+      db.documents.write(documents).result(function(response) {
         console.log(
             'done loading:\n'+
             response.documents.map(function(document) {
@@ -54,9 +61,11 @@ function readFile(filenames, i, buffer, isLast) {
             );
         writeBatch(filenames, i + 1);
       });
-    }
-  });
-}
+    });
+    files = [];
+  }
+
+};
 
 function writeBatch(filenames, batchFirst) {
   if (batchFirst >= filenames.length) {
