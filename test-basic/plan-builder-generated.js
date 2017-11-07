@@ -18,9 +18,10 @@
 /* IMPORTANT: Do not edit. This file is generated. */
 const should = require('should');
 
-// TODO: replace temporary workaround
+const marklogic = require('../');
+const p = marklogic.planBuilder;
+
 const pbb = require('./plan-builder-base');
-const p = pbb.planBuilder;
 const testPlan = pbb.testPlan;
 const getResult = pbb.getResult;
 

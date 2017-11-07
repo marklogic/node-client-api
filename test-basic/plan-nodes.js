@@ -17,9 +17,10 @@
 
 const should = require('should');
 
-// TODO: replace temporary workaround
+const marklogic = require('../');
+const p = marklogic.planBuilder;
+
 const pbb = require('./plan-builder-base');
-const p = pbb.planBuilder;
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -613,33 +614,5 @@ describe('nodes', function() {
       should(value).deepEqual(exportedXml);
       done();
     });
-/* TODO:
-    it('JSON import', function(done) {
-      execPlan(
-          p.import(exportedJson)
-          )
-        .then(function(response) {
-          const output = getResults(response);
-          should(output.length).equal(1);
-          should(output[0].o.p1.value).equal('a');
-          should(output[0].o.p2.length.value).equal(1);
-          should(output[0].o.p2[0].value).equal(1);
-          done();
-        })
-      .catch(done);
-    });
-    it('XML import', function(done) {
-      execPlan(
-          p.import(exportedXml)
-          )
-        .then(function(response) {
-          const output = getResults(response);
-          should(output.length).equal(1);
-          should(output[0].c.value).equal('<?xml version="1.0" encoding="UTF-8"?>\n<e a="a">1</e>');
-          done();
-        })
-      .catch(done);
-    });
- */
   });
 });
