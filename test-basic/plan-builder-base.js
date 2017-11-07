@@ -22,13 +22,7 @@ const testconfig = require('../etc/test-config');
 const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 const dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-// TODO: remove temporary hack
-const PlanBuilder = require('../lib/plan-builder');
-const planBuilder = PlanBuilder.builder;
-
-// TODO: remove temporary hack
-const testlib = require('../etc/test-lib');
-const rowMgrOld = testlib.createManager(dbReader);
+const planBuilder = marklogic.planBuilder;
 
 const rowMgr = dbReader.rows;
 
@@ -42,42 +36,6 @@ function makeInput(values) {
 }
 function makeTest(input, expression) {
     return input.select(planBuilder.as('t', expression));
-}
-// TODO: delete temporary hack
-function execPlanOld(query, bindings, output, accept) {
-  const rowOutput = (output === void 0 || output === null) ? 'object' : output;
-  const baseEndpoint = '/v1/rows?output='+rowOutput;
-  const endpoint  = (bindings === void 0 || bindings === null) ? baseEndpoint :
-    baseEndpoint+Object.keys(bindings).map(key => {
-      const binding   = bindings[key];
-      const isSimple  = (typeof binding !== 'object' || (binding instanceof String) ||
-        (binding instanceof Number) || (binding instanceof Boolean) || binding === null);
-      const bindValue = isSimple ? binding : binding.value;
-      if (bindValue === void 0) {
-        throw new Error(`binding for ${key} without value: ${binding}`);
-      }
-      const type      = isSimple ? (void 0) : binding.type;
-      const lang      = isSimple ? (void 0) : binding.lang;
-      if (type !== void 0 && lang !== void 0) {
-        throw new Error(`binding for ${key} with type and lang: ${binding}`);
-      }
-      const name      = encodeURIComponent(key);
-      const bindName  =
-        (type !== void 0) ? name+':'+type :
-          (lang !== void 0) ? name+'@'+lang :
-            name;
-      return `&bind:${bindName}=${encodeURIComponent(bindValue)}`;
-    }).join('');
-// console.log(JSON.stringify(query.export(),null,2));
-// console.log(endpoint);
-  return rowMgrOld.post({
-    endpoint: endpoint,
-    headers: {
-      'content-type': 'application/json',
-      accept:         (accept === void 0 || accept === null) ? 'application/json' : accept
-      },
-    body:     query.export()
-  });
 }
 function execPlan(query, bindings, output) {
   const plan = JSON.stringify(query.export());
