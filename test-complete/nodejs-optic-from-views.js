@@ -187,103 +187,142 @@ describe('Optic from views test', function(){
     }, done);
   });
 
-  it('TEST 6 - union with select', function(done){
-    var src =
-      `const op = require('/MarkLogic/optic');
-      const plan1 =
-        op.fromView('opticFunctionalTest', 'detail')
-          .orderBy(op.schemaCol('opticFunctionalTest', 'detail', 'id'));
-      const plan2 =
-        op.fromView('opticFunctionalTest', 'master')
-          .orderBy(op.schemaCol('opticFunctionalTest', 'master' , 'id'));
-      const output =
-        plan1.union(plan2)
-        .select([
-          op.as('MasterName', op.schemaCol('opticFunctionalTest', 'master', 'name')),
-          op.schemaCol('opticFunctionalTest', 'master', 'date'),
-          op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
-          op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
-          op.schemaCol('opticFunctionalTest', 'detail', 'color')
-        ])
-        .orderBy(op.desc(op.col('DetailName')))
-        .result();
-      output;`  
-    db.eval(src)
-    .result(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
-      expect(output.length).to.equal(8);
-      expect(output[0].value.MasterName).to.equal(null);
-      expect(output[0].value['opticFunctionalTest.master.date']).to.equal(null);
-      expect(output[0].value.DetailName).to.equal('Detail 6');
-      expect(output[7].value.MasterName).to.equal('Master 2');
-      expect(output[7].value['opticFunctionalTest.master.date']).to.equal('2015-12-02');
-      expect(output[7].value.DetailName).to.equal(null);
-      expect(output[7].value['opticFunctionalTest.detail.color']).to.equal(null);
+  it('TEST 6 - union with select - format csv', function(done){
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail')
+        .orderBy(op.schemaCol('opticFunctionalTest', 'detail', 'id'));
+    const plan2 =
+      op.fromView('opticFunctionalTest', 'master')
+        .orderBy(op.schemaCol('opticFunctionalTest', 'master' , 'id'));
+    const output =
+      plan1.union(plan2)
+      .select([
+        op.as('MasterName', op.schemaCol('opticFunctionalTest', 'master', 'name')),
+        op.schemaCol('opticFunctionalTest', 'master', 'date'),
+        op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
+        op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
+        op.schemaCol('opticFunctionalTest', 'detail', 'color')
+       ])
+      .orderBy(op.desc(op.col('DetailName')))
+    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(output);
+      expect(output).to.contain('MasterName,opticFunctionalTest.master.date,DetailName,opticFunctionalTest.detail.amount,opticFunctionalTest.detail.color');
+      expect(output).to.contain(',,Detail 2,20.02,blue');
+      expect(output).to.contain('Master 2,2015-12-02,,,');
       done();
     }, done);
   });
 
-  it('TEST 7 - join cross product', function(done){
-    var src =
-      `const op = require('/MarkLogic/optic');
-      const plan1 =
-        op.fromView('opticFunctionalTest', 'detail')
-          .orderBy(op.schemaCol('opticFunctionalTest', 'detail', 'id'));
-      const plan2 =
-        op.fromView('opticFunctionalTest', 'master')
-          .orderBy(op.schemaCol('opticFunctionalTest', 'master' , 'id'));
-      const output =
-        plan1.joinCrossProduct(plan2)
-        .select([
-          op.as('MasterName', op.schemaCol('opticFunctionalTest', 'master', 'name')),
-          op.schemaCol('opticFunctionalTest', 'master', 'date'),
-          op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
-          op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
-          op.schemaCol('opticFunctionalTest', 'detail', 'color')
-        ])
-        .orderBy(op.desc(op.col('DetailName')))
-        .orderBy(op.asc(op.col('MasterName')))
-        .result();
-      output;`  
-    db.eval(src)
-    .result(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
-      expect(output.length).to.equal(12);
-      expect(output[0].value.MasterName).to.equal('Master 1');
-      expect(output[0].value.DetailName).to.equal('Detail 6');
-      expect(output[1].value.MasterName).to.equal('Master 1');
-      expect(output[1].value.DetailName).to.equal('Detail 5');
-      expect(output[11].value.MasterName).to.equal('Master 2');
-      expect(output[11].value.DetailName).to.equal('Detail 1');
-      expect(output[11].value['opticFunctionalTest.detail.color']).to.equal('blue');
+  it('TEST 7 - join cross product - format csv, structure array', function(done){
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail')
+        .orderBy(op.schemaCol('opticFunctionalTest', 'detail', 'id'));
+    const plan2 =
+      op.fromView('opticFunctionalTest', 'master')
+        .orderBy(op.schemaCol('opticFunctionalTest', 'master' , 'id'));
+    const output =
+      plan1.joinCrossProduct(plan2)
+      .select([
+        op.as('MasterName', op.schemaCol('opticFunctionalTest', 'master', 'name')),
+        op.schemaCol('opticFunctionalTest', 'master', 'date'),
+        op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
+        op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
+        op.schemaCol('opticFunctionalTest', 'detail', 'color')
+      ])
+      .orderBy(op.desc(op.col('DetailName')))
+      .orderBy(op.asc(op.col('MasterName')))
+    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(output);
+      expect(output).to.contain('["MasterName", "opticFunctionalTest.master.date", "DetailName", "opticFunctionalTest.detail.amount", "opticFunctionalTest.detail.color"]');
+      expect(output).to.contain('["Master 1", "2015-12-01", "Detail 2", 20.02, "blue"]');
+      expect(output).to.contain('["Master 2", "2015-12-02", "Detail 1", 10.01, "blue"]');
       done();
     }, done);
   });
 
-  it('TEST 8 - accessor plan', function(done){
-    var src =
-      `const op = require('/MarkLogic/optic');
-      const plan1 =
-        op.fromView('opticFunctionalTest', 'detail', 'myDetail');
+  it('TEST 8 - accessor plan - complexValues reference', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail');
             
-      const idCol = plan1.col('id');
-      const nameCol = plan1.col('name');
-      const output =
-        op.fromView('opticFunctionalTest', 'detail', 'myDetail')
-        .where(op.gt(idCol, 3))
-        .select([idCol, nameCol])
-        .orderBy(op.desc(nameCol))
-        .result();
-      output;`
+    const idCol = plan1.col('id');
+    const nameCol = plan1.col('name');
+    const output =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail')
+      .where(op.gt(idCol, 3))
+      .select([idCol, nameCol])
+      .orderBy(op.desc(nameCol))
   
-    db.eval(src)
-    .result(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
-      expect(output.length).to.equal(3);
-      expect(output[0].value['myDetail.id']).to.equal(6);
-      expect(output[0].value['myDetail.name']).to.equal('Detail 6');
-      expect(output[2].value['myDetail.id']).to.equal(4);
-      expect(output[2].value['myDetail.name']).to.equal('Detail 4');
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    .on('data', function(chunk) {
+      chunks.push(chunk.kind.toString());
+      count++;
+    }).
+    on('end', function() {
+      //console.log(count);
+      //console.log(chunks.join(''));
+      expect(chunks.join(' ')).to.equal('columns row row row');
+      expect(count).to.equal(4);
+      done();
+    }, done);
+  });
+
+  it('TEST 9 - accessor plan - stream sequence, structure array, columnTypes header, complexValues inline', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail');
+            
+    const idCol = plan1.col('id');
+    const nameCol = plan1.col('name');
+    const output =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail')
+      .where(op.gt(idCol, 3))
+      .select([idCol, nameCol])
+      .orderBy(op.desc(nameCol))
+  
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'array', columnTypes: 'header', complexValues: 'inline' }) 
+    .on('data', function(chunk) {
+      //console.log(chunk.toString());
+      str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
+      count++;
+    }).
+    on('end', function() {
+      //console.log(str);
+      expect(str).to.equal('\u001e[{"name":"myDetail.id","type":"xs:integer"},{"name":"myDetail.name","type":"xs:string"}]\u001e[6,"Detail 6"]\u001e[5,"Detail 5"]\u001e[4,"Detail 4"]');
+      done();
+    }, done);
+  });
+
+  it('TEST 10 - accessor plan - stream chunked, structure array, columnTypes header, complexValues inline', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail');
+            
+    const idCol = plan1.col('id');
+    const nameCol = plan1.col('name');
+    const output =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail')
+      .where(op.gt(idCol, 3))
+      .select([idCol, nameCol])
+      .orderBy(op.desc(nameCol))
+  
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'rows', complexValues: 'inline' }) 
+    .on('data', function(chunk) {
+      //console.log(chunk.toString());
+      str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
+      count++;
+    }).
+    on('end', function() {
+      //console.log(str);
+      expect(str).to.equal('{ "columns": [{"name":"myDetail.id"},{"name":"myDetail.name"}], "rows":[ {"myDetail.id":{"type":"xs:integer","value":6},"myDetail.name":{"type":"xs:string","value":"Detail 6"}}, {"myDetail.id":{"type":"xs:integer","value":5},"myDetail.name":{"type":"xs:string","value":"Detail 5"}}, {"myDetail.id":{"type":"xs:integer","value":4},"myDetail.name":{"type":"xs:string","value":"Detail 4"}}] }');
       done();
     }, done);
   });
