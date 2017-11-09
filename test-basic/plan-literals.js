@@ -71,13 +71,23 @@ describe('literals', function() {
             {orderId: 1, orderExtra: 'First extra'}
             ], 
             'lit');
-      const value = accessor.select(accessor.col('orderId')).export();
+      const colPlan = accessor.select(accessor.col('orderId'));
+      const value = colPlan.export();
       should(value.$optic.args.length).equal(2);
       should(value.$optic.args[1].args.length).equal(1);
       should(value.$optic.args[1].args[0]).deepEqual(
-        {ns:'op', fn:'viewCol', args:['lit', 'orderId']}
+        {ns:'op', fn:'view-col', args:['lit', 'orderId']}
       );
-      done();
+      execPlan(
+        colPlan
+      )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(1);
+          should(output[0]['lit.orderId'].value).equal(1);
+          done();
+        })
+        .catch(done);
     });
   });
   // see other unit tests for other operations on literals
