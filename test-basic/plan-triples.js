@@ -185,25 +185,18 @@ describe('triples', function() {
       .catch(done);
     });
     it('having col method', function(done) {
-      const colPlan = p.fromTriples([
+      const accessor = p.fromTriples([
           p.pattern(datastore, typeProp,  datastoreType, p.fragmentIdCol('sourceDoc')),
           p.pattern(datastore, titleProp, titleCol)
         ],
         'tripview');
-      execPlan(
-        colPlan
-          .select(colPlan.col('title'))
-          .orderBy('title')
-          .limit(2)
-        )
-      .then(function(response) {
-        const output = getResults(response);
-        should(output.length).equal(2);
-        should(output[0]['tripview.title'].value).equal('The A datastore');
-        should(output[1]['tripview.title'].value).equal('The B datastore');
-        done();
-        })
-      .catch(done);
+      const value = accessor.select(accessor.col('title')).export();
+      should(value.$optic.args.length).equal(2);
+      should(value.$optic.args[1].args.length).equal(1);
+      should(value.$optic.args[1].args[0]).deepEqual(
+        {ns:'op', fn:'viewCol', args:['tripview', 'title']}
+      );
+      done();
     });
     it('with graph iri', function(done) {
       execPlan(

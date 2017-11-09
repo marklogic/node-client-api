@@ -67,21 +67,17 @@ describe('literals', function() {
     .catch(done);
     });
     it('having col method', function(done) {
-      const colPlan = p.fromLiterals([
+      const accessor = p.fromLiterals([
             {orderId: 1, orderExtra: 'First extra'}
             ], 
             'lit');
-      execPlan(
-        colPlan
-          .select(colPlan.col('orderId'))
-        )
-      .then(function(response) {
-        const output = getResults(response);
-        should(output.length).equal(1);
-        should(output[0]['lit.orderId'].value).equal(1);
-        done();
-        })
-      .catch(done);
+      const value = accessor.select(accessor.col('orderId')).export();
+      should(value.$optic.args.length).equal(2);
+      should(value.$optic.args[1].args.length).equal(1);
+      should(value.$optic.args[1].args[0]).deepEqual(
+        {ns:'op', fn:'viewCol', args:['lit', 'orderId']}
+      );
+      done();
     });
   });
   // see other unit tests for other operations on literals

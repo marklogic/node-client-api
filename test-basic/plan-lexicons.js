@@ -95,27 +95,18 @@ describe('lexicons', function() {
   .catch(done);
   });
   it('having col method', function(done) {
-    const colPlan = p.fromLexicons({
+    const accessor = p.fromLexicons({
         uri:p.cts.uriReference(),
         number:p.cts.jsonPropertyReference('srchNumber')
       },
       'urinum');
-    execPlan(
-      colPlan
-        .select(colPlan.col('number'))
-        .orderBy('number')
-        .limit(2)
-      )
-    .then(function(response) {
-      const output = getResults(response);
-      should(output.length).equal(2);
-      should(output[0]['urinum.number'].value).equal(1);
-      should.not.exist(output[0]['urinum.uri']);
-      should(output[1]['urinum.number'].value).equal(2);
-      should.not.exist(output[1]['urinum.uri']);
-      done();
-      })
-      .catch(done);
+    const value = accessor.select(accessor.col('number')).export();
+    should(value.$optic.args.length).equal(2);
+    should(value.$optic.args[1].args.length).equal(1);
+    should(value.$optic.args[1].args[0]).deepEqual(
+      {ns:'op', fn:'viewCol', args:['urinum', 'number']}
+    );
+    done();
   });
   it('with nullable column', function(done) {
     execPlan(
