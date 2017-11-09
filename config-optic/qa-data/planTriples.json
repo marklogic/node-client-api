@@ -1,0 +1,165 @@
+{
+	"$optic": {
+		"ns": "op",
+		"fn": "operators",
+		"args": [{
+			"ns": "op",
+			"fn": "from-triples",
+			"args": [
+				[{
+					"ns": "op",
+					"fn": "pattern",
+					"args": [
+						[{
+							"ns": "op",
+							"fn": "col",
+							"args": ["player_id"]
+						}],
+						[{
+							"ns": "sem",
+							"fn": "iri",
+							"args": ["http://marklogic.com/other/bball/players#age"]
+						}],
+						[{
+							"ns": "op",
+							"fn": "col",
+							"args": ["player_age"]
+						}], null
+					]
+				}, {
+					"ns": "op",
+					"fn": "pattern",
+					"args": [
+						[{
+							"ns": "op",
+							"fn": "col",
+							"args": ["player_id"]
+						}],
+						[{
+							"ns": "sem",
+							"fn": "iri",
+							"args": ["http://marklogic.com/other/bball/players#name"]
+						}],
+						[{
+							"ns": "op",
+							"fn": "col",
+							"args": ["player_name"]
+						}], null
+					]
+				}, {
+					"ns": "op",
+					"fn": "pattern",
+					"args": [
+						[{
+							"ns": "op",
+							"fn": "col",
+							"args": ["player_id"]
+						}],
+						[{
+							"ns": "sem",
+							"fn": "iri",
+							"args": ["http://marklogic.com/other/bball/players#team"]
+						}],
+						[{
+							"ns": "op",
+							"fn": "col",
+							"args": ["player_team"]
+						}], null
+					]
+				}], "myPlayer", null, null
+			]
+		}, {
+			"ns": "op",
+			"fn": "join-left-outer",
+			"args": [{
+					"ns": "op",
+					"fn": "operators",
+					"args": [{
+						"ns": "op",
+						"fn": "from-triples",
+						"args": [
+							[{
+								"ns": "op",
+								"fn": "pattern",
+								"args": [
+									[{
+										"ns": "op",
+										"fn": "col",
+										"args": ["team_id"]
+									}],
+									[{
+										"ns": "sem",
+										"fn": "iri",
+										"args": ["http://marklogic.com/mlb/team/name"]
+									}],
+									[{
+										"ns": "op",
+										"fn": "col",
+										"args": ["team_name"]
+									}], null
+								]
+							}, {
+								"ns": "op",
+								"fn": "pattern",
+								"args": [
+									[{
+										"ns": "op",
+										"fn": "col",
+										"args": ["team_id"]
+									}],
+									[{
+										"ns": "sem",
+										"fn": "iri",
+										"args": ["http://marklogic.com/mlb/team/city"]
+									}],
+									[{
+										"ns": "op",
+										"fn": "col",
+										"args": ["team_city"]
+									}], null
+								]
+							}], "myTeam", null, null
+						]
+					}]
+				},
+				[{
+					"ns": "op",
+					"fn": "on",
+					"args": [{
+						"ns": "op",
+						"fn": "col",
+						"args": ["player_team"]
+					}, {
+						"ns": "op",
+						"fn": "col",
+						"args": ["team_id"]
+					}]
+				}], null
+			]
+		}, {
+			"ns": "op",
+			"fn": "where",
+			"args": [{
+				"ns": "op",
+				"fn": "and",
+				"args": [{
+					"ns": "op",
+					"fn": "gt",
+					"args": [{
+						"ns": "op",
+						"fn": "col",
+						"args": ["player_age"]
+					}, 20]
+				}, {
+					"ns": "op",
+					"fn": "is-defined",
+					"args": [{
+						"ns": "op",
+						"fn": "col",
+						"args": ["team_name"]
+					}]
+				}]
+			}]
+		}]
+	}
+}
