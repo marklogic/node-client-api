@@ -92,23 +92,54 @@ describe('view', function() {
       .catch(done);
     });
     it('having col method', function(done) {
-      const colPlan = p.fromView('opticUnitTest', 'master', 'idview');
+      const accessor  = p.fromView('opticUnitTest', 'master');
+      const colPlan = accessor.select(accessor.col('id'));
+      const value = colPlan.export();
+      should(value.$optic.args.length).equal(2);
+      should(value.$optic.args[1].args.length).equal(1);
+      should(value.$optic.args[1].args[0]).deepEqual(
+        {ns:'op', fn:'schema-col', args:['opticUnitTest', 'master', 'id']}
+        );
       execPlan(
         colPlan
-          .select(colPlan.col('id'))
-          .orderBy('id')
+          .orderBy(accessor.col('id'))
           .limit(2)
-        )
-      .then(function(response) {
-        const output = getResults(response);
-        should(output.length).equal(2);
-        should(output[0]['idview.id'].value).equal(1);
-        should.not.exist(output[0]['idview.name']);
-        should(output[1]['idview.id'].value).equal(2);
-        should.not.exist(output[1]['idview.name']);
-        done();
+      )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(2);
+          should(output[0]['opticUnitTest.master.id'].value).equal(1);
+          should.not.exist(output[0]['opticUnitTest.master.name']);
+          should(output[1]['opticUnitTest.master.id'].value).equal(2);
+          should.not.exist(output[1]['opticUnitTest.master.name']);
+          done();
         })
-      .catch(done);
+        .catch(done);
+    });
+    it('having qualified col method', function(done) {
+      const accessor  = p.fromView('opticUnitTest', 'master', 'idview');
+      const colPlan = accessor.select(accessor.col('id'));
+      const value = colPlan.export();
+      should(value.$optic.args.length).equal(2);
+      should(value.$optic.args[1].args.length).equal(1);
+      should(value.$optic.args[1].args[0]).deepEqual(
+        {ns:'op', fn:'view-col', args:['idview', 'id']}
+      );
+      execPlan(
+        colPlan
+          .orderBy(accessor.col('id'))
+          .limit(2)
+      )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(2);
+          should(output[0]['idview.id'].value).equal(1);
+          should.not.exist(output[0]['idview.name']);
+          should(output[1]['idview.id'].value).equal(2);
+          should.not.exist(output[1]['idview.name']);
+          done();
+        })
+        .catch(done);
     });
     it('query', function(done) {
       execPlan(

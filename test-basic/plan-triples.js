@@ -185,25 +185,31 @@ describe('triples', function() {
       .catch(done);
     });
     it('having col method', function(done) {
-      const colPlan = p.fromTriples([
+      const accessor = p.fromTriples([
           p.pattern(datastore, typeProp,  datastoreType, p.fragmentIdCol('sourceDoc')),
           p.pattern(datastore, titleProp, titleCol)
         ],
         'tripview');
+      const colPlan = accessor.select(accessor.col('title'));
+      const value = colPlan.export();
+      should(value.$optic.args.length).equal(2);
+      should(value.$optic.args[1].args.length).equal(1);
+      should(value.$optic.args[1].args[0]).deepEqual(
+        {ns:'op', fn:'view-col', args:['tripview', 'title']}
+      );
       execPlan(
         colPlan
-          .select(colPlan.col('title'))
-          .orderBy('title')
+          .orderBy(accessor.col('title'))
           .limit(2)
-        )
-      .then(function(response) {
-        const output = getResults(response);
-        should(output.length).equal(2);
-        should(output[0]['tripview.title'].value).equal('The A datastore');
-        should(output[1]['tripview.title'].value).equal('The B datastore');
-        done();
+      )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(2);
+          should(output[0]['tripview.title'].value).equal('The A datastore');
+          should(output[1]['tripview.title'].value).equal('The B datastore');
+          done();
         })
-      .catch(done);
+        .catch(done);
     });
     it('with graph iri', function(done) {
       execPlan(
