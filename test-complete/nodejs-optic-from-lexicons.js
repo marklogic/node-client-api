@@ -437,7 +437,7 @@ describe('Node.js Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.viewCol('myCity', '__docId'), 'uri2', 'cityName', 'cityTeam', op.viewCol('myTeam', '__docId'), op.as('nodes', op.xpath('doc', '/cityTeam'))])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.asc(op.col('date')))
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' }) 
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -446,6 +446,8 @@ describe('Node.js Optic from lexicons test', function(){
     on('end', function() {
       //console.log(str);
       //console.log(count);
+      expect(str).to.equal('\u001e{"columns":[{"name":"myCity.uri1","type":"xs:string"},{"name":"myCity.city","type":"xs:string"},{"name":"myCity.popularity","type":"xs:integer"},{"name":"myCity.date","type":"xs:date"},{"name":"myCity.distance","type":"xs:double"},{"name":"myCity.point","type":"http://marklogic.com/cts#point"},{"name":"myTeam.uri2","type":"xs:string"},{"name":"myTeam.cityName","type":"xs:string"},{"name":"myTeam.cityTeam","type":"xs:string"},{"name":"nodes","type":"array"}]}\u001e{"myCity.uri1":"/optic/lexicon/test/doc3.json","myCity.city":"new jersey","myCity.popularity":2,"myCity.date":"1971-12-23","myCity.distance":12.9,"myCity.point":"40.720001,-74.07","myTeam.uri2":"/optic/lexicon/test/city3.json","myTeam.cityName":"new jersey","myTeam.cityTeam":"nets","nodes":"nets"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc4.xml","myCity.city":"beijing","myCity.popularity":5,"myCity.date":"1981-11-09","myCity.distance":134.5,"myCity.point":"39.900002,116.4","myTeam.uri2":"/optic/lexicon/test/city4.json","myTeam.cityName":"beijing","myTeam.cityTeam":"ducks","nodes":"ducks"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc5.xml","myCity.city":"cape town","myCity.popularity":3,"myCity.date":"1999-04-22","myCity.distance":377.9,"myCity.point":"-33.91,18.42","myTeam.uri2":"/optic/lexicon/test/city5.json","myTeam.cityName":"cape town","myTeam.cityTeam":"pirates","nodes":"pirates"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc2.json","myCity.city":"new york","myCity.popularity":5,"myCity.date":"2006-06-23","myCity.distance":23.3,"myCity.point":"40.709999,-74.009995","myTeam.uri2":"/optic/lexicon/test/city2.json","myTeam.cityName":"new york","myTeam.cityTeam":"yankee","nodes":"yankee"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc1.json","myCity.city":"london","myCity.popularity":5,"myCity.date":"2007-01-01","myCity.distance":50.4,"myCity.point":"51.5,-0.12","myTeam.uri2":"/optic/lexicon/test/city1.json","myTeam.cityName":"london","myTeam.cityTeam":"arsenal","nodes":"arsenal"}');
+      expect(count).to.equal(6);
       done();
     }, done);
   });
