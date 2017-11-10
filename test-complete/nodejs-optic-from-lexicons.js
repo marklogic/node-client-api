@@ -452,6 +452,51 @@ describe('Node.js Optic from lexicons test', function(){
     }, done);
   });
 
+  it('TEST 12 - join inner with joinInnerDoc and xpath - with queryAsStream chunked', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const plan1 = 
+      op.fromLexicons(
+        {
+          uri1: op.cts.uriReference(),
+          city: op.cts.jsonPropertyReference('city'),
+          popularity: op.cts.jsonPropertyReference('popularity'),
+          date: op.cts.jsonPropertyReference('date'),
+          distance: op.cts.jsonPropertyReference('distance'),
+          point: op.cts.jsonPropertyReference('latLonPoint')
+        }, 'myCity'
+      );
+    const plan2 = 
+      op.fromLexicons(
+        {
+          uri2: op.cts.uriReference(),
+          cityName: op.cts.jsonPropertyReference('cityName'),
+          cityTeam: op.cts.jsonPropertyReference('cityTeam')
+        }, 'myTeam'
+      );
+    const output =
+      plan1.joinInner(plan2)
+      .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
+      .joinDoc(op.col('doc'), op.col('uri2'))
+      .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.viewCol('myCity', '__docId'), 'uri2', 'cityName', 'cityTeam', op.viewCol('myTeam', '__docId'), op.as('nodes', op.xpath('doc', '/cityTeam'))])
+      .where(op.isDefined(op.col('nodes')))
+      .orderBy(op.asc(op.col('date')))
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'array', columnTypes: 'rows' }) 
+    .on('data', function(chunk) {
+      //console.log(chunk.toString());
+      str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
+      count++;
+    }).
+    on('end', function() {
+      //console.log(str);
+      //console.log(count);
+      expect(str).to.equal('[ [{"name":"myCity.uri1"},{"name":"myCity.city"},{"name":"myCity.popularity"},{"name":"myCity.date"},{"name":"myCity.distance"},{"name":"myCity.point"},{"name":"myTeam.uri2"},{"name":"myTeam.cityName"},{"name":"myTeam.cityTeam"},{"name":"nodes"}], [{"type":"xs:string","value":"/optic/lexicon/test/doc3.json"},{"type":"xs:string","value":"new jersey"},{"type":"xs:integer","value":2},{"type":"xs:date","value":"1971-12-23"},{"type":"xs:double","value":12.9},{"type":"http://marklogic.com/cts#point","value":"40.720001,-74.07"},{"type":"xs:string","value":"/optic/lexicon/test/city3.json"},{"type":"xs:string","value":"new jersey"},{"type":"xs:string","value":"nets"},{"type":"text","value":"nets"}], [{"type":"xs:string","value":"/optic/lexicon/test/doc4.xml"},{"type":"xs:string","value":"beijing"},{"type":"xs:integer","value":5},{"type":"xs:date","value":"1981-11-09"},{"type":"xs:double","value":134.5},{"type":"http://marklogic.com/cts#point","value":"39.900002,116.4"},{"type":"xs:string","value":"/optic/lexicon/test/city4.json"},{"type":"xs:string","value":"beijing"},{"type":"xs:string","value":"ducks"},{"type":"text","value":"ducks"}], [{"type":"xs:string","value":"/optic/lexicon/test/doc5.xml"},{"type":"xs:string","value":"cape town"},{"type":"xs:integer","value":3},{"type":"xs:date","value":"1999-04-22"},{"type":"xs:double","value":377.9},{"type":"http://marklogic.com/cts#point","value":"-33.91,18.42"},{"type":"xs:string","value":"/optic/lexicon/test/city5.json"},{"type":"xs:string","value":"cape town"},{"type":"xs:string","value":"pirates"},{"type":"text","value":"pirates"}], [{"type":"xs:string","value":"/optic/lexicon/test/doc2.json"},{"type":"xs:string","value":"new york"},{"type":"xs:integer","value":5},{"type":"xs:date","value":"2006-06-23"},{"type":"xs:double","value":23.3},{"type":"http://marklogic.com/cts#point","value":"40.709999,-74.009995"},{"type":"xs:string","value":"/optic/lexicon/test/city2.json"},{"type":"xs:string","value":"new york"},{"type":"xs:string","value":"yankee"},{"type":"text","value":"yankee"}], [{"type":"xs:string","value":"/optic/lexicon/test/doc1.json"},{"type":"xs:string","value":"london"},{"type":"xs:integer","value":5},{"type":"xs:date","value":"2007-01-01"},{"type":"xs:double","value":50.4},{"type":"http://marklogic.com/cts#point","value":"51.5,-0.12"},{"type":"xs:string","value":"/optic/lexicon/test/city1.json"},{"type":"xs:string","value":"london"},{"type":"xs:string","value":"arsenal"},{"type":"text","value":"arsenal"}] ]');
+      expect(count).to.equal(1);
+      done();
+    }, done);
+  });
+
   /*it('TEST 21 - joinInner with default offsetLimit', function(done){
     var src =  
       `const op = require('/MarkLogic/optic');
