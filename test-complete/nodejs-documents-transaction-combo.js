@@ -51,7 +51,7 @@ describe('Transaction combo test', function() {
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response['transaction-status']['transaction-id'].should.equal(tid);
-      response['transaction-status']['time-limit'].should.equal('30');
+      response['transaction-status']['time-limit'].should.equal('29');
       return db.transactions.rollback(tid).result();
     })
     .then(function(response) {
