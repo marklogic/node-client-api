@@ -25,9 +25,9 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-const planPath = '../config-optic/qa-data/planLexicons.json';
+//const planPath = '../config-optic/qa-data/planLexicons.json';
 
-const planFromJSON = fs.readFileSync(planPath, 'utf8');
+//const planFromJSON = fs.readFileSync(planPath, 'utf8');
 
 describe('Node.js Optic from lexicons test', function(){
 

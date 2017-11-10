@@ -25,9 +25,9 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-const planPath = '../config-optic/qa-data/planViews.json';
+//const planPath = '../config-optic/qa-data/planViews.json';
 
-const planFromJSON = fs.readFileSync(planPath, 'utf8');
+//const planFromJSON = fs.readFileSync(planPath, 'utf8');
 
 describe('Optic from views test', function(){
 
@@ -968,7 +968,7 @@ describe('Optic from views test', function(){
     }, done);
   });
 
-  it('TEST 30 - read plan from file', function(done){
+  /*it('TEST 30 - read plan from file', function(done){
     db.rows.query(planFromJSON, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -997,7 +997,7 @@ describe('Optic from views test', function(){
       expect(str).to.equal('{ "columns": [{"name":"myDetail.id"},{"name":"myMaster.id"},{"name":"myDetail.name"},{"name":"myMaster.name"},{"name":"myDetail.masterId"},{"name":"myMaster.date"},{"name":"myDetail.amount"},{"name":"myDetail.color"}], "rows":[ {"myDetail.id":{"type":"xs:integer","value":1},"myMaster.id":{"type":"xs:integer","value":1},"myDetail.name":{"type":"xs:string","value":"Detail 1"},"myMaster.name":{"type":"xs:string","value":"Master 1"},"myDetail.masterId":{"type":"xs:integer","value":1},"myMaster.date":{"type":"xs:date","value":"2015-12-01"},"myDetail.amount":{"type":"xs:double","value":10.01},"myDetail.color":{"type":"xs:string","value":"blue"}}] }');
       done();
     }, done);
-  });
+  });*/
 
   it('TEST 32 - offsetLimit, params and bindings', function(done){
     const plan1 =
