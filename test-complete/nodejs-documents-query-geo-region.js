@@ -314,11 +314,9 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(4);
-      response[0].uri.should.equal('/geo/region/test/South-More-json.json');
-      response[1].uri.should.equal('/geo/region/test/Equator.xml');
-      response[2].uri.should.equal('/geo/region/test/Equator-json.json');
-      response[3].uri.should.equal('/geo/region/test/South-More.xml');
+      response.length.should.equal(2);
+      response[0].uri.should.equal('/geo/region/test/Equator.xml');
+      response[1].uri.should.equal('/geo/region/test/Equator-json.json');
       done();
     }, done);
   });
@@ -430,9 +428,7 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(2);
-      response[0].uri.should.equal('/geo/region/test/Equator.xml');
-      response[1].uri.should.equal('/geo/region/test/Equator-json.json');
+      response.length.should.equal(0);
       done();
     }, done);
   });
@@ -449,9 +445,9 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(8);
-      response[0].uri.should.equal('/geo/region/test/International-Date-Line.xml');
-      response[7].uri.should.equal('/geo/region/test/North-West.xml');
+      response.length.should.equal(2);
+      response[0].uri.should.equal('/geo/region/test/Tropic-of-Cancer-json.json');
+      response[1].uri.should.equal('/geo/region/test/Tropic-of-Cancer.xml');
       done();
     }, done);
   });
