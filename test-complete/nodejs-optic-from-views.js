@@ -25,9 +25,9 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-const planPath = '../config-optic/qa-data/planViews.json';
+//const planPath = '../config-optic/qa-data/planViews.json';
 
-const planFromJSON = fs.readFileSync(planPath, 'utf8');
+//const planFromJSON = fs.readFileSync(planPath, 'utf8');
 
 describe('Optic from views test', function(){
 
@@ -968,7 +968,7 @@ describe('Optic from views test', function(){
     }, done);
   });
 
-  it('TEST 30 - read plan from file', function(done){
+  /*it('TEST 30 - read plan from file', function(done){
     db.rows.query(planFromJSON, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -997,7 +997,7 @@ describe('Optic from views test', function(){
       expect(str).to.equal('{ "columns": [{"name":"myDetail.id"},{"name":"myMaster.id"},{"name":"myDetail.name"},{"name":"myMaster.name"},{"name":"myDetail.masterId"},{"name":"myMaster.date"},{"name":"myDetail.amount"},{"name":"myDetail.color"}], "rows":[ {"myDetail.id":{"type":"xs:integer","value":1},"myMaster.id":{"type":"xs:integer","value":1},"myDetail.name":{"type":"xs:string","value":"Detail 1"},"myMaster.name":{"type":"xs:string","value":"Master 1"},"myDetail.masterId":{"type":"xs:integer","value":1},"myMaster.date":{"type":"xs:date","value":"2015-12-01"},"myDetail.amount":{"type":"xs:double","value":10.01},"myDetail.color":{"type":"xs:string","value":"blue"}}] }');
       done();
     }, done);
-  });
+  });*/
 
   it('TEST 32 - offsetLimit, params and bindings', function(done){
     const plan1 =
@@ -1033,29 +1033,25 @@ describe('Optic from views test', function(){
     }, done);
   });
 
-  /*it('TEST 33 - different binding types', function(done){
+  it('TEST 33 - inner join with accessor plan', function(done){
     const plan1 =
       op.fromView('opticFunctionalTest', 'detail', 'myDetail');
     const plan2 =
       op.fromView('opticFunctionalTest', 'master', 'myMaster');
+    const masterIdCol1 = plan1.col('masterId');
+    const masterIdCol2 = plan2.col('id');
+    const detailIdCol = plan1.col('id');
+    const detailNameCol = plan1.col('name');
+    const masterNameCol = plan2.col('name');
     const output =
-      plan1.joinInner(plan2, op.on(op.viewCol('myDetail', 'masterId'), op.viewCol('myMaster', 'id')), op.eq(op.viewCol('myDetail', 'name'), op.param({name: 'detailNameVal'})))
-      .select([op.viewCol('myMaster', 'id'), op.viewCol('myMaster', 'name'), op.viewCol('myDetail', 'id'), op.viewCol('myDetail', 'name')])
-      .orderBy(op.desc(op.viewCol('myDetail', 'name')))
-      .offsetLimit(op.param({name: 'start'}), op.param({name: 'length'}))
-    db.rows.query(output, { 
-      format: 'json', 
-      structure: 'object', 
-      columnTypes: 'header', 
-      complexValues: 'inline',
-      bindings: {
-        'detailNameVal': {value: 'Detail 5', type: 'string'},
-        'start': {value: 1, type: 'integer'},
-        'length': {value: 100, type: 'integer'}
-      } 
-    }) 
+      plan1.joinInner(plan2)
+      .where(op.eq(masterIdCol1, masterIdCol2))
+      .select([masterIdCol2, masterNameCol, detailIdCol, detailNameCol])
+      .orderBy(op.desc(detailNameCol))
+      .offsetLimit(1, 3)
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header'}) 
     .then(function(output) {
-      console.log(JSON.stringify(output, null, 2));
+      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
       expect(output.rows[0]['myMaster.id']).to.equal(1);
       expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
@@ -1065,6 +1061,7 @@ describe('Optic from views test', function(){
       expect(output.rows[2]['myDetail.name']).to.equal('Detail 3');
       done();
     }, done);
-  });*/
+  });
+
 
 });
