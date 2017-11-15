@@ -54,6 +54,7 @@ describe('Node.js Optic nodes json constructor test', function(){
           op.prop('str', op.jsonString(op.col('desc'))),
           op.prop('strFunc', op.jsonString(op.fn.stringToCodepoints(op.col('desc')))),
           op.prop('mathFunc', op.jsonNumber(op.math.sqrt(op.col('rowId')))),
+          op.prop('upper', op.jsonString(op.fn.upperCase(op.viewCol('myItem', 'desc')))),
           op.prop('num', op.jsonNumber(op.col('rowId'))),
           op.prop('bool', op.jsonBoolean(op.isDefined(op.col('rowId')))),
           op.prop('null', op.jsonNull()),
@@ -88,6 +89,7 @@ describe('Node.js Optic nodes json constructor test', function(){
       expect(output.rows.length).to.equal(4);
       expect(output.rows[0]['myItem.rowId']).to.equal(1);
       expect(output.rows[0].myJSON.str).to.equal('ball');
+      expect(output.rows[0].myJSON.upper).to.equal('BALL');
       expect(output.rows[0].myJSON.num).to.equal(1);
       expect(output.rows[0].myJSON.bool).to.equal(true);
       expect(output.rows[0].myJSON.null).to.equal(null);
