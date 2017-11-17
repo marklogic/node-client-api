@@ -161,7 +161,16 @@ describe('nodes', function() {
             .where(p.eq(p.col('gp'), 1))
             .select(['row',
                 p.as('node', p.jsonArray([
-                    p.jsonString(p.col('str')), p.jsonNumber(p.col('num')), p.jsonBoolean(p.col('bool')), p.jsonNull()
+                    p.jsonString(p.col('str')),
+                    p.jsonNumber(p.col('num')),
+                    p.jsonBoolean(p.col('bool')),
+                    p.jsonNull(),
+                    p.xs.string(p.col('str')),
+                    p.xs.int(p.col('num')),
+                    p.xs.boolean(p.col('bool')),
+                    'string',
+                    5,
+                    true
                     ])),
                 p.as('kind', p.xdmp.nodeKind(p.col('node')))
                 ])
@@ -171,18 +180,30 @@ describe('nodes', function() {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
-          should(output[0].node.value.length).equal(4);
+          should(output[0].node.value.length).equal(10);
           should(output[0].node.value[0]).equal('a');
           should(output[0].node.value[1]).equal(10);
           should(output[0].node.value[2]).equal(true);
           should(output[0].node.value[3]).equal(null);
+          should(output[0].node.value[4]).equal('a');
+          should(output[0].node.value[5]).equal(10);
+          should(output[0].node.value[6]).equal(true);
+          should(output[0].node.value[7]).equal('string');
+          should(output[0].node.value[8]).equal(5);
+          should(output[0].node.value[9]).equal(true);
           should(output[0].kind.value).equal('array');
           should(output[1].row.value).equal(2);
-          should(output[1].node.value.length).equal(4);
+          should(output[1].node.value.length).equal(10);
           should(output[1].node.value[0]).equal('b');
           should(output[1].node.value[1]).equal(20);
           should(output[1].node.value[2]).equal(false);
           should(output[1].node.value[3]).equal(null);
+          should(output[1].node.value[4]).equal('b');
+          should(output[1].node.value[5]).equal(20);
+          should(output[1].node.value[6]).equal(false);
+          should(output[1].node.value[7]).equal('string');
+          should(output[1].node.value[8]).equal(5);
+          should(output[1].node.value[9]).equal(true);
           should(output[1].kind.value).equal('array');
           done();
         })
@@ -455,7 +476,12 @@ describe('nodes', function() {
           p.fromLiterals(literals)
             .where(p.eq(p.col('gp'), 1))
             .select(['row',
-                p.as('node', p.xmlElement(p.col('nm'), null, p.xmlText(p.col('str')))),
+                p.as('node', p.xmlElement(p.col('nm'), null, [
+                  p.xmlText(p.col('str')),
+                  p.xs.string(p.col('str')),
+                  p.col('str'),
+                  'string'
+                  ])),
                 p.as('kind', p.xdmp.nodeKind(p.col('node')))
                 ])
             .orderBy('row')
@@ -464,10 +490,10 @@ describe('nodes', function() {
           const output = getResults(response);
           should(output.length).equal(2);
           should(output[0].row.value).equal(1);
-          should(output[0].node.value).equal('<alpha>a</alpha>');
+          should(output[0].node.value).equal('<alpha>aa a string</alpha>');
           should(output[0].kind.value).equal('element');
           should(output[1].row.value).equal(2);
-          should(output[1].node.value).equal('<beta>b</beta>');
+          should(output[1].node.value).equal('<beta>bb b string</beta>');
           should(output[1].kind.value).equal('element');
           done();
         })
