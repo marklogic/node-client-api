@@ -115,6 +115,7 @@ describe('Node.js Optic from sql test', function(){
         INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId \
         GROUP BY opticFunctionalTest.master.name \
         ORDER BY DetailSum DESC")
+      .orderBy(op.desc(op.col('DetailName')))
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
     .then(function(output) {
       //console.log(output);
