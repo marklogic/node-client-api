@@ -1028,7 +1028,7 @@ describe('Node.js Optic from views test', function(){
     }, done);
   });
 
-  it('TEST 8 - accessor plan - complexValues reference', function(done){
+  it('TEST 34 - negative case', function(done){
     var count = 0;
     var str = '';
     const chunks = [];
@@ -1048,11 +1048,12 @@ describe('Node.js Optic from views test', function(){
       chunks.push(chunk.kind.toString());
       count++;
     }).
+    on('error', function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      expect(error.body.errorResponse.message).to.contain('Unknown table: Table \'opticFunctionalTest.invalidFoo\' not found');
+    }).
     on('end', function() {
-      //console.log(count);
-      console.log(chunks.join(''));
-      expect(chunks.join(' ')).to.equal('columns row row row');
-      expect(count).to.equal(4);
+      expect(chunks).to.be.empty;
       done();
     }, done);
   });
