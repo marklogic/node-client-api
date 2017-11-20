@@ -1028,5 +1028,34 @@ describe('Node.js Optic from views test', function(){
     }, done);
   });
 
+  it('TEST 8 - accessor plan - complexValues reference', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail');
+            
+    const idCol = plan1.col('id');
+    const nameCol = plan1.col('name');
+    const output =
+      op.fromView('opticFunctionalTest', 'invalidFoo', 'myDetail')
+      .where(op.gt(idCol, 3))
+      .select([idCol, nameCol])
+      .orderBy(op.desc(nameCol))
+  
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    .on('data', function(chunk) {
+      chunks.push(chunk.kind.toString());
+      count++;
+    }).
+    on('end', function() {
+      //console.log(count);
+      console.log(chunks.join(''));
+      expect(chunks.join(' ')).to.equal('columns row row row');
+      expect(count).to.equal(4);
+      done();
+    }, done);
+  });
+
 
 });
