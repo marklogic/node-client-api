@@ -515,4 +515,25 @@ describe('Node.js Optic from triples test', function(){
     }, done);
   });
 
+  it('TEST 13 - dedup off', function(done){
+    const bb = op.prefixer('http://marklogic.com/baseball/players/');
+    const ageCol = op.col('age');
+    const idCol = op.col('id');
+    const nameCol = op.col('name');
+    const teamCol = op.col('team');
+    const output =
+      op.fromTriples([
+        op.pattern(idCol, bb('age'), ageCol),
+        op.pattern(idCol, bb('name'), nameCol),
+        op.pattern(idCol, bb('team'), teamCol)
+      ], null, null, {dedup: 'off'})
+      .orderBy(op.desc(ageCol))
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.be.above(8);
+      done();
+    }, done);
+  });
+
 });
