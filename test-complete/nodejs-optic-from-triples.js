@@ -45,7 +45,7 @@ describe('Node.js Optic from triples test', function(){
         op.pattern(idCol, bb('age'), ageCol),
         op.pattern(idCol, bb('name'), nameCol),
         op.pattern(idCol, bb('team'), teamCol)
-      ], null, null)
+      ], null, null, {dedup: 'on'})
       .orderBy(op.desc(ageCol))
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
     .then(function(output) {
@@ -82,7 +82,7 @@ describe('Node.js Optic from triples test', function(){
         op.pattern(playerIdCol, bb('age'), playerAgeCol),
         op.pattern(playerIdCol, bb('name'), playerNameCol),
         op.pattern(playerIdCol, bb('team'), playerTeamCol)
-      ]);
+      ], null, null, {dedup: 'on'});
 
     const team_plan =
       op.fromTriples([
