@@ -159,6 +159,28 @@ describe('Document query stream test', function(){
       done();
     }, done);   
   });
+
+  it('should do collections query', function(done) {
+    var count = 0;
+    var str = '';
+    var chunks = [];
+    db.documents.query(
+      q.where(
+        q.collection('matchCollection1')
+      )
+      .slice(0, 5)
+    )
+    .stream()
+    .on('data', function(chunk) {
+      count++;
+    })
+    .on('end', function() {
+      //console.log(count);
+      count.should.equal(2);
+      done();
+    }, done);   
+  });
+
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
       all: true
