@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 MarkLogic Corporation
+ * Copyright 2014-2017 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,7 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-//const planPath = '../config-optic/qa-data/planViews.json';
-
-//const planFromJSON = fs.readFileSync(planPath, 'utf8');
-
-describe('Optic from views test', function(){
+describe('Node.js Optic from views test', function(){
 
   it('TEST 1 - join inner with keymatch - object structure, columnType rows', function(done){
     const plan1 =
@@ -967,37 +963,6 @@ describe('Optic from views test', function(){
       done();
     }, done);
   });
-
-  /*it('TEST 30 - read plan from file', function(done){
-    db.rows.query(planFromJSON, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
-    .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
-      expect(output.rows.length).to.equal(1);
-      expect(output.rows[0]['myMaster.id']).to.equal(1);
-      expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
-      expect(output.rows[0]['myDetail.id']).to.equal(1);
-      expect(output.rows[0]['myDetail.name']).to.equal('Detail 1');
-      expect(output.rows[0]['myDetail.masterId']).to.equal(1);
-      done();
-    }, done);
-  });
-
-  it('TEST 31 - read plan from file with queryAsStream', function(done){
-    var count = 0;
-    var str = '';
-    const chunks = [];
-    db.rows.queryAsStream(planFromJSON, 'chunked', { format: 'json', structure: 'object', columnTypes: 'rows', complexValues: 'inline' }) 
-    .on('data', function(chunk) {
-      //console.log(chunk.toString());
-      str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
-      count++;
-    }).
-    on('end', function() {
-      //console.log(str);
-      expect(str).to.equal('{ "columns": [{"name":"myDetail.id"},{"name":"myMaster.id"},{"name":"myDetail.name"},{"name":"myMaster.name"},{"name":"myDetail.masterId"},{"name":"myMaster.date"},{"name":"myDetail.amount"},{"name":"myDetail.color"}], "rows":[ {"myDetail.id":{"type":"xs:integer","value":1},"myMaster.id":{"type":"xs:integer","value":1},"myDetail.name":{"type":"xs:string","value":"Detail 1"},"myMaster.name":{"type":"xs:string","value":"Master 1"},"myDetail.masterId":{"type":"xs:integer","value":1},"myMaster.date":{"type":"xs:date","value":"2015-12-01"},"myDetail.amount":{"type":"xs:double","value":10.01},"myDetail.color":{"type":"xs:string","value":"blue"}}] }');
-      done();
-    }, done);
-  });*/
 
   it('TEST 32 - offsetLimit, params and bindings', function(done){
     const plan1 =
