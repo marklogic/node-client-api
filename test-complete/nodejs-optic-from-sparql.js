@@ -320,4 +320,28 @@ describe('Node.js Optic from sparql test', function(){
     }, done);
   });
 
+  it('TEST 16 - negative case', function(done){
+    const output =
+      op.fromSPARQL("PREFIX foaf: <http://xmlns.com/foaf/0.1/> \
+        PREFIX ppl:  <http://people.org/> \
+        SELECT * \
+        WHERE { \
+          ?person foaf:name ?name . \
+          ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . \
+        } \
+        ORDER BY ?name")
+      .limit(-1)
+      .offset(11)
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(output);
+      expect(output).to.equal('SHOULD HAVE FAILED');
+      done();
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
+      expect(error.body.errorResponse.message).to.contain('limit must be a positive number');
+      done();
+    });
+  });
+
 });
