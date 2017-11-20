@@ -472,5 +472,47 @@ describe('Node.js Optic from triples test', function(){
     }, done);
   });
 
+  it('TEST 12 - empty results', function(done){
+    const bb = op.prefixer('http://marklogic.com/baseball/players/foo');
+    const tm = op.prefixer('http://marklogic.com/mlb/team/');
+    const playerAgeCol = op.col('player_age');
+    const playerIdCol = op.col('player_id');
+    const playerNameCol = op.col('player_name');
+    const playerTeamCol = op.col('player_team');
+    const teamIdCol = op.col('team_id');
+    const teamNameCol = op.col('team_name');
+    const teamCityCol = op.col('team_city');
+    const player_plan =
+      op.fromTriples([
+        op.pattern(playerIdCol, bb('age'), playerAgeCol),
+        op.pattern(playerIdCol, bb('name'), playerNameCol),
+        op.pattern(playerIdCol, bb('team'), playerTeamCol)
+      ], null, null);
+
+   const team_plan =
+     op.fromTriples([
+       op.pattern(teamIdCol, tm('name'), teamNameCol),
+       op.pattern(teamIdCol, tm('city'), teamCityCol)
+     ], null, null);
+
+   const output =
+     player_plan.joinInner(
+       team_plan,
+       op.on(playerTeamCol, teamIdCol),
+       op.and(op.gt(playerAgeCol, 27), op.eq(teamNameCol, 'Giants'))
+     )
+     .orderBy(op.asc(playerAgeCol))
+     .select([
+       op.as('PlayerName', playerNameCol),
+       op.as('PlayerAge', playerAgeCol),
+       op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
+     ])
+
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
+    .then(function(output) {
+      expect(output).to.equal('<t:table xmlns:t="http://marklogic.com/table">\n<t:columns>\n<t:column name="PlayerName" type=""/>\n<t:column name="PlayerAge" type=""/>\n<t:column name="TeamName" type=""/>\n</t:columns>\n</t:table>\n');
+      done();
+    }, done);
+  });
 
 });
