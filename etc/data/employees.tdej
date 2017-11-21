@@ -1,0 +1,28 @@
+{
+  "template":{
+    "context":"/Employee",
+    "rows":[
+      {
+        "schemaName":"company",
+        "viewName":"employees",
+        "columns":[
+          {
+            "name":"EmployeeID",
+            "scalarType":"int",
+            "val":"ID"
+          },
+          {
+            "name":"FirstName",
+            "scalarType":"string",
+            "val":"FirstName"
+          },
+          {
+            "name":"LastName",
+            "scalarType":"string",
+            "val":"LastName"
+          }
+        ]
+      }
+    ]
+  }
+}
