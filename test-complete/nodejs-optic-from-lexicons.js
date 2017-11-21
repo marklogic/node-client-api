@@ -198,7 +198,7 @@ describe('Node.js Optic from lexicons test', function(){
     const output =
       plan1
       .where(op.gt(popCol, 2))
-      .orderBy(op.asc('popularity'))
+      .orderBy([op.asc('popularity'), op.asc('city')])
       .select(['city', 'popularity', 'date', 'distance', 'point'])
     db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
     .then(function(output) {
