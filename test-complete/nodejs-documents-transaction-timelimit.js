@@ -70,7 +70,7 @@ it('should commit the write document', function(done) {
       .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
      response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
-      response['transaction-status']['time-limit'].should.equal('2');
+      parseInt(response['transaction-status']['time-limit']).should.be.above(0);
     done();
     }, done);
     /*.catch(function(error) {
