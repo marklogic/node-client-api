@@ -56,6 +56,17 @@ const moduleFiles = [
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
     ],
     content:fs.createReadStream('./etc/data/rowPostProcessors.sjs')
+  },{
+    uri:'/etc/optic/employees.tdej',
+    contentType:'application/json',
+    collections:['http://marklogic.com/xdmp/tde'],
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/employees.tdej')
   }];
 
 const dataFiles = [
