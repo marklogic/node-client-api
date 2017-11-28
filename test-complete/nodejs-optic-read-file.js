@@ -112,7 +112,7 @@ describe('Node.js Optic read from file test', function(){
     }, done);
   });
 
-  it('TEST 5 - read plan sparql from file', function(done){
+  it('TEST 6 - read plan sparql from file', function(done){
     db.rows.query(planFromSPARQL, { format: 'json', structure: 'array', columnTypes: 'rows'}) 
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
