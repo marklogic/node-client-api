@@ -113,15 +113,14 @@ describe('Node.js Optic from sql test', function(){
       op.fromSQL("SELECT opticFunctionalTest.master.name, opticFunctionalTest.detail.name AS DetailName, opticFunctionalTest.detail.color, SUM(amount) AS DetailSum \
         FROM opticFunctionalTest.detail \
         INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId \
-        GROUP BY opticFunctionalTest.master.name \
-        ORDER BY DetailSum DESC")
-      .orderBy(op.desc(op.col('DetailName')))
+        GROUP BY opticFunctionalTest.master.name")
+      .orderBy(op.desc(op.col('DetailSum')))
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
       //console.log(outputStr);
-      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="opticFunctionalTest.master.name" type="xs:string"/><t:column name="DetailName" type="xs:string"/><t:column name="opticFunctionalTest.detail.color" type="xs:string"/><t:column name="DetailSum" type="xs:double"/></t:columns><t:rows><t:row><t:cell name="opticFunctionalTest.master.name">Master 2</t:cell><t:cell name="DetailName">Detail 4</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">120.12</t:cell></t:row><t:row><t:cell name="opticFunctionalTest.master.name">Master 1</t:cell><t:cell name="DetailName">Detail 3</t:cell><t:cell name="opticFunctionalTest.detail.color">blue</t:cell><t:cell name="DetailSum">90.09</t:cell></t:row></t:rows></t:table>');
+      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="opticFunctionalTest.master.name" type="xs:string"/><t:column name="DetailName" type="xs:string"/><t:column name="opticFunctionalTest.detail.color" type="xs:string"/><t:column name="DetailSum" type="xs:double"/></t:columns><t:rows><t:row><t:cell name="opticFunctionalTest.master.name">Master 2</t:cell><t:cell name="DetailName">Detail 6</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">120.12</t:cell></t:row><t:row><t:cell name="opticFunctionalTest.master.name">Master 1</t:cell><t:cell name="DetailName">Detail 5</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">90.09</t:cell></t:row></t:rows></t:table>');
       done();
     }, done);
   });
