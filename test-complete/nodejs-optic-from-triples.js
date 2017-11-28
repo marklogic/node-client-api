@@ -536,4 +536,47 @@ describe('Node.js Optic from triples test', function(){
     }, done);
   });
 
+  it('TEST 14 - with mapper', function(done){
+    const bb = op.prefixer('http://marklogic.com/baseball/players/');
+    const tm = op.prefixer('http://marklogic.com/mlb/team/');
+    const playerAgeCol = op.col('player_age');
+    const playerIdCol = op.col('player_id');
+    const playerNameCol = op.col('player_name');
+    const playerTeamCol = op.col('player_team');
+    const teamIdCol = op.col('player_team');
+    const teamNameCol = op.col('team_name');
+    const teamCityCol = op.col('team_city');
+    const player_plan =
+      op.fromTriples([
+        op.pattern(playerIdCol, bb('age'), playerAgeCol),
+        op.pattern(playerIdCol, bb('name'), playerNameCol),
+        op.pattern(playerIdCol, bb('team'), playerTeamCol)
+      ], null, null, {dedup: 'on'});
+
+    const team_plan =
+      op.fromTriples([
+        op.pattern(teamIdCol, tm('name'), teamNameCol),
+        op.pattern(teamIdCol, tm('city'), teamCityCol)
+      ]);
+    const output =
+      player_plan.joinInner(team_plan)
+      .where(op.ne(teamNameCol, 'Giants'))
+      .orderBy(op.asc(playerNameCol))
+      .select([
+        playerAgeCol,
+        op.as('PlayerName', playerNameCol)
+      ])
+      .map(op.resolveFunction('ageMapper', '/optic/test/mapperReducer.sjs'))
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(5);
+      expect(output.rows[0].player_age).to.equal('veteran');
+      expect(output.rows[0].PlayerName).to.equal('Aoki Yamada');
+      expect(output.rows[4].player_age).to.equal('rookie');
+      expect(output.rows[4].PlayerName).to.equal('Pedro Barrozo');
+      done();
+    }, done);
+  });
+
 });
