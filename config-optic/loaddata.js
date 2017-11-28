@@ -26,7 +26,13 @@ var moduleFiles = [
       collections:['http://marklogic.com/xdmp/tde'],
       contentType:'application/vnd.marklogic-tde+json',
       content:fs.createReadStream('./config-optic/qa-data/masterDetail4.tdej')
-    }];
+    },
+    {
+      uri:'/optic/test/mapperReducer.sjs',
+      contentType:'application/vnd.marklogic-javascript',
+      content:fs.createReadStream('./config-optic/qa-data/mapperReducer.sjs')
+    }
+];
 
 var dataFiles = [
     {
