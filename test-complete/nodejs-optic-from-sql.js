@@ -288,4 +288,23 @@ describe('Node.js Optic from sql test', function(){
     }, done);
   });
 
+  it('TEST 12 - with named params', function(done){
+    const output =
+      op.fromSQL({select: "SELECT (opticFunctionalTest.detail.amount + opticFunctionalTest.detail.masterId) AS added, \
+        (opticFunctionalTest.detail.amount - opticFunctionalTest.master.id) AS substracted, \
+        (opticFunctionalTest.detail.amount % opticFunctionalTest.master.id) AS modulo, \
+        (opticFunctionalTest.detail.amount / (opticFunctionalTest.detail.amount * opticFunctionalTest.detail.id)) AS divided \
+        FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id", qualifierName: 'mySQL'}) 
+      .where({condition: op.sqlCondition({expression: "divided >= 0.3"})})
+      .orderBy({keys: op.asc({column: 'substracted'})})
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(3);
+      expect(output.rows[0]['mySQL.divided']).to.equal(1);
+      expect(output.rows[2]['mySQL.divided']).to.equal(0.333333333333333);
+      done();
+    }, done);
+  });
+
 });
