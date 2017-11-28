@@ -241,4 +241,85 @@ describe('Node.js Optic from literals test', function(){
       done();
     }, done);
   });
+
+  it('TEST 7 - with mapper', function(done){
+    const plan1 =
+      op.fromLiterals([
+        {rowId: 1, colorId_shape: 1, desc: 'ball'},
+        {rowId: 2, colorId_shape: 2, desc: 'square'},
+        {rowId: 3, colorId_shape: 1, desc: 'box'}, 
+        {rowId: 4, colorId_shape: 1, desc: 'hoop'},
+        {rowId: 5, colorId_shape: 5, desc: 'circle'}
+      ]);
+        
+    const plan2 =
+      op.fromLiterals([
+        {colorId: 1, colorDesc: 'red'},
+        {colorId: 2, colorDesc: 'blue'},
+        {colorId: 3, colorDesc: 'black'},
+        {colorId: 4, colorDesc: 'yellow'}
+      ]);
+    const output =
+      plan1.joinInner(
+        plan2, op.on(op.col('colorId_shape'), op.col('colorId'))
+      )
+      .select([
+        'rowId', 
+        op.as('description', op.col('desc')), 
+        op.as('myColorId', op.col('colorId')), 
+        'colorDesc'
+      ])
+      .orderBy(op.asc('rowId'))
+      .map(op.resolveFunction('colorIdMapper', '/optic/test/mapperReducer.sjs'))
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(4);
+      expect(output.rows[0].rowId).to.equal(1);
+      expect(output.rows[0].myColorId).to.equal('RED');
+      expect(output.rows[1].rowId).to.equal(2);
+      expect(output.rows[1].myColorId).to.equal('BLUE');
+      done();
+    }, done);
+  });
+
+  it('TEST 8 - with reducer', function(done){
+      const plan1 =
+        op.fromLiterals([
+          {rowId: 1, colorId_shape: 1, desc: 'ball'},
+          {rowId: 2, colorId_shape: 2, desc: 'square'},
+          {rowId: 3, colorId_shape: 1, desc: 'box'}, 
+          {rowId: 4, colorId_shape: 1, desc: 'hoop'},
+          {rowId: 5, colorId_shape: 5, desc: 'circle'}
+        ]);
+        
+      const plan2 =
+        op.fromLiterals([
+          {colorId: 1, colorDesc: 'red'},
+          {colorId: 2, colorDesc: 'blue'},
+          {colorId: 3, colorDesc: 'black'},
+          {colorId: 4, colorDesc: 'yellow'}
+        ]);
+      const output =
+        plan1.joinInner(
+          plan2, op.on(op.col('colorId_shape'), op.col('colorId'))
+        )
+        .select([
+          op.as('myRowId', op.col('rowId'))
+        ])
+        .orderBy(op.asc('myRowId'))
+      .reduce(op.resolveFunction('fibReducer', '/optic/test/mapperReducer.sjs'))
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(4);
+      expect(output.rows[0].myRowId).to.equal(1);
+      expect(output.rows[0].i).to.equal(0);
+      expect(output.rows[0].fib).to.equal(0);
+      expect(output.rows[3].myRowId).to.equal(4);
+      expect(output.rows[3].i).to.equal(3);
+      expect(output.rows[3].fib).to.equal(2);
+      done();
+    }, done);
+  });
 });
