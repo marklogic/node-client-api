@@ -1058,5 +1058,40 @@ describe('Node.js Optic from views test', function(){
     }, done);
   });
 
+  it('TEST 35 - with named parameters', function(done){
+    const plan1 =
+      op.fromView({schema: 'opticFunctionalTest', view: 'detail'})
+        .orderBy({keys: op.schemaCol({schema: 'opticFunctionalTest', view: 'detail', column: 'id'})});
+    const plan2 =
+      op.fromView('opticFunctionalTest', 'master')
+        .orderBy(op.schemaCol('opticFunctionalTest', 'master' , 'id'));
+    const output =
+      plan1.joinInner({right: plan2})
+      .where({condition:
+        op.eq({
+          left: op.schemaCol({schema: 'opticFunctionalTest', view: 'master' , column: 'id'}), 
+          right: op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
+        })
+      })
+      .select({columns: [
+        op.as({column: 'MasterName', expression: op.schemaCol({schema: 'opticFunctionalTest', view: 'master', column: 'name'})}),
+        op.schemaCol('opticFunctionalTest', 'master', 'date'),
+        op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
+        op.schemaCol({schema: 'opticFunctionalTest', view: 'detail', column: 'amount'}),
+        op.schemaCol('opticFunctionalTest', 'detail', 'color')
+      ]})
+      .orderBy({keys: [op.desc({column: op.col({column: 'DetailName'})})]})
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.columns[1].type).to.equal('xs:date');
+      expect(output.rows.length).to.equal(6);
+      expect(output.rows[0].MasterName).to.equal('Master 2');
+      expect(output.rows[0].DetailName).to.equal('Detail 6');
+      expect(output.rows[5].MasterName).to.equal('Master 1');
+      expect(output.rows[5].DetailName).to.equal('Detail 1');
+      done();
+    }, done);
+  });
 
 });
