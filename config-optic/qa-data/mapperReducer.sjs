@@ -72,9 +72,21 @@ function fibReducer(previous, row) {
   return previous;
 }
 
+function ageMapper(row) {
+  const result = row;
+  if(result.player_age < 21)
+    result.player_age = 'rookie';
+  else if(result.player_age > 21 && result.player_age < 30)
+    result.player_age = 'premium';
+  else
+    result.player_age = 'veteran';
+  return result;
+}
+
 module.exports = {
   arrayMapper:   arrayMapper,
   colorIdMapper: colorIdMapper,
+  ageMapper:     ageMapper,
   arrayReducer:  arrayReducer,
   fibReducer:    fibReducer
 };
