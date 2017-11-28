@@ -670,7 +670,7 @@ describe('Node.js Optic from lexicons test', function(){
     const output =
       plan1.joinInner({
         right: plan2, 
-        keys: op.on({left: op.viewCol('myCity', 'city'), right: op.viewCol({view: 'myTeam', column: 'cityName'})}),
+        keys: [op.on({left: op.viewCol('myCity', 'city'), right: op.viewCol({view: 'myTeam', column: 'cityName'})})],
         condition: op.ne(op.col('popularity'), 3)
       })
       .joinDoc({docCol: op.col('doc'), sourceCol: op.col('uri1')})
