@@ -1094,4 +1094,35 @@ describe('Node.js Optic from views test', function(){
     }, done);
   });
 
+  it('TEST 36 - with named parameters multiple on', function(done){
+    const plan1 =
+      op.fromView('opticFunctionalTest', 'detail', 'myDetail');
+    const plan2 =
+      op.fromView('opticFunctionalTest', 'master', 'myMaster');
+    const masterIdCol1 = plan1.col({column: 'masterId'});
+    const masterIdCol2 = plan2.col('id');
+    const idCol1 = plan2.col('id');
+    const idCol2 = plan1.col({column: 'id'});
+    const detailNameCol = plan1.col({column: 'name'});
+    const masterNameCol = plan2.col('name');
+    const output =
+      plan1.joinInner({
+        right: plan2, 
+        keys: [op.on(masterIdCol1, masterIdCol2), op.on(idCol1, idCol2)]
+      })
+      .orderBy({keys: [op.desc({column: detailNameCol})]})
+      .offsetLimit({start: 1, length: 100})
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(1);
+      expect(output.rows[0]['myMaster.id']).to.equal(1);
+      expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
+      expect(output.rows[0]['myDetail.id']).to.equal(1);
+      expect(output.rows[0]['myDetail.name']).to.equal('Detail 1');
+      expect(output.rows[0]['myDetail.masterId']).to.equal(1);
+      done();
+    }, done);
+  });
+
 });
