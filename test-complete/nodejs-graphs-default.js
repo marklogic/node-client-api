@@ -114,6 +114,45 @@ describe('default graph test', function(){
     }, done);
   });
 
+  it('should run combined SPARQL query', function(done){
+    this.timeout(10000);
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ppl:person1 foaf:knows ?o }" 
+    var docQuery = q.where(q.term('person5'));
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json', 
+      query: myQuery,
+      docQuery: docQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.results.bindings.length.should.equal(4);
+      response.results.bindings[0].o.value.should.equal('http://people.org/person2');
+      done();
+    }, done);
+  });
+
+  it('should run combined SPARQL query with invalid docQuery', function(done){
+    this.timeout(10000);
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ppl:person1 foaf:knows ?o }" 
+    var docQuery = q.where(q.term('foo'));
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json', 
+      query: myQuery,
+      docQuery: docQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.results.bindings.length.should.equal(0);
+      done();
+    }, done);
+  });
+
   it('should delete the graph', function(done){
     this.timeout(10000);
     db.graphs.remove().

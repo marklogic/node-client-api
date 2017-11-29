@@ -25,11 +25,11 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-const planViewsPath = './node-client-api/config-optic/qa-data/planViews.json';
-const planLexiconsPath = './node-client-api/config-optic/qa-data/planLexicons.json';
-const planTriplesPath = './node-client-api/config-optic/qa-data/planTriples.json';
-const planSQLPath = './node-client-api/config-optic/qa-data/planSQL.json';
-const planSPARQLPath = './node-client-api/config-optic/qa-data/planSPARQL.json';
+const planViewsPath = './node-optic-client-api/config-optic/qa-data/planViews.json';
+const planLexiconsPath = './node-optic-client-api/config-optic/qa-data/planLexicons.json';
+const planTriplesPath = './node-optic-client-api/config-optic/qa-data/planTriples.json';
+const planSQLPath = './node-optic-client-api/config-optic/qa-data/planSQL.json';
+const planSPARQLPath = './node-optic-client-api/config-optic/qa-data/planSPARQL.json';
 
 const planFromViews = fs.readFileSync(planViewsPath, 'utf8');
 const planFromLexicons = fs.readFileSync(planLexiconsPath, 'utf8');
@@ -112,7 +112,7 @@ describe('Node.js Optic read from file test', function(){
     }, done);
   });
 
-  it('TEST 5 - read plan sparql from file', function(done){
+  it('TEST 6 - read plan sparql from file', function(done){
     db.rows.query(planFromSPARQL, { format: 'json', structure: 'array', columnTypes: 'rows'}) 
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));

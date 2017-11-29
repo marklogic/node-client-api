@@ -138,6 +138,71 @@ describe('rows', function(){
 
   });
 
+  describe('from a TDE view', function(){
+    // View defined in etc/data/employees.tdej
+    const planFromBuilderTemplate = p.fromView('company', 'employees', '')
+        .select(['EmployeeID', 'FirstName', 'LastName'])
+        .orderBy('LastName');
+    before(function(done){
+      db.documents.write([{
+        uri: '/employee1.json',
+        contentType: 'application/json',
+        content: {
+          "Employee": {
+            "ID": 1,
+            "FirstName": "John",
+            "LastName": "Widget"
+          }
+        }
+      },{
+        uri: '/employee2.json',
+        contentType: 'application/json',
+        content: {
+          "Employee": {
+            "ID": 2,
+            "FirstName": "Jane",
+            "LastName": "Lead"
+          }
+        }
+      },{
+        uri: '/employee3.json',
+        contentType: 'application/json',
+        content: {
+          "Employee": {
+            "ID": 3,
+            "FirstName": "Steve",
+            "LastName": "Manager"
+          }
+        }
+      }]).result(function(response){
+        done();
+      })
+      .catch(done);
+    });
+    after(function(done){
+      db.documents.remove({
+        uris: [
+          '/employee1.json', '/employee2.json', '/employee3.json'
+        ]
+      }).result(function(response){
+        done();
+      })
+      .catch(done);
+    });
+    it('should return rows corresponding to template', function(){
+      return db.rows.query(planFromBuilderTemplate)
+        .then(function (response) {
+          valcheck.isObject(response).should.equal(true);
+          valcheck.isArray(response).should.equal(false);
+          response.should.have.property('columns');
+          response.columns.length.should.equal(3);
+          response.should.have.property('rows');
+          response.rows[0].LastName.value.should.equal('Lead');
+        });
+    });
+
+  });
+
   describe('read as a stream', function(){
 
     it('of chunked JSON', function(done){

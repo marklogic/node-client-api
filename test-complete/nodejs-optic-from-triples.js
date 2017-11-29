@@ -45,7 +45,7 @@ describe('Node.js Optic from triples test', function(){
         op.pattern(idCol, bb('age'), ageCol),
         op.pattern(idCol, bb('name'), nameCol),
         op.pattern(idCol, bb('team'), teamCol)
-      ], null, null)
+      ], null, null, {dedup: 'on'})
       .orderBy(op.desc(ageCol))
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
     .then(function(output) {
@@ -82,7 +82,7 @@ describe('Node.js Optic from triples test', function(){
         op.pattern(playerIdCol, bb('age'), playerAgeCol),
         op.pattern(playerIdCol, bb('name'), playerNameCol),
         op.pattern(playerIdCol, bb('team'), playerTeamCol)
-      ]);
+      ], null, null, {dedup: 'on'});
 
     const team_plan =
       op.fromTriples([
@@ -472,5 +472,111 @@ describe('Node.js Optic from triples test', function(){
     }, done);
   });
 
+  it('TEST 12 - empty results', function(done){
+    const bb = op.prefixer('http://marklogic.com/baseball/players/foo');
+    const tm = op.prefixer('http://marklogic.com/mlb/team/');
+    const playerAgeCol = op.col('player_age');
+    const playerIdCol = op.col('player_id');
+    const playerNameCol = op.col('player_name');
+    const playerTeamCol = op.col('player_team');
+    const teamIdCol = op.col('team_id');
+    const teamNameCol = op.col('team_name');
+    const teamCityCol = op.col('team_city');
+    const player_plan =
+      op.fromTriples([
+        op.pattern(playerIdCol, bb('age'), playerAgeCol),
+        op.pattern(playerIdCol, bb('name'), playerNameCol),
+        op.pattern(playerIdCol, bb('team'), playerTeamCol)
+      ], null, null);
+
+   const team_plan =
+     op.fromTriples([
+       op.pattern(teamIdCol, tm('name'), teamNameCol),
+       op.pattern(teamIdCol, tm('city'), teamCityCol)
+     ], null, null);
+
+   const output =
+     player_plan.joinInner(
+       team_plan,
+       op.on(playerTeamCol, teamIdCol),
+       op.and(op.gt(playerAgeCol, 27), op.eq(teamNameCol, 'Giants'))
+     )
+     .orderBy(op.asc(playerAgeCol))
+     .select([
+       op.as('PlayerName', playerNameCol),
+       op.as('PlayerAge', playerAgeCol),
+       op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
+     ])
+
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
+    .then(function(output) {
+      expect(output).to.equal('<t:table xmlns:t="http://marklogic.com/table">\n<t:columns>\n<t:column name="PlayerName" type=""/>\n<t:column name="PlayerAge" type=""/>\n<t:column name="TeamName" type=""/>\n</t:columns>\n</t:table>\n');
+      done();
+    }, done);
+  });
+
+  it('TEST 13 - dedup off', function(done){
+    const bb = op.prefixer('http://marklogic.com/baseball/players/');
+    const ageCol = op.col('age');
+    const idCol = op.col('id');
+    const nameCol = op.col('name');
+    const teamCol = op.col('team');
+    const output =
+      op.fromTriples([
+        op.pattern(idCol, bb('age'), ageCol),
+        op.pattern(idCol, bb('name'), nameCol),
+        op.pattern(idCol, bb('team'), teamCol)
+      ], null, null, {dedup: 'off'})
+      .orderBy(op.desc(ageCol))
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.be.above(8);
+      done();
+    }, done);
+  });
+
+  it('TEST 14 - with mapper', function(done){
+    const bb = op.prefixer('http://marklogic.com/baseball/players/');
+    const tm = op.prefixer('http://marklogic.com/mlb/team/');
+    const playerAgeCol = op.col('player_age');
+    const playerIdCol = op.col('player_id');
+    const playerNameCol = op.col('player_name');
+    const playerTeamCol = op.col('player_team');
+    const teamIdCol = op.col('player_team');
+    const teamNameCol = op.col('team_name');
+    const teamCityCol = op.col('team_city');
+    const player_plan =
+      op.fromTriples([
+        op.pattern(playerIdCol, bb('age'), playerAgeCol),
+        op.pattern(playerIdCol, bb('name'), playerNameCol),
+        op.pattern(playerIdCol, bb('team'), playerTeamCol)
+      ], null, null, {dedup: 'on'});
+
+    const team_plan =
+      op.fromTriples([
+        op.pattern(teamIdCol, tm('name'), teamNameCol),
+        op.pattern(teamIdCol, tm('city'), teamCityCol)
+      ]);
+    const output =
+      player_plan.joinInner(team_plan)
+      .where(op.ne(teamNameCol, 'Giants'))
+      .orderBy(op.asc(playerNameCol))
+      .select([
+        playerAgeCol,
+        op.as('PlayerName', playerNameCol)
+      ])
+      .map(op.resolveFunction('ageMapper', '/optic/test/mapperReducer.sjs'))
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(5);
+      expect(output.rows[0].player_age).to.equal('veteran');
+      expect(output.rows[0].PlayerName).to.equal('Aoki Yamada');
+      expect(output.rows[4].player_age).to.equal('rookie');
+      expect(output.rows[4].PlayerName).to.equal('Pedro Barrozo');
+      done();
+    }, done);
+  });
 
 });

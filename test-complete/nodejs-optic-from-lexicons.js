@@ -25,10 +25,6 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-//const planPath = '../config-optic/qa-data/planLexicons.json';
-
-//const planFromJSON = fs.readFileSync(planPath, 'utf8');
-
 describe('Node.js Optic from lexicons test', function(){
 
   it('TEST 1 - access with where orderby select - columnTypes header and data types', function(done){
@@ -202,7 +198,7 @@ describe('Node.js Optic from lexicons test', function(){
     const output =
       plan1
       .where(op.gt(popCol, 2))
-      .orderBy(op.asc('popularity'))
+      .orderBy([op.asc('popularity'), op.asc('city')])
       .select(['city', 'popularity', 'date', 'distance', 'point'])
     db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
     .then(function(output) {
@@ -646,6 +642,47 @@ describe('Node.js Optic from lexicons test', function(){
       expect(output.rows[0]['myCity.popularity']).to.equal(2);
       expect(output.rows[1]['myCity.city']).to.equal('cape town');
       expect(output.rows[1]['myCity.popularity']).to.equal(3);
+      done();
+    }, done);
+  });
+
+  it('TEST 17 - with named parameters', function(done){
+    const plan1 = 
+      op.fromLexicons({
+        indexes:
+        {
+          uri1: op.cts.uriReference(),
+          city: op.cts.jsonPropertyReference('city'),
+          popularity: op.cts.jsonPropertyReference('popularity'),
+          date: op.cts.jsonPropertyReference('date'),
+          distance: op.cts.jsonPropertyReference('distance'),
+          point: op.cts.jsonPropertyReference('latLonPoint')
+        }, qualifierName: 'myCity'
+      });
+    const plan2 = 
+      op.fromLexicons(
+        {
+          uri2: op.cts.uriReference(),
+          cityName: op.cts.jsonPropertyReference('cityName'),
+          cityTeam: op.cts.jsonPropertyReference('cityTeam')
+        }, 'myTeam'
+      );
+    const output =
+      plan1.joinInner({
+        right: plan2, 
+        keys: [op.on({left: op.viewCol('myCity', 'city'), right: op.viewCol({view: 'myTeam', column: 'cityName'})})],
+        condition: op.ne(op.col('popularity'), 3)
+      })
+      .joinDoc({docCol: op.col('doc'), sourceCol: op.col('uri1')})
+      .select({columns: ['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath({column: 'doc', path: "/date[sql:day(.) lt 23]"})), 'uri2', 'cityName', 'cityTeam']})
+      .where(op.isDefined(op.col('nodes')))
+      .orderBy(op.desc(op.col('distance')))
+    db.rows.query(output, { columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(1);
+      expect(output.rows[0]['myCity.city']).to.equal('london');
+      expect(output.rows[0]['myCity.date']).to.equal('2007-01-01');
       done();
     }, done);
   });

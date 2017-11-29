@@ -113,14 +113,14 @@ describe('Node.js Optic from sql test', function(){
       op.fromSQL("SELECT opticFunctionalTest.master.name, opticFunctionalTest.detail.name AS DetailName, opticFunctionalTest.detail.color, SUM(amount) AS DetailSum \
         FROM opticFunctionalTest.detail \
         INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId \
-        GROUP BY opticFunctionalTest.master.name \
-        ORDER BY DetailSum DESC")
+        GROUP BY opticFunctionalTest.master.name")
+      .orderBy(op.desc(op.col('DetailSum')))
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
       //console.log(outputStr);
-      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="opticFunctionalTest.master.name" type="xs:string"/><t:column name="DetailName" type="xs:string"/><t:column name="opticFunctionalTest.detail.color" type="xs:string"/><t:column name="DetailSum" type="xs:double"/></t:columns><t:rows><t:row><t:cell name="opticFunctionalTest.master.name">Master 2</t:cell><t:cell name="DetailName">Detail 6</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">120.12</t:cell></t:row><t:row><t:cell name="opticFunctionalTest.master.name">Master 1</t:cell><t:cell name="DetailName">Detail 3</t:cell><t:cell name="opticFunctionalTest.detail.color">blue</t:cell><t:cell name="DetailSum">90.09</t:cell></t:row></t:rows></t:table>');
+      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="opticFunctionalTest.master.name" type="xs:string"/><t:column name="DetailName" type="xs:string"/><t:column name="opticFunctionalTest.detail.color" type="xs:string"/><t:column name="DetailSum" type="xs:double"/></t:columns><t:rows><t:row><t:cell name="opticFunctionalTest.master.name">Master 2</t:cell><t:cell name="DetailName">Detail 6</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">120.12</t:cell></t:row><t:row><t:cell name="opticFunctionalTest.master.name">Master 1</t:cell><t:cell name="DetailName">Detail 5</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">90.09</t:cell></t:row></t:rows></t:table>');
       done();
     }, done);
   });
@@ -283,6 +283,25 @@ describe('Node.js Optic from sql test', function(){
       expect(output.rows[0].color).to.equal('blue');
       expect(output.rows[1].color).to.equal('blue');
       expect(output.rows[2].color).to.equal('blue');
+      done();
+    }, done);
+  });
+
+  it('TEST 12 - with named params', function(done){
+    const output =
+      op.fromSQL({select: "SELECT (opticFunctionalTest.detail.amount + opticFunctionalTest.detail.masterId) AS added, \
+        (opticFunctionalTest.detail.amount - opticFunctionalTest.master.id) AS substracted, \
+        (opticFunctionalTest.detail.amount % opticFunctionalTest.master.id) AS modulo, \
+        (opticFunctionalTest.detail.amount / (opticFunctionalTest.detail.amount * opticFunctionalTest.detail.id)) AS divided \
+        FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id", qualifierName: 'mySQL'}) 
+      .where({condition: op.sqlCondition({expression: "divided >= 0.3"})})
+      .orderBy({keys: op.asc({column: 'substracted'})})
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    .then(function(output) {
+      //console.log(JSON.stringify(output, null, 2));
+      expect(output.rows.length).to.equal(3);
+      expect(output.rows[0]['mySQL.divided']).to.equal(1);
+      expect(output.rows[2]['mySQL.divided']).to.equal(0.333333333333333);
       done();
     }, done);
   });

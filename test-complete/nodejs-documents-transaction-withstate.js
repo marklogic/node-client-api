@@ -51,7 +51,7 @@ describe('Transaction with state test', function() {
       //console.log(JSON.stringify(response, null, 2));
       response['transaction-status']['host']['host-id'].should.equal(hostId);
       response['transaction-status']['transaction-id'].should.equal(tid);
-      response['transaction-status']['time-limit'].should.equal('30');
+      parseInt(response['transaction-status']['time-limit']).should.be.above(27);
       return db.transactions.rollback(tid).result();
     })
     .then(function(response) {
