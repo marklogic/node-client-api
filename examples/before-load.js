@@ -20,6 +20,8 @@ var marklogic = require('../');
 
 var exutil = require('./example-util.js');
 
+var testconfig = require('../etc/test-config.js');
+
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
 var fsdir = 'examples/data/';
@@ -104,4 +106,31 @@ var ws = db.documents.write({
   }).
 result(function(response) {
   console.log('wrote '+imageFile);
+  });
+
+// Write TDE template to Schemas database
+console.log('copy TDE template');
+const schemaDb = marklogic.createDatabaseClient({
+  database: 'Schemas',
+  host:     testconfig.manageAdminConnection.host,
+  port:     testconfig.manageAdminConnection.port,
+  user:     testconfig.manageAdminConnection.user,
+  password: testconfig.manageAdminConnection.password,
+  authType: testconfig.manageAdminConnection.authType
+  });
+schemaDb.documents.write({
+    uri:'/examples/data/countries.tdej',
+    contentType:'application/json',
+    collections:['http://marklogic.com/xdmp/tde'],
+    permissions: [
+      {'role-name':testconfig.restAdminConnection.user,
+       capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream(fsdir+'countries.tdej')
+  })
+  .result(function(response) {
+    console.log('template written');
+  })
+  .catch(function (error) {
+    console.log(error);
   });
