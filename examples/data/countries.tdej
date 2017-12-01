@@ -1,0 +1,40 @@
+{
+  "template": {
+    "collections": [
+      "/countries"
+    ],
+    "context": "/",
+    "rows": [
+      {
+        "schemaName": "facts",
+        "viewName": "countries",
+        "columns": [
+          {
+            "name": "name",
+            "scalarType": "string",
+            "val": "name"
+          },
+          {
+            "name": "code",
+            "scalarType": "string",
+            "val": "code",
+            "nullable": true
+          },
+          {
+            "name": "region",
+            "scalarType": "string",
+            "val": "region",
+            "nullable": true
+          },
+          {
+            "name": "area",
+            "scalarType": "int",
+            "val": "geo/Area/total/quantity",
+            "nullable": true,
+            "invalidValues": "ignore"
+          }
+        ]
+      }
+    ]
+  }
+}
