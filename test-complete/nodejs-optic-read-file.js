@@ -25,11 +25,11 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-const planViewsPath = './node-optic-client-api/config-optic/qa-data/planViews.json';
-const planLexiconsPath = './node-optic-client-api/config-optic/qa-data/planLexicons.json';
-const planTriplesPath = './node-optic-client-api/config-optic/qa-data/planTriples.json';
-const planSQLPath = './node-optic-client-api/config-optic/qa-data/planSQL.json';
-const planSPARQLPath = './node-optic-client-api/config-optic/qa-data/planSPARQL.json';
+const planViewsPath = __dirname + '/../config-optic/qa-data/planViews.json';
+const planLexiconsPath = __dirname + '/../config-optic/qa-data/planLexicons.json';
+const planTriplesPath = __dirname + '/../config-optic/qa-data/planTriples.json';
+const planSQLPath = __dirname + '/../config-optic/qa-data/planSQL.json';
+const planSPARQLPath = __dirname + '/../config-optic/qa-data/planSPARQL.json';
 
 const planFromViews = fs.readFileSync(planViewsPath, 'utf8');
 const planFromLexicons = fs.readFileSync(planLexiconsPath, 'utf8');
