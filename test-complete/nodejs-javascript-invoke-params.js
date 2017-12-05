@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Javascript invoke test', function(){
   
-  var fsPath = './node-client-api/test-complete/data/sourceParams.js';
+  var fsPath = __dirname + '/data/sourceParams.js';
   var invokePath = '/ext/invokeTest/sourceParams.sjs';
 
   before(function(done) {

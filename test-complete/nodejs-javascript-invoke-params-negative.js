@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Javascript invoke params negative test', function(){
   
-  var fsPath = './node-client-api/test-complete/data/sourceParamsNegative.js';
+  var fsPath = __dirname + '/data/sourceParamsNegative.js';
   var invokePath = '/ext/invokeTest/sourceParamsNegative.sjs';
 
   before(function(done) {

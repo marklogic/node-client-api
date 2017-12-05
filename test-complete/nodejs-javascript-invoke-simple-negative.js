@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Javascript invoke simple negative test', function(){
   
-  var fsPath = './node-client-api/test-complete/data/sourceSimpleNegative.js';
+  var fsPath = __dirname + '/data/sourceSimpleNegative.js';
   var invokePath = '/ext/invokeTest/sourceSimpleNegative.sjs';
 
   before(function(done) {
