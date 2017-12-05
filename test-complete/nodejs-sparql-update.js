@@ -28,8 +28,8 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 describe('sparql update test', function(){
   var graphUri   = 'http://marklogic.com/sparqlupdate/people';
   var mlGraphUri   = 'http://marklogic.com/sparqlupdate/mladd';
-  var mlGraphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
-  var inferGraphPath  = './node-client-api/test-complete/data/inferenceData.nt';
+  var mlGraphPath  = __dirname + '/data/mlgraph.ttl';
+  var inferGraphPath  = __dirname + '/data/inferenceData.nt';
 
   before('should drop all graphs', function(done){
     var myData = "DROP ALL ;"

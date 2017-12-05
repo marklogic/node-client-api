@@ -28,9 +28,9 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('sparql query tests', function () {
 
-    var graphPath = './node-client-api/test-complete/data/people.ttl';
-    var graphPath1 = './node-client-api/test-complete/data/inferenceData.nt';
-    var ttlfile = './node-client-api/test-complete/data/tigers.ttl';
+    var graphPath = __dirname + '/data/people.ttl';
+    var graphPath1 = __dirname + '/data/inferenceData.nt';
+    var ttlfile = __dirname + '/data/tigers.ttl';
     var defGraphUri = 'http://marklogic.com/semantics#default-graph';
 
     it('should write the default graph', function (done) {
