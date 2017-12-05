@@ -32,14 +32,14 @@ describe('Config query negative test', function(){
   var dbDir = '/marklogic/query/invalid/custom/';
   var dbModule = 'directoryConstraintInvalid.xqy';
   var dbPath = dbDir + dbModule;
-  var fsPath = './node-client-api/test-complete/data/directoryConstraintInvalid.xqy';
+  var fsPath = __dirname + '/data/directoryConstraintInvalid.xqy';
 
   it('should fail to write the custom query with reader user', function(done){
     this.timeout(10000);
     db.config.query.custom.write(
       'directoryConstraint.xqy', 
       [{'role-name':'app-user', capabilities:['execute']}], 
-      fs.createReadStream('./node-client-api/test-complete/data/directoryConstraint.xqy')).
+      fs.createReadStream(__dirname + '/data/directoryConstraint.xqy')).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();

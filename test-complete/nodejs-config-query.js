@@ -32,7 +32,7 @@ describe('Config query test', function(){
   var dbDir = '/marklogic/query/custom/';
   var dbModule = 'directoryConstraint.xqy';
   var dbPath = dbDir + dbModule;
-  var fsPath = './node-client-api/test-complete/data/directoryConstraint.xqy';
+  var fsPath = __dirname + '/data/directoryConstraint.xqy';
 
   it('should write the custom query', function(done){
     this.timeout(10000);
