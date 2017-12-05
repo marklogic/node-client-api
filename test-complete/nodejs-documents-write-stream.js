@@ -92,7 +92,7 @@ describe('Write Document Stream Test', function() {
     before(function(done) {
       this.timeout(10000);
       var transformName = 'employeeStylesheet';
-      var transformPath = './node-client-api/test-complete/data/employeeStylesheet.xslt';
+      var transformPath = __dirname + '/data/employeeStylesheet.xslt';
       fs.createReadStream(transformPath).
       pipe(concatStream({encoding:'string'}, function(source) {
         dbAdmin.config.transforms.write(transformName, 'xslt', source).
