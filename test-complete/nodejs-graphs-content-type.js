@@ -27,7 +27,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('content type graph test', function(){
   var graphUri   = 'http://marklogic.com/graphs/content#type';
-  var graphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
+  var graphPath  = __dirname + '/data/mlgraph.ttl';
 
   before('should write the graph', function(done){
     this.timeout(10000);

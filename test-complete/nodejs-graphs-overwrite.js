@@ -27,9 +27,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('overwrite graph test', function(){
   var graphUri   = 'marklogic.com/overwrite/people';
-  var graphPath1  = './node-client-api/test-complete/data/people3.ttl';
-  var graphPath2  = './node-client-api/test-complete/data/people4.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
+  var graphPath1  = __dirname + '/data/people3.ttl';
+  var graphPath2  = __dirname + '/data/people4.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
 
   it('should write the graph', function(done){
     this.timeout(10000);

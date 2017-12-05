@@ -27,9 +27,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('default graph test', function(){
   var graphUri   = 'marklogic.com/defafult/people';
-  var graphPath  = './node-client-api/test-complete/data/people.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
-  var sparqlPath2 = './node-client-api/test-complete/data/people2.rq';
+  var graphPath  = __dirname + '/data/people.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
+  var sparqlPath2 = __dirname + '/data/people2.rq';
   var defGraphUri = 'http://marklogic.com/semantics#default-graph';
 
   it('should write the default graph', function(done){

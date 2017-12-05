@@ -24,8 +24,8 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Graphs transaction combo test', function() {
   var graphUri   = 'marklogic.com/tx/people';
-  var graphPath  = './node-client-api/test-complete/data/people3.ttl';
-  var graphPath2 = './node-client-api/test-complete/data/people4.ttl';
+  var graphPath  = __dirname + '/data/people3.ttl';
+  var graphPath2 = __dirname + '/data/people4.ttl';
   
   var tid = 0;
   var tid2 = 0;
