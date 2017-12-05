@@ -103,10 +103,10 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate a date value', function(done) {
-      db.eval('new Date("2010-10-08T10:17:15.125Z");').result(function(values) {
+      db.eval('new Date("2010-10-08T10:17:15.125");').result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'dateTime');
-        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
+        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125'));
         done();
         })
       .catch(done);
@@ -170,7 +170,7 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate values of different types', function(done) {
-      db.xqueryEval('("string value", fn:true(), 3, 4.4, xs:dateTime("2010-10-08T10:17:15.125Z"))')
+      db.xqueryEval('("string value", fn:true(), 3, 4.4, xs:dateTime("2010-10-08T10:17:15.125"))')
       .result(function(values) {
         values.length.should.equal(5);
         checkValue(values[0], 'text', 'string');
@@ -183,7 +183,7 @@ describe('server-side call', function() {
         values[3].value.should.equal(4.4);
         checkValue(values[4], 'text', 'dateTime');
         valcheck.isDate(values[4].value).should.equal(true);
-        values[4].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
+        values[4].value.should.eql(new Date('2010-10-08T10:17:15.125'));
         done();
         })
       .catch(done);
@@ -340,7 +340,7 @@ describe('server-side call', function() {
       db.invoke(invokePath, {test:9}).result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'dateTime');
-        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
+        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125'));
         done();
         })
       .catch(done);
