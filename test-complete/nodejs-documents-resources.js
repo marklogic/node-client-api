@@ -29,7 +29,7 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 describe('when executing resource services', function(){
   describe('using XQuery', function() {
     var xqyServiceName = 'wrapperService';
-    var xqyServicePath = './node-client-api/test-basic/data/wrapperService.xqy';
+    var xqyServicePath = __dirname + '/../test-basic/data/wrapperService.xqy';
     before(function(done){
       this.timeout(10000);
       restAdminDB.config.resources.write(xqyServiceName, 'xquery', fs.createReadStream(xqyServicePath)).
