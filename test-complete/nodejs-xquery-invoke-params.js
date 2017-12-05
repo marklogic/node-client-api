@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Xquery invoke test', function(){
   
-  var fsPath = './node-client-api/test-complete/data/sourceParams.xqy';
+  var fsPath = __dirname + '/data/sourceParams.xqy';
   var invokePath = '/ext/invokeTest/sourceParams.xqy';
 
   before(function(done) {

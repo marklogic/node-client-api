@@ -27,7 +27,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Xquery invoke simple negative test', function(){
   
-  var fsPath = './node-client-api/test-complete/data/sourceSimpleNegative.xqy';
+  var fsPath = __dirname + '/data/sourceSimpleNegative.xqy';
   var invokePath = '/ext/invokeTest/sourceSimpleNegative.xqy';
 
   before(function(done) {
