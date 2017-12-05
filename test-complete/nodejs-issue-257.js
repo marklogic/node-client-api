@@ -26,7 +26,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var serviceName = 'issue-257';
-var servicePath = './node-client-api/test-complete/data/issue-257.sjs';
+var servicePath = __dirname + '/data/issue-257.sjs';
 
 describe('issue 257', function() {
 

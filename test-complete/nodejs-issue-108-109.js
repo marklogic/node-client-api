@@ -26,7 +26,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var serviceName = 'issue-108-109';
-var servicePath = './node-client-api/test-complete/data/issue-108-109.sjs';
+var servicePath = __dirname + '/data/issue-108-109.sjs';
 
 describe('when executing resource services', function() {
 
