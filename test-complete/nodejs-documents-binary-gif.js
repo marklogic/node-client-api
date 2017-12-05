@@ -30,7 +30,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Binary documents test', function(){
-  var fsPath = './node-client-api/test-complete/data/121-GIF-Image-GIF-gif_sample1.gif';
+  var fsPath = __dirname + '/data/121-GIF-Image-GIF-gif_sample1.gif';
   var uri = '/test/binary/stream/121-GIF-Image-GIF-gif_sample1.gif';
   var binaryValue = null;
 

@@ -31,7 +31,7 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Binary documents test', function(){
-  var binaryPath = './node-client-api/test-complete/data/somePdfFile.pdf';
+  var binaryPath = __dirname + '/data/somePdfFile.pdf';
   var uri = '/test/binary/somePdfFile.pdf';
   var binaryValue = null;
   before(function(done){
