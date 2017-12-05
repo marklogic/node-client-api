@@ -31,7 +31,7 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Large document write test', function(){
-  var binaryPath = './node-client-api/test-complete/data/shaks200all.xml';
+  var binaryPath = __dirname + '/data/shaks200all.xml';
   var uri = '/test/binary/shaks200all.xml';
   var binaryValue = null;
   before(function(done){
