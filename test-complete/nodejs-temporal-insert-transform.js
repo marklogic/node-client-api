@@ -38,10 +38,10 @@ describe('Temporal insert transform test', function() {
   var docuri2 = 'nonTemporalDoc.json';
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './node-client-api/test-complete/data/flagTransform.xqy';
+  var transformPath1 = __dirname + '/data/flagTransform.xqy';
 
   var transformName2 = 'timestamp';
-  var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
+  var transformPath2 = __dirname + '/data/timestampTransform.js';
 
   before(function(done) {
     this.timeout(10000);
