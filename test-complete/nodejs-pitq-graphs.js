@@ -33,8 +33,8 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Graphs PITQ Test', function() {
   
   var graphUri   = 'marklogic.com/stream/people';
-  var graphPath  = './node-client-api/test-complete/data/people.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
+  var graphPath  = __dirname + '/data/people.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
   var defGraphUri = 'http://marklogic.com/semantics#default-graph';
 
   var oldTimestamp = db.createTimestamp('123');
