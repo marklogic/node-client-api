@@ -44,7 +44,7 @@ describe('Transform test with javascript', function(){
   });
 
   var transformName = 'timestamp';
-  var transformPath = './node-client-api/test-complete/data/timestampTransform.js';
+  var transformPath = __dirname + '/data/timestampTransform.js';
 
   it('should write the transform', function(done){
     this.timeout(10000);

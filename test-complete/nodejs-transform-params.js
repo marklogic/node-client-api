@@ -46,7 +46,7 @@ describe('Transform with params', function(){
   });
 
   var transformName = 'paramTransform';
-  var transformPath = './node-client-api/test-complete/data/paramTransform.js';
+  var transformPath = __dirname + '/data/paramTransform.js';
 
   it('should write the transform', function(done){
     this.timeout(10000);

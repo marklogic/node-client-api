@@ -39,9 +39,9 @@ describe('Transform test with combination', function(){
   });*/
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './node-client-api/test-complete/data/flagTransform.xqy';
+  var transformPath1 = __dirname + '/data/flagTransform.xqy';
   var transformName2 = 'timestamp';
-  var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
+  var transformPath2 = __dirname + '/data/timestampTransform.js';
 
   it('should write the transform', function(done){
     this.timeout(10000);

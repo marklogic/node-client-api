@@ -39,7 +39,7 @@ describe('Transform test with xquery', function(){
   });
 
   var transformName = 'flagParam';
-  var transformPath = './node-client-api/test-complete/data/flagTransform.xqy';
+  var transformPath = __dirname + '/data/flagTransform.xqy';
 
   it('should write the transform', function(done){
     this.timeout(10000);

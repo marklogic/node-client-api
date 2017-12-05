@@ -46,7 +46,7 @@ describe('Transform test with null output -- issue #147', function(){
   });
 
   var transformName = 'emptyTransform';
-  var transformPath = './node-client-api/test-complete/data/emptyTransform.js';
+  var transformPath = __dirname + '/data/emptyTransform.js';
 
   it('should write the transform', function(done){
     this.timeout(10000);
