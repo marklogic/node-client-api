@@ -120,7 +120,8 @@ describe('Node.js Optic from sql test', function(){
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
       //console.log(outputStr);
-      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="opticFunctionalTest.master.name" type="xs:string"/><t:column name="DetailName" type="xs:string"/><t:column name="opticFunctionalTest.detail.color" type="xs:string"/><t:column name="DetailSum" type="xs:double"/></t:columns><t:rows><t:row><t:cell name="opticFunctionalTest.master.name">Master 2</t:cell><t:cell name="DetailName">Detail 6</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">120.12</t:cell></t:row><t:row><t:cell name="opticFunctionalTest.master.name">Master 1</t:cell><t:cell name="DetailName">Detail 5</t:cell><t:cell name="opticFunctionalTest.detail.color">green</t:cell><t:cell name="DetailSum">90.09</t:cell></t:row></t:rows></t:table>');
+      expect(outputStr).to.contain('<t:cell name="DetailSum">90.09</t:cell>');
+      expect(outputStr).to.contain('<t:cell name="DetailSum">120.12</t:cell>');
       done();
     }, done);
   });
