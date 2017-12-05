@@ -30,83 +30,83 @@ var geoDataFiles = [
   {
     uri:'/geo/region/test/Equator-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Equator-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Equator-json.json')
   },{
     uri:'/geo/region/test/North-Pole-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-Pole-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/North-Pole-json.json')
   },{
     uri:'/geo/region/test/Prime-Meridian-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Prime-Meridian-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Prime-Meridian-json.json')
   },{
     uri:'/geo/region/test/South-More-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-More-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/South-More-json.json')
   },{
     uri:'/geo/region/test/Tropic-of-Cancer-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Cancer-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Cancer-json.json')
   },{
     uri:'/geo/region/test/International-Date-Line-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/International-Date-Line-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/International-Date-Line-json.json')
   },{
     uri:'/geo/region/test/North-West-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-West-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/North-West-json.json')
   },{
     uri:'/geo/region/test/South-East-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-East-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/South-East-json.json')
   },{
     uri:'/geo/region/test/South-Pole-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-Pole-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/South-Pole-json.json')
   },{
     uri:'/geo/region/test/Tropic-of-Capricorn-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Capricorn-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Capricorn-json.json')
   },{
     uri:'/geo/region/test/Equator.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Equator.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Equator.xml')
   },{
     uri:'/geo/region/test/North-Pole.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-Pole.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/North-Pole.xml')
   },{
     uri:'/geo/region/test/Prime-Meridian.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Prime-Meridian.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Prime-Meridian.xml')
   },{
     uri:'/geo/region/test/South-More.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-More.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/South-More.xml')
   },{
     uri:'/geo/region/test/Tropic-of-Cancer.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Cancer.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Cancer.xml')
   },{
     uri:'/geo/region/test/International-Date-Line.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/International-Date-Line.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/International-Date-Line.xml')
   },{
     uri:'/geo/region/test/North-West.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-West.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/North-West.xml')
   },{
     uri:'/geo/region/test/South-East.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-East.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/South-East.xml')
   },{
     uri:'/geo/region/test/South-Pole.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-Pole.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/South-Pole.xml')
   },{
     uri:'/geo/region/test/Tropic-of-Capricorn.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Capricorn.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Capricorn.xml')
   }  
 ];
 
