@@ -25,7 +25,7 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-describe('Node.js Optic from views test', function(){
+describe('Nodejs Optic from views test', function(){
 
   it('TEST 1 - join inner with keymatch - object structure, columnType rows', function(done){
     const plan1 =

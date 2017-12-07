@@ -25,7 +25,7 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-describe('Node.js Optic from lexicons test', function(){
+describe('Nodejs Optic from lexicons test', function(){
 
   it('TEST 1 - access with where orderby select - columnTypes header and data types', function(done){
     const popCol = op.col('popularity');

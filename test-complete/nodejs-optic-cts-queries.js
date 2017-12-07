@@ -26,7 +26,7 @@ const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 const q = marklogic.queryBuilder;
 
-describe('Node.js Optic cts queries test', function(){
+describe('Nodejs Optic cts queries test', function(){
 
   it('TEST 1 - jsonPropertyWordQuery on fromLexicons', function(done){
     const plan1 = 

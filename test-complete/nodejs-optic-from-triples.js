@@ -26,7 +26,7 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-describe('Node.js Optic from triples test', function(){
+describe('Nodejs Optic from triples test', function(){
 
   /*it('sleep for 10 seconds', function(done) {
     setTimeout(function() {

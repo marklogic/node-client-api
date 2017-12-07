@@ -25,7 +25,7 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-describe('Node.js Optic from sparql test', function(){
+describe('Nodejs Optic from sparql test', function(){
 
   it('TEST 1 - simple sparql select with offsetLimit - format json, structure object, columnTypes header', function(done){
     const output =

@@ -37,7 +37,7 @@ const planFromTriples = fs.readFileSync(planTriplesPath, 'utf8');
 const planFromSQL = fs.readFileSync(planSQLPath, 'utf8');
 const planFromSPARQL = fs.readFileSync(planSPARQLPath, 'utf8');
 
-describe('Node.js Optic read from file test', function(){
+describe('Nodejs Optic read from file test', function(){
 
   it('TEST 1 - read plan views from file', function(done){
     db.rows.query(planFromViews, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 

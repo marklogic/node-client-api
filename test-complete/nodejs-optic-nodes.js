@@ -27,7 +27,7 @@ const connectdef = require('../config-optic/connectdef.js');
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 
-describe('Node.js Optic nodes json constructor test', function(){
+describe('Nodejs Optic nodes json constructor test', function(){
 
   it('TEST 1 - construct json from literals', function(done){
     const plan1 =
