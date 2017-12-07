@@ -28,7 +28,7 @@ var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection)
 var serviceName = 'issue-108-109';
 var servicePath = __dirname + '/data/issue-108-109.sjs';
 
-describe('when executing resource services', function() {
+describe('Issue 108 - 109', function() {
 
   before('should write the extension service', function(done) {
     restAdminDB.config.resources.write(serviceName, 'javascript', fs.createReadStream(servicePath)).

@@ -23,7 +23,7 @@ var q = marklogic.queryBuilder;
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Issue 99 test', function(){
+describe('Issue 99', function(){
 
   it('should do javascript eval on json', function(done){
     debugger;

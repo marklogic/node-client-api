@@ -24,7 +24,7 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('document query options test', function(){
+describe('Issue 115', function(){
   before(function(done){
     this.timeout(10000);
 // NOTE: must create a string range index on rangeKey1 and rangeKey2

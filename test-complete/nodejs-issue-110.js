@@ -24,7 +24,7 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Document extract test', function(){
+describe('Issue 110', function(){
   before(function(done){
     this.timeout(10000);
     dbWriter.documents.write({

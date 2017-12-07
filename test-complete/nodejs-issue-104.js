@@ -26,7 +26,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('when executing write to default graph', function() {
+describe('Issue 104', function() {
 
   before('add triples to default graph', function(done) {
     done();
