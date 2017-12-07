@@ -60,9 +60,9 @@ describe('sparql update test', function(){
     }).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
-      response.defaultGraph.should.equal(true);
+      response.defaultGraph.should.equal(false);
       (response.graph === null).should.be.true;
-      response.graphType.should.equal('default');
+      response.graphType.should.equal('inline');
       done();
     }, done);
   });
@@ -274,7 +274,7 @@ describe('sparql update test', function(){
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
       response.defaultGraph.should.equal(false);
-      response.graphType.should.equal('named');
+      response.graphType.should.equal('inline');
       done();
     }, done);
   });
@@ -298,7 +298,7 @@ describe('sparql update test', function(){
       done();
     }, function(error) {
       //console.log(JSON.stringify(error, null, 2));
-      error.body.errorResponse.message.should.containEql('Invalid type in optimize: -10 is not a value of type unsignedInt');
+      error.body.errorResponse.message.should.containEql('Invalid parameter: optimize parameter not convertible to xs:unsignedLong value: -10');
       done();
     });
   });
@@ -345,7 +345,7 @@ describe('sparql update test', function(){
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
       response.defaultGraph.should.equal(false);
-      response.graphType.should.equal('named');
+      response.graphType.should.equal('inline');
       done();
     }, done);
   });
