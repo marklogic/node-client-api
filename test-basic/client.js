@@ -23,10 +23,11 @@ var q = marklogic.queryBuilder;
 
 var YAgent = require('yakaa');
 
-// TODO: setup should create user with eval-in role
+// 'rest-evaluator' user can evaluate against an alternate db:
+// http://docs.marklogic.com/guide/rest-dev/intro#id_72318
 var connection = {
-    user:     'admin',
-    password: 'admin'
+    user:     testconfig.restEvaluatorConnection.user,
+    password: testconfig.restEvaluatorConnection.password
     };
 Object.keys(testconfig.restWriterConnection).forEach(function(key){
   if (connection[key] === undefined) {
