@@ -136,6 +136,26 @@ describe('rows', function(){
       }
     });
 
+    it('should support alternate database defined in client', function(){
+      // 'rest-evaluator' user can evaluate against an alternate db:
+      // http://docs.marklogic.com/guide/rest-dev/intro#id_72318
+      const otherDbConfig = {
+          host:     testconfig.testHost,
+          port:     8000,
+          user:     testconfig.restEvaluatorConnection.user,
+          password: testconfig.restEvaluatorConnection.password,
+          authType: testconfig.restEvaluatorConnection.authType,
+          database: testconfig.testServerName
+      };
+      const otherDb = marklogic.createDatabaseClient(otherDbConfig);
+      return otherDb.rows.query(planFromJSON)
+        .then(function(response) {
+          //console.log(JSON.stringify(response, null, 2));
+          valcheck.isObject(response).should.equal(true);
+          valcheck.isArray(response).should.equal(false);
+        });
+    });
+
   });
 
   describe('from a TDE view', function(){
