@@ -431,4 +431,63 @@ describe('Nodejs Optic nodes json constructor test', function(){
     }, done);
   });
 
+  /*it('TEST 8 - construct xml from Triples with queryAsStream', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const bb = op.prefixer('http://marklogic.com/baseball/players/'); 
+    const ageCol = op.col('age'); 
+    const idCol = op.col('id'); 
+    const nameCol = op.col('name'); 
+    const posCol = op.col('position'); 
+    const output = 
+      op.fromTriples([ 
+        op.pattern(idCol, bb('age'), ageCol), 
+        op.pattern(idCol, bb('name'), nameCol), 
+        op.pattern(idCol, bb('position'), posCol) 
+      ]) 
+      .where( 
+        op.and( 
+          op.le(ageCol, 25),  
+          op.eq(posCol, 'Catcher') 
+        ) 
+      ) 
+      .orderBy(op.desc(ageCol)) 
+      .select([ 
+        op.as('PlayerName', nameCol),  
+        op.as('PlayerPosition', posCol), 
+        op.as('PlayerAge', ageCol) 
+      ])
+      .select([
+        'PlayerName', 
+        'PlayerPosition', 
+        'PlayerAge',
+        op.as('xml',
+          op.xmlDocument(
+            op.xmlElement(
+              'root', 
+              op.xmlAttribute('attrA', op.col('PlayerName')), 
+              [
+                op.xmlElement('elemA', null, op.col('PlayerPosition')),
+      	        op.xmlElement('elemACodePoints', null, op.fn.stringToCodepoints(op.col('PlayerPosition'))),
+	        op.xmlElement('elemB', null, op.col('PlayerAge')),
+	        op.xmlElement('elemC', null, op.math.sqrt(op.col('PlayerAge')))
+              ]
+            )
+          )
+        ) 
+      ])		
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    .on('data', function(chunk) {
+      console.log(chunk.toString());
+      str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
+      count++;
+    }).
+    on('end', function() {
+      //console.log(str);
+      console.log(count);
+      done();
+    }, done);
+  });*/
+
 });
