@@ -1180,7 +1180,7 @@ describe('Nodejs Optic from views test', function(){
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: oldTimestamp }) 
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
-      expect(output).to.equal('SHOULD HAVE FAILED');
+      expect(output).to.be.undefined;
       done();
     }, function(error) { 
       //console.log(error);
