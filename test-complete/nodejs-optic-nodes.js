@@ -431,7 +431,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
     }, done);
   });
 
-  /*it('TEST 8 - construct xml from Triples with queryAsStream', function(done){
+  it('TEST 8 - construct complex node with queryAsStream and complexValues reference', function(done){
     var count = 0;
     var str = '';
     const chunks = [];
@@ -477,17 +477,21 @@ describe('Nodejs Optic nodes json constructor test', function(){
           )
         ) 
       ])		
-    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
     .on('data', function(chunk) {
-      console.log(chunk.toString());
-      str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
+      chunks.push(chunk.content.xml);
       count++;
     }).
     on('end', function() {
-      //console.log(str);
-      console.log(count);
+      //console.log(count);
+      //console.log(JSON.stringify(chunks, null, 2));
+      expect(count).to.equal(2);
+      expect(chunks[0]).to.be.undefined;
+      expect(chunks[1].contentType).to.equal('application/xml');
+      expect(chunks[1].format).to.equal('xml');
+      expect(chunks[1].content).to.equal('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root attrA=\"Pat Crenshaw\"><elemA>Catcher</elemA><elemACodePoints>67 97 116 99 104 101 114</elemACodePoints><elemB>25</elemB><elemC>5</elemC></root>');
       done();
     }, done);
-  });*/
+  });
 
 });
