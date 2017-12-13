@@ -494,4 +494,84 @@ describe('Nodejs Optic nodes json constructor test', function(){
     }, done);
   });
 
+  it('TEST 9 - construct complex JSON and xml node with queryAsStream and complexValues reference', function(done){
+    var count = 0;
+    var str = '';
+    const chunks = [];
+    const plan1 =
+      op.fromLiterals([
+        {rowId: 1, colorId: 1, desc: 'ball'},
+        {rowId: 2, colorId: 2, desc: 'square'},
+        {rowId: 3, colorId: 1, desc: 'box'},
+        {rowId: 4, colorId: 1, desc: 'hoop'},
+        {rowId: 5, colorId: 5, desc: 'circle'}
+      ], 'myItem');
+    const plan2 =
+      op.fromLiterals([
+        {colorId: 1, colorDesc: 'red'},
+        {colorId: 2, colorDesc: 'blue'},
+        {colorId: 3, colorDesc: 'black'},
+        {colorId: 4, colorDesc: 'yellow'}
+      ], 'myColor');
+     
+    const output =
+      plan1.joinInner(plan2, op.on(op.viewCol('myItem', 'colorId'), op.viewCol('myColor', 'colorId')))
+      .select([
+        'rowId',
+        op.as('myJSON', op.jsonDocument(op.jsonObject([
+          op.prop('str', op.jsonString(op.col('desc'))),
+          op.prop('strFunc', op.jsonString(op.fn.stringToCodepoints(op.col('desc')))),
+          op.prop('mathFunc', op.jsonNumber(op.math.sqrt(op.col('rowId')))),
+          op.prop('upper', op.jsonString(op.fn.upperCase(op.viewCol('myItem', 'desc')))),
+          op.prop('num', op.jsonNumber(op.col('rowId'))),
+          op.prop('bool', op.jsonBoolean(op.isDefined(op.col('rowId')))),
+          op.prop('null', op.jsonNull()),
+          op.prop('array', op.jsonArray([op.jsonString(op.col('desc')), op.jsonNumber(op.col('rowId'))]))
+        ]))),
+        op.as('node', op.jsonString(op.col('desc'))),
+        op.as('kind', op.xdmp.nodeKind(op.col('node'))),
+        op.as('xml', 
+          op.xmlDocument(
+            op.xmlElement(
+              'root', 
+              op.xmlAttribute('attrA', op.col('rowId')), 
+              [
+                op.xmlElement('elemA', null, op.viewCol('myColor', 'colorDesc')),
+                op.xmlComment(op.fn.concat('this is a comment for ', op.col('desc'))),
+                op.xmlElement('elemB', null, op.col('desc'))
+              ]
+            )
+          )
+        )
+      ])
+      .orderBy('rowId')
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    .on('data', function(chunk) {
+      chunks.push(chunk.content);
+      count++;
+    }).
+    on('end', function() {
+      //console.log(count);
+      //console.log(JSON.stringify(chunks, null, 2));
+      expect(count).to.equal(5);
+      expect(chunks[0].columns[1].name).to.equal('myJSON');
+      expect(chunks[0].columns[1].type).to.equal('cid');
+      expect(chunks[0].columns[2].name).to.equal('node');
+      expect(chunks[0].columns[2].type).to.equal('cid');
+      expect(chunks[0].columns[4].name).to.equal('xml');
+      expect(chunks[0].columns[4].type).to.equal('cid');
+      expect(chunks[1].myJSON.contentType).to.equal('application/json');
+      expect(chunks[1].myJSON.format).to.equal('json');
+      expect(chunks[1].myJSON.content.str).to.equal('ball');
+      expect(chunks[1].node.contentType).to.equal('text/plain');
+      expect(chunks[1].node.format).to.equal('text');
+      expect(chunks[1].node.content).to.equal('ball');
+      expect(chunks[1].kind).to.equal('text');
+      expect(chunks[1].xml.contentType).to.equal('application/xml');
+      expect(chunks[1].xml.format).to.equal('xml');
+      expect(chunks[1].xml.content).to.equal('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<root attrA=\"1\"><elemA>red</elemA><!--this is a comment for ball--><elemB>ball</elemB></root>');
+      done();
+    }, done);
+  });
+
 });
