@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ describe('Server props test', function(){
   it('should read server props', function(done){
     dbAdmin.config.serverprops.read().result(function(values) {
       //console.log(values);
-      values.debug.should.equal(false); 
+      values.debug.should.equal(false);
       done();
     }, done);
   });
@@ -43,7 +43,7 @@ describe('Server props test', function(){
   it('should read server props after changing it', function(done){
     dbAdmin.config.serverprops.read().result(function(values) {
       //console.log(values);
-      values.debug.should.equal(true); 
+      values.debug.should.equal(true);
       done();
     }, done);
   });

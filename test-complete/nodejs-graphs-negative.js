@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,8 +130,8 @@ describe('graph negative test', function(){
   it('should fail to write graph with invalid permissions', function(done){
     this.timeout(10000);
     db.graphs.write({
-      uri: graphUri, 
-      contentType: 'text/turtle', 
+      uri: graphUri,
+      contentType: 'text/turtle',
       data: fs.createReadStream(graphPath),
       permissions: [{'role-name': 'invalid-role', capabilities:['read']}]
     }).
@@ -141,7 +141,7 @@ describe('graph negative test', function(){
       done();
     }, function(error) {
       //console.log(error);
-      error.body.errorResponse.message.should.containEql('Role does not exist: role-name = invalid-role'); 
+      error.body.errorResponse.message.should.containEql('Role does not exist: role-name = invalid-role');
       done();
     });
   });

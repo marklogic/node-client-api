@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ describe('Document tuples negative test', function(){
         values: [{score: 56.7}, {rate: 3}],
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -58,7 +58,7 @@ describe('Document tuples negative test', function(){
         values: [{score: 92.45}, {rate: 5}],
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -73,7 +73,7 @@ describe('Document tuples negative test', function(){
         values: [{score: 33.56}, {rate: 1}],
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -88,7 +88,7 @@ describe('Document tuples negative test', function(){
         values: [{score: 12.34}, {rate: 3}],
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',

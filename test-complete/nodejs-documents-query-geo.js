@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ describe('Document geo query test', function(){
           latitude: 12,
           longitude: 5
         }
-      } 
+      }
     },
     {
       uri: '/test/query/geo/doc2.json',
@@ -57,7 +57,7 @@ describe('Document geo query test', function(){
           latitude: 34,
           longitude: 88
         }
-      } 
+      }
     },
     {
       uri: '/test/query/geo/doc3.json',
@@ -73,14 +73,14 @@ describe('Document geo query test', function(){
           latitude: 101,
           longitude: 4
         }
-      } 
+      }
     },
     {
       uri: '/test/query/geo/doc4.xml',
       collections: ['geoCollection'],
       contentType: 'application/xml',
-      content: 
-        '<root>' + 
+      content:
+        '<root>' +
         '  <title>ben_red</title>' +
         '  <gElemPoint>50,44</gElemPoint>' +
         '  <gElemChildParent>' +
@@ -96,8 +96,8 @@ describe('Document geo query test', function(){
       uri: '/test/query/geo/doc5.xml',
       collections: ['geoCollection'],
       contentType: 'application/xml',
-      content: 
-        '<root>' + 
+      content:
+        '<root>' +
         '  <title>george_blue</title>' +
         '  <gElemPoint>250,144</gElemPoint>' +
         '  <gElemChildParent>' +
@@ -107,7 +107,7 @@ describe('Document geo query test', function(){
         '    <latitude>250</latitude>' +
         '    <longitude>144</longitude>' +
         '  </gElemPair>' +
-        '  <gAttrPair latitude="250" longitude="144"/>' + 
+        '  <gAttrPair latitude="250" longitude="144"/>' +
         '</root>'
     },
     {
@@ -124,7 +124,7 @@ describe('Document geo query test', function(){
           latitude: 37.2768,
           longitude: -77.4008
         }
-      } 
+      }
     }
     ).
     result(function(response){done();}, done);
@@ -134,7 +134,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-            q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+            q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
             q.latlon(12, 5)
         )
       )
@@ -151,7 +151,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.latlon(12, 5),
           q.geoOptions('boundaries-latitude-excluded')
         )
@@ -169,7 +169,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoProperty('gElemPoint'), 
+          q.geoProperty('gElemPoint'),
           q.point(34, 88)
         )
       )
@@ -187,11 +187,11 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
           q.geoProperty(
-            q.property('gElemChildParent'), 
+            q.property('gElemChildParent'),
             q.property('gElemChildPoint')
-          ), 
-          q.latlon(34, 88)     
-        ) 
+          ),
+          q.latlon(34, 88)
+        )
       )
     ).
     result(function(response) {
@@ -208,9 +208,9 @@ describe('Document geo query test', function(){
         q.or(
           q.geospatial(
             q.geoProperty(
-              q.property('gElemChildParent'), 
+              q.property('gElemChildParent'),
               q.property('gElemChildPoint')
-            ), 
+            ),
             q.latlon(34, 88)
           ),
           q.word('title', 'karl_kara')
@@ -229,7 +229,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.circle(100, 11, 5)
         )
       )
@@ -246,7 +246,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.circle(2000, 32.2768, -62.4008)
         )
       )
@@ -263,7 +263,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.box(11, 4, 20, 10),
           q.geoOptions('boundaries-included')
         )
@@ -281,7 +281,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.box(12, 5, 20, 10),
           q.geoOptions('boundaries-included')
         )
@@ -299,7 +299,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.box(12, 5, 20, 10),
           q.geoOptions('boundaries-excluded')
         )
@@ -316,7 +316,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoPropertyPair('gElemPair', 'latitude', 'longitude'),
           q.polygon([12, 5], [20, 10], [34, 22])
         )
       )
@@ -333,7 +333,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPath('gElemChildParent/gElemChildPoint'), 
+          q.geoPath('gElemChildParent/gElemChildPoint'),
           q.latlon(12, 5)
         )
       )
@@ -350,7 +350,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPath(q.pathIndex('gElemChildParent/gElemChildPoint')), 
+          q.geoPath(q.pathIndex('gElemChildParent/gElemChildPoint')),
           q.point(12, 5)
         )
       )
@@ -367,7 +367,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoElementPair('gElemPair', 'latitude', 'longitude'), 
+          q.geoElementPair('gElemPair', 'latitude', 'longitude'),
           q.latlon(50, 44)
         )
       )
@@ -384,7 +384,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoElement('gElemPoint'), 
+          q.geoElement('gElemPoint'),
           q.latlon(50, 44)
         )
       )
@@ -401,7 +401,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoAttributePair('gAttrPair', 'latitude', 'longitude'), 
+          q.geoAttributePair('gAttrPair', 'latitude', 'longitude'),
           q.circle(100, 240, 144)
         )
       )

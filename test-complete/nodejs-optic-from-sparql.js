@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Nodejs Optic from sparql test', function(){
         SELECT ?s ?o \
         WHERE { ?s foaf:knows ?o }")
       .offsetLimit(11, 15)
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(11);
@@ -58,7 +58,7 @@ describe('Nodejs Optic from sparql test', function(){
           ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . \
         }")
       .limit(5)
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(5);
@@ -80,7 +80,7 @@ describe('Nodejs Optic from sparql test', function(){
           ?personB foaf:name 'Person 7' . \
           ?personA foaf:knows ?personB \
         }")
-    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(2);
@@ -102,7 +102,7 @@ describe('Nodejs Optic from sparql test', function(){
         ORDER BY ?name")
       .limit(15)
       .offset(11)
-    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
@@ -123,7 +123,7 @@ describe('Nodejs Optic from sparql test', function(){
           ?company demov:industry ?industry . \
           ?company demov:industry 'Industrial Goods' \
         }")
-    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('["total"]');
@@ -144,7 +144,7 @@ describe('Nodejs Optic from sparql test', function(){
         WHERE { \
           ?company demov:industry ?industry . \
         }")
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
       count++;
@@ -171,7 +171,7 @@ describe('Nodejs Optic from sparql test', function(){
 	  ?company a vcard:Organization . \
 	  ?company demov:sales ?sales \
         }")
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'array', columnTypes: 'rows' }) 
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'array', columnTypes: 'rows' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -203,7 +203,7 @@ describe('Nodejs Optic from sparql test', function(){
 	  BIND (vcard:hasAddress/vcard:country-name as ?country) \
 	  BIND (demov:industry as ?industry) \
         }")
-    db.rows.queryAsStream(output, 'chunked', { format: 'xml', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'chunked', { format: 'xml', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -231,7 +231,7 @@ describe('Nodejs Optic from sparql test', function(){
         } \
         GROUP BY ?industry \
         ORDER BY ?sum_sales")
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -256,12 +256,12 @@ describe('Nodejs Optic from sparql test', function(){
         } \
         GROUP BY ?country \
         ORDER BY ASC( ?min_sales ) ?country")
-      .export(); 
+      .export();
     //console.log(JSON.stringify(output).trim().replace(/[\n\r]/g, ''));
     const outputStr = JSON.stringify(output).trim().replace(/[\n\r]/g, '');
     //console.log(outputStr);
     expect(outputStr).to.equal('{"$optic":{"ns":"op","fn":"operators","args":[{"ns":"op","fn":"from-sparql","args":["PREFIX demov: <http://demo/verb#>         PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>         SELECT ?country (MIN (?sales) AS ?min_sales )         FROM </optic/sparql/test/companies.ttl>         WHERE {           ?company a vcard:Organization .           ?company demov:sales ?sales .           ?company vcard:hasAddress [ vcard:country-name ?country ]         }         GROUP BY ?country         ORDER BY ASC( ?min_sales ) ?country"]}]}}');
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(8);
@@ -286,7 +286,7 @@ describe('Nodejs Optic from sparql test', function(){
         } \
         GROUP BY ?industry \
         ORDER BY ?sum_sales", 'MySPARQL')
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -332,7 +332,7 @@ describe('Nodejs Optic from sparql test', function(){
         ORDER BY ?name")
       .limit(-1)
       .offset(11)
-    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.equal('SHOULD HAVE FAILED');

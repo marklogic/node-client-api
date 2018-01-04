@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MarkLogic Corporation
+ * Copyright 2017-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ function arrayMapper(row) {
   );
   return result;
 }
-      
+
 function colorIdMapper(row) {
   const result = row;
-  switch(result.myColorId) { 
+  switch(result.myColorId) {
     case 1:
       result.myColorId = 'RED';
       break;
@@ -48,7 +48,7 @@ function arrayReducer(previous, row) {
   const val = (previous === void 0) ? 0 : previous + row[0];
   return val;
 }
-      
+
 function fibReducer(previous, row) {
   const i = Array.isArray(previous) ? previous.length : 0;
   const result = row;

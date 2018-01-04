@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
         {colorId: 3, colorDesc: 'black'},
         {colorId: 4, colorDesc: 'yellow'}
       ], 'myColor');
-     
+
     const output =
       plan1.joinInner(plan2, op.on(op.viewCol('myItem', 'colorId'), op.viewCol('myColor', 'colorId')))
       .select([
@@ -62,11 +62,11 @@ describe('Nodejs Optic nodes json constructor test', function(){
         ]))),
         op.as('node', op.jsonString(op.col('desc'))),
         op.as('kind', op.xdmp.nodeKind(op.col('node'))),
-        op.as('xml', 
+        op.as('xml',
           op.xmlDocument(
             op.xmlElement(
-              'root', 
-              op.xmlAttribute('attrA', op.col('rowId')), 
+              'root',
+              op.xmlAttribute('attrA', op.col('rowId')),
               [
                 op.xmlElement('elemA', null, op.viewCol('myColor', 'colorDesc')),
                 op.xmlComment(op.fn.concat('this is a comment for ', op.col('desc'))),
@@ -77,7 +77,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
         )
       ])
       .orderBy('rowId')
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[1].name).to.equal('myJSON');
@@ -122,16 +122,16 @@ describe('Nodejs Optic nodes json constructor test', function(){
       )
       .orderBy(op.asc(op.schemaCol('opticFunctionalTest2', 'detail', 'id')))
       .select([
-        op.as('myJSON', 
+        op.as('myJSON',
           op.jsonDocument(
             op.jsonObject([
-              op.prop('object1', 
+              op.prop('object1',
                 op.jsonObject([
                   op.prop('object2', op.jsonString(op.schemaCol('opticFunctionalTest2', 'detail', 'masterId'))),
                   op.prop('object3', op.jsonNumber(op.schemaCol('opticFunctionalTest', 'master', 'id')))
                 ])
               ),
-              op.prop('object4', 
+              op.prop('object4',
                 op.jsonObject(
                   op.prop('object5',
                     op.jsonObject([
@@ -151,7 +151,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           )
         )
       ])
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -166,38 +166,38 @@ describe('Nodejs Optic nodes json constructor test', function(){
   });
 
   it('TEST 3 - construct xml from Triples', function(done){
-    const bb = op.prefixer('http://marklogic.com/baseball/players/'); 
-    const ageCol = op.col('age'); 
-    const idCol = op.col('id'); 
-    const nameCol = op.col('name'); 
-    const posCol = op.col('position'); 
-    const output = 
-      op.fromTriples([ 
-        op.pattern(idCol, bb('age'), ageCol), 
-        op.pattern(idCol, bb('name'), nameCol), 
-        op.pattern(idCol, bb('position'), posCol) 
-      ]) 
-      .where( 
-        op.and( 
-          op.le(ageCol, 25),  
-          op.eq(posCol, 'Catcher') 
-        ) 
-      ) 
-      .orderBy(op.desc(ageCol)) 
-      .select([ 
-        op.as('PlayerName', nameCol),  
-        op.as('PlayerPosition', posCol), 
-        op.as('PlayerAge', ageCol) 
+    const bb = op.prefixer('http://marklogic.com/baseball/players/');
+    const ageCol = op.col('age');
+    const idCol = op.col('id');
+    const nameCol = op.col('name');
+    const posCol = op.col('position');
+    const output =
+      op.fromTriples([
+        op.pattern(idCol, bb('age'), ageCol),
+        op.pattern(idCol, bb('name'), nameCol),
+        op.pattern(idCol, bb('position'), posCol)
+      ])
+      .where(
+        op.and(
+          op.le(ageCol, 25),
+          op.eq(posCol, 'Catcher')
+        )
+      )
+      .orderBy(op.desc(ageCol))
+      .select([
+        op.as('PlayerName', nameCol),
+        op.as('PlayerPosition', posCol),
+        op.as('PlayerAge', ageCol)
       ])
       .select([
-        'PlayerName', 
-        'PlayerPosition', 
+        'PlayerName',
+        'PlayerPosition',
         'PlayerAge',
         op.as('xml',
           op.xmlDocument(
             op.xmlElement(
-              'root', 
-              op.xmlAttribute('attrA', op.col('PlayerName')), 
+              'root',
+              op.xmlAttribute('attrA', op.col('PlayerName')),
               [
                 op.xmlElement('elemA', null, op.col('PlayerPosition')),
       	        op.xmlElement('elemACodePoints', null, op.fn.stringToCodepoints(op.col('PlayerPosition'))),
@@ -206,9 +206,9 @@ describe('Nodejs Optic nodes json constructor test', function(){
               ]
             )
           )
-        ) 
-      ])		
-    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'rows' }) 
+        )
+      ])
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       //console.log(output);
@@ -220,7 +220,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
   });
 
   it('TEST 4 - construct json from lexicons', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -231,7 +231,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -249,7 +249,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
       .select([
         op.as('myJSON1', op.jsonDocument(op.jsonObject(op.prop('object1', op.viewCol('myCity', 'uri1'))))),
         op.as('myJSON2', op.jsonDocument(op.jsonObject([
-          op.prop('object2', op.viewCol('myTeam', 'cityTeam')), 
+          op.prop('object2', op.viewCol('myTeam', 'cityTeam')),
           op.prop('object3', op.col('cityName'))
         ]))),
         op.as('myJSON3', op.jsonDocument(op.jsonObject(op.prop('object4', op.jsonNumber(op.fn.number(op.xpath('doc', '//latLonPair/lat'))))))),
@@ -257,7 +257,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonString(op.col('uri2')), op.col('popularity'), op.jsonArray([op.col('date'), op.jsonNumber(op.col('distance'))])
         ])))))
       ])
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);
@@ -311,7 +311,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonObject(op.prop('object5', op.col('minColor')))
         ])))))
       ])
-    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
@@ -362,7 +362,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonObject(op.prop('object5', op.col('minColor')))
         ])))))
       ])
-    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('["myJSON1", "myJSON2", "myJSON3", "myJSON4"]');
@@ -416,7 +416,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonObject(op.prop('object5', op.col('minColor')))
         ])))))
       ])
-    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -435,38 +435,38 @@ describe('Nodejs Optic nodes json constructor test', function(){
     var count = 0;
     var str = '';
     const chunks = [];
-    const bb = op.prefixer('http://marklogic.com/baseball/players/'); 
-    const ageCol = op.col('age'); 
-    const idCol = op.col('id'); 
-    const nameCol = op.col('name'); 
-    const posCol = op.col('position'); 
-    const output = 
-      op.fromTriples([ 
-        op.pattern(idCol, bb('age'), ageCol), 
-        op.pattern(idCol, bb('name'), nameCol), 
-        op.pattern(idCol, bb('position'), posCol) 
-      ]) 
-      .where( 
-        op.and( 
-          op.le(ageCol, 25),  
-          op.eq(posCol, 'Catcher') 
-        ) 
-      ) 
-      .orderBy(op.desc(ageCol)) 
-      .select([ 
-        op.as('PlayerName', nameCol),  
-        op.as('PlayerPosition', posCol), 
-        op.as('PlayerAge', ageCol) 
+    const bb = op.prefixer('http://marklogic.com/baseball/players/');
+    const ageCol = op.col('age');
+    const idCol = op.col('id');
+    const nameCol = op.col('name');
+    const posCol = op.col('position');
+    const output =
+      op.fromTriples([
+        op.pattern(idCol, bb('age'), ageCol),
+        op.pattern(idCol, bb('name'), nameCol),
+        op.pattern(idCol, bb('position'), posCol)
+      ])
+      .where(
+        op.and(
+          op.le(ageCol, 25),
+          op.eq(posCol, 'Catcher')
+        )
+      )
+      .orderBy(op.desc(ageCol))
+      .select([
+        op.as('PlayerName', nameCol),
+        op.as('PlayerPosition', posCol),
+        op.as('PlayerAge', ageCol)
       ])
       .select([
-        'PlayerName', 
-        'PlayerPosition', 
+        'PlayerName',
+        'PlayerPosition',
         'PlayerAge',
         op.as('xml',
           op.xmlDocument(
             op.xmlElement(
-              'root', 
-              op.xmlAttribute('attrA', op.col('PlayerName')), 
+              'root',
+              op.xmlAttribute('attrA', op.col('PlayerName')),
               [
                 op.xmlElement('elemA', null, op.col('PlayerPosition')),
       	        op.xmlElement('elemACodePoints', null, op.fn.stringToCodepoints(op.col('PlayerPosition'))),
@@ -475,9 +475,9 @@ describe('Nodejs Optic nodes json constructor test', function(){
               ]
             )
           )
-        ) 
-      ])		
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+        )
+      ])
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.content.xml);
       count++;
@@ -513,7 +513,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
         {colorId: 3, colorDesc: 'black'},
         {colorId: 4, colorDesc: 'yellow'}
       ], 'myColor');
-     
+
     const output =
       plan1.joinInner(plan2, op.on(op.viewCol('myItem', 'colorId'), op.viewCol('myColor', 'colorId')))
       .select([
@@ -530,11 +530,11 @@ describe('Nodejs Optic nodes json constructor test', function(){
         ]))),
         op.as('node', op.jsonString(op.col('desc'))),
         op.as('kind', op.xdmp.nodeKind(op.col('node'))),
-        op.as('xml', 
+        op.as('xml',
           op.xmlDocument(
             op.xmlElement(
-              'root', 
-              op.xmlAttribute('attrA', op.col('rowId')), 
+              'root',
+              op.xmlAttribute('attrA', op.col('rowId')),
               [
                 op.xmlElement('elemA', null, op.viewCol('myColor', 'colorDesc')),
                 op.xmlComment(op.fn.concat('this is a comment for ', op.col('desc'))),
@@ -545,7 +545,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
         )
       ])
       .orderBy('rowId')
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.content);
       count++;

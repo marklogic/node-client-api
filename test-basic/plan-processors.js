@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 MarkLogic Corporation
+ * Copyright 2016-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ describe('processor', function() {
     it('optimize level', function(done) {
       execPlan(
         p.fromLiterals([
-          {id:1, val: 2}, 
-          {id:2, val: 4} 
+          {id:1, val: 2},
+          {id:2, val: 4}
           ])
         .orderBy('id')
         .prepare(2)
@@ -52,8 +52,8 @@ describe('processor', function() {
     it('as implicit object sequence', function(done) {
       execPlan(
         p.fromLiterals([
-            {id:1, val: 2}, 
-            {id:2, val: 4} 
+            {id:1, val: 2},
+            {id:2, val: 4}
             ])
           .orderBy('id')
         )
@@ -71,8 +71,8 @@ describe('processor', function() {
     it('as explicit object sequence', function(done) {
       execPlan(
         p.fromLiterals([
-            {id:1, val: 2}, 
-            {id:2, val: 4} 
+            {id:1, val: 2},
+            {id:2, val: 4}
             ])
           .orderBy('id'),
         null,
@@ -92,8 +92,8 @@ describe('processor', function() {
     it('as array sequence', function(done) {
       execPlan(
         p.fromLiterals([
-          {id:1, val: 2}, 
-          {id:2, val: 4} 
+          {id:1, val: 2},
+          {id:2, val: 4}
           ])
         .orderBy('id'),
         null,
@@ -131,10 +131,10 @@ describe('processor', function() {
     it('with placeholder parameter', function(done) {
       execPlan(
         p.fromLiterals([
-          {id:1, val: 2}, 
-          {id:2, val: 4}, 
-          {id:3, val: 6}, 
-          {id:4, val: 8} 
+          {id:1, val: 2},
+          {id:2, val: 4},
+          {id:3, val: 6},
+          {id:4, val: 8}
           ])
         .offsetLimit(p.param('start'), p.param('length'))
         .where(p.gt(p.col('val'), p.param('floor')))
@@ -206,8 +206,8 @@ describe('processor', function() {
     it('as object mapper', function(done) {
       execPlan(
         p.fromLiterals([
-          {id:1, val: 2}, 
-          {id:2, val: 4} 
+          {id:1, val: 2},
+          {id:2, val: 4}
           ])
         .orderBy('id')
         .map(p.resolveFunction('secondsMapper', '/etc/optic/rowPostProcessors.sjs'))
@@ -230,10 +230,10 @@ describe('processor', function() {
     it('as array reducer', function(done) {
       execPlan(
         p.fromLiterals([
-          {val:  2}, 
-          {val:  4}, 
-          {val:  6}, 
-          {val:  8} 
+          {val:  2},
+          {val:  4},
+          {val:  6},
+          {val:  8}
           ])
         .orderBy('val')
         .reduce(p.resolveFunction('arrayReducer', '/etc/optic/rowPostProcessors.sjs')),
@@ -250,12 +250,12 @@ describe('processor', function() {
     it('as object reducer', function(done) {
       execPlan(
         p.fromLiterals([
-          {val:  2}, 
-          {val:  4}, 
-          {val:  6}, 
-          {val:  8}, 
-          {val: 10}, 
-          {val: 12} 
+          {val:  2},
+          {val:  4},
+          {val:  6},
+          {val:  8},
+          {val: 10},
+          {val: 12}
           ])
         .orderBy('val')
         .reduce(p.resolveFunction('fibReducer', '/etc/optic/rowPostProcessors.sjs'))
@@ -289,8 +289,8 @@ describe('processor', function() {
   it('explain default', function(done) {
     explainPlan(
       p.fromLiterals([
-            {id:1, val: 2}, 
-            {id:2, val: 4} 
+            {id:1, val: 2},
+            {id:2, val: 4}
             ])
       )
     .then(function(output) {
@@ -303,8 +303,8 @@ describe('processor', function() {
   it('explain xml', function(done) {
     explainPlan(
       p.fromLiterals([
-            {id:1, val: 2}, 
-            {id:2, val: 4} 
+            {id:1, val: 2},
+            {id:2, val: 4}
             ]),
       'xml'
       )

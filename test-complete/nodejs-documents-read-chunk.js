@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ describe('Binary documents test', function(){
       pipe(concatStream({encoding: 'buffer'}, function(value){
         binaryValue = value;
         done();
-      }));    
+      }));
   });
 
   it('should write the binary with Readable stream', function(done){
@@ -58,10 +58,10 @@ describe('Binary documents test', function(){
     result(function(response){
       response.should.have.property('documents');
       done();
-    }, done);   
+    }, done);
   });
 
-  it('should wait for the document to be written', function(done) { 
+  it('should wait for the document to be written', function(done) {
     setTimeout(function() {
       done();
     }, 10000);
@@ -78,7 +78,7 @@ describe('Binary documents test', function(){
       }).
     on('end', function() {
       done();
-    }, done);   
+    }, done);
 	}, 3000);
   });
 it('should delete all documents', function(done){
@@ -88,7 +88,7 @@ it('should delete all documents', function(done){
     result(function(response) {
       done();
     }, done);
-  }); 
+  });
 
 });
 

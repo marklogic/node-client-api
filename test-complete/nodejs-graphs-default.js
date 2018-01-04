@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ describe('default graph test', function(){
 
   it('should list the graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       collections.some(function(collection){
         return collection === defGraphUri;
@@ -101,9 +101,9 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ?s foaf:knows ppl:person8 }" 
+                  "WHERE { ?s foaf:knows ppl:person8 }"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       //query: fs.createReadStream(sparqlPath2)
       query: myQuery
     }).
@@ -119,10 +119,10 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }" 
+                  "WHERE { ppl:person1 foaf:knows ?o }"
     var docQuery = q.where(q.term('person5'));
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery,
       docQuery: docQuery
     }).
@@ -139,10 +139,10 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }" 
+                  "WHERE { ppl:person1 foaf:knows ?o }"
     var docQuery = q.where(q.term('foo'));
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery,
       docQuery: docQuery
     }).

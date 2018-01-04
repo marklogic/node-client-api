@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 MarkLogic Corporation
+ * Copyright 2016-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,9 +128,9 @@ describe('documents', function() {
     it('with document uri', function(done) {
       execPlan(
         p.fromLiterals([
-              {id:1, val: 2, musicianDocUri:'/optic/test/musician4.json'}, 
-              {id:2, val: 4, musicianDocUri:'/optic/test/not/a/real/doc.nada'}, 
-              {id:3, val: 6, musicianDocUri:'/optic/test/musician3.json'} 
+              {id:1, val: 2, musicianDocUri:'/optic/test/musician4.json'},
+              {id:2, val: 4, musicianDocUri:'/optic/test/not/a/real/doc.nada'},
+              {id:3, val: 6, musicianDocUri:'/optic/test/musician3.json'}
           ])
           .joinDoc('musicianDoc', p.col('musicianDocUri'))
           .orderBy('id')

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Transaction with state test', function() {
-  
+
   var tid = 0;
   var tid2 = 0;
   var hostId = 0;
@@ -57,7 +57,7 @@ describe('Transaction with state test', function() {
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.finished.should.equal('rollback');
-      return db.documents.read({uris: '/test/state/transaction/doc1.json'}).result(); 
+      return db.documents.read({uris: '/test/state/transaction/doc1.json'}).result();
     })
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
@@ -91,13 +91,13 @@ describe('Transaction with state test', function() {
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.finished.should.equal('commit');
-      return db.documents.read({uris: '/test/state/transaction/doc1.json'}).result(); 
+      return db.documents.read({uris: '/test/state/transaction/doc1.json'}).result();
     })
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response[0].content.lastname.should.equal('Adams');
       response[0].content.txKey.should.equal(tid2);
-      return db.documents.remove('/test/state/transaction/doc1.json').result(); 
+      return db.documents.remove('/test/state/transaction/doc1.json').result();
     })
     .then(function(response) {
       response.removed.should.equal(true);

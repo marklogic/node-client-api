@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 describe('Write Document Test', function() {
-  
-  var docuri = '/foo/bar/test1.json'; 
-  var docuri2 = '/foo/bar/test2.json'; 
- 
+
+  var docuri = '/foo/bar/test1.json';
+  var docuri2 = '/foo/bar/test2.json';
+
   before(function(done) {
     this.timeout(10000);
     db.documents.write({
@@ -50,7 +50,7 @@ describe('Write Document Test', function() {
         {'role-name':'app-builder', capabilities:['read', 'update']}
       ],
       properties: {prop1:'bar', prop2:33},
-      content: {id:245, name:'Paul'}  
+      content: {id:245, name:'Paul'}
     }).result(function(response){done();}, done);
   });
 
@@ -89,7 +89,7 @@ describe('Write Document Test', function() {
       collCount.should.equal(2);
       for(var i=0; i < collCount; i++) {
         document.collections[i].should.equal('coll' + i);
-      }      
+      }
       done();
     }, done);
   });

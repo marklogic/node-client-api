@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ describe('repair graph test', function(){
 
   it('should list the repaired graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       collections.some(function(collection){
         return collection === graphUri;

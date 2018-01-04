@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ describe('Server eval test', function(){
 
   it('should do javascript eval to call on array', function(done){
     var src = 'var mycars = ["volvo", "nissan", "honda", "volvo", "HONDA"];' +
-              'fn.distinctValues(xdmp.arrayValues(mycars));' 
+              'fn.distinctValues(xdmp.arrayValues(mycars));'
     dbEval.eval(src).
     result(function(values) {
       //console.log(values);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Transform test with null output -- issue #147', function(){
       uri: '/test/transform/emptyTransform1.json',
       contentType: 'application/json',
       quality: 10,
-      content: {title: 'hello world'} 
+      content: {title: 'hello world'}
     },
     {
       uri: '/test/transform/emptyTransform2.json',
@@ -57,8 +57,8 @@ describe('Transform test with null output -- issue #147', function(){
     }));
   });
 
-  var uri1 = '/test/transform/emptyTransform1.json'; 
-  var uri2 = '/test/transform/emptyTransform2.json'; 
+  var uri1 = '/test/transform/emptyTransform1.json';
+  var uri2 = '/test/transform/emptyTransform2.json';
 
   it('should return null transform and metadata during read', function(done){
     db.documents.read({
@@ -86,9 +86,9 @@ describe('Transform test with null output -- issue #147', function(){
       contentType: 'application/json',
       quality: 20,
       content: {title: 'hi there'},
-      transform: transformName  
+      transform: transformName
     },
-    { 
+    {
       uri: '/test/transform/emptyTransform4.json',
       contentType: 'application/json',
       quality: 25,
@@ -101,8 +101,8 @@ describe('Transform test with null output -- issue #147', function(){
     }, done);
   });
 
-  var uri3 = '/test/transform/emptyTransform3.json'; 
-  var uri4 = '/test/transform/emptyTransform4.json'; 
+  var uri3 = '/test/transform/emptyTransform3.json';
+  var uri4 = '/test/transform/emptyTransform4.json';
 
   it('should return null content and metadata on read', function(done){
     db.documents.read({

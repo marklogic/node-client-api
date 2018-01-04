@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Extlib negative test', function(){
     dbAdmin.config.extlibs.write({
       path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
     }).
-    result(function(response){done();}, done); 
+    result(function(response){done();}, done);
   });
 
   after(function(done) {

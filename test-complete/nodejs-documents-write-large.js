@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ describe('Large document write test', function(){
       pipe(concatStream({encoding: 'buffer'}, function(value){
         binaryValue = value;
         done();
-      }));    
+      }));
   });
 
   it('should write the large document with Readable stream', function(done){
@@ -58,7 +58,7 @@ describe('Large document write test', function(){
     result(function(response){
       response.should.have.property('documents');
       done();
-    }, done);   
+    }, done);
   });
 
   /*it('should read the large document with Readable stream', function(done){
@@ -71,7 +71,7 @@ describe('Large document write test', function(){
       count.should.equal(2064);
       //console.log(JSON.stringify(documents, null, 2));
       done();
-    }, done);   
+    }, done);
   });*/
 
   it('should read the large document with Readable stream', function(done){
@@ -91,7 +91,7 @@ describe('Large document write test', function(){
       chunks.should.be.greaterThan(1);
       length.should.equal(7648280);
       done();
-    }, done);   
+    }, done);
   });
 
   it('should read the large document metadata', function(done) {
@@ -105,7 +105,7 @@ describe('Large document write test', function(){
       done();
     }, done);
   });
-  
+
     it('should delete the xml file file', function(done){
     dbAdmin.documents.removeAll({
       all: true
@@ -113,7 +113,7 @@ describe('Large document write test', function(){
     result(function(response) {
       done();
     }, done);
-  }); 
+  });
 
 });
 

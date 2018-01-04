@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 describe('Document PITQ Test', function() {
-  
-  var docuri1 = '/pitq/test/doc1.json'; 
+
+  var docuri1 = '/pitq/test/doc1.json';
   var docuri2 = '/pitq/test/doc2.json';
   var oldTimestamp = db.createTimestamp('123');
   var zeroTimestamp = db.createTimestamp('0');
   var negativeTimestamp = db.createTimestamp('-1');
- 
+
   before(function(done) {
     this.timeout(10000);
     db.documents.write({
@@ -54,7 +54,7 @@ describe('Document PITQ Test', function() {
         {'role-name':'app-builder', capabilities:['read', 'update']}
       ],
       properties: {prop1:'bar', prop2:33},
-      content: {id:245, name:'Paul'}  
+      content: {id:245, name:'Paul'}
     }).result(function(response){done();}, done);
   });
 
@@ -62,7 +62,7 @@ describe('Document PITQ Test', function() {
     var timestamp = db.createTimestamp();
     // read with correct timestamp
     db.documents.read({
-      uris: docuri1, 
+      uris: docuri1,
       categories:['content'],
       timestamp: timestamp
     })
@@ -70,7 +70,7 @@ describe('Document PITQ Test', function() {
       var document = response[0];
       //console.log(JSON.stringify(document, null, 2));
       document.content.name.should.equal('Jason');
-      
+
       // read with negative timestamp
       return db.documents.read({
         uris: docuri1,
@@ -80,10 +80,10 @@ describe('Document PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL: $0 -1 set-transaction-timestamp');
-      
+
       // read with zero timestamp
       return db.documents.read({
         uris: docuri1,
@@ -93,8 +93,8 @@ describe('Document PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL0: The value of expression \'$0\'  is required to be non-zero in rule: set-transaction-timestamp');
 
       // read with old timestamp
@@ -106,15 +106,15 @@ describe('Document PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.containEql('Timestamp too old');
-      
+
       // read with correct timestamp again
       return db.documents.read({
         uris: docuri1,
         timestamp: timestamp
-      }).result(); 
+      }).result();
     })
     .then(function(response) {
       done();
@@ -128,7 +128,7 @@ describe('Document PITQ Test', function() {
     var timestamp = db.createTimestamp();
     // query with correct timestamp
     db.documents.query(
-      q.where( 
+      q.where(
         q.word('name', 'Jason')
       ),
       timestamp
@@ -137,10 +137,10 @@ describe('Document PITQ Test', function() {
       var document = response[0];
       //console.log(JSON.stringify(document, null, 2));
       document.content.name.should.equal('Jason');
-      
+
       // query with negative timestamp
       return db.documents.query(
-        q.where( 
+        q.where(
           q.word('name', 'Jason')
         ),
         negativeTimestamp
@@ -149,13 +149,13 @@ describe('Document PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL: $0 -1 set-transaction-timestamp');
-      
+
       // query with zero timestamp
       return db.documents.query(
-        q.where( 
+        q.where(
           q.word('name', 'Jason')
         ),
         zeroTimestamp
@@ -164,13 +164,13 @@ describe('Document PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL0: The value of expression \'$0\'  is required to be non-zero in rule: set-transaction-timestamp');
 
       // query with old timestamp
       return db.documents.query(
-        q.where( 
+        q.where(
           q.word('name', 'Jason')
         ),
         oldTimestamp
@@ -179,17 +179,17 @@ describe('Document PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.containEql('Timestamp too old');
-      
+
       // query with correct timestamp again
       return db.documents.query(
-        q.where( 
+        q.where(
           q.word('name', 'Jason')
         ),
         timestamp
-      ).result(); 
+      ).result();
     })
     .then(function(response) {
       done();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ describe('document patch metadata test', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -56,7 +56,7 @@ describe('document patch metadata test', function(){
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -70,7 +70,7 @@ describe('document patch metadata test', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -84,7 +84,7 @@ describe('document patch metadata test', function(){
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
@@ -109,7 +109,7 @@ describe('document patch metadata test', function(){
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
+      categories: ['metadata'],
       operations: [
         p.replace('node("quality")', 33)
       ]
@@ -118,10 +118,10 @@ describe('document patch metadata test', function(){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
         //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(33); 
+        documents[0].quality.should.equal(33);
         done();
       }, done);
-    }, done);   
+    }, done);
   });
 
   it('should appply patch on metadata with jsonpath', function(done){
@@ -129,7 +129,7 @@ describe('document patch metadata test', function(){
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
+      categories: ['metadata'],
       operations: [
         p.pathLanguage('jsonpath'),
         p.replace('$.quality', 45)
@@ -139,10 +139,10 @@ describe('document patch metadata test', function(){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
         //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(45); 
+        documents[0].quality.should.equal(45);
         done();
       }, done);
-    }, done);   
+    }, done);
   });
 
   it('should appply patch on metadata properties', function(done){
@@ -150,7 +150,7 @@ describe('document patch metadata test', function(){
     var uri1 = '/test/query/matchList/doc5.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
+      categories: ['metadata'],
       operations: [
         p.pathLanguage('jsonpath'),
         p.insert('$.properties.prop1', 'after', {prop2: 'world'})
@@ -160,17 +160,17 @@ describe('document patch metadata test', function(){
       db.documents.read({uris: uri1, categories: ['metadata']}).
       result(function(documents) {
         //console.log(JSON.stringify(documents, null, 4));
-        documents[0].properties.prop2.should.equal('world'); 
+        documents[0].properties.prop2.should.equal('world');
         done();
       }, done);
-    }, done);   
+    }, done);
   });
 it('should appply patch on metadata properties', function(done){
     this.timeout(10000);
     var uri1 = '/test/query/matchDir/doc4.json';
     var p = marklogic.patchBuilder;
     dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'], 
+      categories: ['metadata'],
       operations: [
           p.collections.add('collection2/ADDED'),
           p.collections.remove('collection2/0'),
@@ -197,7 +197,7 @@ it('should appply patch on metadata properties', function(done){
         documents[0].should.have.property('permissions')
         done();
       }, done);
-    }, done);   
+    }, done);
   });
   it('should remove the document', function(done){
     dbAdmin.documents.removeAll({all: true}).

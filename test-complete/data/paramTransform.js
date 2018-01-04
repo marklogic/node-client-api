@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ function paramTransform(context, params, document) {
   var intValue = params.myInt;
   var boolValue = params.myBool == 'true';
   newDoc.title = newTitle;
-  newDoc.intKey = parseInt(intValue); 
+  newDoc.intKey = parseInt(intValue);
   newDoc.boolKey = boolValue;
   return newDoc;
 }

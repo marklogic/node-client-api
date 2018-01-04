@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MarkLogic Corporation
+ * Copyright 2017-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,16 @@ describe('composers', function() {
     it('with inner join', function(done) {
       execPlan(
           p.fromLiterals([
-              {masterId:1, masterVal:'A'}, 
-              {masterId:2, masterVal:'B'}, 
-              {masterId:3, masterVal:'C'} 
+              {masterId:1, masterVal:'A'},
+              {masterId:2, masterVal:'B'},
+              {masterId:3, masterVal:'C'}
               ])
-            .joinInner( 
-              p.fromLiterals([ 
-                {detailId:1, masterId:1, detailVal:'a'}, 
-                {detailId:2, masterId:1, detailVal:'b'}, 
-                {detailId:3, masterId:3, detailVal:'c'}, 
-                {detailId:4, masterId:4, detailVal:'d'} 
+            .joinInner(
+              p.fromLiterals([
+                {detailId:1, masterId:1, detailVal:'a'},
+                {detailId:2, masterId:1, detailVal:'b'},
+                {detailId:3, masterId:3, detailVal:'c'},
+                {detailId:4, masterId:4, detailVal:'d'}
                 ])
               )
             .orderBy(['masterId', 'detailId'])
@@ -65,16 +65,16 @@ describe('composers', function() {
     it('with left join', function(done) {
       execPlan(
           p.fromLiterals([
-              {masterId:1, masterVal:'A'}, 
-              {masterId:2, masterVal:'B'}, 
-              {masterId:3, masterVal:'C'} 
+              {masterId:1, masterVal:'A'},
+              {masterId:2, masterVal:'B'},
+              {masterId:3, masterVal:'C'}
               ])
-            .joinLeftOuter( 
-              p.fromLiterals([ 
-                {detailId:1, masterId:1, detailVal:'a'}, 
-                {detailId:2, masterId:1, detailVal:'b'}, 
-                {detailId:3, masterId:3, detailVal:'c'}, 
-                {detailId:4, masterId:4, detailVal:'d'} 
+            .joinLeftOuter(
+              p.fromLiterals([
+                {detailId:1, masterId:1, detailVal:'a'},
+                {detailId:2, masterId:1, detailVal:'b'},
+                {detailId:3, masterId:3, detailVal:'c'},
+                {detailId:4, masterId:4, detailVal:'d'}
                 ])
               )
             .orderBy(['masterId', 'detailId'])
@@ -105,17 +105,17 @@ describe('composers', function() {
     it('with key matches on inner join', function(done) {
       execPlan(
           p.fromLiterals([
-              {primaryKey:1, masterVal:'A'}, 
-              {primaryKey:2, masterVal:'B'}, 
-              {primaryKey:3, masterVal:'C'} 
+              {primaryKey:1, masterVal:'A'},
+              {primaryKey:2, masterVal:'B'},
+              {primaryKey:3, masterVal:'C'}
               ])
-            .joinInner( 
-              p.fromLiterals([ 
-                {detailId:1, foreignKey:1, detailVal:'a'}, 
-                {detailId:2, foreignKey:1, detailVal:'b'}, 
-                {detailId:3, foreignKey:3, detailVal:'c'}, 
-                {detailId:4, foreignKey:4, detailVal:'d'} 
-                ]), 
+            .joinInner(
+              p.fromLiterals([
+                {detailId:1, foreignKey:1, detailVal:'a'},
+                {detailId:2, foreignKey:1, detailVal:'b'},
+                {detailId:3, foreignKey:3, detailVal:'c'},
+                {detailId:4, foreignKey:4, detailVal:'d'}
+                ]),
                 p.on('primaryKey', 'foreignKey')
               )
             .orderBy(['primaryKey', 'detailId'])
@@ -145,19 +145,19 @@ describe('composers', function() {
     it('with condition on left join', function(done) {
       execPlan(
           p.fromLiterals([
-              {masterId:1, masterVal:'A'}, 
-              {masterId:2, masterVal:'B'}, 
-              {masterId:3, masterVal:'C'} 
+              {masterId:1, masterVal:'A'},
+              {masterId:2, masterVal:'B'},
+              {masterId:3, masterVal:'C'}
               ])
-            .joinLeftOuter( 
-              p.fromLiterals([ 
-                {detailId:1, masterId:1, detailVal:'a'}, 
-                {detailId:2, masterId:1, detailVal:'b'}, 
-                {detailId:3, masterId:3, detailVal:'c'}, 
-                {detailId:4, masterId:4, detailVal:'d'} 
-                ]), 
-                null, 
-                p.eq(p.col('detailVal'), 'b') 
+            .joinLeftOuter(
+              p.fromLiterals([
+                {detailId:1, masterId:1, detailVal:'a'},
+                {detailId:2, masterId:1, detailVal:'b'},
+                {detailId:3, masterId:3, detailVal:'c'},
+                {detailId:4, masterId:4, detailVal:'d'}
+                ]),
+                null,
+                p.eq(p.col('detailVal'), 'b')
               )
             .orderBy(['masterId', 'detailId'])
       )
@@ -183,14 +183,14 @@ describe('composers', function() {
     it('with cross product join', function(done) {
       execPlan(
           p.fromLiterals([
-              {masterId:1, masterVal:'A'}, 
-              {masterId:2, masterVal:'B'} 
+              {masterId:1, masterVal:'A'},
+              {masterId:2, masterVal:'B'}
               ])
-            .joinCrossProduct( 
-              p.fromLiterals([ 
-                {detailId:1, detailVal:'a'}, 
-                {detailId:2, detailVal:'b'} 
-                ]) 
+            .joinCrossProduct(
+              p.fromLiterals([
+                {detailId:1, detailVal:'a'},
+                {detailId:2, detailVal:'b'}
+                ])
               )
             .orderBy(['masterId', 'detailId'])
           )
@@ -220,14 +220,14 @@ describe('composers', function() {
     it('with union', function(done) {
       execPlan(
           p.fromLiterals([
-              {id:1, val:'a'}, 
-              {id:3, val:'c'} 
+              {id:1, val:'a'},
+              {id:3, val:'c'}
               ])
-            .union( 
-              p.fromLiterals([ 
-                {id:2, val:'b'}, 
-                {id:4, val:'d'} 
-                ]) 
+            .union(
+              p.fromLiterals([
+                {id:2, val:'b'},
+                {id:4, val:'d'}
+                ])
               )
             .orderBy('id')
           )
@@ -249,16 +249,16 @@ describe('composers', function() {
     it('with intersect', function(done) {
       execPlan(
           p.fromLiterals([
-              {val:'a', id:1}, 
+              {val:'a', id:1},
               {val:'b', id:2},
               {val:'x', id:3}
               ])
-            .intersect( 
-              p.fromLiterals([ 
-                {id:1, val:'x'}, 
-                {id:2, val:'b'}, 
-                {id:3, val:'c'} 
-                ]) 
+            .intersect(
+              p.fromLiterals([
+                {id:1, val:'x'},
+                {id:2, val:'b'},
+                {id:3, val:'c'}
+                ])
               )
             .orderBy('id')
           )
@@ -277,12 +277,12 @@ describe('composers', function() {
               {val:'a', id:1},
               {val:'b', id:2}
               ])
-            .except( 
-              p.fromLiterals([ 
+            .except(
+              p.fromLiterals([
                 {id:1, val:'a'},
-                {id:2, val:'x'}, 
+                {id:2, val:'x'},
                 {id:3, val:'c'}
-                ]) 
+                ])
               )
             .orderBy('id')
       )

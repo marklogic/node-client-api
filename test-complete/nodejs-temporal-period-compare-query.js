@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ var q = marklogic.queryBuilder;
 var temporalCollectionName = 'temporalCollectionLsqt'
 
 describe('Temporal period compare query test', function() {
-  
-  var docuri = 'temporalDoc.json'; 
- 
-  before(function(done) { 
+
+  var docuri = 'temporalDoc.json';
+
+  before(function(done) {
     adminManager.put({
       endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
       body: {
@@ -70,7 +70,7 @@ describe('Temporal period compare query test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       },
       systemTime: '2005-01-01T00:00:01'
@@ -100,7 +100,7 @@ describe('Temporal period compare query test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       },
       systemTime: '2010-01-01T00:00:01'
@@ -126,7 +126,7 @@ describe('Temporal period compare query test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();

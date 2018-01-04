@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ describe('Issue 110', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc2.json',
       contentType: 'application/json',
       content: {
@@ -53,7 +53,7 @@ describe('Issue 110', function(){
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc3.json',
       contentType: 'application/json',
       content: {
@@ -66,7 +66,7 @@ describe('Issue 110', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc4.json',
       contentType: 'application/json',
       content: {
@@ -79,7 +79,7 @@ describe('Issue 110', function(){
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/query/matchList/doc5.json',
         contentType: 'application/json',
         content: {
@@ -218,7 +218,7 @@ describe('Issue 110', function(){
     result(function(response) {
       done();
     }, done);
-  }); 
+  });
   /*it('should do extract with back level up', function(done){
     db.documents.query(
       q.where(

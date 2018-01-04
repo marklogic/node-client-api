@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ describe('document patch test', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/patch/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -57,7 +57,7 @@ describe('document patch test', function(){
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/patch/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -71,7 +71,7 @@ describe('document patch test', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/patch/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -85,7 +85,7 @@ describe('document patch test', function(){
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/patch/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
@@ -107,7 +107,7 @@ describe('document patch test', function(){
   var uri2 = '/test/patch/doc4.json';
 
   it('should apply the patch', function(done){
-  
+
     dbWriter.documents.patch('/test/patch/doc5.json',
       p.pathLanguage('jsonpath'),
       p.insert('$.title', 'after', {newKey:'newChild'}),
@@ -167,7 +167,7 @@ describe('document patch test', function(){
         p.insert('array-node("collections")', 'last-child', 'addedCollection'),
         p.insert('properties', 'last-child', {newPropKey: 'newPropValue'}),
         p.replace('quality', 24),
-        p.insert('array-node("permissions")', 'last-child', {'role-name': 'app-builder', capabilities: ['read', 'update']}) 
+        p.insert('array-node("permissions")', 'last-child', {'role-name': 'app-builder', capabilities: ['read', 'update']})
       ]
     }).result(function(response) {
         //console.log(JSON.stringify(response, null, 4));
@@ -196,7 +196,7 @@ describe('document patch test', function(){
       done();
     }, done);
   });
-      
+
   it('should modify the patch on metadata', function(done){
     dbWriter.documents.patch({
       uri: '/test/patch/doc4.json',
@@ -205,7 +205,7 @@ describe('document patch test', function(){
         p.replace('collections[. eq "addedCollection"]', 'modifiedCollection'),
         p.insert('properties/newPropKey', 'after', {anotherPropKey: 'anotherPropValue'}),
         p.replace('quality', 42),
-        p.remove('permissions[role-name eq "app-builder"]') 
+        p.remove('permissions[role-name eq "app-builder"]')
       ]
     }).result(function(response) {
         //console.log(JSON.stringify(response, null, 4));

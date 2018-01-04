@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ describe('when configuring resource services', function(){
     result(function(response){
       done();
     }, done);
-  }); 
+  });
    it('should write the resource service with named parameters', function(done){
     this.timeout(10000);
     restAdminDB.config.resources.write({
@@ -51,7 +51,7 @@ describe('when configuring resource services', function(){
     result(function(response){
       done();
     }, done);
-  }); 
+  });
    it('should read the resource service', function(done){
     restAdminDB.config.resources.read(serviceName).
     result(function(source){
@@ -59,8 +59,8 @@ describe('when configuring resource services', function(){
 	  (valcheck.isNullOrUndefined(source)).should.equal(false);
       done();
     }, done);
-  }); 
-  
+  });
+
   it('should try to read the resource service via invalid name', function(done){
     restAdminDB.config.resources.read(serviceNameInvalid).
     result(function(source){
@@ -83,7 +83,7 @@ describe('when configuring resource services', function(){
           length.should.equal(1);
       done();
     }, done);
-  }); 
+  });
    it('should over-write the resource service with named parameters', function(done){
     this.timeout(10000);
     restAdminDB.config.resources.write({
@@ -98,21 +98,21 @@ describe('when configuring resource services', function(){
     result(function(response){
       done();
     }, done);
-  }); 
-  
+  });
+
 /*   //Need to get to the content first
 	it('should delete specified resource config ', function(done){
     restAdminDB.config.resources.resource.remove(serviceName).
     result(function(response){
       done();
     }, done);
-  });  */ 
+  });  */
   it('should delete the resource service', function(done){
     restAdminDB.config.resources.remove(serviceName).
     result(function(response){
       done();
     }, done);
-  });  
+  });
     it('should try read the resource service after remove', function(done){
     restAdminDB.config.resources.read(serviceName).
     result(function(source){
@@ -121,11 +121,11 @@ describe('when configuring resource services', function(){
 	  (valcheck.isNullOrUndefined(error)).should.equal(false);
 	  done();
 	  }, done);
-  });  
+  });
    it('should delete the invalid resource service', function(done){
     restAdminDB.config.resources.remove(serviceNameInvalid).
     result(function(response){
       done();
     }, done);
-  }); 
+  });
  });

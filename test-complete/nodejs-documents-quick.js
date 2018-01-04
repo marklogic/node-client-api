@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ describe('quick path', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      },{ 
+      },{
       uri: '/test/query/matchDir/doc3.json',
       collections: '/matchCollection2',
       contentType: 'application/json',
@@ -60,7 +60,7 @@ describe('quick path', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc2.json',
       collections: '/matchCollection1',
       contentType: 'application/json',
@@ -101,7 +101,7 @@ describe('quick path', function(){
         documents[1].content.should.have.property('title');
         done();
       }, done);
-  }); 
+  });
 /*   it('should fail in writing objects to wrong collection', function(done){
     dbWriter.createCollection(
       '/matchCollection3',
@@ -152,7 +152,7 @@ describe('quick path', function(){
       error.statusCode.should.equal(403);
       done();
       });
-  }); 
+  });
    it('should query objects', function(done){
     dbWriter.queryCollection(
         '/matchCollection1',
@@ -184,7 +184,7 @@ describe('quick path', function(){
       error.statusCode.should.equal(403);
       done();
       });
-  }); 
+  });
   it('should remove a document', function(done) {
     var docUri = [ '/test/query/matchDir/doc3.json' ];
     dbWriter.remove(docUri).

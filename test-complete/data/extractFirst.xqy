@@ -1,7 +1,7 @@
 xquery version "1.0-ml";
 
 (:
- : Copyright 2014-2017 MarkLogic Corporation
+ : Copyright 2014-2018 MarkLogic Corporation
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ module namespace extractFirst = "http://marklogic.com/snippet/custom/extractFirs
 
 import module namespace json="http://marklogic.com/xdmp/json"
    at "/MarkLogic/json/json.xqy";
- 
+
 declare namespace search    = "http://marklogic.com/appservices/search";
 declare namespace jsonbasic = "http://marklogic.com/xdmp/json/basic";
 
@@ -29,7 +29,7 @@ declare option xdmp:mapping "false";
 
 declare function extractFirst:snippet(
     $result    as node(),
-    $ctsquery  as schema-element(cts:query), 
+    $ctsquery  as schema-element(cts:query),
     $transform as element(search:transform-results))
 as element(search:snippet) {
     <search:snippet>

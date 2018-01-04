@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-process.env.NODE_ENV = 'development'; 
+process.env.NODE_ENV = 'development';
 
 var should = require('should');
 
@@ -25,7 +25,7 @@ var marklogic = require('../');
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Process Env Test', function() {
- 
+
   before(function(done) {
     this.timeout(10000);
     db.documents.write({
@@ -55,5 +55,5 @@ describe('Process Env Test', function() {
   });
 
 process.env.NODE_ENV = undefined;
- 
+
 });

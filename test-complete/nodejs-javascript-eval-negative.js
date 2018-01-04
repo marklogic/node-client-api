@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ describe('Javascript eval negaive test', function(){
     dbEval.eval('var num1;' +
                 'var num2;' +
                 'num1 + num2;',
-                {num1:2, number2:3} 
+                {num1:2, number2:3}
                ).
     result(function(values) {
       //values.should.equal('SHOULD HAVE FAILED');
@@ -39,7 +39,7 @@ describe('Javascript eval negaive test', function(){
       strVal.should.equal('[{"format":"text","datatype":"double","value":"NaN"}]');
       done();
     }, function(error) {
-         //console.log(error); 
+         //console.log(error);
          done();
        });
   });
@@ -48,14 +48,14 @@ describe('Javascript eval negaive test', function(){
     dbEval.eval('var num1;' +
                 'var num2;' +
                 'num1 + num2;',
-                {num1:2, num2:3, num3:10} 
+                {num1:2, num2:3, num3:10}
                ).
     result(function(values) {
       var strVal = JSON.stringify(values);
       strVal.should.equal('[{"format":"text","datatype":"integer","value":5}]');
       done();
     }, function(error) {
-         //console.log(error); 
+         //console.log(error);
          done();
        });
   });
@@ -64,14 +64,14 @@ describe('Javascript eval negaive test', function(){
     dbEval.eval('var num1;' +
                 'var num2;' +
                 'num1 + num3;',
-                {num1:2, num2:3} 
+                {num1:2, num2:3}
                ).
     result(function(values) {
       values.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
          error.statusCode.should.equal(500);
-         //console.log(error); 
+         //console.log(error);
          done();
        });
   });

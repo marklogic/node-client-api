@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ const planFromSPARQL = fs.readFileSync(planSPARQLPath, 'utf8');
 describe('Nodejs Optic read from file test', function(){
 
   it('TEST 1 - read plan views from file', function(done){
-    db.rows.query(planFromViews, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(planFromViews, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -57,7 +57,7 @@ describe('Nodejs Optic read from file test', function(){
     let count = 0;
     let str = '';
     const chunks = [];
-    db.rows.queryAsStream(planFromViews, 'chunked', { format: 'json', structure: 'object', columnTypes: 'rows', complexValues: 'inline' }) 
+    db.rows.queryAsStream(planFromViews, 'chunked', { format: 'json', structure: 'object', columnTypes: 'rows', complexValues: 'inline' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -71,7 +71,7 @@ describe('Nodejs Optic read from file test', function(){
   });
 
   it('TEST 3 - read plan lexicons from file', function(done){
-    db.rows.query(planFromLexicons, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(planFromLexicons, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(5);
@@ -84,7 +84,7 @@ describe('Nodejs Optic read from file test', function(){
   });
 
   it('TEST 4 - read plan triples from file', function(done){
-    db.rows.query(planFromTriples, { format: 'xml', structure: 'array', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(planFromTriples, { format: 'xml', structure: 'array', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
@@ -98,7 +98,7 @@ describe('Nodejs Optic read from file test', function(){
     let count = 0;
     let str = '';
     const chunks = [];
-    db.rows.queryAsStream(planFromSQL, 'chunked', { format: 'csv', structure: 'object', columnTypes: 'rows', complexValues: 'inline' }) 
+    db.rows.queryAsStream(planFromSQL, 'chunked', { format: 'csv', structure: 'object', columnTypes: 'rows', complexValues: 'inline' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -113,7 +113,7 @@ describe('Nodejs Optic read from file test', function(){
   });
 
   it('TEST 6 - read plan sparql from file', function(done){
-    db.rows.query(planFromSPARQL, { format: 'json', structure: 'array', columnTypes: 'rows'}) 
+    db.rows.query(planFromSPARQL, { format: 'json', structure: 'array', columnTypes: 'rows'})
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(7);

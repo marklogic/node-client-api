@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ describe('Winston logger test', function(){
     dbAdmin.config.serverprops.read().result(function(response) {
       //var log = JSON.stringify(response);
       //console.log(log);
-      //log.should.containEql('testlog'); 
+      //log.should.containEql('testlog');
       done();
     }, done);
   });

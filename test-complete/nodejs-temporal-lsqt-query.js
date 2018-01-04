@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ var q = marklogic.queryBuilder;
 var temporalCollectionName = 'temporalCollectionLsqt';
 
 describe('LSQT query (lsqtQuery) Test', function() {
-  
-  var docuri = 'temporalDoc.json'; 
- 
+
+  var docuri = 'temporalDoc.json';
+
   before(function(done) {
    adminManager.put({
       endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
@@ -47,7 +47,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
     .catch(done);
   });
 
-  it('should update the document content', function(done) { 
+  it('should update the document content', function(done) {
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -70,7 +70,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       },
       systemTime: '2005-01-01T00:00:01'
@@ -78,7 +78,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
     ).result(function(response){done();}, done);
   });
 
-  it('should update the document content', function(done) { 
+  it('should update the document content', function(done) {
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -101,7 +101,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       },
       systemTime: '2010-01-01T00:00:01'
@@ -109,7 +109,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
   });
 
 
-  it('should wait for lsqt advancement', function(done) { 
+  it('should wait for lsqt advancement', function(done) {
     setTimeout(function() {
       done();
     }, 3000);
@@ -142,7 +142,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();

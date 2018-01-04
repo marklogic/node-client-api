@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ describe('Binary documents test', function(){
       //console.log(response);
       response.documents[0].uri.should.equal(uri);
       done();
-    }, done);   
+    }, done);
   });
 
   it('should read the binary with Readable stream', function(done){
@@ -56,18 +56,18 @@ describe('Binary documents test', function(){
       documents[0].content.should.not.equal(null);
       //console.log(documents);
       done();
-    }, done);   
+    }, done);
   });
-  
+
   it('should remove the document', function(done){
     this.timeout(10000);
     dbWriter.documents.remove(uri).
     result(function(response) {
       response.should.be.ok;
       done();
-    }, done);   
+    }, done);
   });
-  
+
 
 });
 
