@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 MarkLogic Corporation
+ * Copyright 2016-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,10 +81,10 @@ describe('triples', function() {
     it('with bare patterns', function(done) {
       execPlan(
         p.fromTriples([
-                  p.pattern(datastore, typeProp,  datastoreType),   
+                  p.pattern(datastore, typeProp,  datastoreType),
                   p.pattern(datastore, titleProp, titleCol),
                   p.pattern(datastore, descProp,  p.col('desc'))
-              ], 
+              ],
               'tripview')
         )
       .then(function(response) {
@@ -122,7 +122,7 @@ describe('triples', function() {
     it('with required column', function(done) {
       execPlan(
         p.fromTriples([
-                  p.pattern(datastore, typeProp,  datastoreType), 
+                  p.pattern(datastore, typeProp,  datastoreType),
                   p.pattern(datastore, titleProp, titleCol),
                   p.pattern(datastore, altProp,   p.col('alternative'))
               ])
@@ -140,7 +140,7 @@ describe('triples', function() {
     it('with optional column', function(done) {
       execPlan(
         p.fromTriples([
-                  p.pattern(datastore, typeProp,  datastoreType), 
+                  p.pattern(datastore, typeProp,  datastoreType),
                   p.pattern(datastore, titleProp, titleCol)
               ])
               .joinLeftOuter(p.fromTriples(
@@ -348,7 +348,7 @@ describe('triples', function() {
       it('with bare patterns', function(done) {
         const value =
           p.fromTriples([
-                    p.pattern(datastore, typeProp,  datastoreType),  
+                    p.pattern(datastore, typeProp,  datastoreType),
                     p.pattern(datastore, titleProp, titleCol)
                 ])
             .export();
@@ -358,7 +358,7 @@ describe('triples', function() {
       it('with graph column', function(done) {
         const value =
           p.fromTriples([
-                  p.pattern(datastore, typeProp,  datastoreType, p.graphCol('sourceGraph')), 
+                  p.pattern(datastore, typeProp,  datastoreType, p.graphCol('sourceGraph')),
                   p.pattern(datastore, titleProp, titleCol)
                   ])
               .orderBy(['sourceGraph', 'title'])

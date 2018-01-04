@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ describe('when executing resource services', function(){
         done();
         }, done);
       });
-	  
+
 	  it('should get two documents', function(done){
       db.resources.get({
         name:xqyServiceName, params:{value:'foo', multipart:'true'}
@@ -171,9 +171,9 @@ describe('when executing resource services', function(){
         done();
         }, done);
     });
-	
-	
-	  }); 
+
+
+	  });
 it('should put one untyped document', function(done){
       db.resources.put({
         name:xqyServiceName, params:{value:'foo'}, documents:[
@@ -336,7 +336,7 @@ it('should put one untyped document', function(done){
     });
 	});
     it('should remove one document with transaction', function(done){
-      
+
 	  var tid = null;
 		db.transactions.open().result().
 		then(function(response) {

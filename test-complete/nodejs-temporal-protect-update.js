@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal protect update test', function() {
-  
+
   var docuri = 'temporalUpdateDoc1.json';
   var expTime = '2026-11-03T19:56:17.681154-07:00';
 
@@ -60,7 +60,7 @@ describe('Temporal protect update test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }
@@ -110,17 +110,17 @@ describe('Temporal protect update test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }).result(function(response) {
       //console.log(response);
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(error); 
+    }, function(error) {
+      //console.log(error);
       error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalUpdateDoc1.json is protected noUpdate');
-      done(); 
+      done();
     });
   });
 
@@ -286,7 +286,7 @@ describe('Temporal protect update test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();
@@ -302,5 +302,5 @@ describe('Temporal protect update test', function() {
       done();
     }, done);
   });
-  
+
 });

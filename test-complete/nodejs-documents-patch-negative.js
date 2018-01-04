@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ describe('document patch negative test', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -57,7 +57,7 @@ describe('document patch negative test', function(){
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -71,7 +71,7 @@ describe('document patch negative test', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -85,7 +85,7 @@ describe('document patch negative test', function(){
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
@@ -108,7 +108,7 @@ describe('document patch negative test', function(){
   /*it('should fail to appply patch without document uri', function(done){
     var uri1 = '/test/query/matchList/doc5.json';
     dbWriter.documents.patch({
-      categories: ['metadata'], 
+      categories: ['metadata'],
       operations: [
         p.replace('node("quality")', 33)
       ]
@@ -119,7 +119,7 @@ describe('document patch negative test', function(){
     }, function(error) {
          //console.log(error);
          done();
-       });   
+       });
   });*/
 
   it('should fail to appply patch without categories', function(done){
@@ -136,7 +136,7 @@ describe('document patch negative test', function(){
     }, function(error) {
          //console.log(error);
          done();
-       });   
+       });
   });
 
   it('should fail to appply patch without pathLanguange', function(done){
@@ -155,7 +155,7 @@ describe('document patch negative test', function(){
     }, function(error) {
       //console.log(error);
       done();
-    });   
+    });
   });
 
   it('should write document for test', function(done){
@@ -194,7 +194,7 @@ describe('document patch negative test', function(){
       //console.log(error);
       error.statusCode.should.equal(400);
       done();
-    });   
+    });
   });
 
   it('should write document for test', function(done){
@@ -261,7 +261,7 @@ describe('document patch negative test', function(){
     dbAdmin.documents.removeAll({all: true}).
     result(function(response){
       done();
-    }, done);  
+    }, done);
   });
 
 });

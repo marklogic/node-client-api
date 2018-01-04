@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ describe('Document facet query test', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/query/facet/doc2.json',
       collections: ['facetCollection'],
       contentType: 'application/json',
@@ -55,7 +55,7 @@ describe('Document facet query test', function(){
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/query/facet/doc3.json',
       collections: ['facetCollection'],
       contentType: 'application/json',
@@ -69,7 +69,7 @@ describe('Document facet query test', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/facet/doc4.json',
       collections: ['facetCollection'],
       contentType: 'application/json',
@@ -83,7 +83,7 @@ describe('Document facet query test', function(){
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/query/facet/doc5.json',
         collections: ['facetCollection'],
         contentType: 'application/json',
@@ -113,8 +113,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-	  response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+	  response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
@@ -131,8 +131,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('5');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('5');
       done();
     }, done);
   });
@@ -154,8 +154,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response[0].facets.popularity.facetValues[0].name.should.equal('moderate'); 
-      response[0].facets.popularity.facetValues[0].count.should.equal(1); 
+      response[0].facets.popularity.facetValues[0].name.should.equal('moderate');
+      response[0].facets.popularity.facetValues[0].count.should.equal(1);
       done();
     }, done);
   });
@@ -179,8 +179,8 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response[0].facets.popularity.facetValues[0].name.should.equal('moderate'); 
-      response[0].facets.popularity.facetValues[0].count.should.equal(1); 
+      response[0].facets.popularity.facetValues[0].name.should.equal('moderate');
+      response[0].facets.popularity.facetValues[0].count.should.equal(1);
       done();
     }, done);
   });
@@ -204,10 +204,10 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response[0].facets.datetime.facetValues[0].name.should.equal('2005'); 
-      response[0].facets.datetime.facetValues[0].count.should.equal(1); 
-      response[0].facets.datetime.facetValues[4].name.should.equal('2009'); 
-      response[0].facets.datetime.facetValues[4].count.should.equal(1); 
+      response[0].facets.datetime.facetValues[0].name.should.equal('2005');
+      response[0].facets.datetime.facetValues[0].count.should.equal(1);
+      response[0].facets.datetime.facetValues[4].name.should.equal('2009');
+      response[0].facets.datetime.facetValues[4].count.should.equal(1);
       done();
     }, done);
   });
@@ -233,10 +233,10 @@ describe('Document facet query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response[0].facets.datetime.facetValues[0].name.should.equal('2005'); 
-      response[0].facets.datetime.facetValues[0].count.should.equal(1); 
-      response[0].facets.datetime.facetValues[4].name.should.equal('2009'); 
-      response[0].facets.datetime.facetValues[4].count.should.equal(1); 
+      response[0].facets.datetime.facetValues[0].name.should.equal('2005');
+      response[0].facets.datetime.facetValues[0].count.should.equal(1);
+      response[0].facets.datetime.facetValues[4].name.should.equal('2009');
+      response[0].facets.datetime.facetValues[4].count.should.equal(1);
       done();
     }, done);
   });
@@ -255,12 +255,12 @@ describe('Document facet query test', function(){
       //console.log(JSON.stringify(response, null, 2));
       response[0].total.should.equal(4);
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
- 
+
   it('should query with facet, asc orderby, and snippet', function(done){
     db.documents.query(
       q.where(
@@ -279,12 +279,12 @@ describe('Document facet query test', function(){
       response[0].total.should.equal(4);
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
-  
+
     it('should query with facet, des orderby, and snippet, and score logtf', function(done){
     db.documents.query(
       q.where(
@@ -303,12 +303,12 @@ describe('Document facet query test', function(){
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
 	  response[0].results[0].score.should.equal(22528);
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
-  
+
   it('should query with facet, des orderby, and snippet, and score logtfidf', function(done){
     db.documents.query(
       q.where(
@@ -327,8 +327,8 @@ describe('Document facet query test', function(){
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
 	  response[0].results[0].score.should.equal(8448);
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
@@ -350,8 +350,8 @@ describe('Document facet query test', function(){
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
 	  response[0].results[0].score.should.equal(2048);
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
@@ -372,8 +372,8 @@ describe('Document facet query test', function(){
       response[0].total.should.equal(4);
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
 	  response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
@@ -396,8 +396,8 @@ describe('Document facet query test', function(){
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
 	  response[0].results[0].score.should.equal(0);
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
@@ -419,8 +419,8 @@ describe('Document facet query test', function(){
       response[0].total.should.equal(4);
       response[0].results[0].uri.should.equal('/test/query/facet/doc5.json');
       response[0].results[0].matches[0]['match-text'][0].highlight.should.equal('The');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
       done();
     }, done);
   });
@@ -449,9 +449,9 @@ describe('Document facet query test', function(){
       response[0].total.should.equal(4);
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
-      response[1].content.id.should.equal('0013');  
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
+      response[1].content.id.should.equal('0013');
       done();
     }, done);
   });
@@ -489,15 +489,15 @@ describe('Document facet query test', function(){
       response[0].total.should.equal(4);
       response[0].results[0].uri.should.equal('/test/query/facet/doc3.json');
       response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('the');
-      response[0].facets.popularity.facetValues.length.should.equal(3);  
-      response[0].facets.popularity.facetValues[0].name.should.equal('3');  
-      response[1].content.id.should.equal('0013');  
-      response[0].facets.datetime.facetValues[0].name.should.equal('2005'); 
-      response[0].facets.datetime.facetValues[0].count.should.equal(1); 
+      response[0].facets.popularity.facetValues.length.should.equal(3);
+      response[0].facets.popularity.facetValues[0].name.should.equal('3');
+      response[1].content.id.should.equal('0013');
+      response[0].facets.datetime.facetValues[0].name.should.equal('2005');
+      response[0].facets.datetime.facetValues[0].count.should.equal(1);
       done();
     }, done);
   });
- 
+
   it('should remove the documents', function(done){
     dbAdmin.documents.removeAll({collection: 'facetCollection'}).
     result(function(response) {

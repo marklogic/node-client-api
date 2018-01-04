@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ Manager.prototype.get = function manageGet(paramsObj) {
     'Accept': 'application/json'
     } : headers;
   requestOptions.path = path;
-  
+
   var operation = new Operation(
       'GET '+path, this.client, requestOptions, 'empty',
       ((hasResponse === 'false') ? 'empty' : 'single')
@@ -86,7 +86,7 @@ Manager.prototype.post = function managePost(paramsObj) {
     'Accept':       'application/json'
     } : headers;
   requestOptions.path = path;
-  
+
   var hasBody = !valcheck.isNullOrUndefined(body);
 
   var operation = new Operation(
@@ -101,7 +101,7 @@ Manager.prototype.post = function managePost(paramsObj) {
     operation.requestBody = body;
   }
 
-  return requester.startRequest(operation);  
+  return requester.startRequest(operation);
 };
 Manager.prototype.put = function managePut(paramsObj) {
   var endpoint    = paramsObj.endpoint;
@@ -133,7 +133,7 @@ Manager.prototype.put = function managePut(paramsObj) {
     operation.requestBody = body;
   }
 
-  return requester.startRequest(operation);  
+  return requester.startRequest(operation);
 };
 Manager.prototype.remove = function manageRemove(paramsObj) {
   var endpoint    = paramsObj.endpoint;
@@ -149,7 +149,7 @@ Manager.prototype.remove = function manageRemove(paramsObj) {
     'Accept': 'application/json'
     } : headers;
   requestOptions.path = path;
-  
+
   var operation = new Operation(
       'DELETE '+path,
       this.client,
@@ -159,7 +159,7 @@ Manager.prototype.remove = function manageRemove(paramsObj) {
       );
   operation.outputTransform  = responseOutputTransform;
 
-  return requester.startRequest(operation);  
+  return requester.startRequest(operation);
 };
 
 function makePath(endpoint, params) {

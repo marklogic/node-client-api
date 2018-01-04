@@ -1,6 +1,6 @@
 xquery version "1.0-ml";
 (:
- : Copyright 2014-2017 MarkLogic Corporation
+ : Copyright 2014-2018 MarkLogic Corporation
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -39,11 +39,11 @@ as cts:query
 };
 
 declare function directoryConstraint:start-facet(
-  $constraint     as element(search:constraint), 
-  $query          as cts:query?, 
-  $facet-options  as xs:string*, 
-  $quality-weight as xs:double?, 
-  $forests        as xs:unsignedLong*) 
+  $constraint     as element(search:constraint),
+  $query          as cts:query?,
+  $facet-options  as xs:string*,
+  $quality-weight as xs:double?,
+  $forests        as xs:unsignedLong*)
 as item()*
 {
     cts:uris((),("item-order","ascending","concurrent"),(),(),$forests)
@@ -51,17 +51,17 @@ as item()*
 
 declare function directoryConstraint:finish-facet(
   $start          as item()*,
-  $constraint     as element(search:constraint), 
+  $constraint     as element(search:constraint),
   $query          as cts:query?,
   $facet-options  as xs:string*,
-  $quality-weight as xs:double?, 
+  $quality-weight as xs:double?,
   $forests        as xs:unsignedLong*)
 as element(search:facet)
 {
     <search:facet>{
         $constraint/@name,
 
-        for $directory in 
+        for $directory in
             let $dir-array := json:array()
             return (
                 json:array-push($dir-array,"/"),
@@ -81,7 +81,7 @@ as element(search:facet)
         return
             <search:facet-value>{
                 attribute name {$directory},
-                attribute count { 
+                attribute count {
                    xdmp:estimate(cts:search(collection(),cts:and-query(
                        ($query, cts:directory-query($directory,"infinity"))
                        )))},

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ describe('Nodejs Optic from triples test', function(){
         op.pattern(idCol, bb('team'), teamCol)
       ], null, null, {dedup: 'on'})
       .orderBy(op.desc(ageCol))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[0].name).to.equal('id');
@@ -98,7 +98,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerAge', playerAgeCol),
         op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
       ])
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -146,7 +146,7 @@ describe('Nodejs Optic from triples test', function(){
        op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
      ])
 
-    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
@@ -182,7 +182,7 @@ describe('Nodejs Optic from triples test', function(){
     const output =
       player_plan.union(team_plan)
       .whereDistinct()
-    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('player_id,player_age,player_name,player_team,team_name,team_city');
@@ -223,7 +223,7 @@ describe('Nodejs Optic from triples test', function(){
       player_plan.joinInner(team_plan)
       .groupBy(teamNameCol, op.avg('AverageAge', playerAgeCol))
       .orderBy(op.asc(op.col('AverageAge')))
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -270,7 +270,7 @@ describe('Nodejs Optic from triples test', function(){
       player_plan.joinInner(team_plan)
       .groupBy(null, op.sum('SumAll', playerEffCol))
       .orderBy(op.desc(op.col('SumAll')))
-    db.rows.queryAsStream(output, 'chunked', { format: 'xml', structure: 'array', columnTypes: 'rows' }) 
+    db.rows.queryAsStream(output, 'chunked', { format: 'xml', structure: 'array', columnTypes: 'rows' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -322,7 +322,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('GraphName', graphCol)
       ])
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -369,7 +369,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
       ])
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output).to.be.undefined;
@@ -414,7 +414,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerGraph', playerGraphCol),
       ])
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -438,7 +438,7 @@ describe('Nodejs Optic from triples test', function(){
       ], 'myPlayer', null)
       .orderBy(op.desc(op.viewCol('myPlayer', 'age')))
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(7);
@@ -460,7 +460,7 @@ describe('Nodejs Optic from triples test', function(){
       ], 'myPlayer', null)
       .orderBy(op.asc(op.viewCol('myPlayer', 'id')))
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(8);
@@ -508,7 +508,7 @@ describe('Nodejs Optic from triples test', function(){
        op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
      ])
 
-    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       expect(output).to.equal('<t:table xmlns:t="http://marklogic.com/table">\n<t:columns>\n<t:column name="PlayerName" type=""/>\n<t:column name="PlayerAge" type=""/>\n<t:column name="TeamName" type=""/>\n</t:columns>\n</t:table>\n');
       done();
@@ -528,7 +528,7 @@ describe('Nodejs Optic from triples test', function(){
         op.pattern(idCol, bb('team'), teamCol)
       ], null, null, {dedup: 'off'})
       .orderBy(op.desc(ageCol))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.be.above(8);
@@ -567,7 +567,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerName', playerNameCol)
       ])
       .map(op.resolveFunction('ageMapper', '/optic/test/mapperReducer.sjs'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(5);

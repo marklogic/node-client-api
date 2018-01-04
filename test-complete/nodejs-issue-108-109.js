@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ describe('Issue 108 - 109', function() {
 
   it('should get document', function(done){
     db.resources.get({
-      name: serviceName, 
+      name: serviceName,
       params: { a: 1, b: 2, c: 'three'}
     }).result(function(response) {
       response.length.should.equal(3);
@@ -59,7 +59,7 @@ describe('Issue 108 - 109', function() {
         else if (resp.content.name === 'a') {
           resp.content.value.should.equal('three');
         }
-      } 
+      }
 
       done();
     }, function(error) {
@@ -71,17 +71,17 @@ describe('Issue 108 - 109', function() {
 
   it('should put document', function(done){
     db.resources.put({
-      name: serviceName, 
+      name: serviceName,
       params: {
         basename: ['one', 'two']},
         documents: [
-        { 
+        {
           contentType: 'application/json',
-          content: {key1:'value1'} 
+          content: {key1:'value1'}
         },
-        { 
+        {
           contentType: 'application/json',
-          content: {key2:'value2'} 
+          content: {key2:'value2'}
         },
         ]
     }).result(function(response) {
@@ -102,5 +102,5 @@ describe('Issue 108 - 109', function() {
       done();
     }, done);
   });
-	  
+
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ describe('merge graph test', function(){
     }, done);
   });
 
-  it('should wait for the graphs to get merged', function(done) { 
+  it('should wait for the graphs to get merged', function(done) {
     setTimeout(function() {
       done();
     }, 10000);
@@ -81,7 +81,7 @@ describe('merge graph test', function(){
 
   it('should list the merged graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       collections.some(function(collection){
         return collection === graphUri;
@@ -122,9 +122,9 @@ describe('merge graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }" 
+                  "WHERE { ppl:person1 foaf:knows ?o }"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery,
       docQuery: docQuery
     }).
@@ -142,9 +142,9 @@ describe('merge graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }" 
+                  "WHERE { ppl:person1 foaf:knows ?o }"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery,
       docQuery: docQuery
     }).

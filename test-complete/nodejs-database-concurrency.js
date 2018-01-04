@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Database Concurrency Test', function() {
-  
+
   it('should write the document using db1 conn and overwrite using db2 conn', function(done) {
     db1.documents.write({
       uri: '/test/dbconn/test1.json',
@@ -40,7 +40,7 @@ describe('Database Concurrency Test', function() {
         contentType: 'application/json',
         content: {
           title: 'second conn'
-        } 
+        }
       }).
       result(function(response) {
         done();
@@ -53,7 +53,7 @@ describe('Database Concurrency Test', function() {
       uris: '/test/dbconn/test1.json'
     }).
     result(function(response) {
-      //console.log(response); 
+      //console.log(response);
       response[0].content.title.should.equal('second conn');
       db2.documents.probe({
         uri: '/test/dbconn/test1.json'

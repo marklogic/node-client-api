@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ describe('Optimistic locking test', function() {
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/optlock/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -57,7 +57,7 @@ describe('Optimistic locking test', function() {
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/optlock/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -71,7 +71,7 @@ describe('Optimistic locking test', function() {
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/optlock/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -85,7 +85,7 @@ describe('Optimistic locking test', function() {
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/optlock/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
@@ -189,7 +189,7 @@ describe('Optimistic locking test', function() {
       }, done);
     });
   });
-  
+
   it('should fail to apply the patch without version id', function(done){
     dbWriter.documents.patch('/test/optlock/doc5.json',
       p.pathLanguage('jsonpath'),
@@ -201,7 +201,7 @@ describe('Optimistic locking test', function() {
     result(function(response) {
       response.should.be('SHOULD BE FAILED');
       done();
-    }, function(error) { 
+    }, function(error) {
       //console.log(JSON.stringify(error, null, 2));
       error.statusCode.should.equal(428);
       error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
@@ -210,7 +210,7 @@ describe('Optimistic locking test', function() {
     });
   });
 
-  
+
   it('should apply the patch with the version id', function(done){
     dbWriter.documents.probe('/test/optlock/doc5.json').result().
     then(function(response) {
@@ -230,7 +230,7 @@ describe('Optimistic locking test', function() {
       }, done);
     });
   });
-  
+
   it('should read the patch', function(done){
     dbReader.documents.read('/test/optlock/doc5.json').
     result(function(response) {
@@ -360,7 +360,7 @@ describe('Optimistic locking test', function() {
       result(function(response) {
         //console.log(JSON.stringify(response, null, 4));
         done();
-      }, done); 
+      }, done);
     });
   });
 
@@ -374,7 +374,7 @@ describe('Optimistic locking test', function() {
         //console.log(JSON.stringify(response, null, 4));
         response[0].content.should.equal('this doc is overwritten');
         done();
-      }, done); 
+      }, done);
     });
   });*/
 
@@ -389,7 +389,7 @@ describe('Optimistic locking test', function() {
         //console.log(JSON.stringify(response, null, 4));
         response[0].content.title.should.equal('this doc is overwritten');
         done();
-      }, done); 
+      }, done);
     });
   });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 MarkLogic Corporation
+ * Copyright 2016-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -215,7 +215,7 @@ describe('view', function() {
     it('with select', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'master')
-            .select([p.schemaCol('opticUnitTest', 'master', 'id'), 
+            .select([p.schemaCol('opticUnitTest', 'master', 'id'),
                 p.schemaCol('opticUnitTest', 'master', 'name')])
             .orderBy(p.schemaCol('opticUnitTest', 'master', 'id'))
         )
@@ -258,7 +258,7 @@ describe('view', function() {
     it('with orderBy', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'detail')
-            .orderBy([p.schemaCol('opticUnitTest', 'detail', 'masterId'), 
+            .orderBy([p.schemaCol('opticUnitTest', 'detail', 'masterId'),
                 p.schemaCol('opticUnitTest', 'detail', 'id')])
         )
       .then(function(response) {
@@ -283,7 +283,7 @@ describe('view', function() {
     it('with groupBy', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'detail')
-            .groupBy(p.schemaCol('opticUnitTest', 'detail', 'masterId'), 
+            .groupBy(p.schemaCol('opticUnitTest', 'detail', 'masterId'),
                 p.count('detailCount', p.schemaCol('opticUnitTest', 'detail', 'id')))
             .orderBy([p.schemaCol('opticUnitTest', 'detail', 'masterId')])
         )
@@ -320,12 +320,12 @@ describe('view', function() {
     it('with inner join', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'master')
-            .joinInner( 
-                p.fromView('opticUnitTest', 'detail'), 
-                p.on(p.schemaCol('opticUnitTest', 'master', 'id'), 
-                    p.schemaCol('opticUnitTest', 'detail', 'masterId')) 
+            .joinInner(
+                p.fromView('opticUnitTest', 'detail'),
+                p.on(p.schemaCol('opticUnitTest', 'master', 'id'),
+                    p.schemaCol('opticUnitTest', 'detail', 'masterId'))
                 )
-            .orderBy([p.schemaCol('opticUnitTest', 'master', 'id'), 
+            .orderBy([p.schemaCol('opticUnitTest', 'master', 'id'),
                 p.schemaCol('opticUnitTest', 'detail', 'id')])
         )
       .then(function(response) {
@@ -378,11 +378,11 @@ describe('view', function() {
     it('with union', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'master')
-            .select([p.as('unionName', p.schemaCol('opticUnitTest', 'master', 'name')), 
+            .select([p.as('unionName', p.schemaCol('opticUnitTest', 'master', 'name')),
                 p.as('unionId', p.schemaCol('opticUnitTest', 'master', 'id'))])
-            .union( 
-                p.fromView('opticUnitTest', 'detail') 
-                  .select([p.as('unionName', p.schemaCol('opticUnitTest', 'detail', 'name')), 
+            .union(
+                p.fromView('opticUnitTest', 'detail')
+                  .select([p.as('unionName', p.schemaCol('opticUnitTest', 'detail', 'name')),
                       p.as('unionId', p.schemaCol('opticUnitTest', 'detail', 'id'))])
                 )
             .orderBy(['unionName', 'unionId'])
@@ -414,8 +414,8 @@ describe('view', function() {
       execPlan(
         p.fromView('opticUnitTest', 'master')
             .select([p.as('unionId', p.schemaCol('opticUnitTest', 'master', 'id'))])
-            .intersect( 
-                p.fromView('opticUnitTest', 'detail') 
+            .intersect(
+                p.fromView('opticUnitTest', 'detail')
                   .select([p.as('unionId', p.schemaCol('opticUnitTest', 'detail', 'id'))])
                 )
             .orderBy('unionId')
@@ -433,7 +433,7 @@ describe('view', function() {
       execPlan(
         p.fromView('opticUnitTest', 'detail')
             .select([p.as('unionId', p.schemaCol('opticUnitTest', 'detail', 'id'))])
-            .except( 
+            .except(
                 p.fromView('opticUnitTest', 'master')
                   .select([p.as('unionId', p.schemaCol('opticUnitTest', 'master', 'id'))])
                 )
@@ -472,9 +472,9 @@ describe('view', function() {
                         p.pattern(master,    sourceProp, p.col('datastore')),
                         p.pattern(master,    idProp,     masterId),
                         p.pattern(datastore, descProp,   p.col('masterDesc'))
-                    ], 
-                    null), 
-                p.on(p.schemaCol('opticUnitTest', 'master', 'id'), masterId) 
+                    ],
+                    null),
+                p.on(p.schemaCol('opticUnitTest', 'master', 'id'), masterId)
                 )
             .orderBy(masterId)
         )

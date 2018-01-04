@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ describe('Document suggest test', function(){
         taggedWordKey: 'apple',
         otherKey: 'aruba'
         }
-      }, { 
+      }, {
       uri: '/test/query/suggest/doc2.json',
       collections: ['suggestCollection'],
       contentType: 'application/json',
@@ -44,7 +44,7 @@ describe('Document suggest test', function(){
         defaultWordKey: 'memento',
         taggedWordKey: 'application'
         }
-      }, { 
+      }, {
       uri: '/test/query/suggest/doc3.json',
       collections: ['suggestCollection'],
       contentType: 'application/json',
@@ -52,7 +52,7 @@ describe('Document suggest test', function(){
         defaultWordKey: 'mendoza',
         taggedWordKey: 'approximate'
         }
-      }, { 
+      }, {
       uri: '/test/query/suggest/doc4.json',
       collections: ['suggestCollection'],
       contentType: 'application/json',
@@ -60,7 +60,7 @@ describe('Document suggest test', function(){
         defaultWordKey: 'memoir',
         taggedWordKey: 'ape'
         }
-      }, { 
+      }, {
         uri: '/test/query/suggest/doc5.json',
         collections: ['suggestCollection'],
         contentType: 'application/json',
@@ -74,7 +74,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with default binding', function(done){
     db.documents.suggest({
-      partial: 'mem', 
+      partial: 'mem',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -96,7 +96,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with default binding without parsedFrom', function(done){
     db.documents.suggest(
-      'mem', 
+      'mem',
       q.where(
         q.directory('/test/query/suggest/', true)
       ),
@@ -117,7 +117,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with default binding and limit', function(done){
     db.documents.suggest({
-      partial: 'mem', 
+      partial: 'mem',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -125,7 +125,7 @@ describe('Document suggest test', function(){
           )
         )
       ),
-      limit: 2 
+      limit: 2
     }).
     result(function(response) {
       //console.log(response);
@@ -138,7 +138,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with default binding and exceeding limit', function(done){
     db.documents.suggest({
-      partial: 'mem', 
+      partial: 'mem',
       query: q.where(
         q.parsedFrom('',
           q.suggestBindings(
@@ -161,7 +161,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with binding', function(done){
     db.documents.suggest({
-      partial: 'tag1:app', 
+      partial: 'tag1:app',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -183,7 +183,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with overriden default binding', function(done){
     db.documents.suggest({
-      partial: 'a', 
+      partial: 'a',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -206,7 +206,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with overriden binding', function(done){
     db.documents.suggest({
-      partial: 'tag1:a', 
+      partial: 'tag1:a',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -229,7 +229,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with binding and limit', function(done){
     db.documents.suggest({
-      partial: 'tag1:app', 
+      partial: 'tag1:app',
       query: q.where(
         q.parsedFrom('',
           q.suggestBindings(
@@ -250,7 +250,7 @@ describe('Document suggest test', function(){
 
   it('should do suggest with multiple bindings', function(done){
     db.documents.suggest({
-      partial: 'tag1:a', 
+      partial: 'tag1:a',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -272,7 +272,7 @@ describe('Document suggest test', function(){
 
   it('should fail with invalid binding', function(done){
     db.documents.suggest({
-      partial: 'a', 
+      partial: 'a',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(
@@ -298,7 +298,7 @@ describe('Document suggest test', function(){
 
   it('should fail with negative limit', function(done){
     db.documents.suggest({
-      partial: 'a', 
+      partial: 'a',
       query: q.where(
         q.parsedFrom('',
           q.parseBindings(

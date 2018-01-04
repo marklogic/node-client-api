@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ describe('Config query negative test', function(){
   it('should fail to write the custom query with reader user', function(done){
     this.timeout(10000);
     db.config.query.custom.write(
-      'directoryConstraint.xqy', 
-      [{'role-name':'app-user', capabilities:['execute']}], 
+      'directoryConstraint.xqy',
+      [{'role-name':'app-user', capabilities:['execute']}],
       fs.createReadStream(__dirname + '/data/directoryConstraint.xqy')).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');

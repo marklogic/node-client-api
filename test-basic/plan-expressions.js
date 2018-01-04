@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MarkLogic Corporation
+ * Copyright 2017-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,9 @@ describe('expressions', function() {
   it('positional eq with or', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.or(p.eq(p.col('str'), 'two'), p.eq(p.col('num'), 1)))
           .orderBy('row')
@@ -80,9 +80,9 @@ describe('expressions', function() {
   it('named eq with or', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.or({
             left:  p.eq({left:p.col('str'), right:'two'}),
@@ -106,9 +106,9 @@ describe('expressions', function() {
   it('ne with and', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.and(p.ne(p.col('str'), 'two'), p.ne(p.col('num'), 1)))
         )
@@ -125,9 +125,9 @@ describe('expressions', function() {
   it('gt or lt', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.or(p.gt(p.col('num'), 2), p.lt(p.col('num'), 2)))
           .orderBy('row')
@@ -148,9 +148,9 @@ describe('expressions', function() {
   it('ge and le', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.and(p.ge(p.col('num'), 2), p.le(p.col('num'), 2)))
         )
@@ -167,9 +167,9 @@ describe('expressions', function() {
   it('not', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.not(p.eq(p.col('num'), 1)))
           .orderBy('row')
@@ -190,22 +190,22 @@ describe('expressions', function() {
   it('nested', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(
             p.or(
               p.and(
                 p.or(
-                  p.and(p.ge(p.col('num'), 2), p.le(p.col('num'), 2)), 
+                  p.and(p.ge(p.col('num'), 2), p.le(p.col('num'), 2)),
                   p.lt(p.col('num'), 1)
-                  ), 
+                  ),
                 p.or(
-                  p.and(p.gt(p.col('num'), 1), p.lt(p.col('num'), 3)), 
+                  p.and(p.gt(p.col('num'), 1), p.lt(p.col('num'), 3)),
                   p.gt(p.col('num'), 3)
                   )
-                ), 
+                ),
               p.and(p.gt(p.col('num'), 2), p.lt(p.col('num'), 2))
               )
             )
@@ -223,8 +223,8 @@ describe('expressions', function() {
   it('concat', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'}
             ])
           .where(p.eq(p.fn.concat(p.col('num'), 1), '11'))
         )
@@ -241,9 +241,9 @@ describe('expressions', function() {
   it('add or subtract', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.or(p.eq(p.add(p.col('num'), 1), 2), p.eq(p.subtract(3, p.col('num')), 2)))
         )
@@ -260,9 +260,9 @@ describe('expressions', function() {
   it('multiply or divide', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.and(p.eq(p.multiply(p.col('num'), 1), 2), p.eq(p.divide(4, p.col('num')), 2)))
         )
@@ -279,9 +279,9 @@ describe('expressions', function() {
   it('modulo', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, num:1, str:'one'}, 
-            {row:2, num:2, str:'two'}, 
-            {row:3, num:3, str:'three'} 
+            {row:1, num:1, str:'one'},
+            {row:2, num:2, str:'two'},
+            {row:3, num:3, str:'three'}
             ])
           .where(p.eq(p.modulo(4, p.col('num')), 1))
         )
@@ -298,14 +298,14 @@ describe('expressions', function() {
   it('with as', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, low:4, high:8}, 
-            {row:2, low:3, high:6}, 
-            {row:3, low:2, high:4} 
+            {row:1, low:4, high:8},
+            {row:2, low:3, high:6},
+            {row:3, low:2, high:4}
             ])
           .select([
-              p.as(p.col('added'), p.add(p.col('low'), p.col('high'))), 
-              p.as('subtracted',    p.subtract(p.col('high'), p.col('low'))), 
-              p.as('compared',      p.eq(p.col('low'), 3)), 
+              p.as(p.col('added'), p.add(p.col('low'), p.col('high'))),
+              p.as('subtracted',    p.subtract(p.col('high'), p.col('low'))),
+              p.as('compared',      p.eq(p.col('low'), 3)),
               p.as('concatted',     p.fn.concat(p.col('low'), p.col('high')))
               ])
         )
@@ -331,11 +331,11 @@ describe('expressions', function() {
   it('with if', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, val:8}, 
-            {row:2, val:6}, 
-            {row:3, val:4} 
+            {row:1, val:8},
+            {row:2, val:6},
+            {row:3, val:4}
             ])
-          .select(['row', 
+          .select(['row',
               p.as('iffed', p.sem.if(p.eq(p.col('row'), 2), 'even', 'odd'))
               ])
         )
@@ -355,13 +355,13 @@ describe('expressions', function() {
   it('with case', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, val:8}, 
-            {row:2, val:6}, 
-            {row:3, val:4} 
+            {row:1, val:8},
+            {row:2, val:6},
+            {row:3, val:4}
             ])
           .select(['row', p.as('cased', p.case(
-              [p.when(p.eq(p.col('row'), 2), 'second'), 
-               p.when(p.eq(p.col('row'), 3), 'third')], 
+              [p.when(p.eq(p.col('row'), 2), 'second'),
+               p.when(p.eq(p.col('row'), 3), 'third')],
               'otherwise'
               ))])
         )
@@ -381,11 +381,11 @@ describe('expressions', function() {
   it('with isDefined', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, sparse:6}, 
-            {row:2}, 
-            {row:3, sparse:4} 
+            {row:1, sparse:6},
+            {row:2},
+            {row:3, sparse:4}
             ])
-          .select(['row', 'sparse', 
+          .select(['row', 'sparse',
               p.as('defcheck', p.sem.if(p.isDefined(p.col('sparse')), 'present', 'absent'))
               ])
         )
@@ -408,9 +408,9 @@ describe('expressions', function() {
   it('positional builtin function with array', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, one:'a', two:'b', three:'c'}, 
-            {row:2, one:'b', two:'c', three:'a'}, 
-            {row:3, one:'c', two:'a', three:'b'} 
+            {row:1, one:'a', two:'b', three:'c'},
+            {row:2, one:'b', two:'c', three:'a'},
+            {row:3, one:'c', two:'a', three:'b'}
             ])
           .select(['row', p.as('pos', p.fn.indexOf([p.col('one'), p.col('two'), p.col('three')], 'b'))])
           .orderBy('row')
@@ -431,9 +431,9 @@ describe('expressions', function() {
   it('named builtin function with array', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, one:'a', two:'b', three:'c'}, 
-            {row:2, one:'b', two:'c', three:'a'}, 
-            {row:3, one:'c', two:'a', three:'b'} 
+            {row:1, one:'a', two:'b', three:'c'},
+            {row:2, one:'b', two:'c', three:'a'},
+            {row:3, one:'c', two:'a', three:'b'}
             ])
           .select(['row', p.as('pos', p.fn.indexOf({
               seqParam:  [p.col('one'), p.col('two'), p.col('three')],

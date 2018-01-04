@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ describe('Extension library test', function(){
   it('should write the extension library', function(done){
     this.timeout(10000);
     dbAdmin.config.extlibs.write(
-      dbPath, 
-      {'role-name':'app-user', capabilities:['execute']}, 
-      'application/xquery', 
+      dbPath,
+      {'role-name':'app-user', capabilities:['execute']},
+      'application/xquery',
       fs.createReadStream(fsPath)).
     result(function(response){done();}, done);
   });
@@ -49,7 +49,7 @@ describe('Extension library test', function(){
       done();
     }, done);
   });
-    
+
   it('should list the extension libraries', function(done){
     dbAdmin.config.extlibs.list().
     result(function(response){

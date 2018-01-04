@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .orderBy(op.asc('date'))
       .select(['city', 'popularity', 'date', 'distance', 'point'])
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[2].name).to.equal('myCity.date');
@@ -64,7 +64,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 2 - join inner doc', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri: op.cts.uriReference(),
@@ -81,7 +81,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .orderBy(op.asc('uri'))
       .select(['uri', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.fn.number(op.xpath('doc', '//latLonPair/lat')))])
       .where(op.isDefined(op.col('nodes')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[6].name).to.equal('nodes');
@@ -101,7 +101,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 3 - join inner with keymatch, viewCol, and date sort - structure array, columnTypes rows', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -112,7 +112,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -124,7 +124,7 @@ describe('Nodejs Optic from lexicons test', function(){
       plan1.joinInner(plan2)
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
       .orderBy(op.asc(op.col('date')))
-    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(6);
@@ -141,7 +141,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 4 - using element reference and null viewname', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -152,7 +152,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -166,7 +166,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath('doc', '//city')), 'uri2', 'cityName', 'cityTeam'])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.desc('uri2'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(5);
@@ -200,7 +200,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .where(op.gt(popCol, 2))
       .orderBy([op.asc('popularity'), op.asc('city')])
       .select(['city', 'popularity', 'date', 'distance', 'point'])
-    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
@@ -211,7 +211,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 6 - join inner with plan accessor column identifier', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -222,7 +222,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -238,7 +238,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath('doc', '//city')), 'uri2', 'cityName', 'cityTeam'])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.desc('uri2'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(5);
@@ -275,7 +275,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['city', 'popularity', 'date', 'distance', 'point'])
       .prepare(0);
     //console.log(JSON.stringify(preparedPlan));
-    db.rows.query(preparedPlan, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(preparedPlan, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);
@@ -290,7 +290,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 8 - join inner doc without xpath - with format csv', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri: op.cts.uriReference(),
@@ -305,7 +305,7 @@ describe('Nodejs Optic from lexicons test', function(){
       plan1
       .joinDoc(op.col('doc'), op.col('uri'))
       .orderBy(op.asc('uri'))
-    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('myCity.uri,myCity.city,myCity.popularity,myCity.date,myCity.distance,myCity.point,doc');
@@ -315,7 +315,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 9 - export plan and execute the plan', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -326,7 +326,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity', op.fragmentIdCol('fragId1')
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -342,7 +342,7 @@ describe('Nodejs Optic from lexicons test', function(){
     //console.log(JSON.stringify(exportedPlan).trim().replace(/[\n\r]/g, ''));
     const exportedPlanStr = JSON.stringify(exportedPlan).trim().replace(/[\n\r]/g, '');
     expect(exportedPlanStr).to.equal('{"$optic":{"ns":"op","fn":"operators","args":[{"ns":"op","fn":"from-lexicons","args":[{"uri1":{"ns":"cts","fn":"uri-reference","args":[]},"city":{"ns":"cts","fn":"json-property-reference","args":["city"]},"popularity":{"ns":"cts","fn":"json-property-reference","args":["popularity"]},"date":{"ns":"cts","fn":"json-property-reference","args":["date"]},"distance":{"ns":"cts","fn":"json-property-reference","args":["distance"]},"point":{"ns":"cts","fn":"json-property-reference","args":["latLonPoint"]}},"myCity",{"ns":"op","fn":"fragment-id-col","args":["fragId1"]}]},{"ns":"op","fn":"join-inner","args":[{"ns":"op","fn":"operators","args":[{"ns":"op","fn":"from-lexicons","args":[{"uri2":{"ns":"cts","fn":"uri-reference","args":[]},"cityName":{"ns":"cts","fn":"json-property-reference","args":["cityName"]},"cityTeam":{"ns":"cts","fn":"json-property-reference","args":["cityTeam"]}},"myTeam",{"ns":"op","fn":"fragment-id-col","args":["fragId2"]}]}]}]},{"ns":"op","fn":"where","args":[{"ns":"op","fn":"eq","args":[{"ns":"op","fn":"view-col","args":["myCity","city"]},{"ns":"op","fn":"col","args":["cityName"]}]}]},{"ns":"op","fn":"order-by","args":[{"ns":"op","fn":"asc","args":[{"ns":"op","fn":"col","args":["date"]}]}]}]}}');
-    db.rows.query(exportedPlan, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(exportedPlan, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(5);
@@ -365,7 +365,7 @@ describe('Nodejs Optic from lexicons test', function(){
     let count = 0;
     let str = '';
     const chunks = [];
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -376,7 +376,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -389,7 +389,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
       .joinDoc(op.col('doc'), op.col('uri2'))
       .orderBy(op.asc(op.col('date')))
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
       count++;
@@ -407,7 +407,7 @@ describe('Nodejs Optic from lexicons test', function(){
     var count = 0;
     var str = '';
     const chunks = [];
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -418,7 +418,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -433,7 +433,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.viewCol('myCity', '__docId'), 'uri2', 'cityName', 'cityTeam', op.viewCol('myTeam', '__docId'), op.as('nodes', op.xpath('doc', '/cityTeam'))])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.asc(op.col('date')))
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -452,7 +452,7 @@ describe('Nodejs Optic from lexicons test', function(){
     var count = 0;
     var str = '';
     const chunks = [];
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -463,7 +463,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -478,7 +478,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.viewCol('myCity', '__docId'), 'uri2', 'cityName', 'cityTeam', op.viewCol('myTeam', '__docId'), op.as('nodes', op.xpath('doc', '/cityTeam'))])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.asc(op.col('date')))
-    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'array', columnTypes: 'rows' }) 
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'array', columnTypes: 'rows' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -494,7 +494,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 13 - restricted xpath with predicate fn:max', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -505,7 +505,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -514,7 +514,7 @@ describe('Nodejs Optic from lexicons test', function(){
         }, 'myTeam'
       );
     const output =
-      plan1.joinInner(plan2, 
+      plan1.joinInner(plan2,
         op.on(op.viewCol('myCity', 'city'), op.viewCol('myTeam', 'cityName')),
         op.ne(op.col('popularity'), 3)
       )
@@ -522,7 +522,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath('doc', "/location[fn:max((./latLonPair/lat, ./latLonPair/long)) eq 51.5]")), 'uri2', 'cityName', 'cityTeam'])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.desc(op.col('distance')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -533,7 +533,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 14 - restricted xpath with predicate math:trunc', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -544,7 +544,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -553,7 +553,7 @@ describe('Nodejs Optic from lexicons test', function(){
         }, 'myTeam'
       );
     const output =
-      plan1.joinInner(plan2, 
+      plan1.joinInner(plan2,
         op.on(op.viewCol('myCity', 'city'), op.viewCol('myTeam', 'cityName')),
         op.ne(op.col('popularity'), 3)
       )
@@ -561,7 +561,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath('doc', "/location[math:trunc(./latLonPair/lat, 0) eq 51]")), 'uri2', 'cityName', 'cityTeam'])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.desc(op.col('distance')))
-    db.rows.query(output) 
+    db.rows.query(output)
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -572,7 +572,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 15 - restricted xpath with predicate sql:day', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -583,7 +583,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -592,7 +592,7 @@ describe('Nodejs Optic from lexicons test', function(){
         }, 'myTeam'
       );
     const output =
-      plan1.joinInner(plan2, 
+      plan1.joinInner(plan2,
         op.on(op.viewCol('myCity', 'city'), op.viewCol('myTeam', 'cityName')),
         op.ne(op.col('popularity'), 3)
       )
@@ -600,7 +600,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select(['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath('doc', "/date[sql:day(.) lt 23]")), 'uri2', 'cityName', 'cityTeam'])
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.desc(op.col('distance')))
-    db.rows.query(output, { columnTypes: 'header' }) 
+    db.rows.query(output, { columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -611,7 +611,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 16 - sql condition with between and AND operator', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons(
         {
           uri1: op.cts.uriReference(),
@@ -622,7 +622,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, 'myCity'
       );
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -634,7 +634,7 @@ describe('Nodejs Optic from lexicons test', function(){
       plan1.joinInner(plan2)
       .where(op.sqlCondition('(myCity.popularity BETWEEN 2 AND 4) AND (city = cityName)'))
       .orderBy(op.asc(op.col('date')))
-    db.rows.query(output, { columnTypes: 'header' }) 
+    db.rows.query(output, { columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(2);
@@ -647,7 +647,7 @@ describe('Nodejs Optic from lexicons test', function(){
   });
 
   it('TEST 17 - with named parameters', function(done){
-    const plan1 = 
+    const plan1 =
       op.fromLexicons({
         indexes:
         {
@@ -659,7 +659,7 @@ describe('Nodejs Optic from lexicons test', function(){
           point: op.cts.jsonPropertyReference('latLonPoint')
         }, qualifierName: 'myCity'
       });
-    const plan2 = 
+    const plan2 =
       op.fromLexicons(
         {
           uri2: op.cts.uriReference(),
@@ -669,7 +669,7 @@ describe('Nodejs Optic from lexicons test', function(){
       );
     const output =
       plan1.joinInner({
-        right: plan2, 
+        right: plan2,
         keys: [op.on({left: op.viewCol('myCity', 'city'), right: op.viewCol({view: 'myTeam', column: 'cityName'})})],
         condition: op.ne(op.col('popularity'), 3)
       })
@@ -677,7 +677,7 @@ describe('Nodejs Optic from lexicons test', function(){
       .select({columns: ['uri1', 'city', 'popularity', 'date', 'distance', 'point', op.as('nodes', op.xpath({column: 'doc', path: "/date[sql:day(.) lt 23]"})), 'uri2', 'cityName', 'cityTeam']})
       .where(op.isDefined(op.col('nodes')))
       .orderBy(op.desc(op.col('distance')))
-    db.rows.query(output, { columnTypes: 'header' }) 
+    db.rows.query(output, { columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);

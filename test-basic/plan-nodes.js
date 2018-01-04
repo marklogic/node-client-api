@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MarkLogic Corporation
+ * Copyright 2017-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -590,7 +590,7 @@ describe('nodes', function() {
                     p.xmlAttribute('num', p.col('num'))
                     ]))
                 ])
-            .groupBy('gp', p.sequenceAggregate('rs', 're')) 
+            .groupBy('gp', p.sequenceAggregate('rs', 're'))
             .orderBy('gp')
             .select(p.as('container', p.xmlElement('gelem',
                     p.xmlAttribute('group', p.col('gp')),

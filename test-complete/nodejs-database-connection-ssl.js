@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbSsl = marklogic.createDatabaseClient(testconfig.restSslConnection);
 
 describe('SSL Test', function() {
-  
-  var docuri = '/foo/bar/test1.json'; 
-  var docuri2 = '/foo/bar/test2.json'; 
- 
+
+  var docuri = '/foo/bar/test1.json';
+  var docuri2 = '/foo/bar/test2.json';
+
   before(function(done) {
     this.timeout(10000);
     dbSsl.documents.write({
@@ -89,7 +89,7 @@ describe('SSL Test', function() {
       collCount.should.equal(2);
       for(var i=0; i < collCount; i++) {
         document.collections[i].should.equal('coll' + i);
-      }      
+      }
       done();
     }, done);
   });

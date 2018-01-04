@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ function validateData(response) {
     systemEndTime = response[i].content.System.systemEndTime;
     //console.log("systemStartTime = " + systemStartTime);
     //console.log("systemEndTime = " + systemEndTime);
-    
+
     validStartTime = response[i].content.Valid.validStartTime;
     validEndTime = response[i].content.Valid.validEndTime;
     //console.log("validStartTime = " + validStartTime);
@@ -55,7 +55,7 @@ function validateData(response) {
     //console.log("Quality: " + quality);
 
     var permissions = response[i].permissions;
-    
+
     if ((validStartTime.indexOf("2003-01-01T00:00:00") !== -1) && (validEndTime.indexOf("2008-12-31T23:59:59") !== -1)) {
       systemStartTime.should.containEql("2011-01-01T00:00:01");
       systemEndTime.should.containEql("9999-12-31T11:59:59Z");
@@ -101,99 +101,99 @@ function validateData(response) {
       while (resCollections.hasNext()) {
         String collection = resCollections.next();
         System.out.println("Collection = " + collection);
-        
+
         if (!collection.equals(docId) &&
-            !collection.equals(updateCollectionName) && 
+            !collection.equals(updateCollectionName) &&
             !collection.equals(temporalLsqtCollectionName)) {
           assertFalse("Collection not what is expected: " + collection, true);
         }
       }
-      
+
       assertTrue("Properties should be empty", metadataHandle.getProperties().isEmpty());
 
       assertTrue("Document permissions difference in size value",
           actualPermissions.contains("size:3"));
-      
+
       assertTrue("Document permissions difference in rest-reader permission",
           actualPermissions.contains("rest-reader:[READ]"));
       assertTrue("Document permissions difference in rest-writer permission",
           actualPermissions.contains("rest-writer:[UPDATE]"));
       assertTrue("Document permissions difference in app-user permission",
-          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") && 
+          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") &&
            actualPermissions.contains("UPDATE")));
       assertFalse("Document permissions difference in app-user permission", actualPermissions.contains("EXECUTE"));
-      
+
       assertEquals(quality, 99);
-    }           
+    }
 
     if (validStartTime.contains("2001-01-01T00:00:00") && validEndTime.contains("2003-01-01T00:00:00")) {
       assertTrue("System start date check failed", (systemStartTime.contains("2011-01-01T00:00:01")));
       assertTrue("System start date check failed", (systemEndTime.contains("9999-12-31T23:59:59")));
-      
+
       Iterator<String>  resCollections = metadataHandle.getCollections().iterator();
       while (resCollections.hasNext()) {
         String collection = resCollections.next();
         System.out.println("Collection = " + collection);
-        
+
         if (!collection.equals(docId) &&
-            !collection.equals(insertCollectionName) && 
+            !collection.equals(insertCollectionName) &&
             !collection.equals(temporalLsqtCollectionName)) {
           assertFalse("Collection not what is expected: " + collection, true);
         }
       }
-      
+
       assertTrue("Properties should be empty", metadataHandle.getProperties().isEmpty());
 
       assertTrue("Document permissions difference in size value",
           actualPermissions.contains("size:3"));
-      
+
       assertTrue("Document permissions difference in rest-reader permission",
           actualPermissions.contains("rest-reader:[READ]"));
       assertTrue("Document permissions difference in rest-writer permission",
           actualPermissions.contains("rest-writer:[UPDATE]"));
       assertTrue("Document permissions difference in app-user permission",
-          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") && 
+          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") &&
            actualPermissions.contains("UPDATE") && actualPermissions.contains("EXECUTE")));
-      
+
       assertEquals(quality, 11);
-    }  
-    
-    if (validStartTime.contains("2008-12-31T23:59:59") && validEndTime.contains("2011-12-31T23:59:59")) {         
-      // This is the latest document          
+    }
+
+    if (validStartTime.contains("2008-12-31T23:59:59") && validEndTime.contains("2011-12-31T23:59:59")) {
+      // This is the latest document
       assertTrue("System start date check failed", (systemStartTime.contains("2011-01-01T00:00:01")));
-      assertTrue("System start date check failed", (systemEndTime.contains("9999-12-31T23:59:59")));          
+      assertTrue("System start date check failed", (systemEndTime.contains("9999-12-31T23:59:59")));
       assertTrue("URI should be the doc uri ", record.getUri().equals(docId));
 
       Iterator<String>  resCollections = metadataHandle.getCollections().iterator();
       while (resCollections.hasNext()) {
         String collection = resCollections.next();
         System.out.println("Collection = " + collection);
-        
+
         if (!collection.equals(docId) &&
-            !collection.equals(insertCollectionName) && 
+            !collection.equals(insertCollectionName) &&
             !collection.equals(temporalLsqtCollectionName) &&
             !collection.equals(latestCollectionName)) {
           assertFalse("Collection not what is expected: " + collection, true);
         }
       }
-              
-      
+
+
       assertTrue("Document permissions difference in size value",
           actualPermissions.contains("size:3"));
-      
+
       assertTrue("Document permissions difference in rest-reader permission",
           actualPermissions.contains("rest-reader:[READ]"));
       assertTrue("Document permissions difference in rest-writer permission",
           actualPermissions.contains("rest-writer:[UPDATE]"));
       assertTrue("Document permissions difference in app-user permission",
-          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") && 
+          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") &&
            actualPermissions.contains("UPDATE") && actualPermissions.contains("EXECUTE")));
 
       assertEquals(quality, 11);
-      
+
       validateMetadata(metadataHandle);
-    }  
-    
+    }
+
     if (validStartTime.contains("2001-01-01T00:00:00") && validEndTime.contains("2011-12-31T23:59:59")) {
       assertTrue("System start date check failed", (systemStartTime.contains("2010-01-01T00:00:01")));
       assertTrue("System start date check failed", (systemEndTime.contains("2011-01-01T00:00:01")));
@@ -202,30 +202,30 @@ function validateData(response) {
       while (resCollections.hasNext()) {
         String collection = resCollections.next();
         System.out.println("Collection = " + collection);
-        
+
         if (!collection.equals(docId) &&
-            !collection.equals(insertCollectionName) && 
+            !collection.equals(insertCollectionName) &&
             !collection.equals(temporalLsqtCollectionName)) {
           assertFalse("Collection not what is expected: " + collection, true);
         }
-      }         
-      
+      }
+
       assertTrue("Properties should be empty", metadataHandle.getProperties().isEmpty());
 
       assertTrue("Document permissions difference in size value",
           actualPermissions.contains("size:3"));
-      
+
       assertTrue("Document permissions difference in rest-reader permission",
           actualPermissions.contains("rest-reader:[READ]"));
       assertTrue("Document permissions difference in rest-writer permission",
           actualPermissions.contains("rest-writer:[UPDATE]"));
       assertTrue("Document permissions difference in app-user permission",
-          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") && 
+          (actualPermissions.contains("app-user:[") && actualPermissions.contains("READ") &&
            actualPermissions.contains("UPDATE") && actualPermissions.contains("EXECUTE")));
 
       assertEquals(quality, 11);
-    } 
-    ***/  
+    }
+    ***/
   }
 }
 
@@ -237,10 +237,10 @@ function validateData(response) {
 
 
 describe('Temporal update lsqt test', function() {
-  
-  var docuri = 'temporalDoc.json'; 
+
+  var docuri = 'temporalDoc.json';
   var docuri2 = 'nonTemporalDoc.json';
- 
+
   before(function(done) {
    adminManager.put({
       endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
@@ -276,7 +276,7 @@ describe('Temporal update lsqt test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       },
       systemTime: '2010-01-01T00:00:00'
@@ -308,7 +308,7 @@ describe('Temporal update lsqt test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Bourne'
       },
       systemTime: '2011-01-01T00:00:01'
@@ -356,7 +356,7 @@ describe('Temporal update lsqt test', function() {
           //console.log("Invalid Collection: " + coll);
           should.equal(false, true);
         }
-      }           
+      }
       done();
     }, done);
   });
@@ -516,7 +516,7 @@ describe('Temporal update lsqt test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();

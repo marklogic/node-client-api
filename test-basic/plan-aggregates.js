@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MarkLogic Corporation
+ * Copyright 2017-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,11 +51,11 @@ describe('aggregates', function() {
   it('count on a column', function(done) {
     execPlan(
         p.fromLiterals([
-            {group:1, val:2}, 
-            {group:1, val:4}, 
-            {group:2, val:3}, 
-            {group:2}, 
-            {group:2, val:7} 
+            {group:1, val:2},
+            {group:1, val:4},
+            {group:2, val:3},
+            {group:2},
+            {group:2, val:7}
             ])
           .groupBy('group', p.count('valCount', 'val'))
           .orderBy('group')
@@ -74,11 +74,11 @@ describe('aggregates', function() {
   it('count over rows', function(done) {
     execPlan(
         p.fromLiterals([
-            {group:1, val:2}, 
-            {group:1, val:4}, 
-            {group:2, val:3}, 
-            {group:2}, 
-            {group:2, val:7} 
+            {group:1, val:2},
+            {group:1, val:4},
+            {group:2, val:3},
+            {group:2},
+            {group:2, val:7}
             ])
           .groupBy('group', p.count('valCount'))
           .orderBy('group')
@@ -177,11 +177,11 @@ describe('aggregates', function() {
   it('max', function(done) {
     execPlan(
         p.fromLiterals([
-            {group:1, val:2}, 
-            {group:1, val:4}, 
-            {group:2, val:3}, 
-            {group:2, val:5}, 
-            {group:2, val:7} 
+            {group:1, val:2},
+            {group:1, val:4},
+            {group:2, val:3},
+            {group:2, val:5},
+            {group:2, val:7}
             ])
           .groupBy('group', p.max('valMax', 'val'))
           .orderBy('group')
@@ -200,11 +200,11 @@ describe('aggregates', function() {
   it('min', function(done) {
     execPlan(
         p.fromLiterals([
-            {group:1, val:2}, 
-            {group:1, val:4}, 
-            {group:2, val:3}, 
-            {group:2, val:5}, 
-            {group:2, val:7} 
+            {group:1, val:2},
+            {group:1, val:4},
+            {group:2, val:3},
+            {group:2, val:5},
+            {group:2, val:7}
             ])
           .groupBy('group', p.min('valMin', 'val'))
           .orderBy('group')
@@ -223,11 +223,11 @@ describe('aggregates', function() {
   it('sample', function(done) {
     execPlan(
         p.fromLiterals([
-            {group:1, check:'A', val:2}, 
-            {group:1, check:'A', val:4}, 
-            {group:2, check:'B', val:3}, 
-            {group:2, check:'B', val:5}, 
-            {group:2, check:'B', val:7} 
+            {group:1, check:'A', val:2},
+            {group:1, check:'A', val:4},
+            {group:2, check:'B', val:3},
+            {group:2, check:'B', val:5},
+            {group:2, check:'B', val:7}
             ])
           .groupBy('group', [p.sample('checkSample', 'check'), p.avg('valAvg', 'val')])
           .orderBy('group')
@@ -248,11 +248,11 @@ describe('aggregates', function() {
   it('sum', function(done) {
     execPlan(
         p.fromLiterals([
-            {group:1, val:2}, 
-            {group:1, val:4}, 
-            {group:2, val:3}, 
-            {group:2, val:5}, 
-            {group:2, val:7} 
+            {group:1, val:2},
+            {group:1, val:4},
+            {group:2, val:3},
+            {group:2, val:5},
+            {group:2, val:7}
             ])
           .groupBy('group', p.sum('valSum', 'val'))
           .orderBy('group')
@@ -271,13 +271,13 @@ describe('aggregates', function() {
   it('with duplicate values', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, group:1, val:2}, 
-            {row:2, group:1, val:4}, 
-            {row:3, group:1, val:2}, 
-            {row:4, group:2, val:3}, 
-            {row:5, group:2, val:5}, 
-            {row:6, group:2, val:7}, 
-            {row:7, group:2, val:5} 
+            {row:1, group:1, val:2},
+            {row:2, group:1, val:4},
+            {row:3, group:1, val:2},
+            {row:4, group:2, val:3},
+            {row:5, group:2, val:5},
+            {row:6, group:2, val:7},
+            {row:7, group:2, val:5}
             ])
           .groupBy('group', p.count('valCount', 'val'))
           .orderBy('group')
@@ -296,13 +296,13 @@ describe('aggregates', function() {
   it('with distinct values', function(done) {
     execPlan(
         p.fromLiterals([
-            {row:1, group:1, val:2}, 
-            {row:2, group:1, val:4}, 
-            {row:3, group:1, val:2}, 
-            {row:4, group:2, val:3}, 
-            {row:5, group:2, val:5}, 
-            {row:6, group:2, val:7}, 
-            {row:7, group:2, val:5} 
+            {row:1, group:1, val:2},
+            {row:2, group:1, val:4},
+            {row:3, group:1, val:2},
+            {row:4, group:2, val:3},
+            {row:5, group:2, val:5},
+            {row:6, group:2, val:7},
+            {row:7, group:2, val:5}
             ])
           .groupBy('group', p.count('valCount', 'val', {values:'distinct'}))
           .orderBy('group')

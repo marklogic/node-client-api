@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal protect wipe test', function() {
-  
+
   var docuri = 'temporalWipeDoc1.json';
 
   before(function(done) {
@@ -59,7 +59,7 @@ describe('Temporal protect wipe test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }
@@ -109,14 +109,14 @@ describe('Temporal protect wipe test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }).result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.documents[0].uri.should.equal(docuri);
       done();
-    }, done); 
+    }, done);
   });
 
   it('should verify the document', function(done) {
@@ -142,7 +142,7 @@ describe('Temporal protect wipe test', function() {
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      //console.log(JSON.stringify(error, null, 2)); 
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
       error.body.errorResponse.message.should.containEql('The document temporalWipeDoc1.json is protected noWipe');
       done();
@@ -185,17 +185,17 @@ describe('Temporal protect wipe test', function() {
         },
         'Address': "123 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }).result(function(response) {
       //console.log(response);
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(error); 
+    }, function(error) {
+      //console.log(error);
       error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalWipeDoc1.json is protected noUpdate');
-      done(); 
+      done();
     });
   });
 
@@ -208,7 +208,7 @@ describe('Temporal protect wipe test', function() {
       //response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      //console.log(JSON.stringify(error, null, 2)); 
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.messageCode.should.equal('TEMPORAL-COLLECTIONNOTFOUND');
       error.body.errorResponse.message.should.containEql('Temporal collection invalidTemporalCollection is not found');
       done();
@@ -224,7 +224,7 @@ describe('Temporal protect wipe test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();
@@ -240,5 +240,5 @@ describe('Temporal protect wipe test', function() {
       done();
     }, done);
   });
-  
+
 });

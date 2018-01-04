@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Transaction remove multiple documents test', function() {
-  
+
   var tid = 0;
   var tid2 = 0;
 
@@ -68,7 +68,7 @@ describe('Transaction remove multiple documents test', function() {
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response[0].uri.should.equal('/test/remove/transaction/doc1.json');
-      return db.transactions.commit(tid).result(); 
+      return db.transactions.commit(tid).result();
     })
     .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
@@ -90,7 +90,7 @@ describe('Transaction remove multiple documents test', function() {
       return db.documents.remove({
         txid: tid2,
         uris: [
-          '/test/remove/transaction/doc1.json', 
+          '/test/remove/transaction/doc1.json',
           '/test/remove/transaction/doc2.json'
         ]
       }).result();

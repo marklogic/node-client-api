@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ describe('Server xquery eval test', function(){
   });
 
   it('should do more complex xquery eval with string', function(done){
-    dbEval.xqueryEval('let $s := "hello"' + 
+    dbEval.xqueryEval('let $s := "hello"' +
                       'let $t := "world"' +
                       'return fn:concat($s, " ", $t)')
     .result(function(values) {
@@ -47,7 +47,7 @@ describe('Server xquery eval test', function(){
   });
 
   it('should do more complex xquery eval with xml node', function(done){
-    dbEval.xqueryEval('for $i in (1, 2), $j in ("a", "b")' + 
+    dbEval.xqueryEval('for $i in (1, 2), $j in ("a", "b")' +
                       'return <oneEval>i is {$i} and js is {$j}</oneEval>')
     .result(function(values) {
       //console.log(values);
@@ -57,7 +57,7 @@ describe('Server xquery eval test', function(){
   });
 
   it('should do more complex xquery eval with json', function(done){
-    dbEval.xqueryEval('let $object := json:object()' + 
+    dbEval.xqueryEval('let $object := json:object()' +
                       'let $_ := map:put($object, "a", 111)' +
                       'return xdmp:to-json($object)')
     .result(function(values) {

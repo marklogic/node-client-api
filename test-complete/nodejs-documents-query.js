@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ describe('Document query test', function(){
            },
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -56,7 +56,7 @@ describe('Document query test', function(){
            },
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -70,7 +70,7 @@ describe('Document query test', function(){
            },
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/test/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -84,7 +84,7 @@ describe('Document query test', function(){
            },
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/test/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
@@ -130,7 +130,7 @@ describe('Document query test', function(){
     });
   });
 
-  it('should wait for set stemmed searches on database', function(done) { 
+  it('should wait for set stemmed searches on database', function(done) {
     setTimeout(function() {
       done();
     }, 10000);
@@ -152,7 +152,7 @@ describe('Document query test', function(){
     this.timeout(20000);
     db.documents.query(
       q.where(
-        q.word('title', 'bush')		
+        q.word('title', 'bush')
       ).
 		slice(0, 1, q.snippet()).
 		withOptions({categories: 'none'})
@@ -164,12 +164,12 @@ describe('Document query test', function(){
 		//response[0].results[0].matches[0]['match-text'][1].should.containEql('{ highlight: \'Bush\' }');
         done();
       }, done);
-  }); 
-  
+  });
+
    it('should do word query withOptions Unfiltered', function(done){
     db.documents.query(
       q.where(
-        q.word('p', 'The')		
+        q.word('p', 'The')
       ).
 		withOptions({search:['unfiltered']},{categories: ['content']})
 	).
@@ -182,7 +182,7 @@ describe('Document query test', function(){
      it('should do word query withOptions default and must be unfiltered', function(done){
     db.documents.query(
       q.where(
-        q.word('p', 'The')		
+        q.word('p', 'The')
       ).
 		withOptions({categories: ['content']})
 	).
@@ -195,7 +195,7 @@ describe('Document query test', function(){
    it('should do word query witgh slice and withOptions fileterd', function(done){
     db.documents.query(
       q.where(
-        q.word('p', 'The')		
+        q.word('p', 'The')
       ).
 		withOptions({search:['filtered']},{categories: ['content']})
 	).
@@ -205,7 +205,7 @@ describe('Document query test', function(){
 		done();
       }, done);
   });
-  
+
   it('should do term query', function(done){
     db.documents.query(
       q.where(
@@ -226,7 +226,7 @@ describe('Document query test', function(){
     db.documents.query(
       q.where(
         q.or(
-          q.value('id', '0??6', q.termOptions('wildcarded')), 
+          q.value('id', '0??6', q.termOptions('wildcarded')),
           q.word('id', '00*2', q.termOptions('wildcarded'))
         )
       ).withOptions({search:['filtered']},{categories: ['content']})
@@ -243,7 +243,7 @@ describe('Document query test', function(){
     db.documents.query(
       q.where(
         q.or(
-          q.value('title', 'The memex'), 
+          q.value('title', 'The memex'),
           q.and(
             q.value('id', '0013'),
             q.value('date', '2007-03-03')
@@ -263,7 +263,7 @@ describe('Document query test', function(){
     db.documents.query(
       q.where(
         q.and(
-          q.term('Atlantic'), 
+          q.term('Atlantic'),
           q.term('Monthly'),
           q.term('Bush')
           )
@@ -349,7 +349,7 @@ describe('Document query test', function(){
     db.documents.query(
       q.where(
         q.and(
-          q.term('Atlantic'), 
+          q.term('Atlantic'),
           q.term('Monthly'),
           q.term('Bush')
           )
@@ -369,7 +369,7 @@ describe('Document query test', function(){
     db.documents.query(
       q.where(
         q.and(
-          q.term('Atlantic'), 
+          q.term('Atlantic'),
           q.term('Monthly'),
           q.term('Bush')
           )
@@ -445,7 +445,7 @@ it('should delete all documents', function(done){
       done();
     }, done);
   });
- 
+
   it('should set database stemmed searches back to off', function(done){
     var src = "var admin = require('/MarkLogic/admin.xqy');" +
               "var c = admin.getConfiguration();" +
@@ -461,7 +461,7 @@ it('should delete all documents', function(done){
     });
   });
 
-  it('should wait for set stemmed searches on database', function(done) { 
+  it('should wait for set stemmed searches on database', function(done) {
     setTimeout(function() {
       done();
     }, 10000);

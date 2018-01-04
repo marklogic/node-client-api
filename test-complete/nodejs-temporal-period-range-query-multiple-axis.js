@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
 
 describe('Temporal period range query multiple axis test', function() {
-  
-  var docuri = 'temporalDoc.json'; 
- 
+
+  var docuri = 'temporalDoc.json';
+
   before(function(done) {
     db.documents.write({
       uri: docuri,
@@ -56,14 +56,14 @@ describe('Temporal period range query multiple axis test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }
     ).result(function(response){done();}, done);
   });
 
-  it('should update the document content', function(done) { 
+  it('should update the document content', function(done) {
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -86,13 +86,13 @@ describe('Temporal period range query multiple axis test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }).result(function(response){done();}, done);
   });
 
-  it('should do period range query using aln_contains', function(done) {    
+  it('should do period range query using aln_contains', function(done) {
     db.documents.query(q.where(
       q.periodRange(['validTime', 'validTime'], 'aln_contains', [
         q.period('2003-01-01T00:00:01', '2008-12-31T23:59:58')]),
@@ -112,7 +112,7 @@ describe('Temporal period range query multiple axis test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Javascript invoke test', function(){
-  
+
   var fsPath = __dirname + '/data/sourceSimple.js';
   var invokePath = '/ext/invokeTest/sourceSimple.sjs';
 
@@ -37,7 +37,7 @@ describe('Javascript invoke test', function(){
     }).
     result(function(response){done();}, done);
   });
- 
+
   after(function(done) {
     dbAdmin.config.extlibs.remove(invokePath).
     result(function(response){done();}, done);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ describe('overwrite graph test', function(){
 
   it('should list the overwritten graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       //console.log(JSON.stringify(collections, null, 2))
       collections.some(function(collection){
@@ -91,7 +91,7 @@ describe('overwrite graph test', function(){
 
   /*it('should list the overwritten graph', function(done){
     this.timeout(10000);
-    db.graphs.list('foo/bar'). 
+    db.graphs.list('foo/bar').
     result(function(response){
       //console.log(JSON.stringify(response, null, 4))
       done();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ describe('Nodejs Optic from literals test', function(){
       op.fromLiterals([
         {rowId: 1, colorId: 1, desc: 'ball', date: op.xs.date('2013-08-15'), duration: op.xs.yearMonthDuration('P3Y3M')},
         {rowId: 2, colorId: 2, desc: 'square', date: op.xs.date('2013-08-15'), duration: op.xs.yearMonthDuration('P3Y3M')},
-        {rowId: 3, colorId: 1, desc: 'box', date: op.xs.date('2013-08-15'), duration: op.xs.yearMonthDuration('P3Y3M')}, 
+        {rowId: 3, colorId: 1, desc: 'box', date: op.xs.date('2013-08-15'), duration: op.xs.yearMonthDuration('P3Y3M')},
         {rowId: 4, colorId: 1, desc: 'hoop', date: op.xs.date('2013-08-15'), duration: op.xs.yearMonthDuration('P3Y3M')},
         {rowId: 5, colorId: 5, desc: 'circle', date: op.xs.date('2013-08-15'), duration: op.xs.yearMonthDuration('P3Y3M')}
       ]);
@@ -46,7 +46,7 @@ describe('Nodejs Optic from literals test', function(){
       ]);
     const output =
       plan1.joinInner(plan2)
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[3].name).to.equal('date');
@@ -72,11 +72,11 @@ describe('Nodejs Optic from literals test', function(){
         {id:1, val: 2, uri:'/optic/lexicon/test/doc1.json'},
         {id:2, val: 4, uri:'/optic/test/not/a/real/doc.nada'},
         {id:3, val: 6, uri:'/optic/lexicon/test/doc3.json'},
-        {id:4, val: 8, uri:'/optic/lexicon/test/doc4.xml'} 
+        {id:4, val: 8, uri:'/optic/lexicon/test/doc4.xml'}
       ])
       .joinDoc(op.col('doc'), op.col('uri'))
       .orderBy(op.asc('id'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -95,7 +95,7 @@ describe('Nodejs Optic from literals test', function(){
       op.fromLiterals([
         {rowId: 1, colorId: 1, desc: 'ball'},
         {rowId: 2, colorId: 2, desc: 'square'},
-        {rowId: 3, colorId: 1, desc: 'box'}, 
+        {rowId: 3, colorId: 1, desc: 'box'},
         {rowId: 4, colorId: 1, desc: 'hoop'},
         {rowId: 5, colorId: 5, desc: 'circle'}
       ]);
@@ -110,7 +110,7 @@ describe('Nodejs Optic from literals test', function(){
       plan1.joinInner(plan2)
       .where(op.eq(op.col('colorId'), 1))
       .offsetLimit(1, 3)
-    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(3);
@@ -131,13 +131,13 @@ describe('Nodejs Optic from literals test', function(){
         {id:1, val: 2, uri:'/optic/lexicon/test/doc1.json'},
         {id:2, val: 4, uri:'/optic/test/not/a/real/doc.nada'},
         {id:3, val: 6, uri:'/optic/lexicon/test/doc3.json'},
-        {id:4, val: 8, uri:'/optic/lexicon/test/doc4.xml'} 
+        {id:4, val: 8, uri:'/optic/lexicon/test/doc4.xml'}
       ])
       .orderBy(op.asc('id'))
       .joinDoc(op.col('doc'), op.col('uri'))
       .select(['id', 'val', 'uri', op.as('nodes', op.xpath('doc', '/doc/distance/@direction'))])
       .where(op.isDefined(op.col('nodes')))
-    db.rows.queryAsStream(output) 
+    db.rows.queryAsStream(output)
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -189,7 +189,7 @@ describe('Nodejs Optic from literals test', function(){
       .joinInner(plan3, op.on(colorDescCol, refColorCol))
       .select([descCol, colorIdCol, refCol])
       .orderBy([colorIdCol, descCol])
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -212,7 +212,7 @@ describe('Nodejs Optic from literals test', function(){
       op.fromLiterals([
         {rowId: 1, colorId: 1, desc: 'ball'},
         {rowId: 2, colorId: 2, desc: 'square'},
-        {rowId: 3, colorId: 1, desc: 'box'}, 
+        {rowId: 3, colorId: 1, desc: 'box'},
         {rowId: 4, colorId: 1, desc: 'hoop'},
         {rowId: 5, colorId: 5, desc: 'circle'}
       ], 'table1');
@@ -227,7 +227,7 @@ describe('Nodejs Optic from literals test', function(){
       plan1.joinInner(plan2)
       .where(op.sqlCondition("(table1.colorId = table2.colorId) AND table1.desc IN ('ball', 'box')"))
       .orderBy(op.desc(op.viewCol('table1', 'rowId')))
-    db.rows.queryAsStream(output, 'chunked', { format: 'csv', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'chunked', { format: 'csv', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -247,11 +247,11 @@ describe('Nodejs Optic from literals test', function(){
       op.fromLiterals([
         {rowId: 1, colorId_shape: 1, desc: 'ball'},
         {rowId: 2, colorId_shape: 2, desc: 'square'},
-        {rowId: 3, colorId_shape: 1, desc: 'box'}, 
+        {rowId: 3, colorId_shape: 1, desc: 'box'},
         {rowId: 4, colorId_shape: 1, desc: 'hoop'},
         {rowId: 5, colorId_shape: 5, desc: 'circle'}
       ]);
-        
+
     const plan2 =
       op.fromLiterals([
         {colorId: 1, colorDesc: 'red'},
@@ -264,14 +264,14 @@ describe('Nodejs Optic from literals test', function(){
         plan2, op.on(op.col('colorId_shape'), op.col('colorId'))
       )
       .select([
-        'rowId', 
-        op.as('description', op.col('desc')), 
-        op.as('myColorId', op.col('colorId')), 
+        'rowId',
+        op.as('description', op.col('desc')),
+        op.as('myColorId', op.col('colorId')),
         'colorDesc'
       ])
       .orderBy(op.asc('rowId'))
       .map(op.resolveFunction('colorIdMapper', '/optic/test/mapperReducer.sjs'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);
@@ -288,11 +288,11 @@ describe('Nodejs Optic from literals test', function(){
         op.fromLiterals([
           {rowId: 1, colorId_shape: 1, desc: 'ball'},
           {rowId: 2, colorId_shape: 2, desc: 'square'},
-          {rowId: 3, colorId_shape: 1, desc: 'box'}, 
+          {rowId: 3, colorId_shape: 1, desc: 'box'},
           {rowId: 4, colorId_shape: 1, desc: 'hoop'},
           {rowId: 5, colorId_shape: 5, desc: 'circle'}
         ]);
-        
+
       const plan2 =
         op.fromLiterals([
           {colorId: 1, colorDesc: 'red'},
@@ -309,7 +309,7 @@ describe('Nodejs Optic from literals test', function(){
         ])
         .orderBy(op.asc('myRowId'))
       .reduce(op.resolveFunction('fibReducer', '/optic/test/mapperReducer.sjs'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);

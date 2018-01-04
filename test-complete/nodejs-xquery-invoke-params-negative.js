@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Xquery invoke params negative test', function(){
-  
+
   var fsPath = __dirname + '/data/sourceParamsNegative.xqy';
   var invokePath = '/ext/invokeTest/sourceParamsNegative.xqy';
 
@@ -37,7 +37,7 @@ describe('Xquery invoke params negative test', function(){
     }).
     result(function(response){done();}, done);
   });
- 
+
   after(function(done) {
     dbAdmin.config.extlibs.remove(invokePath).
     result(function(response){done();}, done);

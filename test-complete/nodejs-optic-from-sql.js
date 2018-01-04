@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ describe('Nodejs Optic from sql test', function(){
         )
       )
       .orderBy(op.asc(op.schemaCol('opticFunctionalTest', 'detail', 'id')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[5].type).to.equal('xs:date');
@@ -65,7 +65,7 @@ describe('Nodejs Optic from sql test', function(){
         " FROM opticFunctionalTest.detail" +
         " INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId" +
         " ORDER BY DetailName DESC")
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -96,7 +96,7 @@ describe('Nodejs Optic from sql test', function(){
       )
       .groupBy(op.schemaCol('opticFunctionalTest', 'master', 'name'), op.sum('DetailSum', op.schemaCol('opticFunctionalTest', 'detail', 'amount')))
       .orderBy(op.desc(op.col('DetailSum')))
-    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(3);
@@ -115,7 +115,7 @@ describe('Nodejs Optic from sql test', function(){
         INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId \
         GROUP BY opticFunctionalTest.master.name")
       .orderBy(op.desc(op.col('DetailSum')))
-    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
@@ -137,7 +137,7 @@ describe('Nodejs Optic from sql test', function(){
           op.schemaCol('opticFunctionalTest', 'detail', 'color')
         ])
       .orderBy([op.desc(op.col('DetailName')), op.desc(op.col('MasterName'))])
-    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('["MasterName", "opticFunctionalTest.master.date", "DetailName", "opticFunctionalTest.detail.amount", "opticFunctionalTest.detail.color"]');
@@ -156,7 +156,7 @@ describe('Nodejs Optic from sql test', function(){
         UNION \
         SELECT opticFunctionalTest.master.id, opticFunctionalTest.master.name FROM opticFunctionalTest.master ORDER BY name")
       .orderBy('id')
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
       count++;
@@ -185,7 +185,7 @@ describe('Nodejs Optic from sql test', function(){
         op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
       ])
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -206,12 +206,12 @@ describe('Nodejs Optic from sql test', function(){
     const chunks = [];
     const output =
       op.fromSQL("SELECT * FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id")
-      .select([op.schemaCol('opticFunctionalTest', 'detail', 'id'), 
+      .select([op.schemaCol('opticFunctionalTest', 'detail', 'id'),
                op.schemaCol('opticFunctionalTest', 'detail', 'color'),
-               op.as('masterName', op.schemaCol('opticFunctionalTest', 'master', 'name'))], 
+               op.as('masterName', op.schemaCol('opticFunctionalTest', 'master', 'name'))],
                '')
       .orderBy('id')
-    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -235,7 +235,7 @@ describe('Nodejs Optic from sql test', function(){
     const outputStr = JSON.stringify(output).trim().replace(/[\n\r]/g, '');
     //console.log(outputStr);
     expect(outputStr).to.equal('{"$optic":{"ns":"op","fn":"operators","args":[{"ns":"op","fn":"from-sql","args":["SELECT * FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE (opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id AND opticFunctionalTest.master.id = opticFunctionalTest.detail.id)"]},{"ns":"op","fn":"order-by","args":[{"ns":"op","fn":"desc","args":[{"ns":"op","fn":"view-col","args":["detail","name"]}]}]},{"ns":"op","fn":"offset-limit","args":[1,100]}]}}');
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -254,10 +254,10 @@ describe('Nodejs Optic from sql test', function(){
         (opticFunctionalTest.detail.amount - opticFunctionalTest.master.id) AS substracted, \
         (opticFunctionalTest.detail.amount % opticFunctionalTest.master.id) AS modulo, \
         (opticFunctionalTest.detail.amount / (opticFunctionalTest.detail.amount * opticFunctionalTest.detail.id)) AS divided \
-        FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id") 
+        FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id")
       .where(op.sqlCondition("divided >= 0.3"))
       .orderBy(op.asc('substracted'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -272,12 +272,12 @@ describe('Nodejs Optic from sql test', function(){
       op.fromSQL("SELECT * FROM opticFunctionalTest.detail \
                  INNER JOIN opticFunctionalTest.master \
                  WHERE (opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id AND opticFunctionalTest.detail.color LIKE 'b%')")
-      .select([op.schemaCol('opticFunctionalTest', 'detail', 'id'), 
+      .select([op.schemaCol('opticFunctionalTest', 'detail', 'id'),
                op.schemaCol('opticFunctionalTest', 'detail', 'color'),
-               op.as('masterName', op.schemaCol('opticFunctionalTest', 'master', 'name'))], 
+               op.as('masterName', op.schemaCol('opticFunctionalTest', 'master', 'name'))],
         '')
       .orderBy('id')
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -294,10 +294,10 @@ describe('Nodejs Optic from sql test', function(){
         (opticFunctionalTest.detail.amount - opticFunctionalTest.master.id) AS substracted, \
         (opticFunctionalTest.detail.amount % opticFunctionalTest.master.id) AS modulo, \
         (opticFunctionalTest.detail.amount / (opticFunctionalTest.detail.amount * opticFunctionalTest.detail.id)) AS divided \
-        FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id", qualifierName: 'mySQL'}) 
+        FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id", qualifierName: 'mySQL'})
       .where({condition: op.sqlCondition({expression: "divided >= 0.3"})})
       .orderBy({keys: op.asc({column: 'substracted'})})
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);

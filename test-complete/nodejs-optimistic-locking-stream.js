@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,9 +62,9 @@ describe('Optimistic locking stream test', function() {
       var ws = dbWriter.documents.createWriteStream({
         uri: '/test/optlock/stream/streamLock1.json',
         contentType: 'application/json',
-        versionId: response.versionId  
+        versionId: response.versionId
       });
-      ws.result(function(response) { done(); }, done); 
+      ws.result(function(response) { done(); }, done);
       ws.write('{"hello": "world"}');
       ws.end();
     });
@@ -81,7 +81,7 @@ describe('Optimistic locking stream test', function() {
       }).
     on('end', function() {
       done();
-    }, done);   
+    }, done);
   });
 
   /*it('should fail to write without version id', function(done){
@@ -89,13 +89,13 @@ describe('Optimistic locking stream test', function() {
     then(function(response) {
       var ws = dbWriter.documents.createWriteStream({
         uri: '/test/optlock/stream/streamLock1.json',
-        contentType: 'application/json'  
+        contentType: 'application/json'
       });
-      ws.result(function(response) { 
+      ws.result(function(response) {
         ws.write('{"hello": "world"}');
         ws.end();
         //response.should.equal('SHOULD HAVE FAILED');
-        done(); 
+        done();
       }, function(error) {
         error.statusCode.should.equal(403);
         done();
@@ -129,7 +129,7 @@ describe('Optimistic locking stream test', function() {
       }, done);
     });
   });
-  
+
   it('should fail to apply the patch without version id', function(done){
     dbWriter.documents.patch('/test/optlock/doc5.json',
       p.pathLanguage('jsonpath'),
@@ -141,14 +141,14 @@ describe('Optimistic locking stream test', function() {
     result(function(response) {
       response.should.be('SHOULD BE FAILED');
       done();
-    }, function(error) { 
+    }, function(error) {
       //console.log(error);
       error.statusCode.should.equal(403);
       done();
     });
   });
 
-  
+
   it('should apply the patch with the version id', function(done){
     dbWriter.documents.probe('/test/optlock/doc5.json').result().
     then(function(response) {
@@ -168,7 +168,7 @@ describe('Optimistic locking stream test', function() {
       }, done);
     });
   });
-  
+
   it('should read the patch', function(done){
     dbReader.documents.read('/test/optlock/doc5.json').
     result(function(response) {
@@ -296,7 +296,7 @@ describe('Optimistic locking stream test', function() {
       result(function(response) {
         //console.log(JSON.stringify(response, null, 4));
         done();
-      }, done); 
+      }, done);
     });
   });*/
 
@@ -310,7 +310,7 @@ describe('Optimistic locking stream test', function() {
         //console.log(JSON.stringify(response, null, 4));
         response[0].content.should.equal('this doc is overwritten');
         done();
-      }, done); 
+      }, done);
     });
   });*/
 
@@ -325,7 +325,7 @@ describe('Optimistic locking stream test', function() {
         //console.log(JSON.stringify(response, null, 4));
         response[0].content.title.should.equal('this doc is overwritten');
         done();
-      }, done); 
+      }, done);
     });
   });*/
 

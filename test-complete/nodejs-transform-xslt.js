@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Transform test', function(){
       uri: '/test/transform/employee.xml',
       collections: ['employee'],
       contentType: 'application/xml',
-      content: '<Company><Employee><name>John</name></Employee></Company>' 
+      content: '<Company><Employee><name>John</name></Employee></Company>'
     }).
     result(function(response){done();}, done);
   });
@@ -58,7 +58,7 @@ describe('Transform test', function(){
       done();
     }, done);
   });
-    
+
   it('should list the transform', function(done){
     dbAdmin.config.transforms.list().
     result(function(response){
@@ -66,8 +66,8 @@ describe('Transform test', function(){
       done();
     }, done);
   });
-  
-  var uri = '/test/transform/employee.xml'; 
+
+  var uri = '/test/transform/employee.xml';
 
   it('should modify during read', function(done){
     db.documents.read({
@@ -102,7 +102,7 @@ describe('Transform test', function(){
       uri: '/test/transform/write/xslttransform.xml',
       contentType: 'application/xml',
       collections: ['employee'],
-      content: '<Company><Employee><name>John</name></Employee></Company>', 
+      content: '<Company><Employee><name>John</name></Employee></Company>',
       transform: transformName
     }).
     result(function(response) {

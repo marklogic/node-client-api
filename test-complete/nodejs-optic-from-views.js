@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ describe('Nodejs Optic from views test', function(){
       )
       .orderBy(op.asc(op.schemaCol('opticFunctionalTest', 'detail', 'id')))
 
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[0].name).to.equal('opticFunctionalTest.detail.id');
@@ -76,7 +76,7 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.schemaCol('opticFunctionalTest', 'master' , 'id'), 
+          op.schemaCol('opticFunctionalTest', 'master' , 'id'),
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
@@ -89,7 +89,7 @@ describe('Nodejs Optic from views test', function(){
       ])
       .orderBy(op.desc(op.col('DetailName')))
 
-    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(7);
@@ -117,13 +117,13 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.schemaCol('opticFunctionalTest', 'master' , 'id'), 
+          op.schemaCol('opticFunctionalTest', 'master' , 'id'),
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
       .groupBy(op.schemaCol('opticFunctionalTest', 'master', 'name'), op.sum('DetailSum', op.schemaCol('opticFunctionalTest', 'detail', 'amount')))
       .orderBy(op.desc(op.col('DetailSum')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[0].name).to.equal('opticFunctionalTest.master.name');
@@ -149,12 +149,12 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.viewCol('myMaster' , 'id'),           
+          op.viewCol('myMaster' , 'id'),
           op.viewCol('myDetail', 'masterId')
         )
       )
       .orderBy(op.viewCol('myDetail', 'id'))
-    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'rows' }) 
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('<t:cell name=\"myDetail.id\" type=\"xs:integer\">1</t:cell>');
@@ -175,12 +175,12 @@ describe('Nodejs Optic from views test', function(){
       .select([
         op.as('MasterName', op.schemaCol('opticFunctionalTest', 'master', 'name')),
         op.schemaCol('opticFunctionalTest', 'master', 'date'),
-        op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),  
+        op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
         op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
       ])
       .orderBy([op.desc(op.col('DetailName')), op.desc(op.col('MasterName'))])
-    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('<t:column name=\"opticFunctionalTest.master.date\" type=\"xs:date"\/>');
@@ -206,7 +206,7 @@ describe('Nodejs Optic from views test', function(){
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
        ])
       .orderBy(op.desc(op.col('DetailName')))
-    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('MasterName,opticFunctionalTest.master.date,DetailName,opticFunctionalTest.detail.amount,opticFunctionalTest.detail.color');
@@ -234,7 +234,7 @@ describe('Nodejs Optic from views test', function(){
       ])
       .orderBy(op.desc(op.col('DetailName')))
       .orderBy(op.asc(op.col('MasterName')))
-    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('["MasterName", "opticFunctionalTest.master.date", "DetailName", "opticFunctionalTest.detail.amount", "opticFunctionalTest.detail.color"]');
@@ -250,7 +250,7 @@ describe('Nodejs Optic from views test', function(){
     const chunks = [];
     const plan1 =
       op.fromView('opticFunctionalTest', 'detail', 'myDetail');
-            
+
     const idCol = plan1.col('id');
     const nameCol = plan1.col('name');
     const output =
@@ -258,8 +258,8 @@ describe('Nodejs Optic from views test', function(){
       .where(op.gt(idCol, 3))
       .select([idCol, nameCol])
       .orderBy(op.desc(nameCol))
-  
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
       count++;
@@ -279,7 +279,7 @@ describe('Nodejs Optic from views test', function(){
     const chunks = [];
     const plan1 =
       op.fromView('opticFunctionalTest', 'detail', 'myDetail');
-            
+
     const idCol = plan1.col('id');
     const nameCol = plan1.col('name');
     const output =
@@ -287,8 +287,8 @@ describe('Nodejs Optic from views test', function(){
       .where(op.gt(idCol, 3))
       .select([idCol, nameCol])
       .orderBy(op.desc(nameCol))
-  
-    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'array', columnTypes: 'header', complexValues: 'inline' }) 
+
+    db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'array', columnTypes: 'header', complexValues: 'inline' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -307,7 +307,7 @@ describe('Nodejs Optic from views test', function(){
     const chunks = [];
     const plan1 =
       op.fromView('opticFunctionalTest', 'detail', 'myDetail');
-            
+
     const idCol = plan1.col('id');
     const nameCol = plan1.col('name');
     const output =
@@ -315,8 +315,8 @@ describe('Nodejs Optic from views test', function(){
       .where(op.gt(idCol, 3))
       .select([idCol, nameCol])
       .orderBy(op.desc(nameCol))
-  
-    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'rows', complexValues: 'inline' }) 
+
+    db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'rows', complexValues: 'inline' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
       str = str + chunk.toString().trim().replace(/[\n\r]/g, ' ');
@@ -344,7 +344,7 @@ describe('Nodejs Optic from views test', function(){
       .select([masterIdCol2, masterNameCol, detailIdCol, detailNameCol])
       .orderBy(op.desc(detailNameCol))
       .offsetLimit(1, 100)
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(3);
@@ -372,7 +372,7 @@ describe('Nodejs Optic from views test', function(){
         )
       )
       .orderBy(op.asc(op.schemaCol(null, 'detail3', 'id')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns.length).to.equal(8);
@@ -408,7 +408,7 @@ describe('Nodejs Optic from views test', function(){
       .select(op.schemaCol('opticFunctionalTest', 'detail', 'color'))
       .whereDistinct()
       .orderBy(op.desc(op.schemaCol('opticFunctionalTest', 'detail', 'color')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(2);
@@ -446,7 +446,7 @@ describe('Nodejs Optic from views test', function(){
         ]
       )
       .orderBy(op.desc(op.col('colorStat')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[1].type).to.equal('xs:double');
@@ -486,12 +486,12 @@ describe('Nodejs Optic from views test', function(){
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
-      .select([op.schemaCol('opticFunctionalTest', 'detail', 'id'), 
+      .select([op.schemaCol('opticFunctionalTest', 'detail', 'id'),
                op.schemaCol('opticFunctionalTest', 'detail', 'color'),
-               op.schemaCol('opticFunctionalTest', 'master', 'name')], 
+               op.schemaCol('opticFunctionalTest', 'master', 'name')],
         'newRow')
       .orderBy('id')
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[0].name).to.equal('newRow.id');
@@ -529,7 +529,7 @@ describe('Nodejs Optic from views test', function(){
         op.as('divided', op.divide(op.col('amount'), op.multiply(op.col('amount'), op.viewCol('detail', 'id'))))
       ])
       .orderBy(op.asc('substracted'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[3].type).to.equal('null');
@@ -566,7 +566,7 @@ describe('Nodejs Optic from views test', function(){
       .select(op.as('myAmount', op.viewCol('detail', 'amount')))
       .whereDistinct()
       .orderBy(op.asc('myAmount'))
-    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'rows', complexValues: 'reference' }) 
+    db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'rows', complexValues: 'reference' })
     .then(function(output) {
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
       expect(outputStr).to.equal('<t:table xmlns:t=\"http:\/\/marklogic.com\/table\"><t:columns><t:column name=\"myAmount\"/><\/t:columns><t:rows><t:row><t:cell name=\"myAmount\" type=\"xs:double\">40.04<\/t:cell><\/t:row><t:row><t:cell name=\"myAmount\" type=\"xs:double\">50.05<\/t:cell><\/t:row><t:row><t:cell name=\"myAmount\" type=\"xs:double\">60.06<\/t:cell><\/t:row></t:rows><\/t:table>');
@@ -592,7 +592,7 @@ describe('Nodejs Optic from views test', function(){
       ])
       .groupBy('MasterName', op.arrayAggregate('arrayDetail', 'DetailName'))
       .orderBy(op.desc(op.col('MasterName')))
-    db.rows.query(output) 
+    db.rows.query(output)
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -623,7 +623,7 @@ describe('Nodejs Optic from views test', function(){
         .select(op.as('unionId', op.schemaCol('opticFunctionalTest', 'detail', 'id')))
       )
       .orderBy('unionId')
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);
@@ -650,7 +650,7 @@ describe('Nodejs Optic from views test', function(){
         .union(plan2.select(op.as('unionId', op.schemaCol('opticFunctionalTest2', 'master', 'id'))))
       )
       .orderBy('unionId')
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -674,7 +674,7 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.schemaCol('opticFunctionalTest', 'master' , 'id'), 
+          op.schemaCol('opticFunctionalTest', 'master' , 'id'),
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
@@ -706,7 +706,7 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.schemaCol('opticFunctionalTest', 'master' , 'id'), 
+          op.schemaCol('opticFunctionalTest', 'master' , 'id'),
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
@@ -738,7 +738,7 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.schemaCol('opticFunctionalTest', 'master' , 'id'), 
+          op.schemaCol('opticFunctionalTest', 'master' , 'id'),
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
@@ -750,7 +750,7 @@ describe('Nodejs Optic from views test', function(){
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
       ])
       .orderBy([op.desc(op.col('date')), op.desc(op.col('DetailName'))])
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -783,7 +783,7 @@ describe('Nodejs Optic from views test', function(){
       )
       .joinDoc(op.col('doc'), fIdCol2)
       .orderBy(op.asc(op.schemaCol('opticFunctionalTest2', 'detail', 'id')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -821,7 +821,7 @@ describe('Nodejs Optic from views test', function(){
       )
       .joinDoc(op.col('doc'), fIdCol1)
       .orderBy(op.asc(op.schemaCol('opticFunctionalTest2', 'detail', 'id')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -851,7 +851,7 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner(plan2)
       .where(
         op.eq(
-          op.schemaCol('opticFunctionalTest', 'master' , 'id'), 
+          op.schemaCol('opticFunctionalTest', 'master' , 'id'),
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
@@ -863,7 +863,7 @@ describe('Nodejs Optic from views test', function(){
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
       ])
       .orderBy(op.desc(op.col('DetailName')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -898,7 +898,7 @@ describe('Nodejs Optic from views test', function(){
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
       ])
       .orderBy(op.desc(op.col('DetailName')))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -925,7 +925,7 @@ describe('Nodejs Optic from views test', function(){
         op.sqlCondition('myMaster.id = myDetail.masterId')
       )
       .orderBy(op.viewCol('myDetail', 'id'))
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
@@ -944,7 +944,7 @@ describe('Nodejs Optic from views test', function(){
   it('TEST 29 - sql condition with AND operator', function(done){
     const plan1 =
       op.fromView('opticFunctionalTest', 'detail', 'myDetail');
-            
+
     const idCol = plan1.col('id');
     const nameCol = plan1.col('name');
     const output =
@@ -952,8 +952,8 @@ describe('Nodejs Optic from views test', function(){
       .where(op.sqlCondition("myDetail.id <> 3 AND myDetail.name != 'Detail 4'"))
       .select([idCol, nameCol])
       .orderBy(op.desc(nameCol))
-  
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' }) 
+
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);
@@ -975,17 +975,17 @@ describe('Nodejs Optic from views test', function(){
       .select([op.viewCol('myMaster', 'id'), op.viewCol('myMaster', 'name'), op.viewCol('myDetail', 'id'), op.viewCol('myDetail', 'name')])
       .orderBy(op.desc(op.viewCol('myDetail', 'name')))
       .offsetLimit(op.param({name: 'start'}), op.param({name: 'length'}))
-    db.rows.query(output, { 
-      format: 'json', 
-      structure: 'object', 
-      columnTypes: 'header', 
+    db.rows.query(output, {
+      format: 'json',
+      structure: 'object',
+      columnTypes: 'header',
       complexValues: 'inline',
       bindings: {
         'detailIdVal': {value: 3, type: 'integer'},
         'start': {value: 1, type: 'integer'},
         'length': {value: 100, type: 'integer'}
-      } 
-    }) 
+      }
+    })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -1015,7 +1015,7 @@ describe('Nodejs Optic from views test', function(){
       .select([masterIdCol2, masterNameCol, detailIdCol, detailNameCol])
       .orderBy(op.desc(detailNameCol))
       .offsetLimit(1, 3)
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header'}) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header'})
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
@@ -1035,7 +1035,7 @@ describe('Nodejs Optic from views test', function(){
     const chunks = [];
     const plan1 =
       op.fromView('opticFunctionalTest', 'detail', 'myDetail');
-            
+
     const idCol = plan1.col('id');
     const nameCol = plan1.col('name');
     const output =
@@ -1043,8 +1043,8 @@ describe('Nodejs Optic from views test', function(){
       .where(op.gt(idCol, 3))
       .select([idCol, nameCol])
       .orderBy(op.desc(nameCol))
-  
-    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' }) 
+
+    db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
       count++;
@@ -1070,7 +1070,7 @@ describe('Nodejs Optic from views test', function(){
       plan1.joinInner({right: plan2})
       .where({condition:
         op.eq({
-          left: op.schemaCol({schema: 'opticFunctionalTest', view: 'master' , column: 'id'}), 
+          left: op.schemaCol({schema: 'opticFunctionalTest', view: 'master' , column: 'id'}),
           right: op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         })
       })
@@ -1082,7 +1082,7 @@ describe('Nodejs Optic from views test', function(){
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
       ]})
       .orderBy({keys: [op.desc({column: op.col({column: 'DetailName'})})]})
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[1].type).to.equal('xs:date');
@@ -1108,12 +1108,12 @@ describe('Nodejs Optic from views test', function(){
     const masterNameCol = plan2.col('name');
     const output =
       plan1.joinInner({
-        right: plan2, 
+        right: plan2,
         keys: [op.on(masterIdCol1, masterIdCol2), op.on(idCol1, idCol2)]
       })
       .orderBy({keys: [op.desc({column: detailNameCol})]})
       .offsetLimit({start: 1, length: 100})
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -1140,12 +1140,12 @@ describe('Nodejs Optic from views test', function(){
     const masterNameCol = plan2.col('name');
     const output =
       plan1.joinInner({
-        right: plan2, 
+        right: plan2,
         keys: [op.on(masterIdCol1, masterIdCol2), op.on(idCol1, idCol2)]
       })
       .orderBy({keys: [op.desc({column: detailNameCol})]})
       .offsetLimit({start: 1, length: 100})
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: timestamp }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: timestamp })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
@@ -1172,20 +1172,20 @@ describe('Nodejs Optic from views test', function(){
     const masterNameCol = plan2.col('name');
     const output =
       plan1.joinInner({
-        right: plan2, 
+        right: plan2,
         keys: [op.on(masterIdCol1, masterIdCol2), op.on(idCol1, idCol2)]
       })
       .orderBy({keys: [op.desc({column: detailNameCol})]})
       .offsetLimit({start: 1, length: 100})
-    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: oldTimestamp }) 
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: oldTimestamp })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
       expect(output).to.be.undefined;
       done();
-    }, function(error) { 
+    }, function(error) {
       //console.log(error);
-      expect(error.body.errorResponse.message).to.contain('XDMP-OLDSTAMP: Timestamp too old'); 
-      done(); 
+      expect(error.body.errorResponse.message).to.contain('XDMP-OLDSTAMP: Timestamp too old');
+      done();
     });
   });
 });

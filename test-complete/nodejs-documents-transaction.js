@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Document transaction test', function() {
-  
+
   it('should commit the write document', function(done) {
     this.timeout(10000);
     var tid = null;
@@ -41,7 +41,7 @@ describe('Document transaction test', function() {
     then(function(response) {
       return db.transactions.commit(tid).
       result(function(response) {done();}, done);
-    });  
+    });
   });
 
   it('should read the commited document', function(done) {
@@ -81,7 +81,7 @@ describe('Document transaction test', function() {
     then(function(response) {
       return db.transactions.rollback(tid).
       result(function(response) {done();}, done);
-    });  
+    });
   });*/
 
   it('should rollback the write document', function(done) {
@@ -97,14 +97,14 @@ describe('Document transaction test', function() {
         content: {firstname: "Peter", lastname: "Pan", txKey: tid}
       }).result();
     }).
-   
+
     then(function(response) {
       //console.log(response);
 	  return db.transactions.rollback(tid)
-   .result(function(response) {  
+   .result(function(response) {
    //console.log(response);
    done();}, done);
-    });  
+    });
   });
   /*it('should be able to read the rolled back document', function(done) {
       this.timeout(10000);
@@ -134,17 +134,17 @@ describe('Document transaction test', function() {
     then(function(response) {
       return db.documents.write({
         txid: tid,
-        uri: '/test/transaction/doc3.json', 
+        uri: '/test/transaction/doc3.json',
         contentType: 'application/json',
         content: {firstname: "Chuck", lastname: "Sang", txKey: tid}
       }).result();
     }).
     then(function(response) {
       return db.transactions.rollback(tid).
-      result(function(response) {  
+      result(function(response) {
 	  //console.log(response);
 	  done();}, done);
-    });  
+    });
   });
 
    it('should be able to read the original document', function(done) {
@@ -161,14 +161,14 @@ describe('Document transaction test', function() {
 		 done();
        });
   });
-  
- 
+
+
   it('should remove all documents', function(done) {
       this.timeout(10000);
       dbAdmin.documents.removeAll({all: true}).
       result(function(response) {
         done();
       }, done);
-  });  
+  });
 
 });

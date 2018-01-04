@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ describe('Issue 99', function(){
     function(err) {
       console.log(err);
       done(err);
-    }, 
+    },
     done);
   });
 
@@ -63,7 +63,7 @@ describe('Issue 99', function(){
       done();
     }, done);
   });
-  
+
 
 
 });

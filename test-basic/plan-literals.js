@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 MarkLogic Corporation
+ * Copyright 2016-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ describe('literals', function() {
     it('as objects', function(done) {
       execPlan(
         p.fromLiterals([
-                {orderId: 1, orderExtra: 'First extra'}, 
-                {orderId: 2, orderExtra: 'Second extra'} 
-            ], 
+                {orderId: 1, orderExtra: 'First extra'},
+                {orderId: 2, orderExtra: 'Second extra'}
+            ],
             'lit')
         )
       .then(function(response) {
@@ -48,11 +48,11 @@ describe('literals', function() {
     it('as arrays', function(done) {
       execPlan(
         p.fromLiterals({
-            columnNames: ['orderId', 'orderExtra'], 
+            columnNames: ['orderId', 'orderExtra'],
             rowValues:   [
-                [1, 'First extra'], 
-                [2, 'Second extra'] 
-                ] 
+                [1, 'First extra'],
+                [2, 'Second extra']
+                ]
             })
         )
       .then(function(response) {
@@ -69,7 +69,7 @@ describe('literals', function() {
     it('having col method', function(done) {
       const accessor = p.fromLiterals([
             {orderId: 1, orderExtra: 'First extra'}
-            ], 
+            ],
             'lit');
       const colPlan = accessor.select(accessor.col('orderId'));
       const value = colPlan.export();

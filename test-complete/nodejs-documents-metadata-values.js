@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ describe('Document Metadata values test', function() {
       contentType: 'application/json',
       quality: 250,
       properties: {
-        prop1:'bar', 
+        prop1:'bar',
         prop2:1981
       },
       metadataValues: {
@@ -45,20 +45,20 @@ describe('Document Metadata values test', function() {
         metaDateTime: '2011-12-31T23:59:59'
       },
       content: {
-        id: '0001', 
+        id: '0001',
         name:'bowl'
       }
     }).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.documents[0].uri.should.equal('/test/metadata/values/doc1.json');     
+      response.documents[0].uri.should.equal('/test/metadata/values/doc1.json');
       done();
     }, done);
   });
 
   it('TEST 2 - read the content and metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc1.json'], 
+      uris: ['/test/metadata/values/doc1.json'],
       categories:['content', 'metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
@@ -73,7 +73,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 3 - insert patch on metadata values', function(done) {
     db.documents.patch({
-      uri: '/test/metadata/values/doc1.json', 
+      uri: '/test/metadata/values/doc1.json',
       categories:['metadataValues'],
       operations: [
         p.insert('metadataValues', 'last-child', {meta6: 'added patch'})
@@ -87,7 +87,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 4 - read the patched metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc1.json'], 
+      uris: ['/test/metadata/values/doc1.json'],
       categories:['metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
@@ -98,7 +98,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 5 - remove patch on metadata values', function(done) {
     db.documents.patch({
-      uri: '/test/metadata/values/doc1.json', 
+      uri: '/test/metadata/values/doc1.json',
       categories:['metadataValues'],
       operations: [
         p.remove('meta6')
@@ -112,7 +112,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 6 - read the patched metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc1.json'], 
+      uris: ['/test/metadata/values/doc1.json'],
       categories:['metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
@@ -123,7 +123,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 7 - insert patch on existing metadata values', function(done) {
     db.documents.patch({
-      uri: '/test/metadata/values/doc1.json', 
+      uri: '/test/metadata/values/doc1.json',
       categories:['metadataValues'],
       operations: [
         p.insert('metadataValues', 'last-child', {meta1: 'this is the date'})
@@ -137,7 +137,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 8 - read the patched metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc1.json'], 
+      uris: ['/test/metadata/values/doc1.json'],
       categories:['metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
@@ -148,7 +148,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 9 - add patch on metadataValues', function(done) {
     db.documents.patch({
-      uri: '/test/metadata/values/doc1.json', 
+      uri: '/test/metadata/values/doc1.json',
       categories:['metadataValues'],
       operations: [
         p.metadataValues.add('metaAddNumber', '123.456'),
@@ -163,7 +163,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 10 - read the added patch metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc1.json'], 
+      uris: ['/test/metadata/values/doc1.json'],
       categories:['metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
@@ -175,7 +175,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 11 - replace patch on metadataValues', function(done) {
     db.documents.patch({
-      uri: '/test/metadata/values/doc1.json', 
+      uri: '/test/metadata/values/doc1.json',
       categories:['metadataValues'],
       operations: [
         p.metadataValues.replace('metaAddNumber', '678.999'),
@@ -190,7 +190,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 12 - read the replaced patch metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc1.json'], 
+      uris: ['/test/metadata/values/doc1.json'],
       categories:['metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
@@ -203,7 +203,7 @@ describe('Document Metadata values test', function() {
   it('TEST 13 - negative: non-string on values', function(done) {
     try {
       db.documents.patch({
-        uri: '/test/metadata/values/doc1.json', 
+        uri: '/test/metadata/values/doc1.json',
         categories:['metadataValues'],
         operations: [
           p.metadataValues.add('metaNegNonString', 1001.6789)
@@ -222,7 +222,7 @@ describe('Document Metadata values test', function() {
   it('TEST 14 - negative: non-string on names', function(done) {
     try {
       db.documents.patch({
-        uri: '/test/metadata/values/doc1.json', 
+        uri: '/test/metadata/values/doc1.json',
         categories:['metadataValues'],
         operations: [
           p.metadataValues.add(negativeMeta, 'invValues')
@@ -268,7 +268,7 @@ describe('Document Metadata values test', function() {
 
   it('TEST 16 - read the content and metadata values', function(done) {
     db.documents.read({
-      uris: ['/test/metadata/values/doc2.json'], 
+      uris: ['/test/metadata/values/doc2.json'],
       categories:['content', 'metadataValues']
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));

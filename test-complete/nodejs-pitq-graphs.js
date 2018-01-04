@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Graphs PITQ Test', function() {
-  
+
   var graphUri   = 'marklogic.com/stream/people';
   var graphPath  = __dirname + '/data/people.ttl';
   var sparqlPath = __dirname + '/data/people.rq';
@@ -40,7 +40,7 @@ describe('Graphs PITQ Test', function() {
   var oldTimestamp = db.createTimestamp('123');
   var zeroTimestamp = db.createTimestamp('0');
   var negativeTimestamp = db.createTimestamp('-1');
- 
+
   it('should write the default graph', function(done){
     this.timeout(10000);
     db.graphs.write('text/turtle', fs.createReadStream(graphPath)).
@@ -63,7 +63,7 @@ describe('Graphs PITQ Test', function() {
       //console.log(JSON.stringify(response, null, 2));
       var strResponse = JSON.stringify(response);
       strResponse.should.containEql('http://people.org/person15');
-      
+
       // graphs read with negative timestamp
       return db.graphs.read({
         contentType: 'application/json',
@@ -73,10 +73,10 @@ describe('Graphs PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL: $0 -1 set-transaction-timestamp');
-      
+
       // graphs read with zero timestamp
       return db.graphs.read({
         contentType: 'application/json',
@@ -86,8 +86,8 @@ describe('Graphs PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL0: The value of expression \'$0\'  is required to be non-zero in rule: set-transaction-timestamp');
 
       // graphs read with old timestamp
@@ -97,18 +97,18 @@ describe('Graphs PITQ Test', function() {
       }).result();
     })
     .then(function(response) {
-      //console.log(JSON.stringify(response, null, 2)); 
+      //console.log(JSON.stringify(response, null, 2));
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.containEql('Timestamp too old');
 
       // graphs read with correct timestamp again
       return db.graphs.read({
         contentType: 'application/json',
         timestamp: timestamp
-      }).result(); 
+      }).result();
     })
     .then(function(response) {
       done();
@@ -128,7 +128,7 @@ describe('Graphs PITQ Test', function() {
       collections.some(function(collection){
         return collection === defGraphUri;
       }).should.equal(true);
-      
+
       // graphs list with negative timestamp
       return db.graphs.list(negativeTimestamp)
       .result();
@@ -136,33 +136,33 @@ describe('Graphs PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL: $0 -1 set-transaction-timestamp');
-      
+
       // graphs list with zero timestamp
       return db.graphs.list(zeroTimestamp).result();
     })
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL0: The value of expression \'$0\'  is required to be non-zero in rule: set-transaction-timestamp');
 
       // graphs list with old timestamp
       return db.graphs.list(oldTimestamp).result();
     })
     .then(function(response) {
-      //console.log(JSON.stringify(response, null, 2)); 
+      //console.log(JSON.stringify(response, null, 2));
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.containEql('Timestamp too old');
-      
+
       // graphs list with correct timestamp again
-      return db.graphs.list(timestamp).result(); 
+      return db.graphs.list(timestamp).result();
     })
     .then(function(collections) {
       done();
@@ -195,7 +195,7 @@ describe('Graphs PITQ Test', function() {
       //console.log(strResponse);
       strResponse.should.containEql('Person 1');
       strResponse.should.containEql('Person 2');
-      
+
       // graphs sparql with negative timestamp
       return db.graphs.sparql({
         contentType: 'application/sparql-results+json',
@@ -206,10 +206,10 @@ describe('Graphs PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL: $0 -1 set-transaction-timestamp');
-      
+
       // graphs sparql with zero timestamp
       return db.graphs.sparql({
         contentType: 'application/sparql-results+json',
@@ -220,8 +220,8 @@ describe('Graphs PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL0: The value of expression \'$0\'  is required to be non-zero in rule: set-transaction-timestamp');
 
       // graphs sparql with old timestamp
@@ -232,19 +232,19 @@ describe('Graphs PITQ Test', function() {
       }).result();
     })
     .then(function(response) {
-      //console.log(JSON.stringify(response, null, 2)); 
+      //console.log(JSON.stringify(response, null, 2));
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.containEql('Timestamp too old');
-      
+
       // graphs sparql with correct timestamp again
       return db.graphs.sparql({
         contentType: 'application/sparql-results+json',
         query: fs.createReadStream(sparqlPath),
         timestamp: timestamp
-      }).result(); 
+      }).result();
     })
     .then(function(response) {
       done();

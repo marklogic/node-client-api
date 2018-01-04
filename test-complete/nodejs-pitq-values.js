@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Values PITQ Test', function() {
-  
+
   var oldTimestamp = db.createTimestamp('123');
   var zeroTimestamp = db.createTimestamp('0');
   var negativeTimestamp = db.createTimestamp('-1');
- 
+
   before(function(done) {
     this.timeout(10000);
     db.documents.write({
@@ -48,7 +48,7 @@ describe('Values PITQ Test', function() {
         values: [{score: 56.7}, {rate: 3}],
         p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
         }
-      }, { 
+      }, {
       uri: '/pitq/query/matchDir/doc2.json',
       collections: ['matchCollection1', 'matchCollection2'],
       contentType: 'application/json',
@@ -63,7 +63,7 @@ describe('Values PITQ Test', function() {
         values: [{score: 92.45}, {rate: 5}],
         p: 'The Bush article described a device called a Memex'
         }
-      }, { 
+      }, {
       uri: '/pitq/query/matchDir/doc3.json',
       collections: ['matchCollection2'],
       contentType: 'application/json',
@@ -78,7 +78,7 @@ describe('Values PITQ Test', function() {
         values: [{score: 33.56}, {rate: 1}],
         p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
         }
-      }, { 
+      }, {
       uri: '/pitq/query/matchDir/doc4.json',
       collections: [],
       contentType: 'application/json',
@@ -93,7 +93,7 @@ describe('Values PITQ Test', function() {
         values: [{score: 12.34}, {rate: 3}],
         p: 'Vannevar served as a prominent policymaker and public intellectual'
         }
-      }, { 
+      }, {
         uri: '/pitq/query/matchList/doc5.json',
         collections: ['matchList'],
         contentType: 'application/json',
@@ -125,7 +125,7 @@ describe('Values PITQ Test', function() {
     var timestamp = db.createTimestamp();
     // values read with correct timestamp
     db.values.read(
-      t.fromIndexes( 
+      t.fromIndexes(
         t.range('score', 'xs:double')
       ).
       where(
@@ -138,10 +138,10 @@ describe('Values PITQ Test', function() {
       var strData = JSON.stringify(response);
       strData.should.containEql('"frequency":1,"distinct-value":["56.7"]');
       strData.should.containEql('"frequency":1,"distinct-value":["92.45"]');
-      
+
       // values read with negative timestamp
       return db.values.read(
-        t.fromIndexes( 
+        t.fromIndexes(
           t.range('score', 'xs:double')
         ).
         where(
@@ -153,13 +153,13 @@ describe('Values PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL: $0 -1 set-transaction-timestamp');
-      
+
       // values read with zero timestamp
       return db.values.read(
-        t.fromIndexes( 
+        t.fromIndexes(
           t.range('score', 'xs:double')
         ).
         where(
@@ -171,13 +171,13 @@ describe('Values PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.equal('XDMP-RWINVAL0: The value of expression \'$0\'  is required to be non-zero in rule: set-transaction-timestamp');
 
       // values read with old timestamp
       return db.values.read(
-        t.fromIndexes( 
+        t.fromIndexes(
           t.range('score', 'xs:double')
         ).
         where(
@@ -189,20 +189,20 @@ describe('Values PITQ Test', function() {
     .then(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
       done();
-    }, function(error) { 
-      //console.log(JSON.stringify(error, null, 2)); 
+    }, function(error) {
+      //console.log(JSON.stringify(error, null, 2));
       error.body.errorResponse.message.should.containEql('Timestamp too old');
-      
+
       // values read with correct timestamp again
       return db.values.read(
-        t.fromIndexes( 
+        t.fromIndexes(
           t.range('score', 'xs:double')
         ).
         where(
           t.word('title', 'bush')
         ),
         timestamp
-      ).result(); 
+      ).result();
     })
     .then(function(response) {
       done();

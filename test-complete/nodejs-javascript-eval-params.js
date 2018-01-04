@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ describe('Javascript eval params test', function(){
     dbEval.eval('var num1;' +
                 'var num2;' +
                 'num1 + num2;',
-                {num1:2, num2:3} 
+                {num1:2, num2:3}
                ).result(function(values) {
       //console.log(values);
       values[0].value.should.equal(5);
@@ -43,7 +43,7 @@ describe('Javascript eval params test', function(){
     dbEval.eval('var num1;' +
                 'var num2;' +
                 'num1 + num2;',
-                {num1:2, num2:3} 
+                {num1:2, num2:3}
     ).
     stream().
     on('data', function(data) {

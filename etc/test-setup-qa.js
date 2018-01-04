@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -175,12 +175,12 @@ function setup(manager) {
                 'triple-index':         true,
                 'schema-database':      testconfig.testServerName+'-modules',
                 'range-path-index': [
-                  { 
+                  {
                     'scalar-type': 'decimal',
                     'path-expression': 'price/amt',
                     collation: '',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
+                    'invalid-values': 'reject'
                   }
                 ],
                 'geospatial-path-index': [
@@ -193,25 +193,25 @@ function setup(manager) {
                   }
                 ],
                 'geospatial-element-index' : [
-                  { 
+                  {
                     'namespace-uri': '',
                     localname: 'gElemPoint',
                     'coordinate-system': 'wgs84',
                     'point-format': 'point',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
+                    'invalid-values': 'reject'
                   },
-                  { 
+                  {
                     'namespace-uri': '',
                     localname: 'gElemPointWgs84Double',
                     'coordinate-system': 'wgs84/double',
                     'point-format': 'point',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
+                    'invalid-values': 'reject'
                   }
                 ],
-                'geospatial-element-child-index': [ 
-                  {  
+                'geospatial-element-child-index': [
+                  {
                     'parent-namespace-uri': '',
                     'parent-localname': 'gElemChildParent',
                     'namespace-uri': '',
@@ -219,9 +219,9 @@ function setup(manager) {
                     'coordinate-system': 'wgs84',
                     'point-format': 'point',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
-                  }, 
-                  {  
+                    'invalid-values': 'reject'
+                  },
+                  {
                     'parent-namespace-uri': '',
                     'parent-localname': 'gElemChildParentEtrs89Double',
                     'namespace-uri': '',
@@ -229,11 +229,11 @@ function setup(manager) {
                     'coordinate-system': 'etrs89/double',
                     'point-format': 'point',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
-                  } 
+                    'invalid-values': 'reject'
+                  }
                 ],
-                'geospatial-element-pair-index': [ 
-                  { 
+                'geospatial-element-pair-index': [
+                  {
                     'parent-namespace-uri': '',
                     'parent-localname': 'gElemPair',
                     'latitude-namespace-uri': '',
@@ -242,9 +242,9 @@ function setup(manager) {
                     'longitude-localname': 'longitude',
                     'coordinate-system': 'wgs84',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
-                  }, 
-                  { 
+                    'invalid-values': 'reject'
+                  },
+                  {
                     'parent-namespace-uri': '',
                     'parent-localname': 'gElemPairRawDouble',
                     'latitude-namespace-uri': '',
@@ -253,11 +253,11 @@ function setup(manager) {
                     'longitude-localname': 'longitudeRawDouble',
                     'coordinate-system': 'raw/double',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
-                  } 
+                    'invalid-values': 'reject'
+                  }
                 ],
-                'geospatial-element-attribute-pair-index': [ 
-                  { 
+                'geospatial-element-attribute-pair-index': [
+                  {
                     'parent-namespace-uri': '',
                     'parent-localname': 'gAttrPair',
                     'latitude-namespace-uri': '',
@@ -266,8 +266,8 @@ function setup(manager) {
                     'longitude-localname': 'longitude',
                     'coordinate-system': 'wgs84',
                     'range-value-positions': false,
-                    'invalid-values': 'reject' 
-                  } 
+                    'invalid-values': 'reject'
+                  }
                 ],
                 'geospatial-region-path-index': [
                   {
@@ -410,7 +410,7 @@ function setup(manager) {
             });
         } else {
           console.log(testconfig.testServerName+' setup failed with HTTP status: '+response.statusCode);
-          console.log(response.data);        
+          console.log(response.data);
         }
       });
     } else {

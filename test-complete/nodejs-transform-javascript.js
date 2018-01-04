@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ describe('Transform test with javascript', function(){
     dbWriter.documents.write({
       uri: '/test/transform/jstransform.json',
       contentType: 'application/json',
-      content: {title: 'transform test with javascript'} 
+      content: {title: 'transform test with javascript'}
     },
 	{
       uri: '/test/transform/jstransform2.json',
       contentType: 'application/json',
-      content: {title: 'exapmle test with javascript'} 
+      content: {title: 'exapmle test with javascript'}
     }).
     result(function(response){done();}, done);
   });
@@ -62,7 +62,7 @@ describe('Transform test with javascript', function(){
       done();
     }, done);
   });
-    
+
   it('should list the transform', function(done){
     dbAdmin.config.transforms.list().
     result(function(response){
@@ -70,8 +70,8 @@ describe('Transform test with javascript', function(){
       done();
     }, done);
   });
-  
-  var uri = '/test/transform/jstransform.json'; 
+
+  var uri = '/test/transform/jstransform.json';
 
   it('should modify during read', function(done){
     db.documents.read({
@@ -97,9 +97,9 @@ describe('Transform test with javascript', function(){
 	  response.length.should.equal(2);
       done();
     }, done);
-  }); 
-  
-  
+  });
+
+
   it('should modify during query', function(){
     this.timeout(10000);
     db.documents.query(
