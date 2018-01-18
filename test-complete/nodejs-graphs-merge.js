@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 describe('merge graph test', function(){
   var graphUri   = 'marklogic.com/merge/people';
   var graphUriInv   = 'marklogic.com/invalid';
-  var graphPath1  = './node-client-api/test-complete/data/people3.ttl';
-  var graphPath2  = './node-client-api/test-complete/data/people4.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
+  var graphPath1  = __dirname + '/data/people3.ttl';
+  var graphPath2  = __dirname + '/data/people4.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
 
   it('should write the first graph', function(done){
     this.timeout(10000);
@@ -50,7 +50,7 @@ describe('merge graph test', function(){
     }, done);
   });
 
-  it('should wait for the graphs to get merged', function(done) { 
+  it('should wait for the graphs to get merged', function(done) {
     setTimeout(function() {
       done();
     }, 10000);
@@ -81,7 +81,7 @@ describe('merge graph test', function(){
 
   it('should list the merged graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       collections.some(function(collection){
         return collection === graphUri;
@@ -112,6 +112,45 @@ describe('merge graph test', function(){
       //response.results.bindings[0].personName2.should.have.property('value');
       //response.results.bindings[0].personName2.value.should.equal('Person 12');
       //console.log(JSON.stringify(response, null, 4))
+      done();
+    }, done);
+  });
+
+  it('should run a combined SPARQL query', function(done){
+    this.timeout(20000);
+    var docQuery = q.where(q.term('person1'));
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ppl:person1 foaf:knows ?o }"
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json',
+      query: myQuery,
+      docQuery: docQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2))
+      response.results.bindings.length.should.equal(1);
+      response.results.bindings[0].o.value.should.equal('http://people.org/person2');
+      done();
+    }, done);
+  });
+
+  it('should run a combined SPARQL query with invalid docQuery', function(done){
+    this.timeout(20000);
+    var docQuery = q.where(q.term('foo'));
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ppl:person1 foaf:knows ?o }"
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json',
+      query: myQuery,
+      docQuery: docQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2))
+      response.results.bindings.length.should.equal(0);
       done();
     }, done);
   });

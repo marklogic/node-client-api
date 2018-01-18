@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ describe('Document geo query test', function(){
           latitudeRawDouble: 12.34,
           longitudeRawDouble: 5.48
         }
-      } 
+      }
     },
     {
       uri: '/test/double/geo/doc2.json',
@@ -57,7 +57,7 @@ describe('Document geo query test', function(){
           latitudeRawDouble: 34.89,
           longitudeRawDouble: 88.27
         }
-      } 
+      }
     },
     {
       uri: '/test/double/geo/doc3.json',
@@ -73,14 +73,14 @@ describe('Document geo query test', function(){
           latitudeRawDouble: 101.09,
           longitudeRawDouble: 4.99
         }
-      } 
+      }
     },
     {
       uri: '/test/double/geo/doc4.xml',
       collections: ['geoDoubleCollection'],
       contentType: 'application/xml',
-      content: 
-        '<root>' + 
+      content:
+        '<root>' +
         '  <title>ben_red</title>' +
         '  <gElemPointWgs84Double>50.75,44.78</gElemPointWgs84Double>' +
         '  <gElemChildParentEtrs89Double>' +
@@ -96,8 +96,8 @@ describe('Document geo query test', function(){
       uri: '/test/double/geo/doc5.xml',
       collections: ['geoDoubleCollection'],
       contentType: 'application/xml',
-      content: 
-        '<root>' + 
+      content:
+        '<root>' +
         '  <title>george_blue</title>' +
         '  <gElemPointWgs84Double>250.35,144.77</gElemPointWgs84Double>' +
         '  <gElemChildParentEtrs89Double>' +
@@ -107,7 +107,7 @@ describe('Document geo query test', function(){
         '    <latitudeRawDouble>250.35</latitudeRawDouble>' +
         '    <longitudeRawDouble>144.77</longitudeRawDouble>' +
         '  </gElemPairRawDouble>' +
-        '  <gAttrPair latitudeRawDouble="250.35" longitudeRawDouble="144.77"/>' + 
+        '  <gAttrPair latitudeRawDouble="250.35" longitudeRawDouble="144.77"/>' +
         '</root>'
     },
     {
@@ -124,7 +124,7 @@ describe('Document geo query test', function(){
           latitudeRawDouble: 37.2768,
           longitudeRawDouble: -77.4008
         }
-      } 
+      }
     }
     ).
     result(function(response){done();}, done);
@@ -135,7 +135,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
             q.geoProperty('gElemPointWgs84Double'),
-            q.geoOptions('coordinate-system=wgs84/double'), 
+            q.geoOptions('coordinate-system=wgs84/double'),
             q.point(12.34, 5.48)
         )
       )
@@ -153,12 +153,12 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
           q.geoProperty(
-            q.property('gElemChildParentEtrs89Double'), 
+            q.property('gElemChildParentEtrs89Double'),
             q.property('gElemChildPointEtrs89Double')
-          ), 
-          q.geoOptions('coordinate-system=etrs89/double'), 
-          q.latlon(12.3467, 5.4843)     
-        ) 
+          ),
+          q.geoOptions('coordinate-system=etrs89/double'),
+          q.latlon(12.3467, 5.4843)
+        )
       )
     ).
     result(function(response) {
@@ -174,7 +174,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
           q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'),
-          q.geoOptions('coordinate-system=raw/double'), 
+          q.geoOptions('coordinate-system=raw/double'),
           q.latlon(12.34, 5.48)
         )
       )
@@ -191,8 +191,8 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'), 
-          q.geoOptions('coordinate-system=raw/double'), 
+          q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'),
+          q.geoOptions('coordinate-system=raw/double'),
           q.circle(10, 11.24, 5.67)
         )
       )
@@ -209,7 +209,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'), 
+          q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'),
           q.geoOptions('boundaries-included', 'coordinate-system=raw/double'),
           q.box(11.45, 4.43, 20.09, 10.38)
         )
@@ -227,7 +227,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoElementPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'), 
+          q.geoElementPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'),
           q.geoOptions('coordinate-system=raw/double'),
           q.latlon(50.75, 44.78)
         )
@@ -246,7 +246,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
             q.geoProperty('gElemPointWgs84Double'),
-            q.geoOptions('coordinate-system=wgs84/double'), 
+            q.geoOptions('coordinate-system=wgs84/double'),
             q.point(12, 5)
         )
       )
@@ -263,12 +263,12 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
           q.geoProperty(
-            q.property('gElemChildParentEtrs89Double'), 
+            q.property('gElemChildParentEtrs89Double'),
             q.property('gElemChildPointEtrs89Double')
-          ), 
-          q.geoOptions('coordinate-system=etrs89/double'), 
-          q.latlon(12, 5)     
-        ) 
+          ),
+          q.geoOptions('coordinate-system=etrs89/double'),
+          q.latlon(12, 5)
+        )
       )
     ).
     result(function(response) {
@@ -283,7 +283,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatial(
           q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'),
-          q.geoOptions('coordinate-system=raw/double'), 
+          q.geoOptions('coordinate-system=raw/double'),
           q.latlon(12, 5)
         )
       )
@@ -299,7 +299,7 @@ describe('Document geo query test', function(){
     dbWriter.documents.query(
       q.where(
         q.geospatial(
-          q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'), 
+          q.geoPropertyPair('gElemPairRawDouble', 'latitudeRawDouble', 'longitudeRawDouble'),
           q.geoOptions('boundaries-excluded', 'coordinate-system=raw/double'),
           q.box(12, 5, 20, 10)
         )

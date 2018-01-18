@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('when executing write to default graph', function() {
+describe('Issue 104', function() {
 
   before('add triples to default graph', function(done) {
     done();
@@ -46,21 +46,21 @@ describe('when executing write to default graph', function() {
       'ppl:person3 a ppl:Person ;',
       ' foaf:name "Person 3" .',
     ];
-     
+
     db.graphs.write({contentType: 'text/turtle', data: triples.join('\n')}).result(
-      function(response) { 
+      function(response) {
         //console.log(response);
         // response.length.should.equal(docCount);
         response.should.have.properties('defaultGraph', 'graph');
         response.defaultGraph.should.equal(true);
 
        done();
-      }, 
+      },
       function(error) {
         console.log(JSON.stringify(error, null, 2));
 
         done(error);
-      }, 
+      },
       done);
   });
 
@@ -69,6 +69,6 @@ describe('when executing write to default graph', function() {
       result(function(response) {
         done();
       }, done);
-  }); 
-	  
+  });
+
 });

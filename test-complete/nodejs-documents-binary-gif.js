@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Binary documents test', function(){
-  var fsPath = './node-client-api/test-complete/data/121-GIF-Image-GIF-gif_sample1.gif';
+  var fsPath = __dirname + '/data/121-GIF-Image-GIF-gif_sample1.gif';
   var uri = '/test/binary/stream/121-GIF-Image-GIF-gif_sample1.gif';
   var binaryValue = null;
 
@@ -46,7 +46,7 @@ describe('Binary documents test', function(){
       //console.log(response);
       response.documents[0].uri.should.equal(uri);
       done();
-    }, done);   
+    }, done);
   });
 
   it('should read the binary with Readable stream', function(done){
@@ -56,18 +56,18 @@ describe('Binary documents test', function(){
       documents[0].content.should.not.equal(null);
       //console.log(documents);
       done();
-    }, done);   
+    }, done);
   });
-  
+
   it('should remove the document', function(done){
     this.timeout(10000);
     dbWriter.documents.remove(uri).
     result(function(response) {
       response.should.be.ok;
       done();
-    }, done);   
+    }, done);
   });
-  
+
 
 });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('Graphs transaction remove test', function() {
   var graphUri   = 'marklogic.com/tx/peoplerem';
-  var graphPath  = './node-client-api/test-complete/data/people3.ttl';
-  var graphPath2 = './node-client-api/test-complete/data/people4.ttl';
-  
+  var graphPath  = __dirname + '/data/people3.ttl';
+  var graphPath2 = __dirname + '/data/people4.ttl';
+
   var tid = 0;
   var tid2 = 0;
 
@@ -52,8 +52,8 @@ describe('Graphs transaction remove test', function() {
       //console.log(JSON.stringify(response, null, 2));
       response.graph.should.equal('marklogic.com/tx/peoplerem');
       return db.graphs.read({
-        uri: graphUri, 
-        contentType: 'application/json', 
+        uri: graphUri,
+        contentType: 'application/json',
         txid: tid,
         category: 'content'
       }).result();
@@ -63,8 +63,8 @@ describe('Graphs transaction remove test', function() {
       //console.log(JSON.stringify(response, null, 2));
       response.should.have.property('http://people.org/person1');
       return db.graphs.read({
-        uri: graphUri, 
-        contentType: 'application/json', 
+        uri: graphUri,
+        contentType: 'application/json',
         txid: tid,
         category: 'metadata'
       }).result();
@@ -151,14 +151,14 @@ describe('Graphs transaction remove test', function() {
       //console.log('Write graph transaction 2');
       //console.log(JSON.stringify(response, null, 2));
       response.graph.should.equal('marklogic.com/tx/peoplerem');
-      return db.graphs.read({uri: graphUri, contentType: 'application/json', txid: tid2}).result(); 
+      return db.graphs.read({uri: graphUri, contentType: 'application/json', txid: tid2}).result();
     })
     .then(function(response) {
       //console.log('Read graph content transaction 2');
       //console.log(JSON.stringify(response, null, 2));
       response.should.have.property('http://people.org/person1');
       response.should.have.property('http://people.org/person2');
-      return db.graphs.read({uri: graphUri, contentType: 'application/json', txid: tid2, category: 'permissions'}).result(); 
+      return db.graphs.read({uri: graphUri, contentType: 'application/json', txid: tid2, category: 'permissions'}).result();
     })
     .then(function(response) {
       //console.log('Read graph permissions transaction 2');
@@ -186,19 +186,19 @@ describe('Graphs transaction remove test', function() {
       //console.log('Remove graph transaction 2');
       //console.log(JSON.stringify(response, null, 2));
       response.graph.should.equal('marklogic.com/tx/peoplerem');
-      return db.graphs.probe({uri: graphUri, txid: tid2}).result(); 
+      return db.graphs.probe({uri: graphUri, txid: tid2}).result();
     })
     .then(function(response) {
       //console.log('Probe removed graph');
       //console.log(JSON.stringify(response, null, 2));
       response.exists.should.equal(false);
-      return db.transactions.commit(tid2).result(); 
+      return db.transactions.commit(tid2).result();
     })
     .then(function(response) {
       //console.log('Commit transaction 2');
       //console.log(JSON.stringify(response, null, 2));
       response.finished.should.equal('commit');
-      return db.graphs.probe(graphUri).result(); 
+      return db.graphs.probe(graphUri).result();
     })
     .then(function(response) {
       //console.log('Probe removed committed graph');

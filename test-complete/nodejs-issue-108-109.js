@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var serviceName = 'issue-108-109';
-var servicePath = './node-client-api/test-complete/data/issue-108-109.sjs';
+var servicePath = __dirname + '/data/issue-108-109.sjs';
 
-describe('when executing resource services', function() {
+describe('Issue 108 - 109', function() {
 
   before('should write the extension service', function(done) {
     restAdminDB.config.resources.write(serviceName, 'javascript', fs.createReadStream(servicePath)).
@@ -39,7 +39,7 @@ describe('when executing resource services', function() {
 
   it('should get document', function(done){
     db.resources.get({
-      name: serviceName, 
+      name: serviceName,
       params: { a: 1, b: 2, c: 'three'}
     }).result(function(response) {
       response.length.should.equal(3);
@@ -59,7 +59,7 @@ describe('when executing resource services', function() {
         else if (resp.content.name === 'a') {
           resp.content.value.should.equal('three');
         }
-      } 
+      }
 
       done();
     }, function(error) {
@@ -71,17 +71,17 @@ describe('when executing resource services', function() {
 
   it('should put document', function(done){
     db.resources.put({
-      name: serviceName, 
+      name: serviceName,
       params: {
         basename: ['one', 'two']},
         documents: [
-        { 
+        {
           contentType: 'application/json',
-          content: {key1:'value1'} 
+          content: {key1:'value1'}
         },
-        { 
+        {
           contentType: 'application/json',
-          content: {key2:'value2'} 
+          content: {key2:'value2'}
         },
         ]
     }).result(function(response) {
@@ -102,5 +102,5 @@ describe('when executing resource services', function() {
       done();
     }, done);
   });
-	  
+
 });

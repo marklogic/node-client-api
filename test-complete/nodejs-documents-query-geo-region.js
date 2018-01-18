@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,84 +30,84 @@ var geoDataFiles = [
   {
     uri:'/geo/region/test/Equator-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Equator-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Equator-json.json')
   },{
     uri:'/geo/region/test/North-Pole-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-Pole-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/North-Pole-json.json')
   },{
     uri:'/geo/region/test/Prime-Meridian-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Prime-Meridian-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Prime-Meridian-json.json')
   },{
     uri:'/geo/region/test/South-More-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-More-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/South-More-json.json')
   },{
     uri:'/geo/region/test/Tropic-of-Cancer-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Cancer-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Cancer-json.json')
   },{
     uri:'/geo/region/test/International-Date-Line-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/International-Date-Line-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/International-Date-Line-json.json')
   },{
     uri:'/geo/region/test/North-West-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-West-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/North-West-json.json')
   },{
     uri:'/geo/region/test/South-East-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-East-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/South-East-json.json')
   },{
     uri:'/geo/region/test/South-Pole-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-Pole-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/South-Pole-json.json')
   },{
     uri:'/geo/region/test/Tropic-of-Capricorn-json.json',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Capricorn-json.json')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Capricorn-json.json')
   },{
     uri:'/geo/region/test/Equator.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Equator.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Equator.xml')
   },{
     uri:'/geo/region/test/North-Pole.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-Pole.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/North-Pole.xml')
   },{
     uri:'/geo/region/test/Prime-Meridian.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Prime-Meridian.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Prime-Meridian.xml')
   },{
     uri:'/geo/region/test/South-More.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-More.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/South-More.xml')
   },{
     uri:'/geo/region/test/Tropic-of-Cancer.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Cancer.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Cancer.xml')
   },{
     uri:'/geo/region/test/International-Date-Line.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/International-Date-Line.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/International-Date-Line.xml')
   },{
     uri:'/geo/region/test/North-West.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/North-West.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/North-West.xml')
   },{
     uri:'/geo/region/test/South-East.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-East.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/South-East.xml')
   },{
     uri:'/geo/region/test/South-Pole.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/South-Pole.xml')
+    content:fs.createReadStream(__dirname + '/data/geo/South-Pole.xml')
   },{
     uri:'/geo/region/test/Tropic-of-Capricorn.xml',
     collections:['/geo/region/test'],
-    content:fs.createReadStream('./node-client-api/test-complete/data/geo/Tropic-of-Capricorn.xml')
-  }  
+    content:fs.createReadStream(__dirname + '/data/geo/Tropic-of-Capricorn.xml')
+  }
 ];
 
 
@@ -124,8 +124,8 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point'),
-          'contains', 
-          //q.geoOptions('coordinate-system=wgs84'),   
+          'contains',
+          //q.geoOptions('coordinate-system=wgs84'),
           q.point(0, -66.09375)
         )
       )
@@ -144,8 +144,8 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/circle'),
-          'contains', 
-          //q.geoOptions('coordinate-system=wgs84/double'),   
+          'contains',
+          //q.geoOptions('coordinate-system=wgs84/double'),
           q.circle(6.897, q.point(0,-66.09375))
         )
       )
@@ -185,7 +185,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point'),
-          'intersects', 
+          'intersects',
           q.point(83.229523, -34.453123)
         )
       )
@@ -204,7 +204,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/polygon'),
-          'intersects', 
+          'intersects',
           q.box(-5.45, -76.35643, 5.35, -54.636)
         )
       )
@@ -223,19 +223,19 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/polygon'),
-          'intersects', 
+          'intersects',
           q.polygon(
-            [44.65, 88.64], 
-            [39.87, 97.74], 
-            [30.18, 101.1], 
-            [20.55, 102.32], 
+            [44.65, 88.64],
+            [39.87, 97.74],
+            [30.18, 101.1],
+            [20.55, 102.32],
             [8.04, 104.9],
             [5.24, 91.9],
             [2.22, 83.42],
             [-5.91, 72.86],
             [5.98, 66.63],
-            [8.21, 53.38], 
-            [20.14, 51.78], 
+            [8.21, 53.38],
+            [20.14, 51.78],
             [29.88, 57.83],
             [41.82, 58.1],
             [43.27, 69.97],
@@ -259,10 +259,10 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/complex-polygon'),
-          'intersects', 
+          'intersects',
           q.polygon(
             q.point(84, -37),
-            q.point(83, -36.5), 
+            q.point(83, -36.5),
             q.point(82, -36),
             q.point(84, -37)
           )
@@ -271,11 +271,11 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(4);
+      response.length.should.equal(2);
       response[0].uri.should.equal('/geo/region/test/North-Pole.xml');
       response[1].uri.should.equal('/geo/region/test/North-Pole-json.json');
-      response[2].uri.should.equal('/geo/region/test/Prime-Meridian.xml');
-      response[3].uri.should.equal('/geo/region/test/Prime-Meridian-json.json');
+      //response[2].uri.should.equal('/geo/region/test/Prime-Meridian.xml');
+      //response[3].uri.should.equal('/geo/region/test/Prime-Meridian-json.json');
       done();
     }, done);
   });
@@ -285,28 +285,28 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point'),
-          'within', 
+          'within',
           q.polygon(
-            [40.13, -52.96], 
-            [40.45, -36.61], 
-            [38.16, -13.48], 
-            [21.09, -1.1], 
-            [0.0, -17.46], 
-            [-17.38, -12.52], 
+            [40.13, -52.96],
+            [40.45, -36.61],
+            [38.16, -13.48],
+            [21.09, -1.1],
+            [0.0, -17.46],
+            [-17.38, -12.52],
             [-33.08, -20.47],
             [-51.46, -28.61],
-            [-65.33, -44.77], 
-            [-66.8, -66.0], 
+            [-65.33, -44.77],
+            [-66.8, -66.0],
             [-53.99, -83.54],
-            [-54.35, -105.49], 
+            [-54.35, -105.49],
             [-24.59, -99.85],
-            [-14.58, -110.86], 
-            [-0.0, -127.42], 
-            [13.44, -107.37], 
-            [35.78, -115.25], 
-            [53.21, -104.66], 
+            [-14.58, -110.86],
+            [-0.0, -127.42],
+            [13.44, -107.37],
+            [35.78, -115.25],
+            [53.21, -104.66],
             [48.69, -81.82],
-            [55.37, -66.0], 
+            [55.37, -66.0],
             [40.13, -52.96]
           )
         )
@@ -314,11 +314,9 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(4);
-      response[0].uri.should.equal('/geo/region/test/South-More-json.json');
-      response[1].uri.should.equal('/geo/region/test/Equator.xml');
-      response[2].uri.should.equal('/geo/region/test/Equator-json.json');
-      response[3].uri.should.equal('/geo/region/test/South-More.xml');
+      response.length.should.equal(2);
+      response[0].uri.should.equal('/geo/region/test/Equator.xml');
+      response[1].uri.should.equal('/geo/region/test/Equator-json.json');
       done();
     }, done);
   });
@@ -328,7 +326,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/polygon'),
-          'covered-by', 
+          'covered-by',
           q.circle(1200, q.point(83,-29.87))
         )
       )
@@ -347,7 +345,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/polygon'),
-          'covers', 
+          'covers',
           q.box(-5.45, -76.35643, 5.35, -54.636)
         )
       )
@@ -366,7 +364,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/polygon'),
-          'overlaps', 
+          'overlaps',
           q.box(80, -30, 88, -28)
         )
       )
@@ -385,7 +383,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point'),
-          'touches', 
+          'touches',
           q.box(37.463235, 0, 40, 5)
         )
       )
@@ -404,7 +402,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point', q.geoOptions(['coordinate-system=wgs84'])),
-          'disjoint', 
+          'disjoint',
           q.circle(120.5, q.point(-26.797920, 136.406250))
         )
       )
@@ -421,7 +419,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point', q.geoOptions(['coordinate-system=wgs84'])),
-          'equals', 
+          'equals',
           q.point(0, -66.09374),
           q.geoOptions(['slope-factor=1']),
           q.fragmentScope(['documents'])
@@ -430,9 +428,7 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(2);
-      response[0].uri.should.equal('/geo/region/test/Equator.xml');
-      response[1].uri.should.equal('/geo/region/test/Equator-json.json');
+      response.length.should.equal(0);
       done();
     }, done);
   });
@@ -449,9 +445,9 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(8);
-      response[0].uri.should.equal('/geo/region/test/International-Date-Line.xml');
-      response[7].uri.should.equal('/geo/region/test/North-West.xml');
+      response.length.should.equal(2);
+      response[0].uri.should.equal('/geo/region/test/Tropic-of-Cancer-json.json');
+      response[1].uri.should.equal('/geo/region/test/Tropic-of-Cancer.xml');
       done();
     }, done);
   });
@@ -481,7 +477,7 @@ describe('Document geo query test', function(){
       q.where(
         q.geospatialRegion(
           q.geoPath('/root/item/point', q.geoOptions(['coordinate-system=wgs84'])),
-          'equals', 
+          'equals',
           q.point(0, -66.09374),
           q.geoOptions(['slope-factor=1']),
           q.fragmentScope('properties')

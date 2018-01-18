@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,7 +159,7 @@ describe('when executing resource services', function(){
         })
       .catch(done);
     });
-    // TODO: formats, multiple, single, or empty response, chunked streams, JavaScript resource services    
+    // TODO: formats, multiple, single, or empty response, chunked streams, JavaScript resource services
   });
   describe('using JavaScript', function() {
     var jsServiceName = 'versionService';

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('overwrite graph test', function(){
   var graphUri   = 'marklogic.com/overwrite/people';
-  var graphPath1  = './node-client-api/test-complete/data/people3.ttl';
-  var graphPath2  = './node-client-api/test-complete/data/people4.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
+  var graphPath1  = __dirname + '/data/people3.ttl';
+  var graphPath2  = __dirname + '/data/people4.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
 
   it('should write the graph', function(done){
     this.timeout(10000);
@@ -79,7 +79,7 @@ describe('overwrite graph test', function(){
 
   it('should list the overwritten graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       //console.log(JSON.stringify(collections, null, 2))
       collections.some(function(collection){
@@ -91,7 +91,7 @@ describe('overwrite graph test', function(){
 
   /*it('should list the overwritten graph', function(done){
     this.timeout(10000);
-    db.graphs.list('foo/bar'). 
+    db.graphs.list('foo/bar').
     result(function(response){
       //console.log(JSON.stringify(response, null, 4))
       done();

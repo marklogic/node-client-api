@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ var q = marklogic.queryBuilder;
 var p = marklogic.patchBuilder;
 
 describe('Temporal patch test', function() {
-  
-  var docuri = 'temporalDoc.json'; 
- 
+
+  var docuri = 'temporalDoc.json';
+
   before(function(done) {
     this.timeout(10000);
     dbWriter.documents.write({
@@ -60,7 +60,7 @@ describe('Temporal patch test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }).result(function(response){done();})
@@ -146,7 +146,7 @@ describe('Temporal patch test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();

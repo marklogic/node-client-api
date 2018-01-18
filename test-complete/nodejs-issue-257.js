@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,9 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var serviceName = 'issue-257';
-var servicePath = './node-client-api/test-complete/data/issue-257.sjs';
+var servicePath = __dirname + '/data/issue-257.sjs';
 
-describe('issue 257', function() {
+describe('Issue 257', function() {
 
   before('should write the extension service', function(done) {
     restAdminDB.config.resources.write(serviceName, 'javascript', fs.createReadStream(servicePath)).
@@ -39,7 +39,7 @@ describe('issue 257', function() {
 
   it('should post without document property', function(done){
     db.resources.post({
-      name: serviceName 
+      name: serviceName
     }).result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.should.equal('POST worked');
@@ -53,5 +53,5 @@ describe('issue 257', function() {
       done();
     }, done);
   });
-	  
+
 });

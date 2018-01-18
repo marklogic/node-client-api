@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Binary documents test', function(){
-  var binaryPath = './node-client-api/test-complete/data/mediaCQ.mp3';
+  var binaryPath = __dirname + '/data/mediaCQ.mp3';
   var uri = '/test/binary/range/someMp3File.mp3';
   var binaryValue = null;
   before(function(done){
@@ -40,7 +40,7 @@ describe('Binary documents test', function(){
       pipe(concatStream({encoding: 'buffer'}, function(value){
         binaryValue = value;
         done();
-      }));    
+      }));
   });
 
   it('should write the binary with Readable stream', function(done){
@@ -56,7 +56,7 @@ describe('Binary documents test', function(){
     result(function(response){
       response.should.have.property('documents');
       done();
-    }, done);   
+    }, done);
   });
 
   it('should read the binary with range', function(done){
@@ -67,7 +67,7 @@ describe('Binary documents test', function(){
       //console.log(JSON.stringify(documents[0], null, 2));
       JSON.stringify(documents[0].content[0]).should.equal('80');
       done();
-    }, done);   
+    }, done);
   });
 
   it('should read the binary with invalid range', function(done){
@@ -81,9 +81,9 @@ describe('Binary documents test', function(){
       error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
       //console.log(JSON.stringify(error, null, 2));
       done();
-    });   
+    });
   });
- 
+
   it('should read the binary with invalid float range', function(done){
     this.timeout(10000);
     var uri = '/test/write/range/someMp3File.mp3';
@@ -95,7 +95,7 @@ describe('Binary documents test', function(){
       error.body.errorResponse.messageCode.should.equal('REST-INVALIDPARAM');
       //console.log(JSON.stringify(error, null, 2));
       done();
-    });   
+    });
   });
 
   it('should read the binary with reversed range', function(done){
@@ -111,7 +111,7 @@ describe('Binary documents test', function(){
       //console.log(error.toString());
       strError.should.equal('Error: start length greater than or equal to end length for byte range: 15,10');
       done();
-    }   
+    }
   });
 
   it('should read the binary without start range', function(done){
@@ -127,9 +127,9 @@ describe('Binary documents test', function(){
       //console.log(error.toString());
       strError.should.equal('Error: start length for byte range parameter is not integer: undefined');
       done();
-    }   
+    }
   });
-  
+
   it('should delete mp3 file', function(done){
     dbAdmin.documents.removeAll({
       all: true
@@ -137,7 +137,7 @@ describe('Binary documents test', function(){
     result(function(response) {
       done();
     }, done);
-  }); 
+  });
 
 });
 

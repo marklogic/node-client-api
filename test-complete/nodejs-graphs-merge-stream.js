@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('merge stream graph test', function(){
   var graphUri   = 'marklogic.com/stream/merge/people';
-  var graphPath1  = './node-client-api/test-complete/data/people3.ttl';
-  var graphPath2  = './node-client-api/test-complete/data/people4.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
+  var graphPath1  = __dirname + '/data/people3.ttl';
+  var graphPath2  = __dirname + '/data/people4.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
 
   it('should write the first graph with stream', function(done){
     this.timeout(10000);
@@ -56,7 +56,7 @@ describe('merge stream graph test', function(){
     fs.createReadStream(graphPath2).pipe(ws);
   });
 
-  it('should wait for the graphs to get merged', function(done) { 
+  it('should wait for the graphs to get merged', function(done) {
     setTimeout(function() {
       done();
     }, 10000);
@@ -81,7 +81,7 @@ describe('merge stream graph test', function(){
 
   it('should list the merged graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       //console.log(collections);
       collections.some(function(collection){

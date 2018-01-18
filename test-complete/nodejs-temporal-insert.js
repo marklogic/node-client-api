@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal insert test', function() {
-  
+
   var docuri = 'temporalDoc.json';
 
   before(function(done) {
@@ -59,7 +59,7 @@ describe('Temporal insert test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }
@@ -108,7 +108,7 @@ describe('Temporal insert test', function() {
           //console.log("Invalid Collection: " + coll);
           should.equal(false, true);
         }
-      }      
+      }
       done();
     }, done);
   });
@@ -160,7 +160,7 @@ describe('Temporal insert test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();
@@ -177,5 +177,5 @@ describe('Temporal insert test', function() {
     })
     .catch(done);
   });
-  
+
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ if (fs.existsSync('node_modules/marklogic')) {
 var testconfig = null;
 switch(locationType) {
 case packageLocation:
-  testconfig = require('../etc/test-config.js');  
+  testconfig = require('../etc/test-config.js');
   break;
 default:
-  testconfig = require('./example-config.js');  
+  testconfig = require('./example-config.js');
   break;
 }
 
@@ -45,10 +45,10 @@ function locateRequire() {
   if (marklogic === null) {
     switch(locationType) {
     case packageLocation:
-      marklogic = require('../');  
+      marklogic = require('../');
       break;
     default:
-      marklogic = require('marklogic');  
+      marklogic = require('marklogic');
       break;
     }
   }
@@ -79,7 +79,7 @@ function pathToData() {
 
 var queueRunner = {
     mode:  'waiting',
-    queue: []  
+    queue: []
 };
 function addScript(script) {
   if (queueRunner.mode === 'waiting' && queueRunner.queue.length === 0) {

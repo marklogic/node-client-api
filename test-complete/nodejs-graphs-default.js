@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('default graph test', function(){
   var graphUri   = 'marklogic.com/defafult/people';
-  var graphPath  = './node-client-api/test-complete/data/people.ttl';
-  var sparqlPath = './node-client-api/test-complete/data/people.rq';
-  var sparqlPath2 = './node-client-api/test-complete/data/people2.rq';
+  var graphPath  = __dirname + '/data/people.ttl';
+  var sparqlPath = __dirname + '/data/people.rq';
+  var sparqlPath2 = __dirname + '/data/people2.rq';
   var defGraphUri = 'http://marklogic.com/semantics#default-graph';
 
   it('should write the default graph', function(done){
@@ -68,7 +68,7 @@ describe('default graph test', function(){
 
   it('should list the graph', function(done){
     this.timeout(10000);
-    db.graphs.list(). 
+    db.graphs.list().
     result(function(collections){
       collections.some(function(collection){
         return collection === defGraphUri;
@@ -101,15 +101,54 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ?s foaf:knows ppl:person8 }" 
+                  "WHERE { ?s foaf:knows ppl:person8 }"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       //query: fs.createReadStream(sparqlPath2)
       query: myQuery
     }).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
       response.results.bindings[0].s.value.should.equal('http://people.org/person6');
+      done();
+    }, done);
+  });
+
+  it('should run combined SPARQL query', function(done){
+    this.timeout(10000);
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ppl:person1 foaf:knows ?o }"
+    var docQuery = q.where(q.term('person5'));
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json',
+      query: myQuery,
+      docQuery: docQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.results.bindings.length.should.equal(4);
+      response.results.bindings[0].o.value.should.equal('http://people.org/person2');
+      done();
+    }, done);
+  });
+
+  it('should run combined SPARQL query with invalid docQuery', function(done){
+    this.timeout(10000);
+    var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                  "PREFIX ppl:  <http://people.org/>" +
+                  "SELECT *" +
+                  "WHERE { ppl:person1 foaf:knows ?o }"
+    var docQuery = q.where(q.term('foo'));
+    db.graphs.sparql({
+      contentType: 'application/sparql-results+json',
+      query: myQuery,
+      docQuery: docQuery
+    }).
+    result(function(response){
+      //console.log(JSON.stringify(response, null, 2));
+      response.results.bindings.length.should.equal(0);
       done();
     }, done);
   });

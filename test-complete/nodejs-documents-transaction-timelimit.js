@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var tid = null;
 
 describe('Document transaction test', function() {
-  
+
   // Set transaction time limit to be 1 second
  /* it('should commit the write document', function(done) {
     db.transactions.open({transactionName: "nodeTransaction", timeLimit: 1}).result().
@@ -37,7 +37,7 @@ describe('Document transaction test', function() {
         contentType: 'application/json',
         content: {firstname: "John", lastname: "Doe", txKey: tid}
       }).result(function(response) {done();}, done);
-    }) 
+    })
   });
 
   // Read about transaction status
@@ -70,7 +70,7 @@ it('should commit the write document', function(done) {
       .then(function(response) {
       //console.log(JSON.stringify(response, null, 2));
      response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
-      response['transaction-status']['time-limit'].should.equal('2');
+      parseInt(response['transaction-status']['time-limit']).should.be.above(0);
     done();
     }, done);
     /*.catch(function(error) {
@@ -91,7 +91,7 @@ it('should commit the write document', function(done) {
       db.documents.read({uris:'/test/transaction/doc1.json', txid: tid,}).result(function(response) {
         console.log("Response: " + JSON.stringify(response));
         done(new Error("Response did not time out"));
-    }, 
+    },
     function(err) {
       err.statusCode.should.equal(400);
       err.body.errorResponse.messageCode.should.equal("XDMP-NOTXN");
@@ -106,18 +106,18 @@ it('should commit the write document', function(done) {
       function(response) {
         console.log("Response: " + JSON.stringify(response));
         done(new Error("Response did not time out"));
-      }, 
+      },
       function(err) {
         err.statusCode.should.equal(400);
         err.body.errorResponse.messageCode.should.equal("XDMP-NOTXN");
         done();
       });
-  });  
+  });
 
   it('should remove all documents', function(done) {
       dbAdmin.documents.removeAll({all: true}).
       result(function(response) {
         done();
       }, done);
-  }); 
+  });
 });

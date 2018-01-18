@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,13 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('patch datatypes test', function(){
 
   var replaceModule = 'objectify.xqy';
-  var replacePath = './node-client-api/test-complete/data/objectify.xqy';
+  var replacePath = __dirname + '/data/objectify.xqy';
 
   it('should write the replacement library for the test', function(done){
     this.timeout(10000);
     dbAdmin.config.patch.replace.write(
-      replaceModule, 
-      [{'role-name':'app-user', capabilities:['execute']}], 
+      replaceModule,
+      [{'role-name':'app-user', capabilities:['execute']}],
       fs.createReadStream(replacePath)).
     result(function(response){
       done();
@@ -46,8 +46,8 @@ describe('patch datatypes test', function(){
 
   it('should write document for test', function(done){
     dbWriter.documents.write({
-      uri: '/test/patch/datatypes/patchDatatypes1.json', 
-      collections: ['patchDatatypesCollection'], 
+      uri: '/test/patch/datatypes/patchDatatypes1.json',
+      collections: ['patchDatatypesCollection'],
       contentType: 'application/json',
       content: {
         title: 'hello',

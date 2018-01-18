@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ var q = marklogic.queryBuilder;
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Issue 99 test', function(){
+describe('Issue 99', function(){
 
   it('should do javascript eval on json', function(done){
     debugger;
@@ -51,7 +51,7 @@ describe('Issue 99 test', function(){
     function(err) {
       console.log(err);
       done(err);
-    }, 
+    },
     done);
   });
 
@@ -63,7 +63,7 @@ describe('Issue 99 test', function(){
       done();
     }, done);
   });
-  
+
 
 
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ describe('Transform test with xquery', function(){
     dbWriter.documents.write({
       uri: '/test/transform/xquerytransform.json',
       contentType: 'application/json',
-      content: {title: 'transform test with xquery'} 
+      content: {title: 'transform test with xquery'}
     }).
     result(function(response){done();}, done);
   });
 
   var transformName = 'flagParam';
-  var transformPath = './node-client-api/test-complete/data/flagTransform.xqy';
+  var transformPath = __dirname + '/data/flagTransform.xqy';
 
   it('should write the transform', function(done){
     this.timeout(10000);
@@ -57,7 +57,7 @@ describe('Transform test with xquery', function(){
       done();
     }, done);
   });
-    
+
   it('should list the transform', function(done){
     dbAdmin.config.transforms.list().
     result(function(response){
@@ -65,8 +65,8 @@ describe('Transform test with xquery', function(){
       done();
     }, done);
   });
-  
-  var uri = '/test/transform/xquerytransform.json'; 
+
+  var uri = '/test/transform/xquerytransform.json';
 
   it('should modify during read', function(done){
     db.documents.read({

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Write Document Stream Test', function() {
                           contentType: 'application/json'
                         });
       writeStream.result(function(response) {done();}, done);
-      writeStream.write('{"title":"hello"}', 'utf8'); 
+      writeStream.write('{"title":"hello"}', 'utf8');
       writeStream.end();
     });
     it('should read back the value', function(done){
@@ -44,7 +44,7 @@ describe('Write Document Stream Test', function() {
         done();
       }, done);
     });
-  });      
+  });
 
   describe('write json stream in chunk', function() {
     before(function(done) {
@@ -54,8 +54,8 @@ describe('Write Document Stream Test', function() {
                           contentType: 'application/json'
                         });
       writeStream.result(function(response) {done();}, done);
-      writeStream.write('{"title":"El Dorado", ', 'utf8'); 
-      writeStream.write('"count":5}', 'utf8'); 
+      writeStream.write('{"title":"El Dorado", ', 'utf8');
+      writeStream.write('"count":5}', 'utf8');
       writeStream.end();
     });
     it('should read back the value', function(done){
@@ -66,7 +66,7 @@ describe('Write Document Stream Test', function() {
       }, done);
     });
   });
-      
+
   describe('write xml stream in chunk', function() {
     before(function(done) {
       this.timeout(10000);
@@ -75,8 +75,8 @@ describe('Write Document Stream Test', function() {
                           contentType: 'application/xml'
                         });
       writeStream.result(function(response) {done();}, done);
-      writeStream.write('<a><b>hello', 'utf8'); 
-      writeStream.write('</b></a>', 'utf8'); 
+      writeStream.write('<a><b>hello', 'utf8');
+      writeStream.write('</b></a>', 'utf8');
       writeStream.end();
     });
     it('should read back the value', function(done){
@@ -87,12 +87,12 @@ describe('Write Document Stream Test', function() {
       }, done);
     });
   });
-      
+
   describe('write transform for a test', function() {
     before(function(done) {
       this.timeout(10000);
       var transformName = 'employeeStylesheet';
-      var transformPath = './node-client-api/test-complete/data/employeeStylesheet.xslt';
+      var transformPath = __dirname + '/data/employeeStylesheet.xslt';
       fs.createReadStream(transformPath).
       pipe(concatStream({encoding:'string'}, function(source) {
         dbAdmin.config.transforms.write(transformName, 'xslt', source).
@@ -114,8 +114,8 @@ describe('Write Document Stream Test', function() {
                           transform: [transformName]
                         });
       writeStream.result(function(response) {done();}, done);
-      writeStream.write('<Company><Employee><name>John', 'utf8'); 
-      writeStream.write('</name></Employee></Company>', 'utf8'); 
+      writeStream.write('<Company><Employee><name>John', 'utf8');
+      writeStream.write('</name></Employee></Company>', 'utf8');
       writeStream.end();
     });
     it('should read back the value', function(done){

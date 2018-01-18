@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
+var restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 /* ASSUMPTION: this test will not be run more frequently
  * than once every 10 seconds. To run more frequently,
@@ -83,7 +84,7 @@ describe('temporal document', function() {
     .then(function(documents){
       documents.should.have.property('length');
       documents.length.should.equal(2);
-      var latestNow = Date.now();      
+      var latestNow = Date.now();
       for (var i=0; i < 2; i++) {
         var document = documents[i];
         document.should.have.property('content');
@@ -92,6 +93,16 @@ describe('temporal document', function() {
         latestNow.should.be.greaterThan(documentStart);
       }
       done();})
+    .catch(done);
+  });
+  it('should advance the LSQT', function(done) {
+    restAdminDB.documents.advanceLsqt('temporalCollection', 60)
+    .result(function(response) {
+      response.should.have.property('lsqt');
+      var parsed = Date.parse(response['lsqt']);
+      valcheck.isNumber(parsed).should.equal(true);
+      done();
+      })
     .catch(done);
   });
 /* TODO: requires a REST interface to temporal:advance-lsqt() to create the collection LSQT document
@@ -160,7 +171,7 @@ describe('temporal document', function() {
     .then(function(documents) {
       documents.should.have.property('length');
       documents.length.should.equal(1);
-      var latestNow = Date.now();      
+      var latestNow = Date.now();
       var document = documents[0];
       document.should.have.property('content');
       document.content.should.have.property('systemEndTime');

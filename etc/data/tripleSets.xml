@@ -1,0 +1,64 @@
+<?xml  version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2016-2018 MarkLogic Corporation -->
+<tripleSets xmlns:sem="http://marklogic.com/semantics">
+<masterRelated>
+  <sem:triples>
+  <sem:triple>
+    <sem:subject>/datastore/id#A</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/title</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">The A datastore</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#A</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/type</sem:predicate>
+    <sem:object>http://purl.org/dc/dcmitype/Dataset</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#A</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/description</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">Describing A</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#A</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/alternative</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">The Awesome datastore</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#B</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/title</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">The B datastore</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#B</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/type</sem:predicate>
+    <sem:object>http://purl.org/dc/dcmitype/Dataset</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#B</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/description</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">Describing B</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/datastore/id#B</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/modified</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#date">2015-12-14</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/master/id#1</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/identifier</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#int">1</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/master/id#1</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/source</sem:predicate>
+    <sem:object>/datastore/id#A</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/master/id#1</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/description</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">First description</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/master/id#2</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/identifier</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#int">2</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/master/id#2</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/source</sem:predicate>
+    <sem:object>/datastore/id#B</sem:object></sem:triple>
+  <sem:triple>
+    <sem:subject>/master/id#2</sem:subject>
+    <sem:predicate>http://purl.org/dc/terms/description</sem:predicate>
+    <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">Second description</sem:object></sem:triple>
+  </sem:triples>
+</masterRelated>
+</tripleSets>

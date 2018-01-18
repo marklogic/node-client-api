@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,15 +31,15 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Config patch negative test', function(){
 
   var replaceModule = 'objectify.xqy';
-  var replacePath = './node-client-api/test-complete/data/objectify.xqy';
+  var replacePath = __dirname + '/data/objectify.xqy';
   var replaceModuleInvalid = 'objectifyInvalid.xqy';
-  var replacePathInvalid = './node-client-api/test-complete/data/objectifyInvalid.xqy';
+  var replacePathInvalid = __dirname + '/data/objectifyInvalid.xqy';
 
   it('should fail to write replacement library with reader user', function(done){
     this.timeout(10000);
     db.config.patch.replace.write(
-      replaceModule, 
-      [{'role-name':'app-user', capabilities:['execute']}], 
+      replaceModule,
+      [{'role-name':'app-user', capabilities:['execute']}],
       fs.createReadStream(replacePath)).
     result(function(response) {
       response.should.equal('SHOULD HAVE FAILED');
@@ -76,8 +76,8 @@ describe('Config patch negative test', function(){
 
   it('should write document for test', function(done){
     dbWriter.documents.write({
-      uri: '/test/config/patch/replace/negative/patchReplaceNegative1.json', 
-      collections: ['patchReplaceCollection'], 
+      uri: '/test/config/patch/replace/negative/patchReplaceNegative1.json',
+      collections: ['patchReplaceCollection'],
       contentType: 'application/json',
       content: {
         title: 'this is patch replace'

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 describe('sparql update test', function(){
   var graphUri   = 'http://marklogic.com/sparqlupdate/people';
   var mlGraphUri   = 'http://marklogic.com/sparqlupdate/mladd';
-  var mlGraphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
-  var inferGraphPath  = './node-client-api/test-complete/data/inferenceData.nt';
+  var mlGraphPath  = __dirname + '/data/mlgraph.ttl';
+  var inferGraphPath  = __dirname + '/data/inferenceData.nt';
 
   before('should drop all graphs', function(done){
     var myData = "DROP ALL ;"
@@ -60,9 +60,9 @@ describe('sparql update test', function(){
     }).
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
-      response.defaultGraph.should.equal(true);
+      response.defaultGraph.should.equal(false);
       (response.graph === null).should.be.true;
-      response.graphType.should.equal('default');
+      response.graphType.should.equal('inline');
       done();
     }, done);
   });
@@ -139,7 +139,7 @@ describe('sparql update test', function(){
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      //console.log(error); 
+      //console.log(error);
       error.body.errorResponse.message.should.containEql('XDMP-SPQLGRAPHEXIST');
       done();
     });
@@ -147,8 +147,8 @@ describe('sparql update test', function(){
 
   it('should write to the existing graph', function(done){
     db.graphs.write({
-      uri: 'http://marklogic.com/sparqlupdate/people', 
-      contentType: 'text/turtle', 
+      uri: 'http://marklogic.com/sparqlupdate/people',
+      contentType: 'text/turtle',
       data: fs.createReadStream(mlGraphPath)
     }).
     result(function(response){
@@ -169,7 +169,7 @@ describe('sparql update test', function(){
                   "          ?p ?o .\n" +
                   "}"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery
     }).
     result(function(response){
@@ -218,7 +218,7 @@ describe('sparql update test', function(){
                   "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
                   "WHERE {?s ?p ?o}"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery
     }).
     result(function(response){
@@ -251,7 +251,7 @@ describe('sparql update test', function(){
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      //console.log(error); 
+      //console.log(error);
       error.body.errorResponse.message.should.containEql('Unexpected token syntax error, unexpected {, expecting DELETE or INSERT');
       done();
     });
@@ -274,7 +274,7 @@ describe('sparql update test', function(){
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
       response.defaultGraph.should.equal(false);
-      response.graphType.should.equal('named');
+      response.graphType.should.equal('inline');
       done();
     }, done);
   });
@@ -298,7 +298,7 @@ describe('sparql update test', function(){
       done();
     }, function(error) {
       //console.log(JSON.stringify(error, null, 2));
-      error.body.errorResponse.message.should.containEql('Invalid type in optimize: -10 is not a value of type unsignedInt');
+      error.body.errorResponse.message.should.containEql('Invalid parameter: optimize parameter not convertible to xs:unsignedLong value: -10');
       done();
     });
   });
@@ -345,7 +345,7 @@ describe('sparql update test', function(){
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
       response.defaultGraph.should.equal(false);
-      response.graphType.should.equal('named');
+      response.graphType.should.equal('inline');
       done();
     }, done);
   });
@@ -354,7 +354,7 @@ describe('sparql update test', function(){
   it('should do sparql update on with transaction', function(done){
     db.transactions.open({transactionName: 'sparqlUpdateTransaction', timeLimit: 30})
     .result(function(response) {
-      tid = response.txid;  
+      tid = response.txid;
       var myData = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
                    "INSERT DATA\n" +
                    "{\n" +
@@ -363,10 +363,10 @@ describe('sparql update test', function(){
                    "    bb:987 bb:id 987 .\n" +
                    "  }\n" +
                    "}"
-     
+
       return db.graphs.sparqlUpdate({
         data: myData,
-        txid: tid 
+        txid: tid
       }).result();
     })
     .then(function(response){
@@ -399,7 +399,7 @@ describe('sparql update test', function(){
                   "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
                   "WHERE {?s bb:id 987}"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery
     }).
     result(function(response){
@@ -434,7 +434,7 @@ describe('sparql update test', function(){
                   "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
                   "WHERE {?s bb:id 7878}"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery
     }).
     result(function(response){
@@ -446,8 +446,8 @@ describe('sparql update test', function(){
 
   it('should write graph for inference', function(done){
     db.graphs.write({
-      uri: 'http://marklogic.com/sparqlupdate/infer', 
-      contentType: 'application/n-triples', 
+      uri: 'http://marklogic.com/sparqlupdate/infer',
+      contentType: 'application/n-triples',
       data: fs.createReadStream(inferGraphPath)
     }).
     result(function(response){
@@ -475,7 +475,7 @@ describe('sparql update test', function(){
       done();
     }, done);
   });
-  
+
   it('should create the graph-Bug38274', function(done){
     var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;"
     db.graphs.sparqlUpdate('CREATE GRAPH <http://marklogic.com/sparqlupdate/peoplqe> ;').

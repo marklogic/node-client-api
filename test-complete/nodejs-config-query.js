@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@ describe('Config query test', function(){
   var dbDir = '/marklogic/query/custom/';
   var dbModule = 'directoryConstraint.xqy';
   var dbPath = dbDir + dbModule;
-  var fsPath = './node-client-api/test-complete/data/directoryConstraint.xqy';
+  var fsPath = __dirname + '/data/directoryConstraint.xqy';
 
   it('should write the custom query', function(done){
     this.timeout(10000);
     dbAdmin.config.query.custom.write(
-      dbModule, 
-      [{'role-name':'app-user', capabilities:['execute']}], 
+      dbModule,
+      [{'role-name':'app-user', capabilities:['execute']}],
       fs.createReadStream(fsPath)).
     result(function(response){
       //console.log(response);
@@ -56,7 +56,7 @@ describe('Config query test', function(){
       done();
     }, done);
   });
-    
+
   it('should list the custom query', function(done){
     dbAdmin.config.query.custom.list().
     result(function(response){
@@ -89,8 +89,8 @@ describe('Config query test', function(){
   it('should write the custom query for test', function(done){
     this.timeout(10000);
     dbAdmin.config.query.custom.write(
-      dbModule, 
-      [{'role-name':'app-user', capabilities:['execute']}], 
+      dbModule,
+      [{'role-name':'app-user', capabilities:['execute']}],
       fs.createReadStream(fsPath)).
     result(function(response){
       done();
@@ -99,8 +99,8 @@ describe('Config query test', function(){
 
   it('should write document for test', function(done){
     dbWriter.documents.write({
-      uri: '/test/custom/query/customQuery1.json', 
-      collections: ['customCollection'], 
+      uri: '/test/custom/query/customQuery1.json',
+      collections: ['customCollection'],
       contentType: 'application/json',
       content: {
         title: 'this is custom query'

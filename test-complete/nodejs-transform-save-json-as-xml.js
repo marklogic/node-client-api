@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ describe('Transform save json as xml', function(){
     dbWriter.documents.write({
       uri: '/test/transform/savejsonasxmltransform.xml',
       contentType: 'application/json',
-      content: {name: 'bob'} 
+      content: {name: 'bob'}
     }).
     result(function(response){done();}, done);
   });
 
   var transformName = 'to-xml';
-  var transformPath = './node-client-api/test-complete/data/to-xml.xqy';
+  var transformPath = __dirname + '/data/to-xml.xqy';
 
   it('should write the transform', function(done){
     this.timeout(10000);
@@ -57,7 +57,7 @@ describe('Transform save json as xml', function(){
       done();
     }, done);
   });
-    
+
   it('should list the transform', function(done){
     dbAdmin.config.transforms.list().
     result(function(response){
@@ -65,8 +65,8 @@ describe('Transform save json as xml', function(){
       done();
     }, done);
   });
-  
-  var uri = '/test/transform/savejsonasxmltransform.xml'; 
+
+  var uri = '/test/transform/savejsonasxmltransform.xml';
 
   it('should modify during read', function(done){
     db.documents.read({

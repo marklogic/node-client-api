@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Extension library test', function(){
       uri: '/test/transform/employee.xml',
       collections: ['employee'],
       contentType: 'application/xml',
-      content: '<Company><Employee><name>John</name></Employee></Company>' 
+      content: '<Company><Employee><name>John</name></Employee></Company>'
     }).
     result(function(response){done();}, done);
   });
@@ -51,8 +51,8 @@ describe('Extension library test', function(){
          done();
        });
   });
-  
-  var uri = '/test/transform/employee.xml'; 
+
+  var uri = '/test/transform/employee.xml';
 
   it('should modify during read -- negative with unistalled tranform', function(done){
     db.read({

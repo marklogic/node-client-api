@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal protect delete test', function() {
-  
+
   var docuri = 'temporalDeleteDoc1.json';
 
   before(function(done) {
@@ -59,7 +59,7 @@ describe('Temporal protect delete test', function() {
         },
         'Address': "999 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }
@@ -109,14 +109,14 @@ describe('Temporal protect delete test', function() {
         },
         'Address': "888 Skyway Park",
         'uri': "javaSingleDoc1.json",
-        id: 12, 
+        id: 12,
         name: 'Jason'
       }
     }).result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.documents[0].uri.should.equal(docuri);
       done();
-    }, done); 
+    }, done);
   });
 
   it('should verify the document', function(done) {
@@ -250,7 +250,7 @@ describe('Temporal protect delete test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();
@@ -266,5 +266,5 @@ describe('Temporal protect delete test', function() {
       done();
     }, done);
   });
-  
+
 });

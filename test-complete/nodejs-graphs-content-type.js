@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('content type graph test', function(){
   var graphUri   = 'http://marklogic.com/graphs/content#type';
-  var graphPath  = './node-client-api/test-complete/data/mlgraph.ttl';
+  var graphPath  = __dirname + '/data/mlgraph.ttl';
 
   before('should write the graph', function(done){
     this.timeout(10000);
@@ -115,7 +115,7 @@ describe('content type graph test', function(){
                   "FROM <http://marklogic.com/graphs/content#type>\n" +
                   "WHERE {?s ad:firstName 'John'}"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+xml', 
+      contentType: 'application/sparql-results+xml',
       query: myQuery
     }).
     result(function(response){
@@ -132,7 +132,7 @@ describe('content type graph test', function(){
                   "FROM <http://marklogic.com/graphs/content#type>\n" +
                   "WHERE {?s ad:firstName 'John'}"
     db.graphs.sparql({
-      contentType: 'text/csv', 
+      contentType: 'text/csv',
       query: myQuery
     }).
     result(function(response){
@@ -149,7 +149,7 @@ describe('content type graph test', function(){
                   "FROM <http://marklogic.com/graphs/content#type>\n" +
                   "WHERE {?s ad:firstName 'John'}"
     db.graphs.sparql({
-      contentType: 'text/html', 
+      contentType: 'text/html',
       query: myQuery
     }).
     result(function(response){
@@ -164,7 +164,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
-      contentType: 'application/n-triples', 
+      contentType: 'application/n-triples',
       query: myQuery
     }).
     result(function(response){
@@ -178,7 +178,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
-      contentType: 'application/n-quads', 
+      contentType: 'application/n-quads',
       query: myQuery
     }).
     result(function(response){
@@ -192,7 +192,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
-      contentType: 'application/sparql-results+json', 
+      contentType: 'application/sparql-results+json',
       query: myQuery
     }).
     result(function(response){
@@ -209,7 +209,7 @@ describe('content type graph test', function(){
     this.timeout(10000);
     var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
     db.graphs.sparql({
-      contentType: 'application/rdf+xml', 
+      contentType: 'application/rdf+xml',
       query: myQuery
     }).
     result(function(response){

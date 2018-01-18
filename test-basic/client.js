@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,11 @@ var q = marklogic.queryBuilder;
 
 var YAgent = require('yakaa');
 
-// TODO: setup should create user with eval-in role
+// 'rest-evaluator' user can evaluate against an alternate db:
+// http://docs.marklogic.com/guide/rest-dev/intro#id_72318
 var connection = {
-    user:     'admin',
-    password: 'admin'
+    user:     testconfig.restEvaluatorConnection.user,
+    password: testconfig.restEvaluatorConnection.password
     };
 Object.keys(testconfig.restWriterConnection).forEach(function(key){
   if (connection[key] === undefined) {
@@ -99,6 +100,11 @@ describe('database clients', function() {
   });
   it('should use a custom agent', function(done) {
     agentDb.connectionParams.agent.options.keepAliveTimeoutMsecs.should.equal(1000);
+    done();
+  });
+  it('should create a timestamp', function(done) {
+    let timestamp = db.createTimestamp('123');
+    timestamp.value.should.equal('123');
     done();
   });
 });

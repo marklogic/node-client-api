@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ describe('Transform with params', function(){
       uri: '/test/transform/paramTransform1.json',
       contentType: 'application/json',
       quality: 10,
-      content: {title: 'hello world'} 
+      content: {title: 'hello world'}
     },
     {
       uri: '/test/transform/paramTransform2.json',
@@ -46,7 +46,7 @@ describe('Transform with params', function(){
   });
 
   var transformName = 'paramTransform';
-  var transformPath = './node-client-api/test-complete/data/paramTransform.js';
+  var transformPath = __dirname + '/data/paramTransform.js';
 
   it('should write the transform', function(done){
     this.timeout(10000);
@@ -57,14 +57,14 @@ describe('Transform with params', function(){
     }));
   });
 
-  var uri1 = '/test/transform/paramTransform1.json'; 
-  var uri2 = '/test/transform/paramTransform2.json'; 
+  var uri1 = '/test/transform/paramTransform1.json';
+  var uri2 = '/test/transform/paramTransform2.json';
 
   it('should return transformed content and metadata during read', function(done){
     db.documents.read({
       uris: [uri1, uri2],
       categories: ['content', 'metadata'],
-      transform: [transformName, 
+      transform: [transformName,
         {title: 'new title', myInt: 2, myBool: true}
       ]
     }).

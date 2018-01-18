@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,15 +33,15 @@ describe('Transform test with combination', function(){
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
       contentType: 'application/json',
-      content: {title: 'combo'} 
+      content: {title: 'combo'}
     }).
     result(function(response){done();}, done);
   });*/
 
   var transformName1 = 'flagParam';
-  var transformPath1 = './node-client-api/test-complete/data/flagTransform.xqy';
+  var transformPath1 = __dirname + '/data/flagTransform.xqy';
   var transformName2 = 'timestamp';
-  var transformPath2 = './node-client-api/test-complete/data/timestampTransform.js';
+  var transformPath2 = __dirname + '/data/timestampTransform.js';
 
   it('should write the transform', function(done){
     this.timeout(10000);
@@ -60,8 +60,8 @@ describe('Transform test with combination', function(){
       result(function(response){done();}, done);
     }));
   });
-  
-  var uri = '/test/transform/comboTransform.json'; 
+
+  var uri = '/test/transform/comboTransform.json';
 
   it('should modify during write and read', function(done){
   this.timeout(10000);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ describe('transaction', function(){
         if (document.exists) {
           db.documents.remove(uri)
             .result(function(response) {done();})
-            .catch(done);          
+            .catch(done);
         } else {
           done();
         }
@@ -96,7 +96,7 @@ describe('transaction', function(){
         if (document.exists) {
           db.documents.remove(uri)
             .result(function(response) {done();})
-            .catch(done);          
+            .catch(done);
         } else {
           done();
         }
@@ -146,7 +146,7 @@ describe('transaction', function(){
         if (document.exists) {
           db.documents.remove(uri)
             .result(function(response) {done();})
-            .catch(done);          
+            .catch(done);
         } else {
           done();
         }

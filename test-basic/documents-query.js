@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,6 +131,36 @@ describe('document query', function(){
           q.directory('/test/query/matchDir/')
           )
         )
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.be.ok;
+        document.uri.should.equal('/test/query/matchDir/doc1.json');
+        document.should.have.property('content');
+        document.content.id.should.equal('matchDoc1');
+        done();
+        })
+      .catch(done);
+    });
+    it('should match a directory query using combined query', function(done){
+      var combined = {
+        options: {
+          'search-option': [
+            'unfiltered'
+          ]
+        },
+        search: {
+          query: {
+            queries: [{
+              "directory-query": {
+                uri: ["/test/query/matchDir/"]
+              }
+            }]
+          },
+          qtext: ''
+        }
+      };
+      db.documents.query(combined)
       .result(function(response) {
         response.length.should.equal(1);
         var document = response[0];
@@ -529,6 +559,24 @@ describe('document query', function(){
         done();
         })
       .catch(done);
+    });
+    it('should get the query as an object stream with initial summary', function(done){
+      this.timeout(3000);
+      var objects = [];
+      db.documents.query(
+        q.where(
+          q.value('valueKey', 'match value')
+        ).withOptions({metrics: true})
+      ).stream('object')
+      .on('error', done)
+      .on('data', function (object) {
+        objects.push(object);
+      }).
+      on('end', function () {
+        objects[0].should.have.property('snippet-format');
+        objects[1].should.have.property('uri');
+        done();
+      });
     });
   });
   describe('for a where clause with a parsed query', function() {

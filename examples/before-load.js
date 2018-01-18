@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 var fs = require('fs');
+var PromisePlus  = require('../lib/bluebird-plus.js');
 
 var marklogic = require('../');
 
 var exutil = require('./example-util.js');
+
+var testconfig = require('../etc/test-config.js');
 
 var db = marklogic.createDatabaseClient(exutil.restWriterConnection);
 
@@ -25,27 +28,33 @@ var fsdir = 'examples/data/';
 var dbdir = '/countries/';
 
 var batchSize = 100;
+var files = [];
 
 var collections = ['/countries', '/facts/geographic'];
 
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
-  fs.readFile(fsdir+filename, function (err, content) {
-    if (err) {
-      throw err;
-    }
 
-    buffer.push({
-      uri:         dbdir+filename,
-      category:    'content',
-      contentType: 'application/json',
-      collections: collections,
-      content:     content.toString()
-      });
+  files.push(new PromisePlus((resolve, reject) => {
+    fs.readFile(fsdir+filename, function (err, content) {
+      if (err) {
+        throw err;
+      }
+      var document = ({
+        uri:         dbdir+filename,
+        category:    'content',
+        contentType: 'application/json',
+        collections: collections,
+        content:     content.toString()
+        });
+      resolve(document);
+    })
+  }));
 
-    if (isLast) {
-      console.log('loading batch from '+buffer[0].uri+' to '+filename);
-      db.documents.write(buffer).result(function(response) {
+  if (isLast) {
+    PromisePlus.all(files).then(function(documents) {
+      console.log('loading batch from '+documents[0].uri+' to '+filename);
+      db.documents.write(documents).result(function(response) {
         console.log(
             'done loading:\n'+
             response.documents.map(function(document) {
@@ -54,9 +63,11 @@ function readFile(filenames, i, buffer, isLast) {
             );
         writeBatch(filenames, i + 1);
       });
-    }
-  });
-}
+    });
+    files = [];
+  }
+
+};
 
 function writeBatch(filenames, batchFirst) {
   if (batchFirst >= filenames.length) {
@@ -95,4 +106,31 @@ var ws = db.documents.write({
   }).
 result(function(response) {
   console.log('wrote '+imageFile);
+  });
+
+// Write TDE template to Schemas database
+console.log('copy TDE template');
+const schemaDb = marklogic.createDatabaseClient({
+  database: 'Schemas',
+  host:     testconfig.manageAdminConnection.host,
+  port:     testconfig.manageAdminConnection.port,
+  user:     testconfig.manageAdminConnection.user,
+  password: testconfig.manageAdminConnection.password,
+  authType: testconfig.manageAdminConnection.authType
+  });
+schemaDb.documents.write({
+    uri:'/examples/data/countries.tdej',
+    contentType:'application/json',
+    collections:['http://marklogic.com/xdmp/tde'],
+    permissions: [
+      {'role-name':testconfig.restAdminConnection.user,
+       capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream(fsdir+'countries.tdej')
+  })
+  .result(function(response) {
+    console.log('template written');
+  })
+  .catch(function (error) {
+    console.log(error);
   });

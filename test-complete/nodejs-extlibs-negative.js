@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,16 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Extlib negative test', function(){
-  var fsPath = './node-client-api/test-complete/data/sourceParams.js';
+  var fsPath = __dirname + '/data/sourceParams.js';
   var invokePath = '/ext/invokeTest/sourceParams.sjs';
-  var invalidFsPath = './node-client-api/test-complete/data/someInvalidFile.js';
+  var invalidFsPath = __dirname + '/data/someInvalidFile.js';
 
   before(function(done) {
     this.timeout(10000);
     dbAdmin.config.extlibs.write({
       path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
     }).
-    result(function(response){done();}, done); 
+    result(function(response){done();}, done);
   });
 
   after(function(done) {
@@ -51,7 +51,7 @@ describe('Extlib negative test', function(){
       done();
     }, function(error) {
       //console.log(error.body);
-      error.body.errorResponse.messageCode.should.equal('REST-FAILEDAUTH');
+      error.body.errorResponse.messageCode.should.equal('SEC-PRIV');
       error.statusCode.should.equal(403);
       done();
       });

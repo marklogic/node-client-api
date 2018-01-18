@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 MarkLogic Corporation
+ * Copyright 2014-2018 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ describe('Temporal transaction rollback test', function() {
         done();
       }, done);
   });
-  
+
   it('should commit the write document', function(done) {
     db.transactions.open().result().
     then(function(response) {
@@ -75,12 +75,12 @@ describe('Temporal transaction rollback test', function() {
           },
           'Address': "999 Skyway Park",
           'uri': "javaSingleDoc1.json",
-          id: 12, 
+          id: 12,
           name: 'Jason'
         }
       }
       ).result(function(response) {done();}, done);
-    }) 
+    })
   });
 
  it('should read the document before commit if txid matches', function(done) {
@@ -120,12 +120,12 @@ describe('Temporal transaction rollback test', function() {
       function(response) {
         //console.log("response: " + JSON.stringify(response));
         done();
-      }, 
+      },
       function(err) {
         //console.log("Error: " + err);
         done();
       });
-  });  
+  });
 
   it('should do collection query based on docuri after commit', function(done) {
     db.documents.query(
@@ -138,7 +138,7 @@ describe('Temporal transaction rollback test', function() {
         done();
       }, done);
   });
-  
+
   /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
@@ -148,7 +148,7 @@ describe('Temporal transaction rollback test', function() {
     }).result().then(function(response) {
       if (response >= 400) {
         console.log(response);
-      } 
+      }
       done();
     }, function(err) {
       console.log(err); done();
