@@ -428,7 +428,7 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(0);
+      response.length.should.equal(2);
       done();
     }, done);
   });
