@@ -722,7 +722,7 @@ describe('Nodejs Optic from views test', function(){
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('<plan:plan xmlns:plan=\"http:\/\/marklogic.com\/plan\">');
-      expect(output).to.contain('<plan:graph-node type=\"column-def\" name=\"opticFunctionalTest.detail.color\" schema=\"opticFunctionalTest\" column=\"color\" view=\"detail\" column-number=\"4\" column-index=\"4\" static-type=\"STRING\" is-renamed=\"false\"/>');
+      expect(output).to.contain('<plan:graph-node type=\"column-def\" name=\"opticFunctionalTest.detail.color\" schema=\"opticFunctionalTest\" column=\"color\" view=\"detail\" column-number=\"4\" column-index=\"4\" static-type=\"STRING\"\/>');
       done();
     }, done);
   });
