@@ -68,11 +68,11 @@ in the online resources. To run the examples, follow the instructions here:
 
 ### Generating Documentation Locally
 
-After installing the project dependencies (including the [gulp](http://gulpjs.com/) 
-build system), you can build the reference documentation locally from the root 
+After installing the project dependencies (including the [gulp](http://gulpjs.com/)
+build system), you can build the reference documentation locally from the root
 directory of the marklogic package:
 
-    gulp doc
+    npm run doc
 
 The documentation is generated in a doc subdirectory. The documentation can also be
 accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
@@ -82,16 +82,16 @@ accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
 To set up the database and REST server for tests, execute the following
 command from the root directory for the marklogic package:
 
-    node etc/test-setup.js
+    npm run test:setup
 
 After setup, you can run tests for the Node.js Client API with the following
 command:
 
-    gulp test
+    npm test
 
 To tear down the test database and REST server, execute the following:
 
-    node etc/test-teardown.js
+    npm run test:teardown
 
 ## Support
 
