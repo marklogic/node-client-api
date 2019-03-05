@@ -58,6 +58,7 @@
     "jshint": "^2.6.0",
     "mocha": "^4.0.1",
     "moment": "^2.23.0",
+    "puppeteer": "^1.12.2",
     "read": "^1.0.5",
     "sanitize-html": "^1.20.0",
     "should": "^13.1.3",
