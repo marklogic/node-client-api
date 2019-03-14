@@ -16,7 +16,7 @@
 var should = require('should');
 var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
-var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);var should = require('should');
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var p = marklogic.patchBuilder;
 
 describe('temporal patch', function() {

@@ -17,7 +17,7 @@ var should = require('should');
 var fs = require('fs');
 var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
-var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);var should = require('should');
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 
 describe('temporal protect', function() {
   var DEFAULT_LEVEL = 'noDelete';

@@ -60,15 +60,16 @@ describe('logging', function(){
   });
 
   describe('with Winston', function(){
-    var winstonLogger = new (winston.Logger)({
+    var winstonLogger = winston.createLogger({
       level: 'debug',
-      transports: [
-        new (winston.transports.Console)({
-          formatter: function(options) {
-            return options.level.toUpperCase() +' '+ (options.message ? options.message : '');
-          }
-        })
-      ]
+      format: winston.format.combine(
+          winston.format((info) => {
+            info.level = info.level.toUpperCase();
+            return info;
+            })(),
+          winston.format.json()
+      ),
+      transports: [new winston.transports.Console()]
     });
     dbWinston.setLogger(winstonLogger);
     it('should write Winston string entries', function(done){
@@ -78,7 +79,7 @@ describe('logging', function(){
       });
       dbWinston.config.serverprops.read().result(function(response) {
         unhook();
-        captured[0].should.startWith('DEBUG');
+        JSON.parse(captured[0]).level.should.eql('DEBUG');
         done();
       }, done);
     });
