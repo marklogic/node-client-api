@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 MarkLogic Corporation
+ * Copyright 2014-2019 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,13 +123,13 @@ function setup(manager) {
           endpoint: '/manage/v2/roles/rest-temporal-writer'
           }).result();
         }).
-      then(function(response) {
+      then(setTimeout(function(response) {
         return       manager.remove({
           endpoint: '/v1/rest-apis/'+testconfig.testServerName,
           accept:   'application/json',
           params:   {include: ['content', 'modules']}
           }).result();
-        }).
+        }, 10000)).
       then(setTimeout(function(response) {
         console.log('teardown succeeded - restart the server');
         },

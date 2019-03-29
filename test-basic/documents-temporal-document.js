@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 MarkLogic Corporation
+ * Copyright 2014-2019 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 var should = require('should');
 var testconfig = require('../etc/test-config.js');
 var marklogic = require('../');
-var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);var should = require('should');
+var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 
 describe('temporal document', function() {
   var content = {

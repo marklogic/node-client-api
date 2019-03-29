@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 MarkLogic Corporation
+ * Copyright 2014-2019 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -428,7 +428,7 @@ describe('Document geo query test', function(){
     ).
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
-      response.length.should.equal(0);
+      response.length.should.equal(2);
       done();
     }, done);
   });

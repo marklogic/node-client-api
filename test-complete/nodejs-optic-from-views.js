@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 MarkLogic Corporation
+ * Copyright 2014-2019 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -722,7 +722,7 @@ describe('Nodejs Optic from views test', function(){
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('<plan:plan xmlns:plan=\"http:\/\/marklogic.com\/plan\">');
-      expect(output).to.contain('<plan:value column=\"opticFunctionalTest.detail.color\" columnID=');
+      expect(output).to.contain('<plan:graph-node type=\"column-def\" name=\"opticFunctionalTest.detail.color\" schema=\"opticFunctionalTest\" column=\"color\" view=\"detail\" column-number=\"4\" column-index=\"4\" static-type=\"STRING\"\/>');
       done();
     }, done);
   });
