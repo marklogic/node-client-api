@@ -64,7 +64,7 @@ describe('Document Metadata values test', function() {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.meta1.should.equal('super plastic');
       documents[0].metadataValues.meta2.should.equal('45.89');
-      documents[0].metadataValues.meta3.should.equal(true);
+      documents[0].metadataValues.meta3.should.equal('true');
       documents[0].metadataValues.meta4.should.be.empty;
       documents[0].metadataValues.metaDateTime.should.equal('2011-12-31T23:59:59');
       done();
@@ -168,7 +168,7 @@ describe('Document Metadata values test', function() {
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.metaAddNumber.should.equal('123.456');
-      documents[0].metadataValues.metaAddBoolean.should.equal(false);
+      documents[0].metadataValues.metaAddBoolean.should.equal('false');
       done();
     }, done);
   });
@@ -195,7 +195,7 @@ describe('Document Metadata values test', function() {
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.metaAddNumber.should.equal('678.999');
-      documents[0].metadataValues.metaAddBoolean.should.equal(true);
+      documents[0].metadataValues.metaAddBoolean.should.equal('true');
       done();
     }, done);
   });
@@ -274,7 +274,7 @@ describe('Document Metadata values test', function() {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.meta1.should.equal('metal');
       documents[0].metadataValues.meta2.should.equal('65.98');
-      documents[0].metadataValues.meta3.should.equal(true);
+      documents[0].metadataValues.meta3.should.equal('true');
       documents[0].metadataValues.meta4.should.be.empty;
       documents[0].metadataValues.metaDateTime.should.equal('2012-04-31T23:59:59');
       done();
