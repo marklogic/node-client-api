@@ -226,7 +226,7 @@ describe('expressions', function() {
             {row:1, num:1, str:'one'},
             {row:2, num:2, str:'two'}
             ])
-          .where(p.eq(p.fn.concat(p.col('num'), 1), '11'))
+          .where(p.eq(p.fn.concat(p.col('num'), 1), p.fn.substringBefore('11one', p.col('str'))))
         )
       .then(function(response) {
         const output = getResults(response);
