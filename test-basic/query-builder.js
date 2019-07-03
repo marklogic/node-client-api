@@ -2002,47 +2002,45 @@ describe('query-builder', function() {
         );
   });
   it('should create a before-query', function(){
-   var d = new String('foo');
+   const d = new String(1572178870875);
    assert.deepEqual(
-        q.before('foo'),
+        q.before(d),
         {'before-query':{timestamp:d}}, 'Error in Before-Query with String input'
         );
   });
   it('should create a before-query', function(){
-   var d = new String(1562178870875);
+   const d = 1562178870875;
    assert.deepEqual(
-        q.before(1562178870875),
+        q.before(d),
         {'before-query':{timestamp:d}}, 'Error in Before-Query with Number'
         );
   });
   it('should create a before-query', function(){
-   var input = new Date(2019, 7, 3);
-   var d = new String(1564815600000);
+   const input = new Date(2019, 7, 3);
    assert.deepEqual(
         q.before(input),
-        {'before-query':{timestamp:d}}, 'Error in Before-Query with Date input'
+        {'before-query':{timestamp:input.getTime()}}, 'Error in Before-Query with Date input'
         );
   });
   it('should create an after-query', function(){
-   var d = new String('foo');
+   const d = new String(1572178870875);
    assert.deepEqual(
-        q.after('foo'),
+        q.after(d),
         {'after-query':{timestamp:d}}, 'Error in After-query with String input'
         );
   });
   it('should create an after-query', function(){
-   var d = new String(1561177860875);
+   const d = 1561177860875;
    assert.deepEqual(
-        q.after(1561177860875),
+        q.after(d),
         {'after-query':{timestamp:d}}, 'Error in After-query with Number'
         );
   });
   it('should create an after-query', function(){
-   var input = new Date(2018, 7, 3);
-   var d = new String(1533279600000);
+   const input = new Date(2018, 7, 3);
    assert.deepEqual(
         q.after(input),
-        {'after-query':{timestamp:d}}, 'Error in After-query with Date input'
+        {'after-query':{timestamp:input.getTime()}}, 'Error in After-query with Date input'
         );
   });
 });
