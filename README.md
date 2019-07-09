@@ -12,6 +12,7 @@ from Node.js applications.
 *  Writing, reading, and deleting graphs and executing SPARQL queries over graphs
 *  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
 *  Basic, digest, certificate, Kerberos, and SAML authentication
+*  Import libraries as JavaScript mjs modules
 
 ## Getting Started
 
