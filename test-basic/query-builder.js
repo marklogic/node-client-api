@@ -2001,7 +2001,48 @@ describe('query-builder', function() {
         {'false-query':null}
         );
   });
-
+  it('should create a before-query', function(){
+   const d = new String(1572178870875);
+   assert.deepEqual(
+        q.before(d),
+        {'before-query':{timestamp:d}}, 'Error in Before-Query with String input'
+        );
+  });
+  it('should create a before-query', function(){
+   const d = 1562178870875;
+   assert.deepEqual(
+        q.before(d),
+        {'before-query':{timestamp:d}}, 'Error in Before-Query with Number'
+        );
+  });
+  it('should create a before-query', function(){
+   const input = new Date(2019, 7, 3);
+   assert.deepEqual(
+        q.before(input),
+        {'before-query':{timestamp:input.getTime()}}, 'Error in Before-Query with Date input'
+        );
+  });
+  it('should create an after-query', function(){
+   const d = new String(1572178870875);
+   assert.deepEqual(
+        q.after(d),
+        {'after-query':{timestamp:d}}, 'Error in After-query with String input'
+        );
+  });
+  it('should create an after-query', function(){
+   const d = 1561177860875;
+   assert.deepEqual(
+        q.after(d),
+        {'after-query':{timestamp:d}}, 'Error in After-query with Number'
+        );
+  });
+  it('should create an after-query', function(){
+   const input = new Date(2018, 7, 3);
+   assert.deepEqual(
+        q.after(input),
+        {'after-query':{timestamp:input.getTime()}}, 'Error in After-query with Date input'
+        );
+  });
 });
 
 describe('document query', function(){
