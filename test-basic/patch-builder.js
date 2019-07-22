@@ -212,7 +212,6 @@ describe('patch-builder', function() {
     assert.deepEqual(
         p.library('replaceLib.sjs'),
         {'replace-library':{
-          ns: 'http://marklogic.com/patch/apply/replaceLib',
           at: '/ext/marklogic/patch/apply/replaceLib.sjs'
           }}
         );
