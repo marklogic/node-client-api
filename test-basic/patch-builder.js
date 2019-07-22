@@ -208,4 +208,12 @@ describe('patch-builder', function() {
           }}
         );
   });
+  it('should declare an sjs library', function(){
+    assert.deepEqual(
+        p.library('replaceLib.sjs'),
+        {'replace-library':{
+          at: '/ext/marklogic/patch/apply/replaceLib.sjs'
+          }}
+        );
+  });
 });
