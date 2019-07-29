@@ -19,6 +19,8 @@ var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 
+var mlutil    = require('../lib/mlutil.js');
+
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('transaction', function(){
@@ -218,6 +220,44 @@ describe('transaction', function(){
         var status = response['transaction-status'];
         var transactionId = status['transaction-id'];
         txn.txid.should.equal(transactionId);
+        return db.transactions.rollback(txn).result();
+        })
+      .then(function(response) {
+        response.should.be.ok;
+        done();
+        })
+      .catch(done);
+    });
+
+    it('should read the same file as written when using mlutil.convertTransaction', function(done){
+      var txn = null;
+      var tid = null;
+      var cookies = null;
+      db.transactions.open(true)
+      .result(function(response) {
+        txn = response;
+        return db.documents.write({
+          txid: txn,
+          uri: uri,
+          contentType: 'application/json',
+          content: {txKey: txn.txid}
+          }).result();
+        })
+      .then(function(response) {
+        tid = txn.txid;
+        cookies = txn.cookies[0];
+        var convertedTransaction = mlutil.convertTransaction(txn);
+        
+        return db.transactions.read(convertedTransaction).result() ;
+        })
+      .then(function(document) {
+        var status = document['transaction-status'];
+        var transactionId = status['transaction-id'];
+        var host = status['host'];
+        var hostId = 'HostId='+host['host-id'];
+
+        tid.should.equal(transactionId);
+        cookies.should.equal(hostId);
         return db.transactions.rollback(txn).result();
         })
       .then(function(response) {
