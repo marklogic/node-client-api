@@ -232,7 +232,6 @@ describe('transaction', function(){
     it('should read the same file as written when using mlutil.convertTransaction', function(done){
       var txn = null;
       var tid = null;
-      var cookies = null;
       db.transactions.open(true)
       .result(function(response) {
         txn = response;
@@ -245,8 +244,8 @@ describe('transaction', function(){
         })
       .then(function(response) {
         tid = txn.txid;
-        cookies = txn.cookies[0];
-        var convertedTransaction = mlutil.convertTransaction(txn);
+        var  txnRaw = {txid: txn.txid, cookies: txn.cookies};
+        var convertedTransaction = mlutil.convertTransaction(txnRaw);
         
         return db.transactions.read(convertedTransaction).result() ;
         })
@@ -257,7 +256,6 @@ describe('transaction', function(){
         var hostId = 'HostId='+host['host-id'];
 
         tid.should.equal(transactionId);
-        cookies.should.equal(hostId);
         return db.transactions.rollback(txn).result();
         })
       .then(function(response) {
