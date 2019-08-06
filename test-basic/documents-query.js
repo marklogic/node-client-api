@@ -508,9 +508,11 @@ describe('document query', function(){
           contentType: 'image/jpeg'
           }).stream('object')
       .on('data', chunk => {
-         console.log(JSON.stringify(chunk));
+         should.fail(JSON.stringify(chunk), [], 
+           "unauthorized users should not be able to read files.");
        })
-      .on('error', error => {console.log(error); 
+      .on('error', error => {
+	       console.log(error); 
        flag = true;
        })
       .on('end', () => {
