@@ -496,6 +496,30 @@ describe('document query', function(){
         })
       .catch(done);
     });
+
+    it('should throw error when user is not authorized', function(done){
+    var config = {host:testconfig.restReaderConnection.host, user:'valid', password: 'x', port:testconfig.restReaderConnection.port, 
+        authType:testconfig.restReaderConnection.authType};
+    var db = marklogic.createDatabaseClient(config);
+    var flag = false;
+    var assert = require('assert');
+      db.documents.read({
+          uris: '/test-0001.jpg',
+          contentType: 'image/jpeg'
+          }).stream('object')
+      .on('data', chunk => {
+         should.fail(JSON.stringify(chunk), [], 
+           "unauthorized users should not be able to read files.");
+       })
+      .on('error', error => {
+	       console.log(error); 
+       flag = true;
+       })
+      .on('end', () => {
+       assert(flag == true);
+       done();
+       });
+   });
     it('should take a slice with a standard snippet', function(done){
       db.documents.query(
         q.where(
