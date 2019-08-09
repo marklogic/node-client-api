@@ -515,6 +515,11 @@ describe('document query', function(){
         )
       .result(function(response) {
         response.length.should.equal(1);
+        var document = response[0];
+        document.should.have.property('content');
+        var content = document.content;
+        var assert = require('assert');
+        assert(content.includes('<abc:elem xmlns:abc="http://marklogic.com/test/abc">word</abc:elem>'));
         done();
         })
       .catch(done);
