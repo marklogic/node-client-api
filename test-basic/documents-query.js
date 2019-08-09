@@ -115,6 +115,11 @@ describe('document query', function(){
           collections: ['extraCollection'],
           contentType: 'application/xml',
           content:     '<extraRoot><extraMatch>matchable extra</extraMatch></extraRoot>'
+        }, {
+          uri: '/test/query/extraDir/doc6.xml',
+          collections: ['extraCollection'],
+          contentType: 'application/xml',
+          content:     '<container xmlns:abc="http://marklogic.com/test/abc"><target>match</target><abc:elem>word</abc:elem></container>'
         }).result().
     then(function(response) {
       var dbModule = 'extractFirst.xqy';
@@ -492,6 +497,24 @@ describe('document query', function(){
         document.content.a1.should.not.have.property('skippedChild1');
         document.content.a1.a2.should.have.property('extractMatch');
         document.content.a1.a2.should.not.have.property('skippedChild2');
+        done();
+        })
+      .catch(done);
+    });
+
+    it('should not throw error when queryBuilder.extract has namespace bindings', function(done){
+      db.documents.query(
+        q.where(
+            q.word('target','match')
+          ).
+        slice(0, 1, q.extract({
+          selected:'include',
+          paths:'//abc:elem',
+          namespaces: {'abc': 'http://marklogic.com/test/abc'}
+          }))
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
         done();
         })
       .catch(done);
