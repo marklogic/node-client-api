@@ -167,3 +167,67 @@ describe('quick path', function(){
     .catch(done);
   });
 });
+
+describe('test connection', function(){
+ var assert = require('assert');
+    it('should test the connection', function(done){
+     	var flag = false;
+     db.testConnection()
+      .result(function(response) {
+        flag = true;
+     }).then(function(){
+        assert(flag == true);
+        done();
+    }).catch(done);
+   });
+    it('should give 403 when user is not authorized', function(done){
+    var config = {host:testconfig.restReaderConnection.host, user:'testUser', password: 'test', port:testconfig.restReaderConnection.port, 
+        authType:testconfig.restReaderConnection.authType};
+    var db1 = marklogic.createDatabaseClient(config);
+    var assert = require('assert');
+    var flag = false; 
+    var content = {connected: false,
+       httpStatusCode:  403,
+       httpStatusMessage: 'Forbidden'
+       };
+    var respContent = null;
+     db1.testConnection()
+      .result(function(response) {
+        flag = true;
+        respContent = response.content[0];
+        })
+      .catch(function(error) {
+        flag = false;
+      }).then(function(){
+        assert(flag == true);
+        assert(JSON.stringify(content) == JSON.stringify(respContent));
+        done();
+      }).catch(done);
+   });
+
+   it('should give 401 when does not exist', function(done){
+    var config = {host:testconfig.restReaderConnection.host, user:'valid', password: 'x', port:testconfig.restReaderConnection.port, 
+        authType:testconfig.restReaderConnection.authType};
+    var db1 = marklogic.createDatabaseClient(config);
+    var assert = require('assert');
+    var flag = false; 
+    var content = {connected: false,
+       httpStatusCode:  401,
+       httpStatusMessage: 'Unauthorized'
+       };
+    var respContent = null;
+     db1.testConnection()
+      .result(function(response) {
+        flag = true;
+        respContent = response.content[0];
+        })
+      .catch(function(error) {
+        flag = false;
+      }).then(function(){
+        assert(flag == true);
+        assert(JSON.stringify(content) == JSON.stringify(respContent));
+        done();
+      }).catch(done);
+   });
+});
+
