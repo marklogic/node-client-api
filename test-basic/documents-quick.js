@@ -168,11 +168,11 @@ describe('quick path', function(){
   });
 });
 
-describe('test connection', function(){
+describe('check connection', function(){
  var assert = require('assert');
-    it('should test the connection', function(done){
+    it('should check the connection', function(done){
      	var flag = false;
-     db.testConnection()
+     db.checkConnection()
       .result(function(response) {
         assert(response.connected === true);
         done();
@@ -183,7 +183,7 @@ describe('test connection', function(){
         authType:testconfig.restReaderConnection.authType};
     var db1 = marklogic.createDatabaseClient(config);
     var assert = require('assert');
-     db1.testConnection()
+     db1.checkConnection()
       .result(function(response) {
         assert(response.connected === false);
         assert(response.httpStatusCode === 403);
@@ -198,7 +198,7 @@ describe('test connection', function(){
         authType:testconfig.restReaderConnection.authType};
     var db1 = marklogic.createDatabaseClient(config);
     var assert = require('assert');
-     db1.testConnection()
+     db1.checkConnection()
       .result(function(response) {
         assert(response.connected === false);
         assert(response.httpStatusCode === 401);
