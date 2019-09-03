@@ -98,13 +98,12 @@ module.exports = {
         rejectUnauthorized: false,
         ssl:      true
     },
-testConnection: {
-	    host:     testHost,
+    testConnection: {
+        host:     testHost,
         port:     restPort,
         user:     testUser,
         password: testPassword,
         authType: restAuthType,
-        rejectUnauthorized: false,
-        ssl:      true
+        rejectUnauthorized: false
     }
 };
