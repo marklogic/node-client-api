@@ -179,8 +179,8 @@ describe('check connection', function(){
      }).catch(done);
    });
     it('should give 403 when user is not authorized', function(done){
-    var config = {host:testconfig.restReaderConnection.host, user:'testUser', password: 'test', port:testconfig.restReaderConnection.port, 
-        authType:testconfig.restReaderConnection.authType};
+    var config = {host:testconfig.testConnection.host, user:testconfig.testConnection.user, password: testconfig.testConnection.password, port:testconfig.testConnection.port, 
+        authType:testconfig.testConnection.authType};
     var db1 = marklogic.createDatabaseClient(config);
     var assert = require('assert');
      db1.checkConnection()
@@ -188,13 +188,14 @@ describe('check connection', function(){
         assert(response.connected === false);
         assert(response.httpStatusCode === 403);
         assert(response.httpStatusMessage === 'Forbidden');
+
         done();
         })
       .catch(done);
    });
 
    it('should give 401 when does not exist', function(done){
-    var config = {host:testconfig.restReaderConnection.host, user:'valid', password: 'x', port:testconfig.restReaderConnection.port, 
+    var config = {host:testconfig.restReaderConnection.host, user:testconfig.testConnection.user, password: 'invalid', port:testconfig.testConnection.port, 
         authType:testconfig.restReaderConnection.authType};
     var db1 = marklogic.createDatabaseClient(config);
     var assert = require('assert');

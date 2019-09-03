@@ -38,6 +38,9 @@ var restTemporalPassword = 'x';
 
 var testServerName = 'unittest-nodeapi';
 
+var testUser = 'test-user';
+var testPassword = 'x';
+
 // For SSL without client cert, use rejectUnauthorized: false
 module.exports = {
     testServerName: testServerName,
@@ -92,6 +95,15 @@ module.exports = {
         user:     restAdminUser,
         password: restAdminPassword,
         authType: 'BASIC',
+        rejectUnauthorized: false,
+        ssl:      true
+    },
+testConnection: {
+	    host:     testHost,
+        port:     restPort,
+        user:     testUser,
+        password: testPassword,
+        authType: restAuthType,
         rejectUnauthorized: false,
         ssl:      true
     }

@@ -114,6 +114,27 @@ function setupUsers(manager, done) {
   }).
   then(function(response) {
     return manager.get({
+      endpoint: '/manage/v2/roles/'+encodeURIComponent('test-User')
+      }).result();
+  }).
+  then(function(response) {
+    if (response.statusCode < 400) {
+      return this;
+    }
+    return manager.post({
+      endpoint: '/manage/v2/roles',
+      body: {
+        'role-name': 'test-User',
+        description: 'test user to check the connection',
+        role: [
+          'test-User'
+        ],
+        privilege: []
+      }
+      }).result();
+  }).
+  then(function(response) {
+    return manager.get({
       endpoint: '/manage/v2/users'
       }).result();
   }).
@@ -155,6 +176,13 @@ function setupUsers(manager, done) {
       'user-name': userName,
       description: 'rest-writer user with temporal privileges',
       password:    testconfig.restTemporalConnection.password
+      };
+      userName = testconfig.testConnection.user;
+    requiredUsers[userName]  = {
+     role: 'test-User',
+      'user-name': userName,
+      description: 'test user to check the connection',
+      password:    testconfig.testConnection.password
       };
 
     response.data['user-default-list']['list-items']['list-item'].
