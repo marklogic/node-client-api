@@ -280,6 +280,58 @@ describe('Document Metadata values test', function() {
       done();
     }, done);
   });
+  
+  it('TEST 17 - write and read xml formatted properties in json', function(done) {
+	  var docuri = '/test/query/matchList/propertyInxmlOne.json';
+	  this.timeout(10000);
+    db.documents.write({
+		uri: docuri,
+        contentType: 'application/json',
+        quality: 13,
+        properties: {'$ml.xml': '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps>Property 1</myProps></prop:properties>'},
+        content: {
+          title: 'The memex',
+          popularity: 5,
+          id: '0026',
+          date: '2009-05-05',
+          price: {
+               amt: 123.45
+             },
+          p: 'The Memex, unfortunately, had no automated search feature'
+          }
+    }).result(function(response){
+      dbReader.documents.read({uris: docuri, categories: ['metadata']}).
+      result(function(documents) {
+	  var prop = JSON.stringify(documents[0].properties);
+      //console.log(prop, null, 4);
+      prop.should.containEql('<myProps>Property 1</myProps>');
+	  done();
+      }, done);
+    }, done);
+  });
+  
+  it('TEST 18 - appply xml formatted properties patch on metadata properties', function(done){
+    this.timeout(10000);
+    var docuri = '/test/query/matchList/propertyInxmlOne.json';
+    var p = marklogic.patchBuilder;
+    db.documents.patch({uri: docuri,
+      categories: ['metadata'],
+      operations: [
+          p.collections.add('metadataValuesColl/ADDED'),
+          p.properties.add('$ml.xml', '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps1>Property 2</myProps1></prop:properties>'),
+          p.quality.set(2)
+      ]
+    }).result(function(response){
+      dbReader.documents.read({uris: docuri, categories: ['metadata']}).
+      result(function(documents) {
+	  var prop = JSON.stringify(documents[0].properties);
+      //console.log(prop, null, 4);
+	  // Note we expect two properties, but in special case of $ml.xml, the patch just replaces an existing $ml.xml
+      prop.should.containEql('<myProps>Property 2</myProps>');
+	  done();
+      }, done);
+    }, done);
+  });
 
   it('should delete all documents', function(done){
     dbAdmin.documents.removeAll({
