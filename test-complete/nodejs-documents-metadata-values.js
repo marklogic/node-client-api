@@ -288,6 +288,7 @@ describe('Document Metadata values test', function() {
 		uri: docuri,
         contentType: 'application/json',
         quality: 13,
+		collections: ['metadataValuesColl'],
         properties: {'$ml.xml': '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps>Property 1</myProps></prop:properties>'},
         content: {
           title: 'The memex',
@@ -317,8 +318,8 @@ describe('Document Metadata values test', function() {
     db.documents.patch({uri: docuri,
       categories: ['metadata'],
       operations: [
-          p.collections.add('metadataValuesColl/ADDED'),
-          p.properties.add('$ml.xml', '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps1>Property 2</myProps1></prop:properties>'),
+          p.collections.add('metadataValuesColl'),
+          p.properties.add('$ml.xml', '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps>Property 2</myProps></prop:properties>'),
           p.quality.set(2)
       ]
     }).result(function(response){
