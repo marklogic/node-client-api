@@ -18,7 +18,6 @@
 const should = require('should');
 
 const testconfig = require('../etc/test-config.js');
-const testutil   = require('./test-util.js');
 
 const marklogic = require('../');
 const proxy = require('../lib/endpoint-proxy.js');
