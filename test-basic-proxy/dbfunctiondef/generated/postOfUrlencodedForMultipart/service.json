@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/dbf/test/postOfUrlencodedForMultipart/",
+  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.PostOfUrlencodedForMultipartBundle"
+}

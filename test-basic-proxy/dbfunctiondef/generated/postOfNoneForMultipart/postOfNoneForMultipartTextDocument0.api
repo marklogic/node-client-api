@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForMultipartTextDocument0",
+  "return" : {
+    "datatype" : "textDocument",
+    "multiple" : true,
+    "nullable" : false
+  }
+}

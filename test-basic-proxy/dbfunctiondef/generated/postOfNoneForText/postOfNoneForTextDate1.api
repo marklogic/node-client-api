@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextDate1",
+  "return" : {
+    "datatype" : "date",
+    "nullable" : true
+  }
+}

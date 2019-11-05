@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForDocumentJsonDocument1ReturnNull",
+  "return" : {
+    "datatype" : "jsonDocument",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

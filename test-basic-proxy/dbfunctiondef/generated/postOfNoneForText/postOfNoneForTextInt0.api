@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextInt0",
+  "return" : {
+    "datatype" : "int",
+    "nullable" : false
+  }
+}

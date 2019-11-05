@@ -46,6 +46,8 @@
     "node": ">=8.10.0"
   },
   "devDependencies": {
+    "ast-types": "^0.13.2",
+    "astring": "^1.4.3",
     "bunyan": "^1.8.12",
     "chai": "^4.2.0",
     "core-util-is": "^1.0.2",
@@ -54,9 +56,9 @@
     "gulp-jshint": "^2.1.0",
     "gulp-mocha": "^6.0.0",
     "intercept-stdout": "^0.1.2",
-    "jsdoc": "^3.5.5",
+    "jsdoc": "^3.6.3",
     "jshint": "^2.10.1",
-    "mocha": "^6.0.2",
+    "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "read": "^1.0.7",
     "sanitize-html": "^1.20.0",

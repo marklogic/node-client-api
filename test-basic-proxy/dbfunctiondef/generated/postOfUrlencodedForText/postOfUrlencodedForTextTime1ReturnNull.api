@@ -1,0 +1,13 @@
+{
+  "functionName" : "postOfUrlencodedForTextTime1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "double",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "time",
+    "nullable" : true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "functionName" : "postOfMultipartAllForNone0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "array",
+    "multiple" : true,
+    "nullable" : true
+  }, {
+    "name" : "param2",
+    "datatype" : "object",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param3",
+    "datatype" : "binaryDocument",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param4",
+    "datatype" : "jsonDocument",
+    "multiple" : true,
+    "nullable" : false
+  }, {
+    "name" : "param5",
+    "datatype" : "textDocument",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param6",
+    "datatype" : "xmlDocument",
+    "multiple" : false,
+    "nullable" : false
+  } ]
+}

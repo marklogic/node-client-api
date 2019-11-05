@@ -1,0 +1,15 @@
+{
+  "functionName" : "postOfMultipartBinaryDocumentForNone7",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "binaryDocument",
+    "multiple" : true,
+    "nullable" : true
+  }, {
+    "name" : "param2",
+    "datatype" : "float"
+  }, {
+    "name" : "param3",
+    "datatype" : "int"
+  } ]
+}

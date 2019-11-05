@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/dbf/test/moduleInitMjs/",
+  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.ModuleInitMjsBundle"
+}

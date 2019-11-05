@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForDocumentTextDocument0",
+  "return" : {
+    "datatype" : "textDocument",
+    "multiple" : false,
+    "nullable" : false
+  }
+}

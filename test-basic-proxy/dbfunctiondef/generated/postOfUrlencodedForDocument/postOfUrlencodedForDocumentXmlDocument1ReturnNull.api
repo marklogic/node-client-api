@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForDocumentXmlDocument1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "float",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "xmlDocument",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

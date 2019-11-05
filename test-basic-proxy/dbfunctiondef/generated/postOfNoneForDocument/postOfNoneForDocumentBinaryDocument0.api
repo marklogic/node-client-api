@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForDocumentBinaryDocument0",
+  "return" : {
+    "datatype" : "binaryDocument",
+    "multiple" : false,
+    "nullable" : false
+  }
+}

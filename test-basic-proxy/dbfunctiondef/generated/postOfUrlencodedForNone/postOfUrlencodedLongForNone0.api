@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedLongForNone0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "long",
+    "multiple" : false,
+    "nullable" : false
+  } ]
+}

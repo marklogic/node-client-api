@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForMultipartArray0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "array",
+    "multiple" : true,
+    "nullable" : false
+  }
+}

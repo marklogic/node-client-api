@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextBoolean1ReturnNull",
+  "return" : {
+    "datatype" : "boolean",
+    "nullable" : true
+  }
+}

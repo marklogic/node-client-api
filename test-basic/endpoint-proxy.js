@@ -225,7 +225,7 @@ void 0;`;
                 .withFunction(multiNodeInputMultiOutputDecl, '.sjs');
             proxyCaller
                 .execute(multiNodeInputMultiOutputDecl.functionName, {input:input})
-                .result(function(output) {
+                .then(function(output) {
                     (output === void 0).should.equal(false);
                     input.length.should.equal(output.length);
                     for (let i=0; i < input.length; i++) {
@@ -249,7 +249,7 @@ void 0;`;
                 .withFunction(multiAtomicInputMultiOutputDecl, '.sjs');
             proxyCaller
                 .execute(multiAtomicInputMultiOutputDecl.functionName, {input:input})
-                .result(function(output) {
+                .then(function(output) {
                     (output === void 0).should.equal(false);
                     input.length.should.equal(output.length);
                     for (let i=0; i < input.length; i++) {
@@ -266,7 +266,7 @@ void 0;`;
                 .withFunction(singleNodeInputSingleOutputDecl, '.sjs');
             proxyCaller
                 .execute(singleNodeInputSingleOutputDecl.functionName, {input:input})
-                .result(function(output) {
+                .then(function(output) {
                   (output === void 0).should.equal(false);
                   const expectedKeys = Object.keys(input);
                   expectedKeys.length.should.equal(Object.keys(output).length);
@@ -285,7 +285,7 @@ void 0;`;
                 .withFunction(singleAtomicInputSingleOutputDecl, '.sjs');
             proxyCaller
                 .execute(singleAtomicInputSingleOutputDecl.functionName, {input:input})
-                .result(function(output) {
+                .then(function(output) {
                     (output === void 0).should.equal(false);
                     input.should.equal(output);
                     done();
@@ -298,7 +298,7 @@ void 0;`;
                 .withFunction(emptyInputEmptyOutputDecl, '.sjs');
             proxyCaller
                 .execute(emptyInputEmptyOutputDecl.functionName)
-                .result(function(output) {
+                .then(function(output) {
                     (output === void 0).should.equal(true);
                     done();
                 })

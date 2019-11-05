@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForDocumentArray1",
+  "return" : {
+    "datatype" : "array",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

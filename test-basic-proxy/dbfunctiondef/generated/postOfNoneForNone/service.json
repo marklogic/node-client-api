@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/dbf/test/postOfNoneForNone/",
+  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.PostOfNoneForNoneBundle"
+}

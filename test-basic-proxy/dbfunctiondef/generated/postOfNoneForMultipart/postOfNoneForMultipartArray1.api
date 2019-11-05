@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForMultipartArray1",
+  "return" : {
+    "datatype" : "array",
+    "multiple" : true,
+    "nullable" : true
+  }
+}

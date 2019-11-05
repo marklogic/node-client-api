@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForMultipartJsonDocument1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "jsonDocument",
+    "multiple" : true,
+    "nullable" : true
+  }
+}

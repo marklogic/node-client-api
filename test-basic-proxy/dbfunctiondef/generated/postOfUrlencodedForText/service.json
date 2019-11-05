@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/dbf/test/postOfUrlencodedForText/",
+  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.PostOfUrlencodedForTextBundle"
+}

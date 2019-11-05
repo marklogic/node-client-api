@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfMultipartForDocumentObject1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "jsonDocument",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "object",
+    "multiple" : false,
+    "nullable" : true
+  }
+}
