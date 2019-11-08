@@ -18,7 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const generateProxy = require('../lib/proxy-generator.js').generateProxy;
+const ProxyGenerator = require('../lib/proxy-generator.js');
 
 const rootBase     = path.resolve('test-basic-proxy');
 const inputBase    = path.resolve(rootBase, 'dbfunctiondef');
@@ -30,168 +30,107 @@ let testData = null;
 
 let dirQueue = [inputBase];
 let dirNext  = 0;
-let dirCount = 0;
 
-let fileQueue = [];
-let fileNext  = 0;
-let fileCount = 0;
+let service = 0;
+let functionCount = 0;
 
-let service = null;
-
-function nextDirectory() {
-  if (service !== null) {
-    const serviceDir = dirQueue[dirNext - 1];
-    if (service.serviceDeclaration === null) {
-      console.warn(`skipping directory without service.json: ${serviceDir}`);
-    } else if (service.endpoints.size === 0) {
-      console.warn(`skipping directory without endpoints: ${serviceDir}`);
-    } else {
-      const endpoints = Array
-          .from(service.endpoints)
-          .filter(endpoint => {
-            if (endpoint[1].declaration === null || endpoint[1].moduleExtension === null) {
-              console.warn(`skipping incomplete endpoint ${endpoint[0]} in directory: ${serviceDir}`);
-              return false;
-            }
-            return true;
-            })
-          .map(endpoint => endpoint[1]);
-      if (endpoints.length === 0) {
-        console.warn(`skipping directory without complete endpoints: ${serviceDir}`);
-      } else {
-        const parentDir   = path.dirname(serviceDir);
-        const relativeDir = path.relative(inputBase, parentDir);
-        const outputDir   = path.resolve(outputBase, relativeDir);
-        const serviceName = path.basename(serviceDir);
-        const outputFile  = path.resolve(outputDir, serviceName+'.js');
-        console.log(`generating client class ${relativeDir}/${serviceName}.js`);
-        const proxySrc = generateProxy(service.serviceDeclaration, endpoints, '../../..');
-        let testFile = null;
-        let testSrc = null;
-        if (parentDir === testgenBase) {
-          testFile = path.resolve(outputDir, serviceName+'Test.js');
-          console.log(`generating test ${relativeDir}/${serviceName}Test.js`);
-          testSrc = generateTest(serviceName, service.serviceDeclaration, endpoints);
-        }
-        service = null;
-        fs.writeFile(outputFile, proxySrc, null, err => {
-          if (err) throw err;
-          if (testSrc !== null) {
-            fs.writeFile(testFile, testSrc, null, err => {
-              if (err) throw err;
-              nextDirectory();
-            });
-          } else {
-            nextDirectory();
-          }
+function makeVinylSourceFromDirectory(directory) {
+  return ProxyGenerator.readDeclarations(directory.path).then(result => {
+    if (result === null) return null;
+    const proxySrc = ProxyGenerator.generateSource(result.serviceDeclaration, result.functionDeclarations);;
+//         path: ???,
+    const outFile = new srcFile.constructor({
+        cwd: directory.cwd,
+        base: directory.base,
+        stat: null,
+        history: directory.history.slice(),
+        contents: buffer.from(proxySrc, 'utf-8')
         });
-        return;
-      }
-    }
-    service = null;
-  }
-  if (dirNext < dirQueue.length) {
-    const directory = dirQueue[dirNext++];
-    fs.readdir(directory, (err, filenames) => {
-      if (err) throw err;
-      dirCount++;
-      if (filenames.length > 0) {
-        checkDirectory(directory, filenames);
-      } else {
-        nextDirectory();
-      }
-    });
-  } else {
-    console.log(`processed ${dirCount} directories having ${fileCount} files`);
-  }
-}
-function checkDirectory(directory, filenames) {
-  // assume no mix of files and subdirectories as children
-  fs.stat(path.resolve(directory, filenames[0]), (err, firstStat) => {
-    if (err) throw err;
-    if (firstStat.isDirectory()) {
-      const outputDir = path.resolve(outputBase, path.relative(inputBase, directory));
-      console.log(`making ${outputDir}`);
-      fs.mkdir(outputDir, null, err => {
-        if (err !== null && err.code !== 'EEXIST') throw err;
-        dirQueue = dirQueue.concat(filenames.map(filename => path.resolve(directory, filename)));
-        nextDirectory();
-      });
-    } else {
-      readDirectory(directory, filenames);
-    }
+    return outFile;
   });
 }
-function readDirectory(directory, filenames) {
-  service = {
-    serviceDeclaration: null,
-    endpoints: new Map()
-  };
-  fileQueue = fileQueue.concat(
-      filenames
-          .filter(filename => {
-            const extension = path.extname(filename);
-            const basename = path.basename(filename,extension);
-            switch (extension) {
-              case '.api':
-                if (!service.endpoints.has(basename)) {
-                  service.endpoints.set(basename, {declaration: null, moduleExtension: null});
-                }
-                return true;
-              case '.json':
-                return (basename === 'service');
-              case '.mjs':
-              case '.sjs':
-              case '.xqy':
-                if (!service.endpoints.has(basename)) {
-                  service.endpoints.set(basename, {declaration: null, moduleExtension: extension});
-                } else {
-                  const endpoint = service.endpoints.get(basename);
-                  if (endpoint.moduleExtension !== null) {
-                    console.warn(`skipping redundant main module ${filename} in ${directory}`);
-                  } else {
-                    endpoint.moduleExtension = extension;
-                  }
-                }
-                return false;
-              default:
-                return false;
-            }})
-          .map(filename => path.resolve(directory, filename))
-  );
-  nextFile();
+/* TODO:
+    set outFile.path to outputBase + srcFile.relative + filename
+    move to proxy-generator.js
+    an exported function that returns a Promise can be used as a task in gulp
+    outFile.relative
+    outFile.path
+    outFile.dirname
+    outFile.basename
+    outFile.stem
+    outFile.extname
+    trailing separators removed
+    $jsModule
+    https://www.npmjs.com/package/vinyl
+ */
+function directoryToSourceFile(srcFile) {
+  // TODO: other checking for required properties
+  if (!(typeof srcFile.isDirectory === 'function') || !(typeof srcFile.clone === 'function')) {
+    throw new Error('input does not appear to be Vinyl directory file: '+srcFile);
+  } else if (!srcFile.isDirectory()) {
+    throw new Error('input must be Vinyl directory file: '+srcFile);
+  }
+
+  const outFile = srcFile.clone({deep:false, contents:false});
+  // populate outFile.contents
+
+  return new Promise((success, failure) => new DirectoryDeclarationReader(srcFile, success, failure));
 }
-function nextFile() {
-  if (fileNext < fileQueue.length) {
-    const filename = fileQueue[fileNext++];
-    fs.readFile(filename, 'utf8', (err, data) => {
-      if (err) throw err;
-      const extension = path.extname(filename);
-      const basename  = path.basename(filename, extension);
-      switch(extension) {
-        case '.json':
-          if (basename === 'service') {
-            service.serviceDeclaration = JSON.parse(data);
-          } else {
-            console.warn(`unknown JSON file: ${filename}`);
+
+function nextDirectory() {
+  if (dirNext < dirQueue.length) {
+    const directory = dirQueue[dirNext++];
+    fs.stat(path.resolve(directory, 'service.json'), (err, stat) => {
+      if (err === null) {
+        ProxyGenerator.readDeclarations(directory)
+            .then(result => {
+              if (result === null) {
+                nextDirectory();
+              } else {
+                const serviceDeclaration   = result.serviceDeclaration;
+                const functionDeclarations = result.functionDeclarations;
+                service++;
+                functionCount += functionDeclarations.length;
+                const parentDir   = path.dirname(directory);
+                const relativeDir = path.relative(inputBase, parentDir);
+                const outputDir   = path.resolve(outputBase, relativeDir);
+                const serviceName = path.basename(directory);
+                console.log(`generating client class ${relativeDir}/${serviceName}.js`);
+                const proxyFile = path.resolve(outputDir, serviceName+'.js');
+                const proxySrc  = ProxyGenerator.generateSource(serviceDeclaration, functionDeclarations, '../../..');
+                fs.writeFile(proxyFile, proxySrc, null, err => {
+                  if (err) throw err;
+                  if (parentDir === testgenBase) {
+                    console.log(`generating test ${relativeDir}/${serviceName}Test.js`);
+                    const testFile = path.resolve(outputDir, serviceName+'Test.js');
+                    const testSrc  = generateTest(serviceName, serviceDeclaration, functionDeclarations);
+                    fs.writeFile(testFile, testSrc, null, err => {
+                      if (err) throw err;
+                      nextDirectory();
+                    });
+                  } else {
+                    nextDirectory();
+                  }
+                });
+              }
+            })
+            .catch(err => {
+              throw err;
+            });
+      } else if (err.code === 'ENOENT') {
+        fs.readdir(directory, (err, filenames) => {
+          if (err) throw err;
+          if (filenames.length > 0) {
+            dirQueue = dirQueue.concat(filenames.map(filename => path.resolve(directory, filename)));
           }
-          break;
-        case '.api':
-          service.endpoints.get(basename).declaration = JSON.parse(data);
-          break;
-        default:
-          console.warn(`unknown file: ${filename}`);
-          break;
+          nextDirectory();
+        });
+      } else {
+        throw err;
       }
-      fileCount++;
-      nextFile();
     });
-  } else if (fileNext > 0) {
-    fileQueue = [];
-    fileNext = 0;
-    nextDirectory();
   } else {
-    nextDirectory();
+    console.log(`processed ${service} service directories having ${functionCount} functions`);
   }
 }
 function generateTest(serviceName, servicedef, endpoints) {

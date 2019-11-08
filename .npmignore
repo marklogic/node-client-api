@@ -1,4 +1,9 @@
 config-optic/
+examples/
+etc/
 test-basic/
 test-basic-proxy/
 test-complete/
+gulpfile.js
+.jshintrc
+jsdoc.json
