@@ -18,121 +18,71 @@
 const fs = require('fs');
 const path = require('path');
 
+const {Transform} = require('stream');
+
 const ProxyGenerator = require('../lib/proxy-generator.js');
 
-const rootBase     = path.resolve('test-basic-proxy');
-const inputBase    = path.resolve(rootBase, 'dbfunctiondef');
-const outputBase   = path.resolve(rootBase, 'lib');
-const testgenBase  = path.resolve(inputBase, 'generated')
-const testDataFile = path.resolve(rootBase, 'testdef.json')
+const Vinyl = require('../lib/optional.js').library('vinyl');
 
 let testData = null;
+try {
+  const testDataFile = path.resolve(path.resolve('test-basic-proxy'), 'testdef.json')
+  testData = JSON.parse(fs.readFileSync(testDataFile, 'utf8'));
+} catch (err) {
+  console.error(`could not open ${testDataFile}`);
+  throw err;
+}
 
-let dirQueue = [inputBase];
-let dirNext  = 0;
-
-let service = 0;
-let functionCount = 0;
-
-function makeVinylSourceFromDirectory(directory) {
-  return ProxyGenerator.readDeclarations(directory.path).then(result => {
-    if (result === null) return null;
-    const proxySrc = ProxyGenerator.generateSource(result.serviceDeclaration, result.functionDeclarations);;
-//         path: ???,
-    const outFile = new srcFile.constructor({
-        cwd: directory.cwd,
-        base: directory.base,
-        stat: null,
-        history: directory.history.slice(),
-        contents: buffer.from(proxySrc, 'utf-8')
-        });
-    return outFile;
+function transformDirectoryToTestSource() {
+  return new Transform({
+    allowHalfOpen:      false,
+    writableObjectMode: true,
+    readableObjectMode: true,
+    transform(directory, encoding, callback) {
+      const self = this;
+      if (!Vinyl.isVinyl(directory) || !directory.isDirectory()) {
+        console.trace('not Vinyl directory: ' +
+            (Vinyl.isVinyl(directory) ? directory.path : directory.toString())
+        );
+        callback();
+        return;
+      }
+      ProxyGenerator.readDeclarations(directory.path)
+          .then(result => {
+            if (result === void 0 || result === null ||
+                !Array.isArray(result.functionDeclarations) || result.functionDeclarations.length === 0
+            ) {
+              console.trace('no declarations: ' +directory.path);
+              callback();
+              return;
+            }
+            const serviceDeclaration = result.serviceDeclaration;
+            const functionDeclarations = result.functionDeclarations;
+            const proxySrc = ProxyGenerator.generateSource(serviceDeclaration, functionDeclarations);
+            const cwd = directory.cwd;
+            const outputBase = path.resolve(cwd, 'lib');
+            const outputFile = {
+              cwd:      cwd,
+              base:     outputBase,
+              path:     path.resolve(outputBase, directory.basename + '.js'),
+              contents: Buffer.from(proxySrc, 'utf-8')
+            };
+            const testSrc  = generateTest(directory.basename, serviceDeclaration, functionDeclarations);
+            const testFile = {
+              cwd:      cwd,
+              base:     outputBase,
+              path:     path.resolve(outputBase, directory.basename + 'Test.js'),
+              contents: Buffer.from(testSrc, 'utf-8')
+            };
+            self.push(new Vinyl(outputFile));
+            self.push(new Vinyl(testFile));
+            callback();
+            })
+          .catch(err => callback(err));
+    }
   });
 }
-/* TODO:
-    set outFile.path to outputBase + srcFile.relative + filename
-    move to proxy-generator.js
-    an exported function that returns a Promise can be used as a task in gulp
-    outFile.relative
-    outFile.path
-    outFile.dirname
-    outFile.basename
-    outFile.stem
-    outFile.extname
-    trailing separators removed
-    $jsModule
-    https://www.npmjs.com/package/vinyl
- */
-function directoryToSourceFile(srcFile) {
-  // TODO: other checking for required properties
-  if (!(typeof srcFile.isDirectory === 'function') || !(typeof srcFile.clone === 'function')) {
-    throw new Error('input does not appear to be Vinyl directory file: '+srcFile);
-  } else if (!srcFile.isDirectory()) {
-    throw new Error('input must be Vinyl directory file: '+srcFile);
-  }
 
-  const outFile = srcFile.clone({deep:false, contents:false});
-  // populate outFile.contents
-
-  return new Promise((success, failure) => new DirectoryDeclarationReader(srcFile, success, failure));
-}
-
-function nextDirectory() {
-  if (dirNext < dirQueue.length) {
-    const directory = dirQueue[dirNext++];
-    fs.stat(path.resolve(directory, 'service.json'), (err, stat) => {
-      if (err === null) {
-        ProxyGenerator.readDeclarations(directory)
-            .then(result => {
-              if (result === null) {
-                nextDirectory();
-              } else {
-                const serviceDeclaration   = result.serviceDeclaration;
-                const functionDeclarations = result.functionDeclarations;
-                service++;
-                functionCount += functionDeclarations.length;
-                const parentDir   = path.dirname(directory);
-                const relativeDir = path.relative(inputBase, parentDir);
-                const outputDir   = path.resolve(outputBase, relativeDir);
-                const serviceName = path.basename(directory);
-                console.log(`generating client class ${relativeDir}/${serviceName}.js`);
-                const proxyFile = path.resolve(outputDir, serviceName+'.js');
-                const proxySrc  = ProxyGenerator.generateSource(serviceDeclaration, functionDeclarations, '../../..');
-                fs.writeFile(proxyFile, proxySrc, null, err => {
-                  if (err) throw err;
-                  if (parentDir === testgenBase) {
-                    console.log(`generating test ${relativeDir}/${serviceName}Test.js`);
-                    const testFile = path.resolve(outputDir, serviceName+'Test.js');
-                    const testSrc  = generateTest(serviceName, serviceDeclaration, functionDeclarations);
-                    fs.writeFile(testFile, testSrc, null, err => {
-                      if (err) throw err;
-                      nextDirectory();
-                    });
-                  } else {
-                    nextDirectory();
-                  }
-                });
-              }
-            })
-            .catch(err => {
-              throw err;
-            });
-      } else if (err.code === 'ENOENT') {
-        fs.readdir(directory, (err, filenames) => {
-          if (err) throw err;
-          if (filenames.length > 0) {
-            dirQueue = dirQueue.concat(filenames.map(filename => path.resolve(directory, filename)));
-          }
-          nextDirectory();
-        });
-      } else {
-        throw err;
-      }
-    });
-  } else {
-    console.log(`processed ${service} service directories having ${functionCount} functions`);
-  }
-}
 function generateTest(serviceName, servicedef, endpoints) {
   const endpointCalls = endpoints.map(endpointdef => {
     const functiondef = endpointdef.declaration;
@@ -227,8 +177,6 @@ function getValue(mode, datatype, multiple) {
   }
 }
 
-fs.readFile(testDataFile, 'utf8', (err, data) => {
-  if (err) throw err;
-  testData = JSON.parse(data);
-  nextDirectory();
-});
+module.exports = {
+  generate: transformDirectoryToTestSource
+};

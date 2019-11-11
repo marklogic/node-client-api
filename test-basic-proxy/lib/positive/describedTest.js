@@ -19,7 +19,7 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./described.js");
+const serviceFactory = require("./DescribedBundle.js");
 
 describe('jsdoc generation', function() {
   const service = serviceFactory(testutil.makeClient());

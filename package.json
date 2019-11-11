@@ -26,14 +26,14 @@
     "xpath"
   ],
   "dependencies": {
-    "big-integer": "^1.6.42",
-    "bluebird": "^3.5.3",
+    "big-integer": "^1.6.47",
+    "bluebird": "^3.7.1",
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.0.0",
     "dicer": "^0.3.0",
     "json-text-sequence": "^0.1.1",
     "multipart-stream": "^2.0.1",
-    "qs": "^6.6.0",
+    "qs": "^6.9.1",
     "through2": "^3.0.1",
     "www-authenticate": "^0.6.2",
     "yakaa": "^1.0.1"
@@ -51,21 +51,22 @@
     "bunyan": "^1.8.12",
     "chai": "^4.2.0",
     "core-util-is": "^1.0.2",
-    "gulp": "^4.0.0",
+    "gulp": "^4.0.2",
     "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": "^2.1.0",
     "gulp-mocha": "^6.0.0",
     "intercept-stdout": "^0.1.2",
     "jsdoc": "^3.6.3",
-    "jshint": "^2.10.1",
+    "jshint": "^2.10.3",
     "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "read": "^1.0.7",
-    "sanitize-html": "^1.20.0",
+    "sanitize-html": "^1.20.1",
     "should": "^13.2.3",
     "winston": "^3.2.1"
   },
   "optionalDependencies": {
-    "kerberos": "^1.1.2"
+    "kerberos": "^1.1.2",
+    "vinyl": "^2.2.0"
   }
 }

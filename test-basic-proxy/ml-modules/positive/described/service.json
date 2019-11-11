@@ -1,7 +1,7 @@
 {
   "endpointDirectory" : "/dbf/test/described/",
   "desc" : "A most descriptive class.",
-  "$javaClass" : "com.marklogic.client.test.dbfunction.positive.DescribedBundle",
+  "$jsModule" : "DescribedBundle.js",
   "$comment" : {
     "key": "The comment value is ignored."
   }

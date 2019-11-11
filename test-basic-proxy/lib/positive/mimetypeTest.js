@@ -27,7 +27,7 @@ describe('mimetype service', function() {
   const service = serviceFactory(testutil.makeAdminClient());
 
   it('apiReader endpoint', function(done) {
-    const sourceAPI = './test-basic-proxy/dbfunctiondef/positive/mimetype/apiReader.api';
+    const sourceAPI = './test-basic-proxy/ml-modules/positive/mimetype/apiReader.api';
     let testData = null;
     fs.readFile(sourceAPI, 'utf8', (err, data) => {
       if (err) {
