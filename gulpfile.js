@@ -69,6 +69,7 @@ function runProxyTests() {
 
 exports.doc = doc;
 exports.lint = lint;
+exports.generateProxyTests = parallel(positiveProxyTests, generatedProxyTests);
 exports.proxyTests = series(parallel(positiveProxyTests, generatedProxyTests), runProxyTests);
 exports.test = test;
 exports.default = lint;
