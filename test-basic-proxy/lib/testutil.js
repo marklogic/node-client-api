@@ -16,13 +16,21 @@
 'use strict';
 
 const marklogic = require('../../');
+const testconfig = require('../../etc/test-config.js');
 
+const client = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+/* TODO: DELETE
 const client = marklogic.createDatabaseClient({
   host:'localhost', port:8016, authType:'DIGEST', user:'rest-reader', password:'x'
 });
+ */
 
 const adminClient = marklogic.createDatabaseClient({
-  host:'localhost', port:8016, authType:'DIGEST', user:'admin', password:'admin'
+  host:     testconfig.restReaderConnection.host,
+  port:     testconfig.restReaderConnection.port,
+  authType: testconfig.restReaderConnection.authType,
+  user:     'admin',
+  password: 'admin'
 });
 
 function makeClient() {

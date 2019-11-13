@@ -22,6 +22,7 @@ const { parallel, series } = gulp;
 
 const proxy = require('./lib/proxy-generator.js');
 const testproxy = require('./test-basic-proxy/testGenerator.js');
+const testload = require('./test-basic-proxy/testLoader.js');
 
 function lint() {
   return gulp.src('lib/*')
@@ -47,10 +48,25 @@ function doc() {
     .pipe(jsdoc(config));
 }
 
+function loadProxyTests() {
+  return gulp.src([
+    'test-basic-proxy/ml-modules/*/*/service.json',
+    'test-basic-proxy/ml-modules/*/*/*.api',
+    'test-basic-proxy/ml-modules/*/*/*.sjs',
+    'test-basic-proxy/ml-modules/*/*/*.mjs',
+    'test-basic-proxy/ml-modules/*/*/*.xqy'
+        ])
+      .pipe(testload.load());
+}
 function positiveProxyTests() {
   return gulp.src('test-basic-proxy/ml-modules/positive/*')
       .pipe(proxy.generate())
       .pipe(gulp.dest('test-basic-proxy/lib/positive/'));
+}
+function negativeProxyTests() {
+  return gulp.src('test-basic-proxy/ml-modules/negative/*')
+      .pipe(proxy.generate())
+      .pipe(gulp.dest('test-basic-proxy/lib/negative/'));
 }
 function generatedProxyTests() {
   return gulp.src('test-basic-proxy/ml-modules/generated/*')
@@ -69,7 +85,8 @@ function runProxyTests() {
 
 exports.doc = doc;
 exports.lint = lint;
-exports.generateProxyTests = parallel(positiveProxyTests, generatedProxyTests);
-exports.proxyTests = series(parallel(positiveProxyTests, generatedProxyTests), runProxyTests);
+exports.loadProxyTests = loadProxyTests;
+exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
+exports.proxyTests = series(parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), runProxyTests);
 exports.test = test;
 exports.default = lint;

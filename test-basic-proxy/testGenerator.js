@@ -26,7 +26,7 @@ const Vinyl = require('../lib/optional.js').library('vinyl');
 
 let testData = null;
 try {
-  const testDataFile = path.resolve(path.resolve('test-basic-proxy'), 'testdef.json')
+  const testDataFile = path.resolve(path.resolve('test-basic-proxy'), 'testdef.json');
   testData = JSON.parse(fs.readFileSync(testDataFile, 'utf8'));
 } catch (err) {
   console.error(`could not open ${testDataFile}`);
@@ -40,10 +40,8 @@ function transformDirectoryToTestSource() {
     readableObjectMode: true,
     transform(directory, encoding, callback) {
       const self = this;
-      if (!Vinyl.isVinyl(directory) || !directory.isDirectory()) {
-        console.trace('not Vinyl directory: ' +
-            (Vinyl.isVinyl(directory) ? directory.path : directory.toString())
-        );
+      if (!Vinyl.isVinyl(directory) || !directory.isDirectory() || directory.path === void 0 || !(directory.path.length > 0)) {
+        console.trace('not Vinyl directory: '+directory);
         callback();
         return;
       }
