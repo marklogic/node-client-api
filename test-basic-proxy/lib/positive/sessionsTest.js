@@ -19,10 +19,10 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./sessions.js");
+const Sessions = require("./sessions.js");
 
 describe('session service', function() {
-  const service = serviceFactory(testutil.makeAdminClient());
+  const service = Sessions.on(testutil.makeAdminClient());
 
   it('field', function(done) {
     const timestampField = "timestamped";

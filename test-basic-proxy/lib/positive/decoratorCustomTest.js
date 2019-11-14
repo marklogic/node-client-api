@@ -19,8 +19,8 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const baseFactory   = require("./decoratorBase.js");
-const customFactory = require("./decoratorCustom.js");
+const DecoratorBase   = require("./decoratorBase.js");
+const DecoratorCustom = require("./decoratorCustom.js");
 
 describe('decoratorCustom service', function() {
   const customServiceDeclaration = {
@@ -29,8 +29,8 @@ describe('decoratorCustom service', function() {
     endpointExtension:     'xqy'
   };
   const client = testutil.makeClient();
-  const baseService   = baseFactory(client, customServiceDeclaration);
-  const customService = customFactory(client);
+  const baseService   = DecoratorBase.on(client, customServiceDeclaration);
+  const customService = DecoratorCustom.on(client);
 
   it('docify endpoint', function(done) {
     const input    = ['value0', 'value1'];

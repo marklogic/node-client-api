@@ -19,10 +19,10 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./decoratorBase.js");
+const DecoratorBase = require("./decoratorBase.js");
 
 describe('decoratorBase service', function() {
-  const service = serviceFactory(testutil.makeClient());
+  const service = DecoratorBase.on(testutil.makeClient());
 
   it('docify endpoint', function(done) {
     const input = 'value1';

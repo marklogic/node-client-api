@@ -15,17 +15,29 @@
  */
 'use strict';
 
+const fs = require('fs');
+
 const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./DescribedBundle.js");
+const DescribedBundle = require("./DescribedBundle.js");
 
 describe('jsdoc generation', function() {
-  const service = serviceFactory(testutil.makeClient());
+  // merely confirming that the described class can be constructed
+  const service = DescribedBundle.on(testutil.makeClient());
 
-/* TODO:
-  generate and verify jsdoc
-  instantiate but don't use the service
- */
+  // NOTE: must first use the gulp task to generate the jsDoc
+  it('generated jsdoc', function(done) {
+    const sourceAPI = './test-basic-proxy/doc/DescribedBundle.html';
+    fs.readFile(sourceAPI, 'utf8', (err, data) => {
+      if (err) {
+        expect.fail(err.toString());
+        done();
+      } else {
+        // TODO: parse and compare the HTML to the service.json and *.api declarations
+        done();
+      }
+    });
+  });
 });

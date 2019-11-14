@@ -21,10 +21,10 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./badIO.js");
+const BadIO = require("./badIO.js");
 
 describe('IO negatives service', function() {
-  const service = serviceFactory(testutil.makeClient());
+  const service = BadIO.on(testutil.makeClient());
   describe('bad argument endpoint', function() {
     it('with missing argument for non-nullable parameter', function(done) {
       try {

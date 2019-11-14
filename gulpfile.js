@@ -82,11 +82,16 @@ function runProxyTests() {
         }
       }));
 }
+function proxyDocTests() {
+  return gulp.src(['test-basic-proxy/lib/positive/DescribedBundle.js'])
+      .pipe(jsdoc({opts:{destination:'test-basic-proxy/doc'}}));
+}
 
 exports.doc = doc;
 exports.lint = lint;
 exports.loadProxyTests = loadProxyTests;
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
-exports.proxyTests = series(parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), runProxyTests);
+exports.generateProxyDocTests = proxyDocTests;
+exports.proxyTests = series(parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), proxyDocTests, runProxyTests);
 exports.test = test;
 exports.default = lint;

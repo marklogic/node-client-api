@@ -56,20 +56,21 @@ function transformDirectoryToTestSource() {
             }
             const serviceDeclaration = result.serviceDeclaration;
             const functionDeclarations = result.functionDeclarations;
-            const proxySrc = ProxyGenerator.generateSource(serviceDeclaration, functionDeclarations);
             const cwd = directory.cwd;
             const outputBase = path.resolve(cwd, 'lib');
+            const moduleName = directory.basename;
+            const proxySrc = ProxyGenerator.generateSource(moduleName, serviceDeclaration, functionDeclarations);
             const outputFile = {
               cwd:      cwd,
               base:     outputBase,
-              path:     path.resolve(outputBase, directory.basename + '.js'),
+              path:     path.resolve(outputBase, moduleName+'.js'),
               contents: Buffer.from(proxySrc, 'utf-8')
             };
-            const testSrc  = generateTest(directory.basename, serviceDeclaration, functionDeclarations);
+            const testSrc  = generateTest(moduleName, serviceDeclaration, functionDeclarations);
             const testFile = {
               cwd:      cwd,
               base:     outputBase,
-              path:     path.resolve(outputBase, directory.basename + 'Test.js'),
+              path:     path.resolve(outputBase, moduleName+'Test.js'),
               contents: Buffer.from(testSrc, 'utf-8')
             };
             self.push(new Vinyl(outputFile));
@@ -81,7 +82,8 @@ function transformDirectoryToTestSource() {
   });
 }
 
-function generateTest(serviceName, servicedef, endpoints) {
+function generateTest(moduleName, servicedef, endpoints) {
+  const className = moduleName.substring(0, 1).toUpperCase() + moduleName.substring(1);
   const endpointCalls = endpoints.map(endpointdef => {
     const functiondef = endpointdef.declaration;
     const functionName = functiondef.functionName;
@@ -116,10 +118,10 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./${serviceName}.js");
+const ${className} = require("./${moduleName}.js");
 
-describe('${serviceName} service', function() {
-  const service = serviceFactory(testutil.makeClient());
+describe('${moduleName} service', function() {
+  const service = ${className}.on(testutil.makeClient());
 ${endpointCalls}
 });
 `;

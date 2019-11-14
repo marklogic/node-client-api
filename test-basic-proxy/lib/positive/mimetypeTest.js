@@ -21,20 +21,19 @@ const expect = require('chai').expect;
 
 const testutil = require('../testutil');
 
-const serviceFactory = require("./mimetype.js");
+const Mimetype = require("./mimetype.js");
 
 describe('mimetype service', function() {
-  const service = serviceFactory(testutil.makeAdminClient());
+  const service = Mimetype.on(testutil.makeAdminClient());
 
   it('apiReader endpoint', function(done) {
     const sourceAPI = './test-basic-proxy/ml-modules/positive/mimetype/apiReader.api';
-    let testData = null;
     fs.readFile(sourceAPI, 'utf8', (err, data) => {
       if (err) {
         expect.fail(err.toString());
         done();
       } else {
-        testData = JSON.parse(data);
+        const testData = JSON.parse(data);
         service.apiReader('/dbf/test/mimetype/','apiReader')
             .then(output => {
               expect(output).to.eql(testData);
