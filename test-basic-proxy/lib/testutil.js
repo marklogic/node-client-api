@@ -19,11 +19,6 @@ const marklogic = require('../../');
 const testconfig = require('../../etc/test-config.js');
 
 const client = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-/* TODO: DELETE
-const client = marklogic.createDatabaseClient({
-  host:'localhost', port:8016, authType:'DIGEST', user:'rest-reader', password:'x'
-});
- */
 
 const adminClient = marklogic.createDatabaseClient({
   host:     testconfig.restReaderConnection.host,
