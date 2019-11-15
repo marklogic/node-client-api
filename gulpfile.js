@@ -13,32 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var gulp      = require('gulp');
-var jshint    = require('gulp-jshint');
-var mocha     = require('gulp-mocha');
-var jsdoc     = require('gulp-jsdoc3');
+const gulp   = require('gulp');
+const jshint = require('gulp-jshint');
+const mocha  = require('gulp-mocha');
+const jsdoc  = require('gulp-jsdoc3');
 
-gulp.task('lint', function() {
-  gulp.src('lib/*')
+
+function lint() {
+  return gulp.src('lib/*')
       .pipe(jshint({lookup:true}))
       .pipe(jshint.reporter('default'));
-});
+}
 
-gulp.task('test', function() {
-  gulp.src(['test-basic/*.js'])
+function test() {
+  return gulp.src(['test-basic/*.js'])
       .pipe(mocha({
         reporter: 'spec',
         globals: {
             should: require('should')
         }
       }));
-});
+}
 
-gulp.task('doc', function() {
+function doc() {
   // TODO: clear the directory first
-  var config = require('./jsdoc.json');
-  gulp.src(['./lib/*.js', 'README.md'])
+  const config = require('./jsdoc.json');
+  return gulp.src(['./lib/*.js', 'README.md'])
     .pipe(jsdoc(config));
-});
+}
 
-gulp.task('default', ['lint']);
+exports.doc = doc;
+exports.lint = lint;
+exports.test = test;
+exports.default = lint;

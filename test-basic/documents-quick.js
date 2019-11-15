@@ -167,3 +167,46 @@ describe('quick path', function(){
     .catch(done);
   });
 });
+
+describe('check connection', function(){
+ var assert = require('assert');
+    it('should check the connection', function(done){
+     	var flag = false;
+     db.checkConnection()
+      .result(function(response) {
+        assert(response.connected === true);
+        done();
+     }).catch(done);
+   });
+    it('should give 403 when user is not authorized', function(done){
+    var config = {host:testconfig.testConnection.host, user:testconfig.testConnection.user, password: testconfig.testConnection.password, port:testconfig.testConnection.port, 
+        authType:testconfig.testConnection.authType};
+    var db1 = marklogic.createDatabaseClient(config);
+    var assert = require('assert');
+     db1.checkConnection()
+      .result(function(response) {
+        assert(response.connected === false);
+        assert(response.httpStatusCode === 403);
+        assert(response.httpStatusMessage === 'Forbidden');
+
+        done();
+        })
+      .catch(done);
+   });
+
+   it('should give 401 when does not exist', function(done){
+    var config = {host:testconfig.restReaderConnection.host, user:testconfig.testConnection.user, password: 'invalid', port:testconfig.testConnection.port, 
+        authType:testconfig.restReaderConnection.authType};
+    var db1 = marklogic.createDatabaseClient(config);
+    var assert = require('assert');
+     db1.checkConnection()
+      .result(function(response) {
+        assert(response.connected === false);
+        assert(response.httpStatusCode === 401);
+        assert(response.httpStatusMessage === 'Unauthorized');
+        done();
+        })
+      .catch(done);
+   });
+});
+

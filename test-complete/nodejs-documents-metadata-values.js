@@ -64,7 +64,7 @@ describe('Document Metadata values test', function() {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.meta1.should.equal('super plastic');
       documents[0].metadataValues.meta2.should.equal('45.89');
-      documents[0].metadataValues.meta3.should.equal(true);
+      documents[0].metadataValues.meta3.should.equal('true');
       documents[0].metadataValues.meta4.should.be.empty;
       documents[0].metadataValues.metaDateTime.should.equal('2011-12-31T23:59:59');
       done();
@@ -168,7 +168,7 @@ describe('Document Metadata values test', function() {
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.metaAddNumber.should.equal('123.456');
-      documents[0].metadataValues.metaAddBoolean.should.equal(false);
+      documents[0].metadataValues.metaAddBoolean.should.equal('false');
       done();
     }, done);
   });
@@ -195,7 +195,7 @@ describe('Document Metadata values test', function() {
     }).result(function(documents) {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.metaAddNumber.should.equal('678.999');
-      documents[0].metadataValues.metaAddBoolean.should.equal(true);
+      documents[0].metadataValues.metaAddBoolean.should.equal('true');
       done();
     }, done);
   });
@@ -274,10 +274,63 @@ describe('Document Metadata values test', function() {
       //console.log(JSON.stringify(documents, null, 4));
       documents[0].metadataValues.meta1.should.equal('metal');
       documents[0].metadataValues.meta2.should.equal('65.98');
-      documents[0].metadataValues.meta3.should.equal(true);
+      documents[0].metadataValues.meta3.should.equal('true');
       documents[0].metadataValues.meta4.should.be.empty;
       documents[0].metadataValues.metaDateTime.should.equal('2012-04-31T23:59:59');
       done();
+    }, done);
+  });
+  
+  it('TEST 17 - write and read xml formatted properties in json', function(done) {
+	  var docuri = '/test/query/matchList/propertyInxmlOne.json';
+	  this.timeout(10000);
+    db.documents.write({
+		uri: docuri,
+        contentType: 'application/json',
+        quality: 13,
+		collections: ['metadataValuesColl'],
+        properties: {'$ml.xml': '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps>Property 1</myProps></prop:properties>'},
+        content: {
+          title: 'The memex',
+          popularity: 5,
+          id: '0026',
+          date: '2009-05-05',
+          price: {
+               amt: 123.45
+             },
+          p: 'The Memex, unfortunately, had no automated search feature'
+          }
+    }).result(function(response){
+      dbReader.documents.read({uris: docuri, categories: ['metadata']}).
+      result(function(documents) {
+	  var prop = JSON.stringify(documents[0].properties);
+      //console.log(prop, null, 4);
+      prop.should.containEql('<myProps>Property 1</myProps>');
+	  done();
+      }, done);
+    }, done);
+  });
+  
+  it('TEST 18 - appply xml formatted properties patch on metadata properties', function(done){
+    this.timeout(10000);
+    var docuri = '/test/query/matchList/propertyInxmlOne.json';
+    var p = marklogic.patchBuilder;
+    db.documents.patch({uri: docuri,
+      categories: ['metadata'],
+      operations: [
+          p.collections.add('metadataValuesColl'),
+          p.properties.add('$ml.xml', '<prop:properties xmlns:prop="http://marklogic.com/xdmp/property"><myProps>Property 2</myProps></prop:properties>'),
+          p.quality.set(2)
+      ]
+    }).result(function(response){
+      dbReader.documents.read({uris: docuri, categories: ['metadata']}).
+      result(function(documents) {
+	  var prop = JSON.stringify(documents[0].properties);
+      //console.log(prop, null, 4);
+	  // Note we expect two properties, but in special case of $ml.xml, the patch just replaces an existing $ml.xml
+      prop.should.containEql('<myProps>Property 2</myProps>');
+	  done();
+      }, done);
     }, done);
   });
 

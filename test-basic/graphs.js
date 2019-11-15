@@ -304,6 +304,25 @@ describe('graph operations', function(){
       }, done);
     });
 
+    it('should run SPARQL query with array', function (done) {
+      this.timeout(10000);
+
+      var myQuery = `PREFIX dc: <http://purl.org/dc/terms/>
+       SELECT ?o WHERE { ?s dc:description ?o ;
+        dc:identifier  ?identifiers .
+        FILTER (?identifiers = ?ids)
+       }`;
+      const bindings = {ids: [{value: 1, type:'int'}, {value: 2, type:'int'}]};
+      db.graphs.sparql({contentType: 'application/json',query: myQuery, bindings:bindings}
+      ).
+      result(function (response) {
+        response.results.bindings[0].should.have.property('o');
+        response.results.bindings[0].o.value.should.equal('First description');
+        response.results.bindings[1].o.value.should.equal('Second description');
+        done();
+      }, done);
+    });
+
     it('should run SPARQL query with docQuery in combined query form', function (done) {
       this.timeout(10000);
       var myQuery = "SELECT ?o WHERE {?s ?p ?o .}";

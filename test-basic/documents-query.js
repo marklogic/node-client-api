@@ -115,6 +115,11 @@ describe('document query', function(){
           collections: ['extraCollection'],
           contentType: 'application/xml',
           content:     '<extraRoot><extraMatch>matchable extra</extraMatch></extraRoot>'
+        }, {
+          uri: '/test/query/extraDir/doc6.xml',
+          collections: ['extraCollection'],
+          contentType: 'application/xml',
+          content:     '<container xmlns:abc="http://marklogic.com/test/abc"><target>match</target><abc:elem>word</abc:elem></container>'
         }).result().
     then(function(response) {
       var dbModule = 'extractFirst.xqy';
@@ -496,6 +501,53 @@ describe('document query', function(){
         })
       .catch(done);
     });
+
+    it('should not throw error when queryBuilder.extract has namespace bindings', function(done){
+      db.documents.query(
+        q.where(
+            q.word('target','match')
+          ).
+        slice(0, 1, q.extract({
+          selected:'include',
+          paths:'//abc:elem',
+          namespaces: {'abc': 'http://marklogic.com/test/abc'}
+          }))
+        )
+      .result(function(response) {
+        response.length.should.equal(1);
+        var document = response[0];
+        document.should.have.property('content');
+        var content = document.content;
+        var assert = require('assert');
+        assert(content.includes('<abc:elem xmlns:abc="http://marklogic.com/test/abc">word</abc:elem>'));
+        done();
+        })
+      .catch(done);
+    });
+
+    it('should throw error when user is not authorized', function(done){
+    var config = {host:testconfig.restReaderConnection.host, user:'valid', password: 'x', port:testconfig.restReaderConnection.port, 
+        authType:testconfig.restReaderConnection.authType};
+    var db = marklogic.createDatabaseClient(config);
+    var flag = false;
+    var assert = require('assert');
+      db.documents.read({
+          uris: '/test-0001.jpg',
+          contentType: 'image/jpeg'
+          }).stream('object')
+      .on('data', chunk => {
+         should.fail(JSON.stringify(chunk), [], 
+           "unauthorized users should not be able to read files.");
+       })
+      .on('error', error => {
+	       console.log(error); 
+       flag = true;
+       })
+      .on('end', () => {
+       assert(flag == true);
+       done();
+       });
+   });
     it('should take a slice with a standard snippet', function(done){
       db.documents.query(
         q.where(
