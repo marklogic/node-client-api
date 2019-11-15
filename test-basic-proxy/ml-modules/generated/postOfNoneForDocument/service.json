@@ -1,4 +1,3 @@
 {
-  "endpointDirectory" : "/dbf/test/postOfNoneForDocument/",
-  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.PostOfNoneForDocumentBundle"
+  "endpointDirectory" : "/dbf/test/postOfNoneForDocument/"
 }

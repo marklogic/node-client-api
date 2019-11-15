@@ -1,4 +1,3 @@
 {
-  "endpointDirectory" : "/dbf/test/postOfMultipartForDocument/",
-  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.PostOfMultipartForDocumentBundle"
+  "endpointDirectory" : "/dbf/test/postOfMultipartForDocument/"
 }

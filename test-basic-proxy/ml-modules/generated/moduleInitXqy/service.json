@@ -1,4 +1,3 @@
 {
-  "endpointDirectory" : "/dbf/test/moduleInitXqy/",
-  "$javaClass" : "com.marklogic.client.test.dbfunction.generated.ModuleInitXqyBundle"
+  "endpointDirectory" : "/dbf/test/moduleInitXqy/"
 }
