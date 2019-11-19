@@ -1,0 +1,18 @@
+{
+  "functionName": "itemizer",
+  "params": [ {
+      "name":     "start",
+      "datatype": "int",
+      "nullable": true
+    }, {
+      "name":     "length",
+      "datatype": "int",
+      "nullable": true
+    } ],
+  "return": {
+    "datatype": "jsonDocument",
+    "multiple": true,
+    "nullable": true
+  },
+  "$jsOutputMode": "stream"
+}
