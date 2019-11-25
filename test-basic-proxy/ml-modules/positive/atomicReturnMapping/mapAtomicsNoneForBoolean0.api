@@ -1,0 +1,9 @@
+{
+  "functionName" : "mapAtomicsNoneForBoolean0",
+  "return" : {
+    "datatype" : "boolean",
+    "multiple" : false,
+    "nullable" : false,
+    "$jsType"  : "string"
+  }
+}

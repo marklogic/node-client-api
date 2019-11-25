@@ -1,0 +1,9 @@
+{
+  "functionName" : "mapAtomicsNoneForFloat0",
+  "return" : {
+    "datatype" : "float",
+    "multiple" : false,
+    "nullable" : false,
+    "$jsType"  : "string"
+  }
+}
