@@ -18,7 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const {Transform} = require('stream');
+const {Writable} = require('stream');
 
 const Vinyl = require('../lib/optional.js').library('vinyl');
 
@@ -67,12 +67,9 @@ function loadFilesToDatabase() {
   const batchSeed = [metadata];
   const fileBuffer = new Array(bufferMax);
   let bufferNext = 0;
-  return new Transform({
-    allowHalfOpen:      false,
-    writableObjectMode: true,
-    readableObjectMode: true,
-    transform(file, encoding, callback) {
-      const self = this;
+  return new Writable({
+    objectMode: true,
+    write(file, encoding, callback) {
       if (!Vinyl.isVinyl(file) || file.isDirectory() || file.path === void 0 || !(file.path.length > 0)) {
         console.trace('not Vinyl file: '+file);
         callback();
@@ -82,7 +79,6 @@ function loadFilesToDatabase() {
         uri:     '/dbf/test/'+path.basename(file.dirname)+'/'+file.basename,
         content: file.contents
       };
-      self.push(file);
       if (bufferNext < bufferMax) {
         callback();
         return;
@@ -91,8 +87,7 @@ function loadFilesToDatabase() {
         .result(output => callback(), err => callback(err));
       bufferNext = 0;
     },
-    flush(callback) {
-      const self = this;
+    final(callback) {
       if (bufferNext > 0) {
         modulesClient.documents.write(batchSeed.concat(fileBuffer.slice(0, bufferNext)))
             .result(output => callback(), err => callback(err));
