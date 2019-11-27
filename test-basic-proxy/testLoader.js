@@ -22,49 +22,66 @@ const {Writable} = require('stream');
 
 const Vinyl = require('../lib/optional.js').library('vinyl');
 
-const testconfig = require('../etc/test-config.js');
-const marklogic = require('../');
+function getDatabaseClient(loader, options) {
+  if (options === void 0 || options == null) {
+    throw new Error(`${loader} requires options`);
+  }
 
-const modulesClient = marklogic.createDatabaseClient({
-  host:     testconfig.restEvaluatorConnection.host,
-  port:     testconfig.restEvaluatorConnection.port,
-  user:     testconfig.restEvaluatorConnection.user,
-  password: testconfig.restEvaluatorConnection.password,
-  authType: testconfig.restEvaluatorConnection.authType,
-  database: 'unittest-nodeapi-modules'
-});
-const metadata = {
-  collections: ['dbf/test/cases'],
-  permissions: [
-    {'role-name':'rest-reader', capabilities:['read', 'execute']},
-    {'role-name':'rest-writer', capabilities:['update']}
-  ]
-};
+  const databaseClient = options.databaseClient;
+  if (databaseClient === void 0 || databaseClient == null) {
+    throw new Error(`${loader} requires databaseClient option`);
+  }
 
-function loadFilesToDatabase() {
-  const testdir    = path.resolve('test-basic-proxy');
-  const modulesdir = path.resolve(testdir, 'ml-modules');
-  fs.readFile(path.resolve(modulesdir, 'testInspector.sjs'), 'utf8', (err, data) => {
-    if (err) throw err;
-    modulesClient.documents.write({
-        uri:         '/dbf/test/testInspector.sjs',
-        contentType: 'application/vnd.marklogic-javascript',
-        permissions: metadata.permissions,
-        content:     data
-        })
-      .result(null, err => {throw err;});
+  return databaseClient;
+}
+
+function loadFile(callback, options) {
+  const databaseClient = getDatabaseClient('loadFile', options);
+
+  const filePath = options.filePath;
+  if (filePath === void 0 || filePath == null) {
+    throw new Error('loadFile requires the filePath for the source file');
+  }
+
+  const documentDescriptor = options.documentDescriptor;
+  if (documentDescriptor === void 0 || documentDescriptor == null) {
+    throw new Error(`loadFile requires fileDescriptor option`);
+  }
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+    documentDescriptor.content = data;
+    databaseClient.documents.write(documentDescriptor)
+      .result(output => callback(), callback);
   });
-  fs.readFile(path.resolve(testdir, 'testdef.json'), 'utf8', (err, data) => {
-    if (err) throw err;
-    marklogic.createDatabaseClient(testconfig.restWriterConnection).documents.write({
-        uri:         '/dbf/test.json',
-        contentType: 'application/json',
-        content:     data
-        })
-      .result(null, err => {throw err;});
-  });
+}
+
+function loadFileStream(options) {
+  const databaseClient = getDatabaseClient('loadFileStream', options);
+
+  const documentMetadata = options.documentMetadata;
+  if (documentMetadata === void 0 || documentMetadata == null) {
+    throw new Error(`loadFileStream requires documentMetadata option`);
+  }
+
+  let uriPrefix = options.uriPrefix;
+  if (uriPrefix === void 0 || uriPrefix == null) {
+    uriPrefix = '/';
+  } else if (!uriPrefix.endsWith('/')) {
+    uriPrefix += '/';
+  }
+
+  let uriStartDepth = options.uriStartDepth;
+  if (uriStartDepth === void 0 || uriStartDepth == null) {
+    uriStartDepth = 2;
+  }
+  uriStartDepth += path.resolve().split(path.sep).length - 1;
+
   const bufferMax = 100;
-  const batchSeed = [metadata];
+  const batchSeed = [documentMetadata];
   const fileBuffer = new Array(bufferMax);
   let bufferNext = 0;
   return new Writable({
@@ -76,21 +93,21 @@ function loadFilesToDatabase() {
         return;
       }
       fileBuffer[bufferNext++] = {
-        uri:     '/dbf/test/'+path.basename(file.dirname)+'/'+file.basename,
+        uri:     uriPrefix + file.path.split(path.sep).slice(uriStartDepth).join('/'),
         content: file.contents
       };
       if (bufferNext < bufferMax) {
         callback();
         return;
       }
-      modulesClient.documents.write(batchSeed.concat(fileBuffer))
-        .result(output => callback(), err => callback(err));
+      databaseClient.documents.write(batchSeed.concat(fileBuffer))
+        .result(output => callback(), callback);
       bufferNext = 0;
     },
     final(callback) {
       if (bufferNext > 0) {
-        modulesClient.documents.write(batchSeed.concat(fileBuffer.slice(0, bufferNext)))
-            .result(output => callback(), err => callback(err));
+        databaseClient.documents.write(batchSeed.concat(fileBuffer.slice(0, bufferNext)))
+            .result(output => callback(), callback);
         bufferNext = 0;
       } else {
         callback();
@@ -100,5 +117,6 @@ function loadFilesToDatabase() {
 }
 
 module.exports = {
-  load: loadFilesToDatabase
+  loadFile:       loadFile,
+  loadFileStream: loadFileStream
 };

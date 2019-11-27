@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path   = require('path');
 const gulp   = require('gulp');
 const jshint = require('gulp-jshint');
 const mocha  = require('gulp-mocha');
@@ -20,9 +21,11 @@ const jsdoc  = require('gulp-jsdoc3');
 
 const { parallel, series } = gulp;
 
+const marklogic = require('./');
 const proxy = require('./lib/proxy-generator.js');
 const testproxy = require('./test-basic-proxy/testGenerator.js');
 const testload = require('./test-basic-proxy/testLoader.js');
+const testconfig = require('./etc/test-config.js');
 
 function lint() {
   return gulp.src('lib/*')
@@ -48,7 +51,68 @@ function doc() {
     .pipe(jsdoc(config));
 }
 
-function loadProxyTests() {
+let testModulesClient = null;
+function getTestModulesClient() {
+  if (testModulesClient === null) {
+    const connectionParams = {
+      host:     testconfig.restEvaluatorConnection.host,
+      port:     testconfig.restEvaluatorConnection.port,
+      user:     testconfig.restEvaluatorConnection.user,
+      password: testconfig.restEvaluatorConnection.password,
+      authType: testconfig.restEvaluatorConnection.authType,
+      database: 'unittest-nodeapi-modules'
+    };
+    testModulesClient = marklogic.createDatabaseClient(connectionParams);
+  }
+  return testModulesClient;
+}
+function getTestDocumentPermissions() {
+  return [
+    {'role-name':'rest-reader', capabilities:['read', 'execute']},
+    {'role-name':'rest-writer', capabilities:['update']}
+  ];
+}
+
+function loadProxyTestInspector(callback) {
+  const testdir    = path.resolve('test-basic-proxy');
+  const modulesdir = path.resolve(testdir, 'ml-modules');
+  const filePath           = path.resolve(modulesdir, 'testInspector.sjs');
+  const databaseClient     = getTestModulesClient();
+  const documentDescriptor = {
+    uri:         '/dbf/test/testInspector.sjs',
+    contentType: 'application/vnd.marklogic-javascript',
+    permissions: getTestDocumentPermissions()
+  };
+  testload.loadFile(callback, {
+    filePath:           filePath,
+    databaseClient:     databaseClient,
+    documentDescriptor: documentDescriptor
+  });
+}
+
+function loadProxyTestData(callback) {
+  const testdir = path.resolve('test-basic-proxy');
+  const filePath           = path.resolve(testdir, 'testdef.json');
+  const databaseClient     = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+  const documentDescriptor = {
+    uri:         '/dbf/test.json',
+    contentType: 'application/json'
+  };
+  testload.loadFile(callback, {
+    filePath:           filePath,
+    databaseClient:     databaseClient,
+    documentDescriptor: documentDescriptor
+  });
+}
+
+function loadProxyTestCases(callback) {
+  const databaseClient   = getTestModulesClient();
+  const documentMetadata = {
+    collections: ['/dbf/test/cases'],
+    permissions: getTestDocumentPermissions()
+  };
+  const uriPrefix     = '/dbf/test/';
+  const uriStartDepth = 4;
   return gulp.src([
     'test-basic-proxy/ml-modules/*/*/service.json',
     'test-basic-proxy/ml-modules/*/*/*.api',
@@ -56,7 +120,12 @@ function loadProxyTests() {
     'test-basic-proxy/ml-modules/*/*/*.mjs',
     'test-basic-proxy/ml-modules/*/*/*.xqy'
         ])
-      .pipe(testload.load());
+      .pipe(testload.loadFileStream({
+        databaseClient:   databaseClient,
+        documentMetadata: documentMetadata,
+        uriPrefix:        uriPrefix,
+        uriStartDepth:    uriStartDepth
+        }));
 }
 function positiveProxyTests() {
   return gulp.src('test-basic-proxy/ml-modules/positive/*')
@@ -89,7 +158,7 @@ function proxyDocTests() {
 
 exports.doc = doc;
 exports.lint = lint;
-exports.loadProxyTests = loadProxyTests;
+exports.loadProxyTests     = parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases);
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
 exports.generateProxyDocTests = proxyDocTests;
 exports.proxyTests = series(parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), proxyDocTests, runProxyTests);
