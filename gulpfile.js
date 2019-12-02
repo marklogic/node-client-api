@@ -24,8 +24,8 @@ const { parallel, series } = gulp;
 const marklogic = require('./');
 const proxy = require('./lib/proxy-generator.js');
 const testproxy = require('./test-basic-proxy/testGenerator.js');
-const testload = require('./test-basic-proxy/testLoader.js');
 const testconfig = require('./etc/test-config.js');
+const basicloader = require('./lib/basic-loader.js');
 
 function lint() {
   return gulp.src('lib/*')
@@ -83,7 +83,7 @@ function loadProxyTestInspector(callback) {
     contentType: 'application/vnd.marklogic-javascript',
     permissions: getTestDocumentPermissions()
   };
-  testload.loadFile(callback, {
+  basicloader.loadFile(callback, {
     filePath:           filePath,
     databaseClient:     databaseClient,
     documentDescriptor: documentDescriptor
@@ -98,7 +98,7 @@ function loadProxyTestData(callback) {
     uri:         '/dbf/test.json',
     contentType: 'application/json'
   };
-  testload.loadFile(callback, {
+  basicloader.loadFile(callback, {
     filePath:           filePath,
     databaseClient:     databaseClient,
     documentDescriptor: documentDescriptor
@@ -120,7 +120,7 @@ function loadProxyTestCases(callback) {
     'test-basic-proxy/ml-modules/*/*/*.mjs',
     'test-basic-proxy/ml-modules/*/*/*.xqy'
         ])
-      .pipe(testload.loadFileStream({
+      .pipe(basicloader.loadFileStream({
         databaseClient:   databaseClient,
         documentMetadata: documentMetadata,
         uriPrefix:        uriPrefix,
