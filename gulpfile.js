@@ -147,7 +147,7 @@ function runProxyTests() {
       .pipe(mocha({
         reporter: 'spec',
         globals: {
-          should: require('should')
+          should: require('chai')
         }
       }));
 }
@@ -161,6 +161,11 @@ exports.lint = lint;
 exports.loadProxyTests     = parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases);
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
 exports.generateProxyDocTests = proxyDocTests;
-exports.proxyTests = series(parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), proxyDocTests, runProxyTests);
+exports.runProxyTests = runProxyTests;
+exports.proxyTests = series(
+    parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
+    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests),
+    proxyDocTests,
+    runProxyTests);
 exports.test = test;
 exports.default = lint;
