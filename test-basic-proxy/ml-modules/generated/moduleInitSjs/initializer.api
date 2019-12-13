@@ -1,0 +1,27 @@
+{
+  "functionName" : "initializer",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "boolean",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param2",
+    "datatype" : "double",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param3",
+    "datatype" : "float",
+    "multiple" : true,
+    "nullable" : false
+  }, {
+    "name" : "param4",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : true
+  } ],
+  "return" : {
+    "datatype" : "boolean"
+  }
+}

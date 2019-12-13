@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfMultipartXmlDocumentForNone2",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "xmlDocument",
+    "multiple" : false,
+    "nullable" : true
+  } ]
+}

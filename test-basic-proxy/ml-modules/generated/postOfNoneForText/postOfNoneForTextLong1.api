@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextLong1",
+  "return" : {
+    "datatype" : "long",
+    "nullable" : true
+  }
+}

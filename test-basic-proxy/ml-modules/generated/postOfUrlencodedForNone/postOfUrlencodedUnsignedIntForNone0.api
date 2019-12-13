@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedUnsignedIntForNone0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "unsignedInt",
+    "multiple" : false,
+    "nullable" : false
+  } ]
+}

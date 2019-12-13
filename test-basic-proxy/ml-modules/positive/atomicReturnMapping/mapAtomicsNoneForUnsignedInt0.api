@@ -1,0 +1,9 @@
+{
+  "functionName" : "mapAtomicsNoneForUnsignedInt0",
+  "return" : {
+    "datatype" : "unsignedInt",
+    "multiple" : false,
+    "nullable" : false,
+    "$jsType"  : "string"
+  }
+}

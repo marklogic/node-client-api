@@ -1,0 +1,69 @@
+{
+  "functionName" : "postOfUrlencodedAllForNone0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "boolean",
+    "multiple" : true,
+    "nullable" : true
+  }, {
+    "name" : "param2",
+    "datatype" : "double",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param3",
+    "datatype" : "float",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param4",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  }, {
+    "name" : "param5",
+    "datatype" : "long",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param6",
+    "datatype" : "unsignedInt",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param7",
+    "datatype" : "unsignedLong",
+    "multiple" : true,
+    "nullable" : true
+  }, {
+    "name" : "param8",
+    "datatype" : "date",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param9",
+    "datatype" : "dateTime",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param10",
+    "datatype" : "dayTimeDuration",
+    "multiple" : true,
+    "nullable" : false
+  }, {
+    "name" : "param11",
+    "datatype" : "decimal",
+    "multiple" : false,
+    "nullable" : true
+  }, {
+    "name" : "param12",
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param13",
+    "datatype" : "time",
+    "multiple" : true,
+    "nullable" : true
+  } ]
+}

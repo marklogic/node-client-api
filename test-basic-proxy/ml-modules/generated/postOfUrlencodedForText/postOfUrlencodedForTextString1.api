@@ -1,0 +1,13 @@
+{
+  "functionName" : "postOfUrlencodedForTextString1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "double",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "string",
+    "nullable" : true
+  }
+}

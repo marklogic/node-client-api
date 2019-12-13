@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForDocumentArray1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "float",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "array",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

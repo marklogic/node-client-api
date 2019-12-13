@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedIntForNone2",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  } ]
+}

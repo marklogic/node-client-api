@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedDateForNone2",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "date",
+    "multiple" : true,
+    "nullable" : false
+  } ]
+}

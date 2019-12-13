@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedBooleanForNone1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "boolean",
+    "multiple" : false,
+    "nullable" : true
+  } ]
+}

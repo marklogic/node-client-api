@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfMultipartForMultipartXmlDocument1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "textDocument",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "xmlDocument",
+    "multiple" : true,
+    "nullable" : true
+  }
+}

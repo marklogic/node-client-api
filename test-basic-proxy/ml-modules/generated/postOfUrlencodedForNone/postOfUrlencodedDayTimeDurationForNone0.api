@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedDayTimeDurationForNone0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "dayTimeDuration",
+    "multiple" : false,
+    "nullable" : false
+  } ]
+}

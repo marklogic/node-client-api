@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextDouble1",
+  "return" : {
+    "datatype" : "double",
+    "nullable" : true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedTimeForNone2",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "time",
+    "multiple" : true,
+    "nullable" : false
+  } ]
+}

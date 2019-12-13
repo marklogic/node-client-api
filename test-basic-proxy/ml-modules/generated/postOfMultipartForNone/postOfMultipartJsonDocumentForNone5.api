@@ -1,0 +1,15 @@
+{
+  "functionName" : "postOfMultipartJsonDocumentForNone5",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "jsonDocument",
+    "multiple" : true,
+    "nullable" : false
+  }, {
+    "name" : "param2",
+    "datatype" : "int"
+  }, {
+    "name" : "param3",
+    "datatype" : "long"
+  } ]
+}

@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForMultipartTextDocument1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "textDocument",
+    "multiple" : true,
+    "nullable" : true
+  }
+}

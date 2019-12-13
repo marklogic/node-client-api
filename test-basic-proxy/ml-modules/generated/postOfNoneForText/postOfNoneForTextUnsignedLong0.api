@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextUnsignedLong0",
+  "return" : {
+    "datatype" : "unsignedLong",
+    "nullable" : false
+  }
+}

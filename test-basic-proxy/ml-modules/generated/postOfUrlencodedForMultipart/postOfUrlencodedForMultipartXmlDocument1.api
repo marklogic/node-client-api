@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForMultipartXmlDocument1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "xmlDocument",
+    "multiple" : true,
+    "nullable" : true
+  }
+}

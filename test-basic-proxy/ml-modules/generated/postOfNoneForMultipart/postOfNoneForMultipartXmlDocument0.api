@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForMultipartXmlDocument0",
+  "return" : {
+    "datatype" : "xmlDocument",
+    "multiple" : true,
+    "nullable" : false
+  }
+}

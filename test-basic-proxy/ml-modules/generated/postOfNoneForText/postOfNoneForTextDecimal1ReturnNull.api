@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextDecimal1ReturnNull",
+  "return" : {
+    "datatype" : "decimal",
+    "nullable" : true
+  }
+}

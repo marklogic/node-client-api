@@ -1,0 +1,13 @@
+{
+  "functionName" : "postOfUrlencodedForTextFloat1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "double",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "float",
+    "nullable" : true
+  }
+}

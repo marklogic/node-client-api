@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForDocumentObject1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "float",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "object",
+    "multiple" : false,
+    "nullable" : true
+  }
+}
