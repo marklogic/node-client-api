@@ -162,6 +162,10 @@ exports.loadProxyTests     = parallel(loadProxyTestInspector, loadProxyTestData,
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
 exports.generateProxyDocTests = proxyDocTests;
 exports.runProxyTests = runProxyTests;
+exports.setupProxyTests = series(
+    parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
+    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests),
+    proxyDocTests);
 exports.proxyTests = series(
     parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
     parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests),
