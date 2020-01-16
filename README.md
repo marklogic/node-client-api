@@ -13,6 +13,7 @@ from Node.js applications.
 *  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
 *  Basic, digest, certificate, Kerberos, and SAML authentication
 *  Import libraries as JavaScript mjs modules
+*  Data Services First - MarkLogic's support for microservices
 
 ## Getting Started
 
