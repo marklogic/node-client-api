@@ -1,0 +1,13 @@
+{
+  "functionName" : "postOfMultipartForTextDayTimeDuration1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "binaryDocument",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "dayTimeDuration",
+    "nullable" : true
+  }
+}

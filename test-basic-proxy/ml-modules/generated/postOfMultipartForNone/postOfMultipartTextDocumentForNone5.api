@@ -1,0 +1,15 @@
+{
+  "functionName" : "postOfMultipartTextDocumentForNone5",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "textDocument",
+    "multiple" : true,
+    "nullable" : false
+  }, {
+    "name" : "param2",
+    "datatype" : "long"
+  }, {
+    "name" : "param3",
+    "datatype" : "unsignedInt"
+  } ]
+}

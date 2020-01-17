@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedFloatForNone3",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "float",
+    "multiple" : true,
+    "nullable" : true
+  } ]
+}

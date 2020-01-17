@@ -1,0 +1,13 @@
+{
+  "functionName" : "postOfUrlencodedForTextDouble0",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "double",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "double",
+    "nullable" : false
+  }
+}

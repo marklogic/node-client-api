@@ -1,0 +1,15 @@
+{
+  "functionName" : "postOfMultipartArrayForNone1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "array",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param2",
+    "datatype" : "boolean"
+  }, {
+    "name" : "param3",
+    "datatype" : "double"
+  } ]
+}

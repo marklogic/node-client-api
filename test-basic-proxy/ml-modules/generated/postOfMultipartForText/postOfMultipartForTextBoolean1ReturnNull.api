@@ -1,0 +1,13 @@
+{
+  "functionName" : "postOfMultipartForTextBoolean1ReturnNull",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "binaryDocument",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "boolean",
+    "nullable" : true
+  }
+}

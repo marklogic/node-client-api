@@ -1,0 +1,14 @@
+{
+  "functionName" : "postOfUrlencodedForMultipartBinaryDocument1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : true,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "binaryDocument",
+    "multiple" : true,
+    "nullable" : true
+  }
+}

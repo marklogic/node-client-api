@@ -1,0 +1,8 @@
+{
+  "functionName" : "postOfNoneForDocumentObject1",
+  "return" : {
+    "datatype" : "object",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "functionName" : "mapAtomicsNoneForDateTime0",
+  "return" : {
+    "datatype" : "dateTime",
+    "multiple" : false,
+    "nullable" : false,
+    "$jsType"  : "Date"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextTime0",
+  "return" : {
+    "datatype" : "time",
+    "nullable" : false
+  }
+}

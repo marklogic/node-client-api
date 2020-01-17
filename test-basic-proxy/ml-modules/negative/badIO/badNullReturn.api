@@ -1,0 +1,14 @@
+{
+  "functionName" : "badNullReturn",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "int",
+    "multiple" : false,
+    "nullable" : false
+  } ],
+  "return" : {
+    "datatype" : "int",
+    "multiple" : false,
+    "nullable" : false
+  }
+}

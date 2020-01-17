@@ -1,0 +1,15 @@
+{
+  "functionName" : "postOfMultipartObjectForNone1",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "object",
+    "multiple" : false,
+    "nullable" : false
+  }, {
+    "name" : "param2",
+    "datatype" : "double"
+  }, {
+    "name" : "param3",
+    "datatype" : "float"
+  } ]
+}

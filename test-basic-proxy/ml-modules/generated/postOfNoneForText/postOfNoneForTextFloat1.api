@@ -1,0 +1,7 @@
+{
+  "functionName" : "postOfNoneForTextFloat1",
+  "return" : {
+    "datatype" : "float",
+    "nullable" : true
+  }
+}

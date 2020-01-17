@@ -1,0 +1,9 @@
+{
+  "functionName" : "postOfUrlencodedDecimalForNone3",
+  "params" : [ {
+    "name" : "param1",
+    "datatype" : "decimal",
+    "multiple" : true,
+    "nullable" : true
+  } ]
+}
