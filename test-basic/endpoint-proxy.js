@@ -48,22 +48,13 @@ describe('call an endpoint proxy', function(){
             "name":     "input",
             "datatype": "jsonDocument",
             "multiple": true,
-            "nullable": true,
-            "dataKind": "node",
-            "mimeType": "application/json"
+            "nullable": true
         } ],
         "return": {
             "datatype": "jsonDocument",
             "multiple": true,
-            "nullable": true,
-            "dataKind": "node",
-            "mimeType": "application/json"
-        },
-        "maxArgs": 1,
-        "paramsKind": "multiNode",
-        "sessionParam": null,
-        "returnKind": "multipart",
-        "$jsOutputMode": "promise"
+            "nullable": true
+        }
     };
     const multiAtomicInputMultiOutputDecl = {
         "functionName": "multiAtomicInputMultiOutput",
@@ -71,23 +62,13 @@ describe('call an endpoint proxy', function(){
             "name":     "input",
             "datatype": "string",
             "multiple": true,
-            "nullable": true,
-            "dataKind": "atomic",
-            "mimeType": "text/plain"
+            "nullable": true
         } ],
         "return": {
             "datatype": "string",
             "multiple": true,
-            "nullable": true,
-            "dataKind": "atomic",
-            "mimeType": "text/plain",
-            "$jsType": "string"
-        },
-        "maxArgs": 1,
-        "paramsKind": "multiAtomic",
-        "sessionParam": null,
-        "returnKind": "multipart",
-        "$jsOutputMode": "promise"
+            "nullable": true
+        }
     };
     const singleNodeInputSingleOutputDecl = {
         "functionName": "singleNodeInputSingleOutput",
@@ -95,22 +76,13 @@ describe('call an endpoint proxy', function(){
             "name":     "input",
             "datatype": "jsonDocument",
             "multiple": false,
-            "nullable": true,
-            "dataKind": "node",
-            "mimeType": "application/json"
+            "nullable": true
         } ],
         "return": {
             "datatype": "jsonDocument",
             "multiple": false,
-            "nullable": true,
-            "dataKind": "node",
-            "mimeType": "application/json"
-        },
-        "maxArgs": 1,
-        "paramsKind": "multiNode",
-        "sessionParam": null,
-        "returnKind": "single",
-        "$jsOutputMode": "promise"
+            "nullable": true
+        }
     };
     const singleAtomicInputSingleOutputDecl = {
         "functionName": "singleAtomicInputSingleOutput",
@@ -118,31 +90,16 @@ describe('call an endpoint proxy', function(){
             "name":     "input",
             "datatype": "int",
             "multiple": false,
-            "nullable": true,
-            "dataKind": "atomic",
-            "mimeType": "text/plain"
+            "nullable": true
         } ],
         "return": {
             "datatype": "int",
             "multiple": false,
-            "nullable": true,
-            "dataKind": "atomic",
-            "mimeType": "text/plain",
-            "$jsType": "number"
-        },
-        "maxArgs": 1,
-        "paramsKind": "multiAtomic",
-        "sessionParam": null,
-        "returnKind": "single",
-        "$jsOutputMode": "promise"
+            "nullable": true
+        }
     };
     const emptyInputEmptyOutputDecl = {
-        "functionName": "emptyAtomicInputEmptyOutput",
-        "maxArgs": 0,
-        "paramsKind": "empty",
-        "sessionParam": null,
-        "returnKind": "empty",
-        "$jsOutputMode": "promise"
+        "functionName": "emptyAtomicInputEmptyOutput"
     };
     const multiNodeInputMultiOutputAPIUri     = serviceDecl.endpointDirectory+multiNodeInputMultiOutputDecl.functionName+'.api';
     const multiAtomicInputMultiOutputAPIUri   = serviceDecl.endpointDirectory+multiAtomicInputMultiOutputDecl.functionName+'.api';
@@ -262,6 +219,15 @@ void 0;`;
                 .catch(done);
         });
         it('for multiple nodes in SJS', function(done){
+            multiNodeInputMultiOutputDecl.params[0].dataKind = 'node';
+            multiNodeInputMultiOutputDecl.params[0].mimeType = 'application/json';
+            multiNodeInputMultiOutputDecl.return.dataKind = 'node';
+            multiNodeInputMultiOutputDecl.return.mimeType = 'application/json';
+            multiNodeInputMultiOutputDecl.maxArgs = 1;
+            multiNodeInputMultiOutputDecl.paramsKind = 'multiNode';
+            multiNodeInputMultiOutputDecl.sessionParam = null;
+            multiNodeInputMultiOutputDecl.returnKind = 'multipart';
+            multiNodeInputMultiOutputDecl.$jsOutputMode = 'promise';
             const input = [{first:1}, {second:2}, {third:3}];
             const proxyCaller = proxy
                 .init(db, serviceDecl)
@@ -286,6 +252,16 @@ void 0;`;
                 .catch(done);
         });
         it('for multiple atomics in SJS', function(done){
+            multiAtomicInputMultiOutputDecl.params[0].dataKind = 'atomic';
+            multiAtomicInputMultiOutputDecl.params[0].mimeType = 'text/plain';
+            multiAtomicInputMultiOutputDecl.return.dataKind = 'atomic';
+            multiAtomicInputMultiOutputDecl.return.mimeType = 'text/plain';
+            multiAtomicInputMultiOutputDecl.return.$jsType = 'string';
+            multiAtomicInputMultiOutputDecl.maxArgs = 1;
+            multiAtomicInputMultiOutputDecl.paramsKind = 'multiAtomic';
+            multiAtomicInputMultiOutputDecl.sessionParam = null;
+            multiAtomicInputMultiOutputDecl.returnKind = 'multipart';
+            multiAtomicInputMultiOutputDecl.$jsOutputMode = 'promise';
             const input = ['first', 'second', 'third'];
             const proxyCaller = proxy
                 .init(db, serviceDecl)
@@ -303,6 +279,15 @@ void 0;`;
                 .catch(done);
         });
         it('for single node in SJS', function(done){
+            singleNodeInputSingleOutputDecl.params[0].dataKind = 'node';
+            singleNodeInputSingleOutputDecl.params[0].mimeType = 'application/json';
+            singleNodeInputSingleOutputDecl.return.dataKind = 'node';
+            singleNodeInputSingleOutputDecl.return.mimeType = 'application/json';
+            singleNodeInputSingleOutputDecl.maxArgs = 1;
+            singleNodeInputSingleOutputDecl.paramsKind = 'multiNode';
+            singleNodeInputSingleOutputDecl.sessionParam = null;
+            singleNodeInputSingleOutputDecl.returnKind = 'single';
+            singleNodeInputSingleOutputDecl.$jsOutputMode = 'promise';
             const input = {first:1};
             const proxyCaller = proxy
                 .init(db, serviceDecl)
@@ -322,6 +307,16 @@ void 0;`;
                 .catch(done);
         });
         it('for single atomic in SJS', function(done){
+            singleAtomicInputSingleOutputDecl.params[0].dataKind = 'atomic';
+            singleAtomicInputSingleOutputDecl.params[0].mimeType = 'text/plain';
+            singleAtomicInputSingleOutputDecl.return.dataKind = 'atomic';
+            singleAtomicInputSingleOutputDecl.return.mimeType = 'text/plain';
+            singleAtomicInputSingleOutputDecl.return.$jsType = 'number';
+            singleAtomicInputSingleOutputDecl.maxArgs = 1;
+            singleAtomicInputSingleOutputDecl.paramsKind = 'multiAtomic';
+            singleAtomicInputSingleOutputDecl.sessionParam = null;
+            singleAtomicInputSingleOutputDecl.returnKind = 'single';
+            singleAtomicInputSingleOutputDecl.$jsOutputMode = 'promise';
             const input = 5;
             const proxyCaller = proxy
                 .init(db, serviceDecl)
@@ -338,6 +333,11 @@ void 0;`;
         it('for empty in SJS', function(done){
             emptyInputEmptyOutputDecl.params = null;
             emptyInputEmptyOutputDecl.return = null;
+            emptyInputEmptyOutputDecl.maxArgs = 0;
+            emptyInputEmptyOutputDecl.paramsKind = 'empty';
+            emptyInputEmptyOutputDecl.sessionParam = null;
+            emptyInputEmptyOutputDecl.returnKind = 'empty';
+            emptyInputEmptyOutputDecl.$jsOutputMode = 'promise';
             const proxyCaller = proxy
                 .init(db, serviceDecl)
                 .withFunction(emptyInputEmptyOutputDecl, '.sjs');
