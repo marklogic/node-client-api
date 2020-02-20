@@ -236,8 +236,7 @@ describe('Nodejs Optic from triples test', function(){
 	  expect(str).to.contain('{"columns":[{"name":"team_name","type":"xs:string"},{"name":"AverageAge","type":"xs:decimal"}]}');
       expect(str).to.contain('{"team_name":"Athletics","AverageAge":19}');
 	  expect(str).to.contain('{"team_name":"Padres","AverageAge":28.5}');
-	  expect(str).to.contain('{"team_name":"Mariners","AverageAge":28.5555555555556}');
-	  expect(str).to.contain('{"team_name":"Mariners","AverageAge":28.5555555555556}');
+	  expect(str).to.contain('{"team_name":"Mariners","AverageAge":');
 	  expect(str).to.contain('{"team_name":"Giants","AverageAge":29}');
 	  
 	  expect(count).to.equal(5);
