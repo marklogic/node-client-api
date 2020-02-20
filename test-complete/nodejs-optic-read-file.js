@@ -123,7 +123,7 @@ describe('Nodejs Optic read from file test', function(){
   it('TEST 6 - read plan sparql from file', function(done){
     db.rows.query(planFromSPARQL, { format: 'json', structure: 'array', columnTypes: 'rows'})
     .then(function(output) {
-      console.log(JSON.stringify(output, null, 2));
+      //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(7);
       expect(output[0][0].name).to.equal('MySPARQL.industry');
       expect(output[1][0].value).to.equal('Retail/Wholesale');
