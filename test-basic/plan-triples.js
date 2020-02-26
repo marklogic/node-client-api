@@ -269,7 +269,10 @@ describe('triples', function() {
     it('with store', function(done) {
       execPlan(
         p.fromTriples(
-            p.pattern(p.col('albumId'), p.sem.iri('/optic/test/albumName'),  p.col('albumName'))
+            p.pattern(p.col('albumId'), p.sem.iri('/optic/test/albumName'),  p.col('albumName')),
+            null,
+            null,
+            {dedup: 'on'}
             )
           .where(p.sem.store("document", p.cts.jsonPropertyWordQuery('style', 'avantgarde')))
           .orderBy('albumName')
