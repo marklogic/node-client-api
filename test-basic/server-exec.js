@@ -103,10 +103,11 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate a date value', function(done) {
-      db.eval('new Date("2010-10-08T10:17:15.125");').result(function(values) {
+      const timestamp = '2010-10-08T10:17:15.125';
+      db.eval(`new Date('${timestamp}');`).result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'dateTime');
-        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125'));
+        values[0].value.should.eql(new Date(timestamp));
         done();
         })
       .catch(done);
