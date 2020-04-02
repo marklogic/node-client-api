@@ -1,0 +1,10 @@
+{
+  "functionName" : "errorMapping",
+  "errorConditions":[
+    {
+    "errorCode": "ERROR_MAPPING",
+    "httpStatusCode": 418,
+    "errorMessage":"Status Message For 418"
+    }
+  ]
+}
