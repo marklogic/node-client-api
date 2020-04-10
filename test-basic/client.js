@@ -49,7 +49,7 @@ var otherDb = marklogic.createDatabaseClient(otherConnection);
 
 var agentConnection = {
   agent: new YAgent({keepAlive: true, keepAliveTimeoutMsecs: 1000})
-}
+};
 Object.keys(otherConnection).forEach(function(key){
   if (agentConnection[key] === undefined) {
     agentConnection[key] = otherConnection[key];

@@ -241,7 +241,7 @@ describe('Optimistic locking test', function() {
       document.should.not.have.property('p');
       done();
     }, done);
-  })
+  });
 
   it('should change the update policy to merge-metadata', function(done) {
     dbAdmin.config.serverprops.write({'update-policy': 'merge-metadata'}).
@@ -276,7 +276,7 @@ describe('Optimistic locking test', function() {
       document.content.popularity.should.equal(17);
       done();
     }, done);
-  })
+  });
 
   it('should change the update policy', function(done) {
     dbAdmin.config.serverprops.write({'update-policy': 'version-required'}).

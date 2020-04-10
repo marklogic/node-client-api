@@ -46,7 +46,7 @@ describe('Nodejs Optic from triples test', function(){
         op.pattern(idCol, bb('name'), nameCol),
         op.pattern(idCol, bb('team'), teamCol)
       ], null, null, {dedup: 'on'})
-      .orderBy(op.desc(ageCol))
+      .orderBy(op.desc(ageCol));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -97,7 +97,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerName', playerNameCol),
         op.as('PlayerAge', playerAgeCol),
         op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
-      ])
+      ]);
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -144,7 +144,7 @@ describe('Nodejs Optic from triples test', function(){
        op.as('PlayerName', playerNameCol),
        op.as('PlayerAge', playerAgeCol),
        op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
-     ])
+     ]);
 
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
@@ -181,7 +181,7 @@ describe('Nodejs Optic from triples test', function(){
 
     const output =
       player_plan.union(team_plan)
-      .whereDistinct()
+      .whereDistinct();
     db.rows.query(output, { format: 'csv', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
@@ -222,7 +222,7 @@ describe('Nodejs Optic from triples test', function(){
     const output =
       player_plan.joinInner(team_plan)
       .groupBy(teamNameCol, op.avg('AverageAge', playerAgeCol))
-      .orderBy(op.asc(op.col('AverageAge')))
+      .orderBy(op.asc(op.col('AverageAge')));
     db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -275,7 +275,7 @@ describe('Nodejs Optic from triples test', function(){
     const output =
       player_plan.joinInner(team_plan)
       .groupBy(null, op.sum('SumAll', playerEffCol))
-      .orderBy(op.desc(op.col('SumAll')))
+      .orderBy(op.desc(op.col('SumAll')));
     db.rows.queryAsStream(output, 'chunked', { format: 'xml', structure: 'array', columnTypes: 'rows' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -326,7 +326,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerAge', playerAgeCol),
         op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol)),
         op.as('GraphName', graphCol)
-      ])
+      ]);
 
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
@@ -373,7 +373,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerName', playerNameCol),
         op.as('PlayerAge', playerAgeCol),
         op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
-      ])
+      ]);
 
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
@@ -418,7 +418,7 @@ describe('Nodejs Optic from triples test', function(){
         op.as('PlayerAge', playerAgeCol),
         op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol)),
         op.as('PlayerGraph', playerGraphCol),
-      ])
+      ]);
 
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
@@ -442,7 +442,7 @@ describe('Nodejs Optic from triples test', function(){
       op.fromTriples([
         op.pattern(null, bb('age'), ageCol)
       ], 'myPlayer', null, {dedup: 'on'})
-      .orderBy(op.desc(op.viewCol('myPlayer', 'age')))
+      .orderBy(op.desc(op.viewCol('myPlayer', 'age')));
 
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
@@ -464,7 +464,7 @@ describe('Nodejs Optic from triples test', function(){
       op.fromTriples([
         op.pattern(idCol, op.sem.iri('http://marklogic.com/baseball/players/age'), ageCol)
       ], 'myPlayer', null, {dedup: 'on'})
-      .orderBy(op.asc(op.viewCol('myPlayer', 'id')))
+      .orderBy(op.asc(op.viewCol('myPlayer', 'id')));
 
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
@@ -512,7 +512,7 @@ describe('Nodejs Optic from triples test', function(){
        op.as('PlayerName', playerNameCol),
        op.as('PlayerAge', playerAgeCol),
        op.as('TeamName', op.fn.concat(teamCityCol, ' ', teamNameCol))
-     ])
+     ]);
 
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
@@ -533,7 +533,7 @@ describe('Nodejs Optic from triples test', function(){
         op.pattern(idCol, bb('name'), nameCol),
         op.pattern(idCol, bb('team'), teamCol)
       ], null, null, {dedup: 'off'})
-      .orderBy(op.desc(ageCol))
+      .orderBy(op.desc(ageCol));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -572,7 +572,7 @@ describe('Nodejs Optic from triples test', function(){
         playerAgeCol,
         op.as('PlayerName', playerNameCol)
       ])
-      .map(op.resolveFunction('ageMapper', '/optic/test/mapperReducer.sjs'))
+      .map(op.resolveFunction('ageMapper', '/optic/test/mapperReducer.sjs'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));

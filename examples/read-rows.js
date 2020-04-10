@@ -51,7 +51,7 @@ db.rows.query(plan, {
           return row[key];
         }).join(', ')
       );
-    })
+    });
     console.log('done');
 
     exutil.succeeded();

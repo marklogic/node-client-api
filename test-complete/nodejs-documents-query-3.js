@@ -107,7 +107,7 @@ describe('Document query test', function(){
     var src = "var admin = require('/MarkLogic/admin.xqy');" +
               "var c = admin.getConfiguration();" +
               "c = admin.databaseSetStemmedSearches(c, xdmp.database('node-client-api-rest-server'), 'basic');" +
-              "admin.saveConfiguration(c);"
+              "admin.saveConfiguration(c);";
     dbConfigAdmin.eval(src)
     .result(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -179,7 +179,7 @@ it('should delete all documents', function(done){
     var src = "var admin = require('/MarkLogic/admin.xqy');" +
               "var c = admin.getConfiguration();" +
               "c = admin.databaseSetStemmedSearches(c, xdmp.database('node-client-api-rest-server'), 'off');" +
-              "admin.saveConfiguration(c);"
+              "admin.saveConfiguration(c);";
     dbConfigAdmin.eval(src)
     .result(function(output) {
       //console.log(JSON.stringify(output, null, 2));

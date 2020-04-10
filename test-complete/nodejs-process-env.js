@@ -44,7 +44,7 @@ describe('Process Env Test', function() {
   };
   var reject = function(error) {
     console.log(error);
-  }
+  };
   selectOneDocument().then(resolve, reject);
 
   it('should delete the document', function(done) {

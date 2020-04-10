@@ -256,7 +256,7 @@ describe('LSQT query (lsqtQuery) Test', function() {
     .result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
       response.should.have.property('lsqt');
-      response.lsqt.should.not.equal('2009-01-01T00:00:01Z')
+      response.lsqt.should.not.equal('2009-01-01T00:00:01Z');
       done();
       }, done);
   });

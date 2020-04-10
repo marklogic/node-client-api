@@ -523,7 +523,7 @@ describe('write document with embedded triple and run docQuery', function () {
   });
 
   it('should drop all graphs', function(done){
-    var myData = "DROP ALL ;"
+    var myData = "DROP ALL ;";
     db.graphs.sparqlUpdate({
       data: myData
     }).

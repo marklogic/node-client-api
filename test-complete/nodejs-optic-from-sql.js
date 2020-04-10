@@ -41,7 +41,7 @@ describe('Nodejs Optic from sql test', function(){
           op.schemaCol('opticFunctionalTest', 'detail', 'masterId')
         )
       )
-      .orderBy(op.asc(op.schemaCol('opticFunctionalTest', 'detail', 'id')))
+      .orderBy(op.asc(op.schemaCol('opticFunctionalTest', 'detail', 'id')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -64,7 +64,7 @@ describe('Nodejs Optic from sql test', function(){
       op.fromSQL("SELECT opticFunctionalTest.master.name AS MasterName, opticFunctionalTest.master.date, opticFunctionalTest.detail.name AS DetailName, opticFunctionalTest.detail.amount,  opticFunctionalTest.detail.color" +
         " FROM opticFunctionalTest.detail" +
         " INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId" +
-        " ORDER BY DetailName DESC")
+        " ORDER BY DetailName DESC");
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -95,7 +95,7 @@ describe('Nodejs Optic from sql test', function(){
         )
       )
       .groupBy(op.schemaCol('opticFunctionalTest', 'master', 'name'), op.sum('DetailSum', op.schemaCol('opticFunctionalTest', 'detail', 'amount')))
-      .orderBy(op.desc(op.col('DetailSum')))
+      .orderBy(op.desc(op.col('DetailSum')));
     db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -114,7 +114,7 @@ describe('Nodejs Optic from sql test', function(){
         FROM opticFunctionalTest.detail \
         INNER JOIN opticFunctionalTest.master ON opticFunctionalTest.master.id = opticFunctionalTest.detail.masterId \
         GROUP BY opticFunctionalTest.master.name")
-      .orderBy(op.desc(op.col('DetailSum')))
+      .orderBy(op.desc(op.col('DetailSum')));
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
@@ -136,7 +136,7 @@ describe('Nodejs Optic from sql test', function(){
           op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
           op.schemaCol('opticFunctionalTest', 'detail', 'color')
         ])
-      .orderBy([op.desc(op.col('DetailName')), op.desc(op.col('MasterName'))])
+      .orderBy([op.desc(op.col('DetailName')), op.desc(op.col('MasterName'))]);
     db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(output);
@@ -155,7 +155,7 @@ describe('Nodejs Optic from sql test', function(){
       op.fromSQL("SELECT opticFunctionalTest.detail.id, opticFunctionalTest.detail.name FROM opticFunctionalTest.detail ORDER BY name \
         UNION \
         SELECT opticFunctionalTest.master.id, opticFunctionalTest.master.name FROM opticFunctionalTest.master ORDER BY name")
-      .orderBy('id')
+      .orderBy('id');
     db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
@@ -184,7 +184,7 @@ describe('Nodejs Optic from sql test', function(){
         op.as('DetailName', op.schemaCol('opticFunctionalTest', 'detail', 'name')),
         op.schemaCol('opticFunctionalTest', 'detail', 'amount'),
         op.schemaCol('opticFunctionalTest', 'detail', 'color')
-      ])
+      ]);
     db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -210,7 +210,7 @@ describe('Nodejs Optic from sql test', function(){
                op.schemaCol('opticFunctionalTest', 'detail', 'color'),
                op.as('masterName', op.schemaCol('opticFunctionalTest', 'master', 'name'))],
                '')
-      .orderBy('id')
+      .orderBy('id');
     db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -256,7 +256,7 @@ describe('Nodejs Optic from sql test', function(){
         (opticFunctionalTest.detail.amount / (opticFunctionalTest.detail.amount * opticFunctionalTest.detail.id)) AS divided \
         FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id")
       .where(op.sqlCondition("divided >= 0.3"))
-      .orderBy(op.asc('substracted'))
+      .orderBy(op.asc('substracted'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -276,7 +276,7 @@ describe('Nodejs Optic from sql test', function(){
                op.schemaCol('opticFunctionalTest', 'detail', 'color'),
                op.as('masterName', op.schemaCol('opticFunctionalTest', 'master', 'name'))],
         '')
-      .orderBy('id')
+      .orderBy('id');
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -296,7 +296,7 @@ describe('Nodejs Optic from sql test', function(){
         (opticFunctionalTest.detail.amount / (opticFunctionalTest.detail.amount * opticFunctionalTest.detail.id)) AS divided \
         FROM opticFunctionalTest.detail INNER JOIN opticFunctionalTest.master WHERE opticFunctionalTest.detail.masterId = opticFunctionalTest.master.id", qualifierName: 'mySQL'})
       .where({condition: op.sqlCondition({expression: "divided >= 0.3"})})
-      .orderBy({keys: op.asc({column: 'substracted'})})
+      .orderBy({keys: op.asc({column: 'substracted'})});
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));

@@ -194,7 +194,7 @@ it('should appply patch on metadata properties', function(done){
         var document = documents[0];
         documents[0].collections.length.should.equal(1);
         documents[0].collections[0].should.equal('collection2/ADDED');
-        documents[0].should.have.property('permissions')
+        documents[0].should.have.property('permissions');
         done();
       }, done);
     }, done);

@@ -1,9 +1,9 @@
 window.Searcher = (function() {
     function Searcher() {
         this._index = lunr(function () {
-            this.field('title', {boost: 10})
-            this.field('body')
-            this.ref('id')
+            this.field('title', {boost: 10});
+            this.field('body');
+            this.ref('id');
           }) ;
 
         this._indexContent = undefined;

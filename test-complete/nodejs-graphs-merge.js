@@ -122,7 +122,7 @@ describe('merge graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }"
+                  "WHERE { ppl:person1 foaf:knows ?o }";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery,
@@ -142,7 +142,7 @@ describe('merge graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }"
+                  "WHERE { ppl:person1 foaf:knows ?o }";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery,
