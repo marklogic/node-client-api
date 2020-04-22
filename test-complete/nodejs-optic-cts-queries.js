@@ -53,7 +53,7 @@ describe('Nodejs Optic cts queries test', function(){
       .where(op.cts.jsonPropertyWordQuery('city', 'new'))
       .joinInner(plan2)
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
-      .orderBy(op.asc(op.col('date')))
+      .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -88,7 +88,7 @@ describe('Nodejs Optic cts queries test', function(){
       plan1.where(op.cts.jsonPropertyWordQuery('city', 'new'))
       .joinInner(plan2.where(op.cts.jsonPropertyValueQuery('cityTeam', 'yankee')))
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
-      .orderBy(op.asc(op.col('date')))
+      .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -123,7 +123,7 @@ describe('Nodejs Optic cts queries test', function(){
       .where(op.cts.jsonPropertyGeospatialQuery('latLonPoint', op.cts.box(49.16, -13.41, 60.85, 1.76)))
       .joinInner(plan2)
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
-      .orderBy(op.asc(op.col('date')))
+      .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -158,7 +158,7 @@ describe('Nodejs Optic cts queries test', function(){
       .where(op.cts.orQuery([op.cts.collectionQuery('/other/coll1'), op.cts.elementValueQuery(op.xs.QName('metro'), 'true')]))
       .joinInner(plan2)
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
-      .orderBy(op.asc(op.col('date')))
+      .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -213,7 +213,7 @@ describe('Nodejs Optic cts queries test', function(){
      res.push(d);
      res.push(e);
      res.push(f);
-     res;`
+     res;`;
 
     db.eval(src)
     .result(function(output) {
@@ -234,7 +234,7 @@ describe('Nodejs Optic cts queries test', function(){
 
    const output =
      name_plan
-     .where(op.cts.tripleRangeQuery(op.sem.iri("http://example.com/Mark"), op.sem.iri("http://example.com/ns/person#age"), 50, "<"))
+     .where(op.cts.tripleRangeQuery(op.sem.iri("http://example.com/Mark"), op.sem.iri("http://example.com/ns/person#age"), 50, "<"));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -249,7 +249,7 @@ describe('Nodejs Optic cts queries test', function(){
     var src =
      `declareUpdate();
       var sem = require("/MarkLogic/semantics.xqy");
-      sem.graphDelete(sem.iri("opticRdfTest"))`
+      sem.graphDelete(sem.iri("opticRdfTest"))`;
     db.eval(src)
     .result(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -259,16 +259,16 @@ describe('Nodejs Optic cts queries test', function(){
 
   it('TEST 8 - jsonPropertyWordQuery on fromViews', function(done){
     const plan1 =
-      op.fromView('opticFunctionalTest4', 'detail4', null, null)
+      op.fromView('opticFunctionalTest4', 'detail4', null, null);
 
     const plan2 =
-      op.fromView('opticFunctionalTest4', 'master4')
+      op.fromView('opticFunctionalTest4', 'master4');
 
     const output =
       plan1
       .where(op.cts.jsonPropertyWordQuery('name', 'Detail 100'))
       .joinInner(plan2, op.on(op.schemaCol('opticFunctionalTest4', 'detail4', 'masterId'), op.schemaCol('opticFunctionalTest4', 'master4', 'id')))
-      .orderBy(op.schemaCol('opticFunctionalTest4', 'detail4', 'id'))
+      .orderBy(op.schemaCol('opticFunctionalTest4', 'detail4', 'id'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -294,7 +294,7 @@ describe('Nodejs Optic cts queries test', function(){
         plan2.where(op.cts.wordQuery('Master 100')),
         op.on(op.schemaCol('opticFunctionalTest4', 'detail4', 'masterId'), op.schemaCol('opticFunctionalTest4', 'master4', 'id'))
       )
-      .orderBy(op.schemaCol('opticFunctionalTest4', 'detail4', 'id'))
+      .orderBy(op.schemaCol('opticFunctionalTest4', 'detail4', 'id'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -318,7 +318,7 @@ describe('Nodejs Optic cts queries test', function(){
       plan1
       .where(op.cts.jsonPropertyRangeQuery('id', '>', 300))
       .joinInner(plan2, op.on(op.schemaCol('opticFunctionalTest4', 'detail4', 'masterId'), op.schemaCol('opticFunctionalTest4', 'master4', 'id')))
-      .orderBy(op.schemaCol('opticFunctionalTest4', 'detail4', 'id'))
+      .orderBy(op.schemaCol('opticFunctionalTest4', 'detail4', 'id'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -356,7 +356,7 @@ describe('Nodejs Optic cts queries test', function(){
       .where(op.cts.nearQuery([op.cts.wordQuery('near'), op.cts.wordQuery('Thames')], 3))
       .joinInner(plan2)
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
-      .orderBy(op.asc(op.col('date')))
+      .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -391,7 +391,7 @@ describe('Nodejs Optic cts queries test', function(){
       .where(op.cts.jsonPropertyWordQuery('city', '*k', ['wildcarded', 'case-sensitive']))
       .joinInner(plan2)
       .where(op.eq(op.viewCol('myCity', 'city'), op.col('cityName')))
-      .orderBy(op.asc(op.col('date')))
+      .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));

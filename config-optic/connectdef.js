@@ -23,7 +23,7 @@ var plan = {
   user:     'admin',
   password: 'admin',
   authType: 'DIGEST'
-}
+};
 
 module.exports = {
     name: name,

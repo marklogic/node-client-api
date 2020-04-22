@@ -45,7 +45,7 @@ describe('Nodejs Optic from literals test', function(){
         {colorId: 4, colorDesc: 'yellow', dateTime: op.xs.dateTime('2003-01-11T12:01:00.000Z')}
       ]);
     const output =
-      plan1.joinInner(plan2).orderBy(op.asc('rowId'))
+      plan1.joinInner(plan2).orderBy(op.asc('rowId'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -75,7 +75,7 @@ describe('Nodejs Optic from literals test', function(){
         {id:4, val: 8, uri:'/optic/lexicon/test/doc4.xml'}
       ])
       .joinDoc(op.col('doc'), op.col('uri'))
-      .orderBy(op.asc('id'))
+      .orderBy(op.asc('id'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -109,7 +109,7 @@ describe('Nodejs Optic from literals test', function(){
     const output =
       plan1.joinInner(plan2)
       .where(op.eq(op.col('colorId'), 1))
-      .offsetLimit(1, 3)
+      .offsetLimit(1, 3);
     db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -136,7 +136,7 @@ describe('Nodejs Optic from literals test', function(){
       .orderBy(op.asc('id'))
       .joinDoc(op.col('doc'), op.col('uri'))
       .select(['id', 'val', 'uri', op.as('nodes', op.xpath('doc', '/doc/distance/@direction'))])
-      .where(op.isDefined(op.col('nodes')))
+      .where(op.isDefined(op.col('nodes')));
     db.rows.queryAsStream(output)
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -188,7 +188,7 @@ describe('Nodejs Optic from literals test', function(){
       plan1.joinInner(plan2, [op.on(itemColorIdCol, colorIdCol)])
       .joinInner(plan3, op.on(colorDescCol, refColorCol))
       .select([descCol, colorIdCol, refCol])
-      .orderBy([colorIdCol, descCol])
+      .orderBy([colorIdCol, descCol]);
     db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -226,7 +226,7 @@ describe('Nodejs Optic from literals test', function(){
     const output =
       plan1.joinInner(plan2)
       .where(op.sqlCondition("(table1.colorId = table2.colorId) AND table1.desc IN ('ball', 'box')"))
-      .orderBy(op.desc(op.viewCol('table1', 'rowId')))
+      .orderBy(op.desc(op.viewCol('table1', 'rowId')));
     db.rows.queryAsStream(output, 'chunked', { format: 'csv', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -270,7 +270,7 @@ describe('Nodejs Optic from literals test', function(){
         'colorDesc'
       ])
       .orderBy(op.asc('rowId'))
-      .map(op.resolveFunction('colorIdMapper', '/optic/test/mapperReducer.sjs'))
+      .map(op.resolveFunction('colorIdMapper', '/optic/test/mapperReducer.sjs'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -308,7 +308,7 @@ describe('Nodejs Optic from literals test', function(){
           op.as('myRowId', op.col('rowId'))
         ])
         .orderBy(op.asc('myRowId'))
-      .reduce(op.resolveFunction('fibReducer', '/optic/test/mapperReducer.sjs'))
+      .reduce(op.resolveFunction('fibReducer', '/optic/test/mapperReducer.sjs'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));

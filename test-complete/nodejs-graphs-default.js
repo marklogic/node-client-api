@@ -101,7 +101,7 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ?s foaf:knows ppl:person8 }"
+                  "WHERE { ?s foaf:knows ppl:person8 }";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       //query: fs.createReadStream(sparqlPath2)
@@ -119,7 +119,7 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }"
+                  "WHERE { ppl:person1 foaf:knows ?o }";
     var docQuery = q.where(q.term('person5'));
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
@@ -139,7 +139,7 @@ describe('default graph test', function(){
     var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
                   "PREFIX ppl:  <http://people.org/>" +
                   "SELECT *" +
-                  "WHERE { ppl:person1 foaf:knows ?o }"
+                  "WHERE { ppl:person1 foaf:knows ?o }";
     var docQuery = q.where(q.term('foo'));
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
