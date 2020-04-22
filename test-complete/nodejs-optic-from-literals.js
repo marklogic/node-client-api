@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 MarkLogic Corporation
+ * Copyright (c) 2020 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ describe('Nodejs Optic from literals test', function(){
         {colorId: 4, colorDesc: 'yellow', dateTime: op.xs.dateTime('2003-01-11T12:01:00.000Z')}
       ]);
     const output =
-      plan1.joinInner(plan2)
+      plan1.joinInner(plan2).orderBy(op.asc('rowId'))
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));

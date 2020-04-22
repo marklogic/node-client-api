@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 MarkLogic Corporation
+ * Copyright (c) 2020 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -525,24 +525,21 @@ describe('Nodejs Optic from views test', function(){
         op.as('added', op.add(op.col('amount'), op.viewCol('detail', 'masterId'))),
         op.as('substracted', op.subtract(op.col('amount'), op.viewCol('master', 'id'))),
         op.as('modulo', op.modulo(op.col('amount'), op.viewCol('master', 'id'))),
-        op.as('invSubstract', op.subtract(op.col('amount'), op.viewCol('master', 'date'))),
         op.as('divided', op.divide(op.col('amount'), op.multiply(op.col('amount'), op.viewCol('detail', 'id'))))
       ])
       .orderBy(op.asc('substracted'))
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
-      expect(output.columns[3].type).to.equal('null');
+      expect(output.columns[3].type).to.equal('xs:double');
       expect(output.rows.length).to.equal(6);
       expect(output.rows[0].added).to.equal(11.01);
       expect(output.rows[0].substracted).to.equal(9.01);
       expect(output.rows[0].modulo).to.equal(0.00999999999999979);
-      expect(output.rows[0].invSubstract).to.equal(null);
       expect(output.rows[0].divided).to.equal(1);
       expect(output.rows[5].added).to.equal(62.06);
       expect(output.rows[5].substracted).to.equal(58.06);
       expect(output.rows[5].modulo).to.equal(0.0600000000000023);
-      expect(output.rows[5].invSubstract).to.equal(null);
       expect(output.rows[5].divided).to.equal(0.166666666666667);
       done();
     }, done);
@@ -722,7 +719,7 @@ describe('Nodejs Optic from views test', function(){
     .then(function(output) {
       //console.log(output);
       expect(output).to.contain('<plan:plan xmlns:plan=\"http:\/\/marklogic.com\/plan\">');
-      expect(output).to.contain('<plan:graph-node type=\"column-def\" name=\"opticFunctionalTest.detail.color\" schema=\"opticFunctionalTest\" column=\"color\" view=\"detail\" column-number=\"4\" column-index=\"4\" static-type=\"STRING\"\/>');
+      //expect(output).to.contain('<plan:right type=\"column-def\" schema=\"opticFunctionalTest\" view=\"detail\" column=\"masterId\" column-number=\"2\" column-index=\"7\"\/>');
       done();
     }, done);
   });

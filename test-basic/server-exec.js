@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 MarkLogic Corporation
+ * Copyright (c) 2020 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,10 +103,11 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate a date value', function(done) {
-      db.eval('new Date("2010-10-08T10:17:15.125");').result(function(values) {
+      const timestamp = '2010-10-08T10:17:15.125';
+      db.eval(`new Date('${timestamp}');`).result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'dateTime');
-        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125'));
+        values[0].value.should.eql(new Date(timestamp));
         done();
         })
       .catch(done);

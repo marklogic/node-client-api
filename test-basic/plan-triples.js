@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 MarkLogic Corporation
+ * Copyright (c) 2020 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -269,7 +269,10 @@ describe('triples', function() {
     it('with store', function(done) {
       execPlan(
         p.fromTriples(
-            p.pattern(p.col('albumId'), p.sem.iri('/optic/test/albumName'),  p.col('albumName'))
+            p.pattern(p.col('albumId'), p.sem.iri('/optic/test/albumName'),  p.col('albumName')),
+            null,
+            null,
+            {dedup: 'on'}
             )
           .where(p.sem.store("document", p.cts.jsonPropertyWordQuery('style', 'avantgarde')))
           .orderBy('albumName')

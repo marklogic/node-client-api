@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 MarkLogic Corporation
+ * Copyright (c) 2020 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -89,8 +89,16 @@ describe('Nodejs Optic read from file test', function(){
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
       //console.log(outputStr);
-      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="myPlayer.player_id" type="sem:iri"/><t:column name="myTeam.team_id" type="sem:iri"/><t:column name="myPlayer.player_age" type="xs:integer"/><t:column name="myPlayer.player_name" type="xs:string"/><t:column name="myPlayer.player_team" type="sem:iri"/><t:column name="myTeam.team_name" type="xs:string"/><t:column name="myTeam.team_city" type="xs:string"/></t:columns><t:rows><t:row><t:cell name="myPlayer.player_id">http://marklogic.com/other/bball/id#101</t:cell><t:cell name="myTeam.team_id">http://marklogic.com/mlb/team/id/003</t:cell><t:cell name="myPlayer.player_age">26</t:cell><t:cell name="myPlayer.player_name">Phil Green</t:cell><t:cell name="myPlayer.player_team">http://marklogic.com/mlb/team/id/003</t:cell><t:cell name="myTeam.team_name">Padres</t:cell><t:cell name="myTeam.team_city">San Diego</t:cell></t:row></t:rows></t:table>');
-      done();
+      //expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="myPlayer.player_id" type="sem:iri"/><t:column name="myTeam.team_id" type="sem:iri"/><t:column name="myPlayer.player_age" type="xs:integer"/><t:column name="myPlayer.player_name" type="xs:string"/><t:column name="myPlayer.player_team" type="sem:iri"/><t:column name="myTeam.team_name" type="xs:string"/><t:column name="myTeam.team_city" type="xs:string"/></t:columns><t:rows><t:row><t:cell name="myPlayer.player_id">http://marklogic.com/other/bball/id#101</t:cell><t:cell name="myTeam.team_id">http://marklogic.com/mlb/team/id/003</t:cell><t:cell name="myPlayer.player_age">26</t:cell><t:cell name="myPlayer.player_name">Phil Green</t:cell><t:cell name="myPlayer.player_team">http://marklogic.com/mlb/team/id/003</t:cell><t:cell name="myTeam.team_name">Padres</t:cell><t:cell name="myTeam.team_city">San Diego</t:cell></t:row></t:rows></t:table>');
+      expect(outputStr).to.contains('<t:columns><t:column name="myPlayer.player_id" type="sem:iri"/><t:column name="myTeam.team_id" type="sem:iri"/><t:column name="myPlayer.player_age" type="xs:integer"/><t:column name="myPlayer.player_name" type="xs:string"/><t:column name="myPlayer.player_team" type="sem:iri"/><t:column name="myTeam.team_name" type="xs:string"/><t:column name="myTeam.team_city" type="xs:string"/></t:columns>');
+	  expect(outputStr).to.contains('<t:cell name="myPlayer.player_id">http://marklogic.com/other/bball/id#101</t:cell>');
+	  expect(outputStr).to.contains('<t:cell name="myTeam.team_id">http://marklogic.com/mlb/team/id/003</t:cell>');
+	  expect(outputStr).to.contains('<t:cell name="myPlayer.player_age">26</t:cell>');
+	  expect(outputStr).to.contains('<t:cell name="myPlayer.player_name">Phil Green</t:cell>');
+	  expect(outputStr).to.contains('<t:cell name="myPlayer.player_team">http://marklogic.com/mlb/team/id/003</t:cell>');
+	  expect(outputStr).to.contains('<t:cell name="myTeam.team_name">Padres</t:cell>');
+	  expect(outputStr).to.contains('<t:cell name="myTeam.team_city">San Diego</t:cell>');
+	  done();
     }, done);
   });
 

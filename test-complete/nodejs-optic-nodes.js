@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2019 MarkLogic Corporation
+ * Copyright (c) 2020 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,8 +214,11 @@ describe('Nodejs Optic nodes json constructor test', function(){
       //console.log(output);
       const outputStr = output.toString().trim().replace(/[\n\r]/g, '');
       //console.log(outputStr);
-      expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="PlayerName"/><t:column name="PlayerPosition"/><t:column name="PlayerAge"/><t:column name="xml"/></t:columns><t:rows><t:row><t:cell name="PlayerName" type="xs:string">Pat Crenshaw</t:cell><t:cell name="PlayerPosition" type="xs:string">Catcher</t:cell><t:cell name="PlayerAge" type="xs:integer">25</t:cell><t:cell name="xml" type="element"><root attrA="Pat Crenshaw"><elemA>Catcher</elemA><elemACodePoints>67 97 116 99 104 101 114</elemACodePoints><elemB>25</elemB><elemC>5</elemC></root></t:cell></t:row></t:rows></t:table>');
-      done();
+      expect(outputStr).to.contain('<t:cell name="PlayerName" type="xs:string">Pat Crenshaw</t:cell>');
+	  expect(outputStr).to.contain('<t:cell name="PlayerPosition" type="xs:string">Catcher</t:cell>');
+	  expect(outputStr).to.contain('<t:cell name="PlayerAge" type="xs:integer">25</t:cell>');
+	  expect(outputStr).to.contain('<t:cell name="xml" type="element"><root attrA="Pat Crenshaw"><elemA>Catcher</elemA><elemACodePoints>67 97 116 99 104 101 114</elemACodePoints><elemB>25</elemB><elemC>5</elemC></root></t:cell>');
+	  done();
     }, done);
   });
 
@@ -445,7 +448,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
         op.pattern(idCol, bb('age'), ageCol),
         op.pattern(idCol, bb('name'), nameCol),
         op.pattern(idCol, bb('position'), posCol)
-      ])
+      ],null, null, {dedup: 'on'})
       .where(
         op.and(
           op.le(ageCol, 25),

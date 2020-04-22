@@ -1,5 +1,5 @@
 <?xml  version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2016-2019 MarkLogic Corporation -->
+<!-- Copyright (c) 2020 MarkLogic Corporation -->
 <sets>
 <masterSet>
   <master><id>1</id><name>Master 1</name><date>2015-12-01</date></master>
