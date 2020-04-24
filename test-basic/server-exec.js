@@ -103,11 +103,11 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate a date value', function(done) {
-      const timestamp = '2010-10-08T10:17:15.125';
-      db.eval(`new Date('${timestamp}');`).result(function(values) {
+      const timestamp = '2010-10-08T10:17:15.125Z';
+      db.eval(`new Date('${timestamp}').toISOString();`).result(function(values) {
         values.length.should.equal(1);
-        checkValue(values[0], 'text', 'dateTime');
-        values[0].value.should.eql(new Date(timestamp));
+        checkValue(values[0], 'text', 'string');
+        values[0].value.should.eql(new Date(timestamp).toISOString());
         done();
         })
       .catch(done);
@@ -171,7 +171,7 @@ describe('server-side call', function() {
       .catch(done);
     });
     it('should generate values of different types', function(done) {
-      db.xqueryEval('("string value", fn:true(), 3, 4.4, xs:dateTime("2010-10-08T10:17:15.125"))')
+      db.xqueryEval('("string value", fn:true(), 3, 4.4, xs:dateTime("2010-10-08T10:17:15.125Z"))')
       .result(function(values) {
         values.length.should.equal(5);
         checkValue(values[0], 'text', 'string');
@@ -184,7 +184,7 @@ describe('server-side call', function() {
         values[3].value.should.equal(4.4);
         checkValue(values[4], 'text', 'dateTime');
         valcheck.isDate(values[4].value).should.equal(true);
-        values[4].value.should.eql(new Date('2010-10-08T10:17:15.125'));
+        values[4].value.toISOString().should.eql(new Date('2010-10-08T10:17:15.125Z').toISOString());
         done();
         })
       .catch(done);
@@ -340,8 +340,8 @@ describe('server-side call', function() {
     it('should return a date value', function(done) {
       db.invoke(invokePath, {test:9}).result(function(values) {
         values.length.should.equal(1);
-        checkValue(values[0], 'text', 'dateTime');
-        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125'));
+        checkValue(values[0], 'text', 'string');
+        values[0].value.should.eql(new Date('2010-10-08T10:17:15.125Z').toISOString());
         done();
         })
       .catch(done);
@@ -414,7 +414,7 @@ describe('server-side call', function() {
         values[3].value.should.equal(4.4);
         checkValue(values[4], 'text', 'dateTime');
         valcheck.isDate(values[4].value).should.equal(true);
-        values[4].value.should.eql(new Date('2010-10-08T10:17:15.125Z'));
+        values[4].value.toISOString().should.eql(new Date('2010-10-08T10:17:15.125Z').toISOString());
         done();
         })
       .catch(done);
