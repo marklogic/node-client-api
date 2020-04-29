@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/qa/test/TestE2EModuleNotFound/",
+  "desc" : "This class verifies the error message when module is not available"
+}

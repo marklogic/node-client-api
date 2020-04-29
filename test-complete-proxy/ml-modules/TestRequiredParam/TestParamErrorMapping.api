@@ -1,0 +1,16 @@
+{
+  "functionName" : "TestParamErrorMapping",
+ 
+  "return" : {
+    "datatype" : "float",
+    "multiple" : false,
+    "nullable" : true
+  },
+   "errorConditions":[
+  {
+    "errorCode": "XDMP-LEXVAL",
+    "httpStatusCode": 482,
+    "errorMessage":"QA LEXVAL Message For 482"
+  }
+  ]
+}

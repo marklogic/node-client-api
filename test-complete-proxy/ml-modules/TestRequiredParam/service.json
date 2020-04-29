@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/qa/test/TestRequiredParam/",
+  "desc" : "Returns primitive data types"
+}

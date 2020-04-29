@@ -1,0 +1,1 @@
+This folder contains all generated JS classes.

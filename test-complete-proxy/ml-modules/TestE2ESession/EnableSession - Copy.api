@@ -1,0 +1,23 @@
+{
+  "functionName" : "EnableSession",
+  "params" : [ {
+    "name" : "api_session",
+    "datatype" : "session",
+    "desc" : "Holds the session object"    
+  },
+  {
+    "name" : "uri",
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "DocId. Value in session in this SJS code and later retrieved in another SJS."
+  },
+  {
+    "name" : "content",
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "Doc contents of the inserted document"
+  }
+]
+}

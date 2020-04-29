@@ -1,0 +1,22 @@
+{
+  "functionName" : "RetrieveFromSession",
+  "params" : [ {
+    "name" : "api_session",
+    "datatype" : "session",
+    "desc" : "Holds the session object"    
+  },
+  {
+    "name" : "docid",
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "Doc URI"
+  }
+],
+"return" : {
+    "datatype" : "jsonDocument",
+    "multiple" : false,
+    "nullable" : true,
+	"desc" : "Updated doc back to client."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "functionName" : "TestE2EMultiStringsIn",
+  "params" : [ {
+    "name" : "inputFiles",
+    "datatype" : "string",
+    "multiple" : true,
+    "nullable" : false,
+    "desc" : "A sequence of strings that need to be written to Database"    
+  },
+  {
+    "name" : "uris",
+    "datatype" : "string",
+    "multiple" : true,
+    "nullable" : false,
+    "desc" : "A sequence of document uris for docs written to Database"    
+  }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "functionName" : "StoreInSession",
+  "params" : [ {
+    "name" : "api_session",
+    "datatype" : "session",
+    "desc" : "Holds the session object"    
+  },
+  {
+    "name" : "docid",
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "Doc URI"
+  },
+  {
+    "name" : "replaceValue",
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "Value to be replaced, placed in session"
+  }
+],
+"return" : {
+    "datatype" : "jsonDocument",
+    "multiple" : false,
+    "nullable" : true,
+	"desc" : "Original doc back to client."
+  }
+}

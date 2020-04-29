@@ -1,0 +1,24 @@
+{
+  "functionName" : "TestE2EModuleNotFound",
+  "params" : [ {
+    "name" : "count",
+    "datatype" : "decimal",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "Big Decimal numbers"    
+  },
+  {
+    "name" : "starttime",
+    "datatype" : "time",
+    "multiple" : false,
+    "nullable" : false,
+    "desc" : "JavaScript Local time"
+  }
+  ],
+  "return" : {
+    "desc" : "Module to return text document",
+    "datatype" : "textDocument",
+    "multiple" : false,
+    "nullable" : false
+	}
+}
