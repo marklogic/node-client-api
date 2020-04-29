@@ -35,8 +35,7 @@
     "multipart-stream": "^2.0.1",
     "qs": "^6.9.1",
     "through2": "^3.0.1",
-    "www-authenticate": "^0.6.2",
-    "yakaa": "^1.0.1"
+    "www-authenticate": "^0.6.2"
   },
   "repository": {
     "type": "git",
