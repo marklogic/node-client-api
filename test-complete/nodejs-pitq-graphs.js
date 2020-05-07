@@ -16,9 +16,6 @@
 var should = require('should');
 
 var fs = require('fs');
-var bigInt = require('big-integer');
-var valcheck = require('core-util-is');
-var concatStream = require('concat-stream');
 
 var testconfig = require('../etc/test-config-qa.js');
 
