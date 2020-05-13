@@ -16,12 +16,12 @@
 var assert = require('assert');
 var should = require('should');
 
+var http = require('http');
+
 var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
-
-var YAgent = require('yakaa');
 
 // 'rest-evaluator' user can evaluate against an alternate db:
 // http://docs.marklogic.com/guide/rest-dev/intro#id_72318
@@ -48,8 +48,8 @@ Object.keys(connection).forEach(function(key){
 var otherDb = marklogic.createDatabaseClient(otherConnection);
 
 var agentConnection = {
-  agent: new YAgent({keepAlive: true, keepAliveTimeoutMsecs: 1000})
-}
+  agent: new http.Agent({keepAlive: true, keepAliveTimeoutMsecs: 1000})
+};
 Object.keys(otherConnection).forEach(function(key){
   if (agentConnection[key] === undefined) {
     agentConnection[key] = otherConnection[key];
