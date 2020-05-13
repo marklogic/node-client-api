@@ -48,13 +48,8 @@ Object.keys(connection).forEach(function(key){
 var otherDb = marklogic.createDatabaseClient(otherConnection);
 
 var agentConnection = {
-<<<<<<< HEAD
-  agent: new YAgent({keepAlive: true, keepAliveTimeoutMsecs: 1000})
-}
-=======
   agent: new http.Agent({keepAlive: true, keepAliveTimeoutMsecs: 1000})
 };
->>>>>>> 1ad64b6... use native Node.js HTTP Agent #544
 Object.keys(otherConnection).forEach(function(key){
   if (agentConnection[key] === undefined) {
     agentConnection[key] = otherConnection[key];
