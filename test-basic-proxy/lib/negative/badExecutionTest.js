@@ -23,26 +23,14 @@ const BadExecution = require("./badExecution.js");
 describe('bad execution', function() {
   const service = BadExecution.on(testutil.makeClient());
 
-  const test = [
-    [406, 'Unacceptable1', "Unacceptable in every way"],
-    [406, 'Unacceptable2', "Unacceptable, that's how you'll stay", "Unacceptable, that's how you'll stay"],
-    [406, 'Unacceptable2', "Unacceptable, that's how you'll stay", null],
-    [406, 'Unacceptable2', "Unacceptable, that's how you'll stay", "Unacceptable no matter how near or far"],
-    [410, 'Absent1',       "You may search this wide world over"],
-    [500, 'Unknown1',      null,                                   "Are the stars out tonight?"]
-  ];
+  function runTest(expecteds, i, done) {
+    const expected = expecteds[i];
 
-  function runTest(i, done) {
-    if (i === test.length) {
-      done();
-    }
-    const testCase  = test[i];
-
-    const statusCode = testCase[0];
-    const sentCode   = testCase[1];
-    const mappedMsg  = (testCase[2] === null) ? 'Internal Server Error' : testCase[2];
-    const sentMsg    = (testCase.length < 4)  ? null                    : testCase[3];
-    const mappedCode = (testCase[2] === null) ? 'INTERNAL ERROR'        : sentCode;
+    const statusCode = expected[0];
+    const sentCode   = expected[1];
+    const mappedMsg  = (expected[2] === null) ? 'Internal Server Error' : expected[2];
+    const sentMsg    = (expected.length < 4)  ? null                    : expected[3];
+    const mappedCode = (expected[2] === null) ? 'INTERNAL ERROR'        : sentCode;
 
     service.errorMapping(sentCode, sentMsg)
         .then(output => {
@@ -60,11 +48,24 @@ describe('bad execution', function() {
             const msgOffset = errorResponse.message.indexOf(inlineMsg) + inlineMsg.length;
             expect(errorResponse.message.substring(msgOffset, msgOffset + sentMsg.length)).to.eql(sentMsg);
           }
-          runTest(i + 1, done);
+          i++;
+          if (i < expecteds.length) {
+            runTest(expecteds, i, done);
+          } else {
+            done();
+          }
         });
   }
 
   it('error conditions', function (done) {
-    runTest(0, done);
+    const expecteds = [
+      [406, 'Unacceptable1', "Unacceptable in every way"],
+      [406, 'Unacceptable2', "Unacceptable, that's how you'll stay", "Unacceptable, that's how you'll stay"],
+      [406, 'Unacceptable2', "Unacceptable, that's how you'll stay", null],
+      [406, 'Unacceptable2', "Unacceptable, that's how you'll stay", "Unacceptable no matter how near or far"],
+      [410, 'Absent1',       "You may search this wide world over"],
+      [500, 'Unknown1',      null,                                   "Are the stars out tonight?"]
+    ];
+    runTest(expecteds, 0, done);
   });
 });
