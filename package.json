@@ -26,7 +26,6 @@
     "xpath"
   ],
   "dependencies": {
-    "bluebird": "^3.7.2",
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.0.0",
     "dicer": "^0.3.0",
