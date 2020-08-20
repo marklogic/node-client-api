@@ -2430,6 +2430,13 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('eq#3', function(done) {
+        testPlan([p.xs.double(1), p.xs.double(1), p.xs.double(1)], p.eq(p.col("1"), p.col("2"), p.col("3")))
+          .then(function(response) {
+            should(getResult(response).value).equal(true);
+            done();
+        }).catch(done);
+    }); 
     it('ge#2', function(done) {
         testPlan([p.xs.double(1), p.xs.double(1)], p.ge(p.col("1"), p.col("2")))
           .then(function(response) {
