@@ -175,4 +175,26 @@ describe('negative generation', function() {
       done();
     }
   });
+  it('with endpoint failing to match schema', function(done) {
+    [
+      '{"functionName":1}',
+      '{"functionName":"numericParams", "params":1}',
+      '{"functionName":"numericParamsItem", "params":[1]}',
+      '{"functionName":"missingParamsName", "params":[{"datatype":"int"}]}',
+      '{"functionName":"numericParamsName", "params":[{"name":1, "datatype":"int"}]}',
+      '{"functionName":"missingParamsDataType", "params":[{"name":"p1"}]}',
+      '{"functionName":"incorrectParamsDataType", "params":[{"name":"p1", "datatype":"notAType"}]}',
+      '{"functionName":"stringParamsMultiple", "params":[{"name":"p1", "datatype":"int", "multiple":"true"}]}',
+      '{"functionName":"stringParamsNullable", "params":[{"name":"p1", "datatype":"int", "nullable":"true"}]}',
+      '{"functionName":"numericReturn", "return":1}',
+      '{"functionName":"missingReturnDataType", "return":{"multiple":true}}',
+      '{"functionName":"incorrectReturnDataType", "return":{"datatype":"notAType"}}',
+      '{"functionName":"stringReturnMultiple", "return":{"datatype":"int", "multiple":"true"}}',
+      '{"functionName":"stringReturnNullable", "return":{"datatype":"int", "nullable":"true"}}'
+    ].forEach((badApi, i) => {
+      const validationResult = proxy.validate(JSON.parse(badApi));
+      expect(validationResult.isValid).to.eql(false);
+    });
+    done();
+  });
 });

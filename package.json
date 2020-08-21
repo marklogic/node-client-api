@@ -43,6 +43,7 @@
     "node": ">=10.15.0"
   },
   "devDependencies": {
+    "ajv": "^6.12.4",
     "ast-types": "^0.13.2",
     "astring": "^1.4.3",
     "bunyan": "^1.8.12",
