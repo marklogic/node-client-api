@@ -1,0 +1,14 @@
+{
+  "functionName" : "CheckOnSession",
+  "params" : [ {
+    "name" : "api_session",
+    "datatype" : "session",
+    "desc" : "Holds the session object"    
+  }
+],
+"return" : {
+    "datatype" : "string",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

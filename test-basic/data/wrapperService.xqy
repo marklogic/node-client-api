@@ -17,9 +17,6 @@ xquery version "1.0-ml";
 
 module namespace wrapperService = "http://marklogic.com/rest-api/resource/wrapperService";
 
-import module namespace plugin = "http://marklogic.com/extension/plugin"
-    at "/MarkLogic/plugin/plugin.xqy";
-
 declare default function namespace "http://www.w3.org/2005/xpath-functions";
 declare option xdmp:mapping "false";
 

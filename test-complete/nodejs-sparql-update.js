@@ -32,7 +32,7 @@ describe('sparql update test', function(){
   var inferGraphPath  = __dirname + '/data/inferenceData.nt';
 
   before('should drop all graphs', function(done){
-    var myData = "DROP ALL ;"
+    var myData = "DROP ALL ;";
     db.graphs.sparqlUpdate({
       data: myData
     }).
@@ -49,7 +49,7 @@ describe('sparql update test', function(){
                  "INSERT DATA\n" +
                  "{\n" +
                  "  id:5 bb:playername bn:Sean .\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       data: myData,
       permissions: [
@@ -71,13 +71,13 @@ describe('sparql update test', function(){
     db.graphs.read('application/json').
     result(function(response){
       //console.log(JSON.stringify(response, null, 2))
-      response['http://marklogic.com/baseball/id#5']['http://marklogic.com/baseball/players#playername'][0].value.should.equal('http://marklogic.com/baseball/name#Sean')
+      response['http://marklogic.com/baseball/id#5']['http://marklogic.com/baseball/players#playername'][0].value.should.equal('http://marklogic.com/baseball/name#Sean');
       done();
     }, done);
   });
 
   it('should create the graph', function(done){
-    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;"
+    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;";
     db.graphs.sparqlUpdate({
       data: myData,
       permissions: [
@@ -125,7 +125,7 @@ describe('sparql update test', function(){
   });
 
   it('should fail to create existing graph', function(done){
-    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;"
+    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;";
     db.graphs.sparqlUpdate({
       data: myData,
       permissions: [
@@ -167,7 +167,7 @@ describe('sparql update test', function(){
                   "  ?person ad:firstName 'John' ;\n" +
                   "          ad:lastName  'Snelson' ;\n" +
                   "          ?p ?o .\n" +
-                  "}"
+                  "}";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery
@@ -194,7 +194,7 @@ describe('sparql update test', function(){
                  "    ?playertoken bb:team ?team .\n" +
                  "  }\n" +
                  "}\n" +
-                 "WHERE {}"
+                 "WHERE {}";
     db.graphs.sparqlUpdate({
       data: myData,
       bindings: {
@@ -216,7 +216,7 @@ describe('sparql update test', function(){
   it('should run SPARQL query on bound data', function(done){
     var myQuery = "SELECT *\n" +
                   "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
-                  "WHERE {?s ?p ?o}"
+                  "WHERE {?s ?p ?o}";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery
@@ -239,7 +239,7 @@ describe('sparql update test', function(){
                  "    id:5 bb:playerid ?playerid .\n" +
                  "    ?playerid bn:playername ?playername .\n" +
                  "  }\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       bindings: {
         'playerid': '5',
@@ -265,7 +265,7 @@ describe('sparql update test', function(){
                  "  {\n" +
                  "    bb:345 bb:id 345 .\n" +
                  "  }\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       data: myData,
       usingNamedGraphs: true,
@@ -287,7 +287,7 @@ describe('sparql update test', function(){
                  "  {\n" +
                  "    bb:345 bb:id 345 .\n" +
                  "  }\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       data: myData,
       optimizeLevel: -10
@@ -335,7 +335,7 @@ describe('sparql update test', function(){
                  "  {\n" +
                  "    bb:501 bb:id 501 .\n" +
                  "  }\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       data: myData,
       usingDefaultGraphs: false,
@@ -362,7 +362,7 @@ describe('sparql update test', function(){
                    "  {\n" +
                    "    bb:987 bb:id 987 .\n" +
                    "  }\n" +
-                   "}"
+                   "}";
 
       return db.graphs.sparqlUpdate({
         data: myData,
@@ -374,7 +374,7 @@ describe('sparql update test', function(){
       var myQuery = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
                     "SELECT *\n" +
                     "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
-                    "WHERE {?s bb:id 987}"
+                    "WHERE {?s bb:id 987}";
       return db.graphs.sparql({
         contentType: 'application/sparql-results+json',
         query: myQuery,
@@ -397,7 +397,7 @@ describe('sparql update test', function(){
     var myQuery = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
-                  "WHERE {?s bb:id 987}"
+                  "WHERE {?s bb:id 987}";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery
@@ -417,7 +417,7 @@ describe('sparql update test', function(){
                  "  {\n" +
                  "    <#7878> bb:id 7878 .\n" +
                  "  }\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       data: myData,
       base: 'http://marklogic.com/baseball/players'
@@ -432,7 +432,7 @@ describe('sparql update test', function(){
     var myQuery = "PREFIX bb: <http://marklogic.com/baseball/players#>\n" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/sparqlupdate/baseball>\n" +
-                  "WHERE {?s bb:id 7878}"
+                  "WHERE {?s bb:id 7878}";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery
@@ -463,7 +463,7 @@ describe('sparql update test', function(){
                  "  {\n" +
                  "    <http://marklogicsparql.com/id#3333> <http://marklogicsparql.com/addressbook#firstName> 'Mark' .\n" +
                  "  }\n" +
-                 "}"
+                 "}";
     db.graphs.sparqlUpdate({
       data: myData,
       usingNamedGraphs: true,
@@ -477,7 +477,7 @@ describe('sparql update test', function(){
   });
 
   it('should create the graph-Bug38274', function(done){
-    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;"
+    var myData = "CREATE GRAPH <http://marklogic.com/sparqlupdate/people> ;";
     db.graphs.sparqlUpdate('CREATE GRAPH <http://marklogic.com/sparqlupdate/peoplqe> ;').
     result(function(response){
       //console.log(JSON.stringify(response, null, 2));
@@ -492,7 +492,7 @@ describe('sparql update test', function(){
   });
 
   it('should drop all graphs', function(done){
-    var myData = "DROP ALL ;"
+    var myData = "DROP ALL ;";
     db.graphs.sparqlUpdate({
       data: myData
     }).

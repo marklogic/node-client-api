@@ -33,7 +33,7 @@ describe('Nodejs Optic from sparql test', function(){
         PREFIX ppl:  <http://people.org/> \
         SELECT ?s ?o \
         WHERE { ?s foaf:knows ?o }")
-      .offsetLimit(11, 15)
+      .offsetLimit(11, 15);
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -57,7 +57,7 @@ describe('Nodejs Optic from sparql test', function(){
           ?person foaf:name ?name . \
           ?person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type . \
         }")
-      .limit(5)
+      .limit(5);
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -79,7 +79,7 @@ describe('Nodejs Optic from sparql test', function(){
         WHERE { \
           ?personB foaf:name 'Person 7' . \
           ?personA foaf:knows ?personB \
-        }")
+        }");
     db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -101,7 +101,7 @@ describe('Nodejs Optic from sparql test', function(){
         } \
         ORDER BY ?name")
       .limit(15)
-      .offset(11)
+      .offset(11);
     db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
@@ -122,7 +122,7 @@ describe('Nodejs Optic from sparql test', function(){
           ?company a vcard:Organization . \
           ?company demov:industry ?industry . \
           ?company demov:industry 'Industrial Goods' \
-        }")
+        }");
     db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
@@ -143,7 +143,7 @@ describe('Nodejs Optic from sparql test', function(){
         FROM </optic/sparql/test/companies.ttl> \
         WHERE { \
           ?company demov:industry ?industry . \
-        }")
+        }");
     db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.kind.toString());
@@ -170,7 +170,7 @@ describe('Nodejs Optic from sparql test', function(){
         WHERE { \
 	  ?company a vcard:Organization . \
 	  ?company demov:sales ?sales \
-        }")
+        }");
     db.rows.queryAsStream(output, 'sequence', { format: 'json', structure: 'array', columnTypes: 'rows' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -202,7 +202,7 @@ describe('Nodejs Optic from sparql test', function(){
 	  ?company vcard:hasAddress/vcard:country-name 'USA' . \
 	  BIND (vcard:hasAddress/vcard:country-name as ?country) \
 	  BIND (demov:industry as ?industry) \
-        }")
+        }");
     db.rows.queryAsStream(output, 'chunked', { format: 'xml', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -230,7 +230,7 @@ describe('Nodejs Optic from sparql test', function(){
 	  ?company demov:industry ?industry \
         } \
         GROUP BY ?industry \
-        ORDER BY ?sum_sales")
+        ORDER BY ?sum_sales");
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -285,7 +285,7 @@ describe('Nodejs Optic from sparql test', function(){
 	  ?company demov:industry ?industry \
         } \
         GROUP BY ?industry \
-        ORDER BY ?sum_sales", 'MySPARQL')
+        ORDER BY ?sum_sales", 'MySPARQL');
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -310,7 +310,7 @@ describe('Nodejs Optic from sparql test', function(){
 	  ?company demov:industry ?industry \
         } \
         GROUP BY ?industry \
-        ORDER BY ?sum_sales", 'MySPARQL')
+        ORDER BY ?sum_sales", 'MySPARQL');
     db.rows.explain(output, 'json')
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -331,7 +331,7 @@ describe('Nodejs Optic from sparql test', function(){
         } \
         ORDER BY ?name")
       .limit(-1)
-      .offset(11)
+      .offset(11);
     db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);

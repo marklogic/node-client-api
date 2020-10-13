@@ -1,0 +1,17 @@
+{
+  "functionName" : "TestE2EMultiStringsOut",
+  "params" : [ {
+    "name" : "searchItem",
+    "datatype" : "string",
+    "multiple" : true,
+    "nullable" : false,
+    "desc" : "Search string with 1 word or multiples"    
+  }
+  ],
+  "return" : {
+    "desc" : "Module to return array of doc Ids",
+	"datatype" : "array",
+    "multiple" : false,
+    "nullable" : false
+	}
+}

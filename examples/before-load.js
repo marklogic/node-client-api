@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 var fs = require('fs');
-var PromisePlus  = require('../lib/bluebird-plus.js');
 
 var marklogic = require('../');
 
@@ -35,7 +34,7 @@ var collections = ['/countries', '/facts/geographic'];
 function readFile(filenames, i, buffer, isLast) {
   var filename = filenames[i];
 
-  files.push(new PromisePlus((resolve, reject) => {
+  files.push(new Promise((resolve, reject) => {
     fs.readFile(fsdir+filename, function (err, content) {
       if (err) {
         throw err;
@@ -52,7 +51,7 @@ function readFile(filenames, i, buffer, isLast) {
   }));
 
   if (isLast) {
-    PromisePlus.all(files).then(function(documents) {
+    Promise.all(files).then(function(documents) {
       console.log('loading batch from '+documents[0].uri+' to '+filename);
       db.documents.write(documents).result(function(response) {
         console.log(

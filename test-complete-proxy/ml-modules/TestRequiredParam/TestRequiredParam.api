@@ -1,0 +1,20 @@
+{
+  "functionName" : "TestRequiredParam",
+ "params" : [ {
+    "name" : "items",
+    "datatype" : "int",
+    "multiple" : false,
+    "nullable" : false
+  }, 
+  {
+    "name" : "price",
+    "datatype" : "int",
+    "multiple" : false
+  } 
+  ],
+  "return" : {
+    "datatype" : "float",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

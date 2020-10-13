@@ -15,7 +15,7 @@
  */
 const should   = require('should'),
       fs       = require('fs'),
-      valcheck = require('core-util-is')
+      valcheck = require('core-util-is'),
       eol      = require('os').EOL;
 
 const testconfig = require('../etc/test-config.js');
@@ -320,7 +320,7 @@ describe('rows', function(){
         valcheck.isBuffer(chunk).should.equal(true);
         // check for record separator
         let firstChar = chunk.toString()[0];
-        firstChar.should.equal('\x1e')
+        firstChar.should.equal('\x1e');
         // substr(1) removes initial record separator
         let object = JSON.parse(chunk.toString().substr(1));
         valcheck.isObject(object).should.equal(true);

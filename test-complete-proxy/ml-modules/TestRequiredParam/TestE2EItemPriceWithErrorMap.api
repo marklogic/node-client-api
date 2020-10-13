@@ -1,0 +1,26 @@
+{
+  "functionName" : "TestE2EItemPriceWithErrorMap",
+ "params" : [ {
+    "name" : "itemId",
+    "datatype" : "int",
+    "multiple" : false,
+    "nullable" : true
+  } ],
+  "return" : {
+    "datatype" : "double",
+    "multiple" : false,
+    "nullable" : true
+  },
+  "errorConditions":[
+  {
+    "errorCode": "MLQA-ERROR-1",
+    "httpStatusCode": 482,
+    "errorMessage":"QA Message For 482"
+  },
+  {
+    "errorCode": "MLQA-ERROR-2",
+    "httpStatusCode": 539,
+    "errorMessage":"QA Message For 539"
+  }
+  ]
+}

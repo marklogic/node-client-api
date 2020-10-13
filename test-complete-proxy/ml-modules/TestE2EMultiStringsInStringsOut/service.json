@@ -1,0 +1,4 @@
+{
+  "endpointDirectory" : "/qa/test/TestE2EMultiStringsInStringsOut/",
+  "desc" : " This class verifies the stream of Json documents written into DB and accepts a string query. Returns URIs"
+}

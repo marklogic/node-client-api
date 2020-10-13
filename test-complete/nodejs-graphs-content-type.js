@@ -113,7 +113,7 @@ describe('content type graph test', function(){
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/graphs/content#type>\n" +
-                  "WHERE {?s ad:firstName 'John'}"
+                  "WHERE {?s ad:firstName 'John'}";
     db.graphs.sparql({
       contentType: 'application/sparql-results+xml',
       query: myQuery
@@ -130,7 +130,7 @@ describe('content type graph test', function(){
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/graphs/content#type>\n" +
-                  "WHERE {?s ad:firstName 'John'}"
+                  "WHERE {?s ad:firstName 'John'}";
     db.graphs.sparql({
       contentType: 'text/csv',
       query: myQuery
@@ -147,7 +147,7 @@ describe('content type graph test', function(){
     var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
                   "SELECT *\n" +
                   "FROM <http://marklogic.com/graphs/content#type>\n" +
-                  "WHERE {?s ad:firstName 'John'}"
+                  "WHERE {?s ad:firstName 'John'}";
     db.graphs.sparql({
       contentType: 'text/html',
       query: myQuery
@@ -162,7 +162,7 @@ describe('content type graph test', function(){
 
   it('should run SPARQL query with n-triples content type', function(done){
     this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
     db.graphs.sparql({
       contentType: 'application/n-triples',
       query: myQuery
@@ -176,7 +176,7 @@ describe('content type graph test', function(){
 
   it('should run SPARQL query with n-quads content type', function(done){
     this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
     db.graphs.sparql({
       contentType: 'application/n-quads',
       query: myQuery
@@ -190,7 +190,7 @@ describe('content type graph test', function(){
 
   it('should run SPARQL query with sparql-results+json content type -ve', function(done){
     this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
     db.graphs.sparql({
       contentType: 'application/sparql-results+json',
       query: myQuery
@@ -207,7 +207,7 @@ describe('content type graph test', function(){
 
   it('should run SPARQL query with rdf+xml content type', function(done){
     this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>"
+    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
     db.graphs.sparql({
       contentType: 'application/rdf+xml',
       query: myQuery

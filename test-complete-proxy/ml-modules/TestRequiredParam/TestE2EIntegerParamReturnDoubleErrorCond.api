@@ -1,0 +1,21 @@
+{
+  "functionName" : "TestE2EIntegerParamReturnDoubleErrorCond",
+ "params" : [ {
+    "name" : "items",
+    "datatype" : "int",
+    "multiple" : false,
+    "nullable" : true
+  }, 
+  {
+    "name" : "price",
+    "datatype" : "float",
+    "multiple" : false,
+    "nullable" : true
+  } 
+  ],
+  "return" : {
+    "datatype" : "float",
+    "multiple" : false,
+    "nullable" : true
+  }
+}

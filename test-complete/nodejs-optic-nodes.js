@@ -76,7 +76,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           )
         )
       ])
-      .orderBy('rowId')
+      .orderBy('rowId');
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -150,7 +150,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
             ])
           )
         )
-      ])
+      ]);
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -207,7 +207,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
             )
           )
         )
-      ])
+      ]);
     db.rows.query(output, { format: 'xml', structure: 'object', columnTypes: 'rows' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -259,7 +259,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
         op.as('myJSON4', op.jsonDocument(op.jsonObject(op.prop('array1', op.jsonArray([
           op.jsonString(op.col('uri2')), op.col('popularity'), op.jsonArray([op.col('date'), op.jsonNumber(op.col('distance'))])
         ])))))
-      ])
+      ]);
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
       //console.log(JSON.stringify(output, null, 2));
@@ -313,7 +313,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonObject(op.prop('object4', op.jsonString(op.col('groupConcatColor')))),
           op.jsonObject(op.prop('object5', op.col('minColor')))
         ])))))
-      ])
+      ]);
     db.rows.query(output, { format: 'xml', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
@@ -364,7 +364,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonObject(op.prop('object4', op.jsonString(op.col('groupConcatColor')))),
           op.jsonObject(op.prop('object5', op.col('minColor')))
         ])))))
-      ])
+      ]);
     db.rows.query(output, { format: 'csv', structure: 'array', columnTypes: 'header' })
     .then(function(output) {
       //console.log(output);
@@ -418,7 +418,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           op.jsonObject(op.prop('object4', op.jsonString(op.col('groupConcatColor')))),
           op.jsonObject(op.prop('object5', op.col('minColor')))
         ])))))
-      ])
+      ]);
     db.rows.queryAsStream(output, 'chunked', { format: 'json', structure: 'object', columnTypes: 'header' })
     .on('data', function(chunk) {
       //console.log(chunk.toString());
@@ -479,7 +479,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
             )
           )
         )
-      ])
+      ]);
     db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.content.xml);
@@ -547,7 +547,7 @@ describe('Nodejs Optic nodes json constructor test', function(){
           )
         )
       ])
-      .orderBy('rowId')
+      .orderBy('rowId');
     db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
       chunks.push(chunk.content);

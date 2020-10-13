@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 var should = require('should');
-var bigInt = require('big-integer');
-var valcheck     = require('core-util-is');
+var valcheck = require('core-util-is');
 var fs = require('fs');
 
 var testconfig = require('../etc/test-config.js');
@@ -28,6 +27,30 @@ var p = marklogic.planBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 //db.setLogger('debug');
 describe('point-in-time with timestamp', function(){
+  let beforestamp = null;
+  before(function(done){
+    const timestamp = db.createTimestamp();
+    db.documents.write({
+      uri: '/documents/point-in-time.txt',
+      contentType: 'text/plain',
+      content: 'timekeeper'
+    }).result(function(response){
+      return db.documents.read({
+        uris: '/documents/point-in-time.txt',
+        timestamp: timestamp
+        }).result();
+    }).then(function(response) {
+      beforestamp = timestamp.value;
+      done();
+    }).catch(done);
+  });
+  after(function(done){
+    db.documents.remove({
+        uris: '/documents/point-in-time.txt'
+        })
+      .result(function(response){done();})
+      .catch(done);
+  });
 
   describe('documents', function(){
     before(function(done){
@@ -68,7 +91,7 @@ describe('point-in-time with timestamp', function(){
         .then(function(response) {
           valcheck.isString(timestamp.value).should.equal(true);
           response.length.should.equal(1);
-          timestamp.value = bigInt(timestamp.value).minus(99999).toString();
+          timestamp.value = beforestamp;
           // Read with timestamp set to decremented time
           return db.documents.read({
             uris: '/documents/point-in-time.json',
@@ -108,7 +131,7 @@ describe('point-in-time with timestamp', function(){
         .then(function(response) {
           valcheck.isString(timestamp.value).should.equal(true);
           response.length.should.equal(1);
-          timestamp.value = bigInt(timestamp.value).minus(99999).toString();
+          timestamp.value = beforestamp;
           // Read with timestamp set to decremented time
           return db.documents.query(
             q.where(
@@ -178,7 +201,7 @@ describe('point-in-time with timestamp', function(){
         .then(function(response){
           valcheck.isString(timestamp.value).should.equal(true);
           response.should.not.be.empty();
-          timestamp.value = bigInt(timestamp.value).minus(99999).toString();
+          timestamp.value = beforestamp;
           // Query with timestamp set to decremented time
           return db.graphs.read({
             contentType: 'application/rdf+json',
@@ -212,7 +235,7 @@ describe('point-in-time with timestamp', function(){
           response.some(function(collection){
             return collection === 'marklogic.com/point-in-time';
           }).should.equal(true);
-          timestamp.value = bigInt(timestamp.value).minus(99999).toString();
+          timestamp.value = beforestamp;
           // Query with timestamp set to decremented time
           return db.graphs.list(timestamp).result();
         })
@@ -249,7 +272,7 @@ describe('point-in-time with timestamp', function(){
         .then(function(response) {
           valcheck.isString(timestamp.value).should.equal(true);
           response.results.bindings.length.should.be.above(0);
-          timestamp.value = bigInt(timestamp.value).minus(99999).toString();
+          timestamp.value = beforestamp;
           // Query with timestamp set to decremented time
           return db.graphs.sparql({
             contentType: 'application/sparql-results+json',
@@ -342,7 +365,7 @@ describe('point-in-time with timestamp', function(){
         .then(function(values) {
           valcheck.isString(timestamp.value).should.equal(true);
           values['values-response'].tuple.length.should.be.above(0);
-          timestamp.value = bigInt(timestamp.value).minus(99999).toString();
+          timestamp.value = beforestamp;
           return db.values.read(
             t.fromIndexes(t.range('rangeKey5')), timestamp
           ).result();

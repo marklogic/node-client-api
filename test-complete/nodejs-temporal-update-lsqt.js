@@ -30,7 +30,7 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
 
-var temporalCollectionName = 'temporalCollectionLsqt'
+var temporalCollectionName = 'temporalCollectionLsqt';
 var updateCollectionName = 'updateCollection';
 
 
