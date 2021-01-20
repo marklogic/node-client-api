@@ -143,6 +143,42 @@ describe('modifier', function() {
         })
       .catch(done);
     });
+    it('with bindAs', function(done) {
+      execPlan(
+          p.fromLiterals([
+             {row:1, low:4, high:8},
+             {row:2, low:3, high:6},
+             {row:3, low:2, high:4}
+             ])
+           .bindAs(p.col('added'), p.add(p.col('low'), p.col('high')))
+           .bindAs('subtracted',    p.subtract(p.col('high'), p.col('low')))
+           .bindAs('compared',      p.eq(p.col('low'), 3))
+           .bindAs('concatted',     p.fn.concat(p.col('low'), p.col('high')))
+      )
+          .then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(3);
+            should(output[0].low.value).equal(4);
+            should(output[0].high.value).equal(8);
+            should(output[0].added.value).equal(12);
+            should(output[0].subtracted.value).equal(4);
+            should(output[0].compared.value).equal(false);
+            should(output[0].concatted.value).equal('48');
+            should(output[1].low.value).equal(3);
+            should(output[1].high.value).equal(6);
+            should(output[1].added.value).equal(9);
+            should(output[1].subtracted.value).equal(3);
+            should(output[1].compared.value).equal(true);
+            should(output[1].concatted.value).equal('36');
+            should(output[2].low.value).equal(2);
+            should(output[2].high.value).equal(4);
+            should(output[2].added.value).equal(6);
+            should(output[2].subtracted.value).equal(2);
+            should(output[2].compared.value).equal(false);
+            should(output[2].concatted.value).equal('24');
+            done();
+          }).catch(done);
+    });
     it('with orderBy', function(done) {
       execPlan(
           p.fromLiterals([
@@ -220,6 +256,235 @@ describe('modifier', function() {
           done();
         })
       .catch(done);
+    });
+    it('with group for groupByUnion', function(done) {
+      execPlan(
+          p.fromLiterals([
+            {c1:11, c2:21, v:2},
+            {c1:12, c2:21, v:2},
+            {c1:12, c2:22, v:2}
+          ])
+              .groupByUnion([p.group(), p.group(['c1', p.col('c2')])], [
+                p.hasGroupKey('c1Flag', 'c1'), p.hasGroupKey(p.col('c2Flag'), p.col('c2')),
+                p.count('count'), p.sum('sum', 'v')
+              ])
+              .orderBy(['c1Flag', 'c2Flag', 'c1', 'c2'])
+      )
+          .then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(4);
+            should(output[0].c1Flag.value).equal(0);
+            should(output[0].c2Flag.value).equal(0);
+            should(output[0].c1.value).equal(11);
+            should(output[0].c2.value).equal(21);
+            should(output[0].count.value).equal(1);
+            should(output[0].sum.value).equal(2);
+            should(output[1].c1Flag.value).equal(0);
+            should(output[1].c2Flag.value).equal(0);
+            should(output[1].c1.value).equal(12);
+            should(output[1].c2.value).equal(21);
+            should(output[1].count.value).equal(1);
+            should(output[1].sum.value).equal(2);
+            should(output[2].c1Flag.value).equal(0);
+            should(output[2].c2Flag.value).equal(0);
+            should(output[2].c1.value).equal(12);
+            should(output[2].c2.value).equal(22);
+            should(output[2].count.value).equal(1);
+            should(output[2].sum.value).equal(2);
+            should(output[3].c1Flag.value).equal(1);
+            should(output[3].c2Flag.value).equal(1);
+            should(output[3].count.value).equal(3);
+            should(output[3].sum.value).equal(6);
+            done();
+          }).catch(done);
+    });
+    it('with rollup for groupByUnion', function(done) {
+      execPlan(
+          p.fromLiterals([
+            {c1:11, c2:21, v:2},
+            {c1:12, c2:21, v:2},
+            {c1:12, c2:22, v:2}
+          ])
+              .groupByUnion(p.rollup(['c1', p.col('c2')]), [
+                p.hasGroupKey('c1Flag', 'c1'), p.hasGroupKey(p.col('c2Flag'), p.col('c2')),
+                p.count('count'), p.sum('sum', 'v')
+              ])
+              .orderBy(['c1Flag', 'c2Flag', 'c1', 'c2'])
+      )
+          .then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(6);
+            should(output[0].c1Flag.value).equal(0);
+            should(output[0].c2Flag.value).equal(0);
+            should(output[0].c1.value).equal(11);
+            should(output[0].c2.value).equal(21);
+            should(output[0].count.value).equal(1);
+            should(output[0].sum.value).equal(2);
+            should(output[1].c1Flag.value).equal(0);
+            should(output[1].c2Flag.value).equal(0);
+            should(output[1].c1.value).equal(12);
+            should(output[1].c2.value).equal(21);
+            should(output[1].count.value).equal(1);
+            should(output[1].sum.value).equal(2);
+            should(output[2].c1Flag.value).equal(0);
+            should(output[2].c2Flag.value).equal(0);
+            should(output[2].c1.value).equal(12);
+            should(output[2].c2.value).equal(22);
+            should(output[2].count.value).equal(1);
+            should(output[2].sum.value).equal(2);
+            should(output[3].c1Flag.value).equal(0);
+            should(output[3].c2Flag.value).equal(1);
+            should(output[3].c1.value).equal(11);
+            should(output[3].count.value).equal(1);
+            should(output[3].sum.value).equal(2);
+            should(output[4].c1Flag.value).equal(0);
+            should(output[4].c2Flag.value).equal(1);
+            should(output[4].c1.value).equal(12);
+            should(output[4].count.value).equal(2);
+            should(output[4].sum.value).equal(4);
+            should(output[5].c1Flag.value).equal(1);
+            should(output[5].c2Flag.value).equal(1);
+            should(output[5].count.value).equal(3);
+            should(output[5].sum.value).equal(6);
+            done();
+          }).catch(done);
+    });
+    it('with cube for groupByUnion', function(done) {
+      execPlan(
+          p.fromLiterals([
+            {c1:11, c2:21, v:2},
+            {c1:12, c2:21, v:2},
+            {c1:12, c2:22, v:2}
+          ])
+              .groupByUnion(p.cube(['c1', p.col('c2')]), [
+                p.hasGroupKey('c1Flag', 'c1'), p.hasGroupKey(p.col('c2Flag'), p.col('c2')),
+                p.count('count'), p.sum('sum', 'v')
+              ])
+              .orderBy(['c1Flag', 'c2Flag', 'c1', 'c2'])
+      )
+          .then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(8);
+            should(output[0].c1Flag.value).equal(0);
+            should(output[0].c2Flag.value).equal(0);
+            should(output[0].c1.value).equal(11);
+            should(output[0].c2.value).equal(21);
+            should(output[0].count.value).equal(1);
+            should(output[0].sum.value).equal(2);
+            should(output[1].c1Flag.value).equal(0);
+            should(output[1].c2Flag.value).equal(0);
+            should(output[1].c1.value).equal(12);
+            should(output[1].c2.value).equal(21);
+            should(output[1].count.value).equal(1);
+            should(output[1].sum.value).equal(2);
+            should(output[2].c1Flag.value).equal(0);
+            should(output[2].c2Flag.value).equal(0);
+            should(output[2].c1.value).equal(12);
+            should(output[2].c2.value).equal(22);
+            should(output[2].count.value).equal(1);
+            should(output[2].sum.value).equal(2);
+            should(output[3].c1Flag.value).equal(0);
+            should(output[3].c2Flag.value).equal(1);
+            should(output[3].c1.value).equal(11);
+            should(output[3].count.value).equal(1);
+            should(output[3].sum.value).equal(2);
+            should(output[4].c1Flag.value).equal(0);
+            should(output[4].c2Flag.value).equal(1);
+            should(output[4].c1.value).equal(12);
+            should(output[4].count.value).equal(2);
+            should(output[4].sum.value).equal(4);
+            should(output[5].c1Flag.value).equal(1);
+            should(output[5].c2Flag.value).equal(0);
+            should(output[5].c2.value).equal(21);
+            should(output[5].count.value).equal(2);
+            should(output[5].sum.value).equal(4);
+            should(output[6].c1Flag.value).equal(1);
+            should(output[6].c2Flag.value).equal(0);
+            should(output[6].c2.value).equal(22);
+            should(output[6].count.value).equal(1);
+            should(output[6].sum.value).equal(2);
+            should(output[7].c1Flag.value).equal(1);
+            should(output[7].c2Flag.value).equal(1);
+            should(output[7].count.value).equal(3);
+            should(output[7].sum.value).equal(6);
+            done();
+          }).catch(done);
+    });
+    it('for groupToArrays', function(done) {
+      execPlan(
+          p.fromLiterals([
+            {c1:11, c2:21, v:2},
+            {c1:12, c2:21, v:2},
+            {c1:12, c2:22, v:2}
+          ])
+              .groupToArrays([
+                p.namedGroup('empty'), p.col('c1'), p.group('c2'), p.namedGroup('all', ['c1', p.col('c2')])
+              ], [
+                p.count('count'), p.sum('sum', 'v')
+              ])
+      )
+          .then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(1);
+            const row = output[0];
+            should(row.empty.value.length).equal(1);
+            should(row.empty.value[0].count).equal(3);
+            should(row.empty.value[0].sum).equal(6);
+            should(row.group1.value.length).equal(2);
+            should(row.group1.value[0].c1).equal(11);
+            should(row.group1.value[0].count).equal(1);
+            should(row.group1.value[0].sum).equal(2);
+            should(row.group1.value[1].c1).equal(12);
+            should(row.group1.value[1].count).equal(2);
+            should(row.group1.value[1].sum).equal(4);
+            should(row.group2.value.length).equal(2);
+            should(row.group2.value[0].c2).equal(21);
+            should(row.group2.value[0].count).equal(2);
+            should(row.group2.value[0].sum).equal(4);
+            should(row.group2.value[1].c2).equal(22);
+            should(row.group2.value[1].count).equal(1);
+            should(row.group2.value[1].sum).equal(2);
+            should(row.all.value.length).equal(3);
+            should(row.all.value[0].c1).equal(11);
+            should(row.all.value[0].c2).equal(21);
+            should(row.all.value[0].count).equal(1);
+            should(row.all.value[0].sum).equal(2);
+            should(row.all.value[1].c1).equal(12);
+            should(row.all.value[1].c2).equal(21);
+            should(row.all.value[1].count).equal(1);
+            should(row.all.value[1].sum).equal(2);
+            should(row.all.value[2].c1).equal(12);
+            should(row.all.value[2].c2).equal(22);
+            should(row.all.value[2].count).equal(1);
+            should(row.all.value[2].sum).equal(2);
+            done();
+          }).catch(done);
+    });
+    it('for facetBy', function(done) {
+      execPlan(
+          p.fromLiterals([
+            {c1:11, c2:21, v:2},
+            {c1:12, c2:21, v:2},
+            {c1:12, c2:22, v:2}
+          ])
+              .facetBy(['c1', p.col('c2')])
+      )
+          .then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(1);
+            const row = output[0];
+            should(row.group0.value.length).equal(2);
+            should(row.group0.value[0].c1).equal(11);
+            should(row.group0.value[0].count).equal(1);
+            should(row.group0.value[1].c1).equal(12);
+            should(row.group0.value[1].count).equal(2);
+            should(row.group1.value.length).equal(2);
+            should(row.group1.value[0].c2).equal(21);
+            should(row.group1.value[0].count).equal(2);
+            should(row.group1.value[1].c2).equal(22);
+            should(row.group1.value[1].count).equal(1);
+            done();
+          }).catch(done);
     });
     it('with offsetLimit', function(done) {
       execPlan(

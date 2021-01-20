@@ -29,11 +29,11 @@ describe('plan builder', function() {
   describe('expression functions', function() { 
     it('cts.box#4', function(done) {
         testPlan([p.xs.double(1), p.xs.double(2), p.xs.double(3), p.xs.double(4)], p.cts.box(p.col("1"), p.col("2"), p.col("3"), p.col("4")))
-          .then(function(response) { 
+          .then(function(response) {
             should(getResult(response).value).eql("[1, 2, 3, 4]");
             done();
         }).catch(done);
-    }); 
+    });
     it('cts.boxEast#1', function(done) {
         testPlan([p.cts.box(1, 2, 3, 4)], p.cts.boxEast(p.col("1")))
           .then(function(response) { 
@@ -71,11 +71,11 @@ describe('plan builder', function() {
     }); 
     it('cts.point#2', function(done) {
         testPlan([p.xs.double(1), p.xs.double(2)], p.cts.point(p.col("1"), p.col("2")))
-          .then(function(response) { 
+          .then(function(response) {
             should(getResult(response).value).eql("1,2");
             done();
         }).catch(done);
-    }); 
+    });
     it('cts.pointLatitude#1', function(done) {
         testPlan([p.cts.point(1, 2)], p.cts.pointLatitude(p.col("1")))
           .then(function(response) { 
@@ -831,7 +831,7 @@ describe('plan builder', function() {
             should(getResult(response).value).eql("1,2");
             done();
         }).catch(done);
-    });
+    }); 
     it('geo.bearing#2', function(done) {
         testPlan([p.cts.point(1, 2), p.cts.point(3, 4)], p.geo.bearing(p.col("1"), p.col("2")))
           .then(function(response) {
@@ -2446,6 +2446,13 @@ describe('plan builder', function() {
     }); 
     it('gt#2', function(done) {
         testPlan([p.xs.double(2), p.xs.double(1)], p.gt(p.col("1"), p.col("2")))
+          .then(function(response) {
+            should(getResult(response).value).equal(true);
+            done();
+        }).catch(done);
+    }); 
+    it('in#2', function(done) {
+        testPlan([p.xs.double(1), p.xs.double(1), p.xs.double(2)], p.in(p.col("1"), [p.col("2"), p.col("3")]))
           .then(function(response) {
             should(getResult(response).value).equal(true);
             done();
