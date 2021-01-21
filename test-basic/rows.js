@@ -67,7 +67,7 @@ describe('rows', function(){
     });
 
     it('as a JSON array', function(){
-      return db.rows.query(planFromJSON, {format: 'json', structure: 'array'})
+      return db.rows.query(planFromJSON, {queryType: 'json', format: 'json', structure: 'array'})
         .then(function(response) {
           //console.log(JSON.stringify(response, null, 2));
           valcheck.isArray(response).should.equal(true);
@@ -156,6 +156,70 @@ describe('rows', function(){
         });
     });
 
+    it('with Query DSL', function(){
+      return db.rows.query(
+          `op.fromView('opticUnitTest', 'musician')
+             .where(cts.andQuery([
+                  cts.jsonPropertyWordQuery('instrument', 'trumpet'),
+                  cts.jsonPropertyWordQuery('lastName', ['Armstrong', 'Davis'])
+                  ]))
+             .select(null, '')
+             .orderBy('lastName');`,
+          {queryType:'dsl'})
+          .then(function(response) {
+            const rows = response.rows;
+            should(rows.length).equal(2);
+            should(rows[0].lastName.value).equal('Armstrong');
+            should(rows[0].firstName.value).equal('Louis');
+            should(rows[0].dob.value).equal('1901-08-04');
+            should(rows[1].lastName.value).equal('Davis');
+            should(rows[1].firstName.value).equal('Miles');
+            should(rows[1].dob.value).equal('1926-05-26');
+          });
+    });
+    it('with SQL', function(){
+      return db.rows.query(`SELECT *
+            FROM opticUnitTest.musician AS ''
+            WHERE lastName IN ('Armstrong', 'Davis')
+            ORDER BY lastName;`,
+          {queryType:'sql'})
+          .then(function(response) {
+            const rows = response.rows;
+            should(rows.length).equal(2);
+            should(rows[0].lastName.value).equal('Armstrong');
+            should(rows[0].firstName.value).equal('Louis');
+            should(rows[0].dob.value).equal('1901-08-04');
+            should(rows[1].lastName.value).equal('Davis');
+            should(rows[1].firstName.value).equal('Miles');
+            should(rows[1].dob.value).equal('1926-05-26');
+          });
+    });
+    it('with SPARQL', function(){
+      return db.rows.query(`SELECT ?musician ?album
+            WHERE {?s </optic/test/albumName> ?album; </optic/test/musicianUri> ?musician . }
+            ORDER BY ?musician ?album`,
+          {queryType:'sparql'})
+          .then(function(response) {
+            const rows = response.rows;
+            should(rows.length).equal(8);
+            should(rows[0].musician.value).equal('/optic/test/musician1.json');
+            should(rows[0].album.value).equal('Hot Fives');
+            should(rows[1].musician.value).equal('/optic/test/musician1.json');
+            should(rows[1].album.value).equal('Porgy and Bess');
+            should(rows[2].musician.value).equal('/optic/test/musician2.json');
+            should(rows[2].album.value).equal('A Ballad For Many');
+            should(rows[3].musician.value).equal('/optic/test/musician2.json');
+            should(rows[3].album.value).equal('Four Thoughts on Marvin Gaye');
+            should(rows[4].musician.value).equal('/optic/test/musician3.json');
+            should(rows[4].album.value).equal('Crescent');
+            should(rows[5].musician.value).equal('/optic/test/musician3.json');
+            should(rows[5].album.value).equal('Impressions');
+            should(rows[6].musician.value).equal('/optic/test/musician4.json');
+            should(rows[6].album.value).equal('In a Silent Way');
+            should(rows[7].musician.value).equal('/optic/test/musician4.json');
+            should(rows[7].album.value).equal('Kind of Blue');
+          });
+    });
   });
 
   describe('from a TDE view', function(){
@@ -386,7 +450,7 @@ describe('rows', function(){
     it('a plan as JSON', function(){
       return db.rows.explain(planFromJSON, 'json')
         .then(function(response) {
-          //console.log(JSON.stringify(response, null, 2));
+//console.log(JSON.stringify(response, null, 2));
           valcheck.isObject(response).should.equal(true);
           valcheck.isArray(response).should.equal(false);
           response.should.have.property('node');
@@ -397,12 +461,55 @@ describe('rows', function(){
     it('a plan as XML', function(){
       return db.rows.explain(planFromJSON, 'xml')
         .then(function(response) {
-          //console.log(JSON.stringify(response, null, 2));
+//console.log(JSON.stringify(response, null, 2));
           valcheck.isString(response).should.equal(true);
           response.should.startWith('<plan:plan');
           })
     });
 
+    it('a Query DSL plan', function(){
+      return db.rows.explain(`op.fromView('opticUnitTest', 'musician')
+             .where(cts.andQuery([
+                  cts.jsonPropertyWordQuery('instrument', 'trumpet'),
+                  cts.jsonPropertyWordQuery('lastName', ['Armstrong', 'Davis'])
+                  ]))
+             .select(null, '')
+             .orderBy('lastName');`, 'json', 'dsl')
+          .then(function(response) {
+// console.log(JSON.stringify(response, null, 2));
+            valcheck.isObject(response).should.equal(true);
+            valcheck.isArray(response).should.equal(false);
+            response.should.have.property('node');
+            response.should.have.property('expr');
+          })
+    });
+
+    it('an SQL plan', function(){
+      return db.rows.explain(`SELECT *
+            FROM opticUnitTest.musician AS ''
+            WHERE lastName IN ('Armstrong', 'Davis')
+            ORDER BY lastName;`, 'json', 'sql')
+          .then(function(response) {
+// console.log(JSON.stringify(response, null, 2));
+            valcheck.isObject(response).should.equal(true);
+            valcheck.isArray(response).should.equal(false);
+            response.should.have.property('node');
+            response.should.have.property('expr');
+          })
+    });
+
+    it('a SPARQL plan', function(){
+      return db.rows.explain(`SELECT ?musician ?album
+            WHERE {?s </optic/test/albumName> ?album; </optic/test/musicianUri> ?musician . }
+            ORDER BY ?musician ?album`, 'json', 'sparql')
+          .then(function(response) {
+// console.log(JSON.stringify(response, null, 2));
+            valcheck.isObject(response).should.equal(true);
+            valcheck.isArray(response).should.equal(false);
+            response.should.have.property('node');
+            response.should.have.property('expr');
+          })
+    });
   });
 
 });
