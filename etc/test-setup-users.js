@@ -126,9 +126,7 @@ function setupUsers(manager, done) {
       body: {
         'role-name': 'test-User',
         description: 'test user to check the connection',
-        role: [
-          'test-User'
-        ],
+        role: [],
         privilege: []
       }
       }).result();
