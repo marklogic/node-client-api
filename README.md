@@ -14,6 +14,7 @@ from Node.js applications.
 *  Basic, digest, certificate, Kerberos, and SAML authentication
 *  Import libraries as JavaScript mjs modules
 *  Data Services First - MarkLogic's support for microservices
+*  Optic query DSL, document matching, relevance, multiple groups
 
 ## Getting Started
 
