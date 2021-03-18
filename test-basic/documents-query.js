@@ -21,6 +21,7 @@ var testconfig = require('../etc/test-config.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
+var ctsQb = marklogic.ctsQueryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
@@ -540,7 +541,6 @@ describe('document query', function(){
            "unauthorized users should not be able to read files.");
        })
       .on('error', error => {
-	       console.log(error); 
        flag = true;
        })
       .on('end', () => {
@@ -922,6 +922,25 @@ describe('document query', function(){
         done();
         })
       .catch(done);
+    });
+  });
+  describe('for a cts query', function() {
+    it('should match a directory query', function(done){
+      db.documents.query(
+          q.where(
+              ctsQb.cts.directoryQuery('/test/query/matchDir/')
+          )
+      )
+          .result(function(response) {
+            response.length.should.equal(1);
+            var document = response[0];
+            document.should.be.ok;
+            document.uri.should.equal('/test/query/matchDir/doc1.json');
+            document.should.have.property('content');
+            document.content.id.should.equal('matchDoc1');
+            done();
+          })
+          .catch(done);
     });
   });
 });
