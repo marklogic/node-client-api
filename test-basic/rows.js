@@ -31,6 +31,7 @@ const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 //db.setLogger('debug');
 
 const p = marklogic.planBuilder;
+const assert = require('assert');
 
 describe('rows', function(){
 
@@ -455,7 +456,7 @@ describe('rows', function(){
           valcheck.isArray(response).should.equal(false);
           response.should.have.property('node');
           response.should.have.property('expr');
-          })
+          });
     });
 
     it('a plan as XML', function(){
@@ -464,7 +465,7 @@ describe('rows', function(){
 //console.log(JSON.stringify(response, null, 2));
           valcheck.isString(response).should.equal(true);
           response.should.startWith('<plan:plan');
-          })
+          });
     });
 
     it('a Query DSL plan', function(){
@@ -481,7 +482,7 @@ describe('rows', function(){
             valcheck.isArray(response).should.equal(false);
             response.should.have.property('node');
             response.should.have.property('expr');
-          })
+          });
     });
 
     it('an SQL plan', function(){
@@ -495,7 +496,7 @@ describe('rows', function(){
             valcheck.isArray(response).should.equal(false);
             response.should.have.property('node');
             response.should.have.property('expr');
-          })
+          });
     });
 
     it('a SPARQL plan', function(){
@@ -508,8 +509,14 @@ describe('rows', function(){
             valcheck.isArray(response).should.equal(false);
             response.should.have.property('node');
             response.should.have.property('expr');
-          })
+          });
     });
-  });
 
+      it('should throw error with streamType as chunked and complexValue as reference', function(done){
+          assert.throws(function () { db.rows.queryAsStream(planFromJSON, 'chunked', {format: 'csv',
+              complexValues: 'reference'});
+          }, Error, 'complexValue cannot be reference when streamType is chunked');
+          done();
+      });
+  });
 });
