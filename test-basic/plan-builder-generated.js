@@ -1287,6 +1287,13 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('sem.defaultGraphIri#0', function(done) {
+        testPlan(undefined, p.sem.defaultGraphIri())
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('http://marklogic.com/semantics#default-graph');
+            done();
+        }).catch(done);
+    }); 
     it('sem.if#3', function(done) {
         testPlan([p.xs.boolean(true), p.xs.string("a"), p.xs.string("b")], p.sem.if(p.col("1"), p.col("2"), p.col("3")))
           .then(function(response) { 
