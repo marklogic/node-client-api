@@ -59,7 +59,7 @@
     "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "read": "^1.0.7",
-    "sanitize-html": "^1.22.0",
+    "sanitize-html": "^2.3.2",
     "should": "^13.2.3",
     "winston": "^3.2.1"
   },
