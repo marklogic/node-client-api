@@ -81,6 +81,18 @@ function setupUsers(manager, done) {
       }).result();
   }).
   then(function(response) {
+    return manager.get({
+      endpoint: '/manage/v2/roles',
+      body: {
+        'role-name': 'rest-writer',
+        description: 'REST writer who can eval, invoke, or set a dynamic databases',
+        role: [
+            'rest-evaluator'
+        ]
+      }
+    }).result();
+  }).
+  then(function(response) {
     if (response.statusCode < 400) {
       return this;
     }
