@@ -81,18 +81,6 @@ function setupUsers(manager, done) {
       }).result();
   }).
   then(function(response) {
-    return manager.get({
-      endpoint: '/manage/v2/roles',
-      body: {
-        'role-name': 'rest-writer',
-        description: 'REST writer who can eval, invoke, or set a dynamic databases',
-        role: [
-            'rest-evaluator'
-        ]
-      }
-    }).result();
-  }).
-  then(function(response) {
     if (response.statusCode < 400) {
       return this;
     }
@@ -161,14 +149,14 @@ function setupUsers(manager, done) {
       };
     userName = testconfig.restReaderConnection.user;
     requiredUsers[userName]  = {
-      role:        'rest-reader',
+      role:        ['rest-reader','rest-evaluator'],
       'user-name': userName,
       description: 'rest-reader user',
       password:    testconfig.restReaderConnection.password
       };
     userName = testconfig.restWriterConnection.user;
     requiredUsers[userName]  = {
-      role:        'rest-writer',
+      role:        ['rest-writer','rest-evaluator'],
       'user-name': userName,
       description: 'rest-writer user',
       password:    testconfig.restWriterConnection.password
