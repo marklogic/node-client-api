@@ -149,7 +149,7 @@ function setupUsers(manager, done) {
       };
     userName = testconfig.restReaderConnection.user;
     requiredUsers[userName]  = {
-      role:        ['rest-reader','rest-evaluator'],
+      role:        'rest-reader',
       'user-name': userName,
       description: 'rest-reader user',
       password:    testconfig.restReaderConnection.password
