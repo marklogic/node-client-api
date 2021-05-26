@@ -29,7 +29,7 @@ describe('Service caller', function() {
         const serviceCaller = dbWriter.serviceCaller(serviceDeclaration, [endpointDeclaration]);
         const params = {param1:true, param2: '1.2', param3: [1.2, 3.4], param4:[5, 6] };
 
-        serviceCaller.call('initializer', params)
+        serviceCaller.call(endpointDeclaration.functionName, params)
             .then(output => {
                 expect(output).to.eql(true);
                 done();
@@ -47,7 +47,7 @@ describe('Service caller', function() {
         const serviceCaller = dbWriter.serviceCaller(serviceDeclaration, [endpointDeclaration]);
         const params = {param1:true, param2: '1.2', param3: [1.2, 3.4], param4:[5, 6] };
 
-        serviceCaller.call('initializer', params)
+        serviceCaller.call(endpointDeclaration.functionName, params)
             .then(output => {
                 expect(output).to.eql(true);
                 done();
@@ -67,7 +67,7 @@ describe('Service caller', function() {
         const serviceCaller = dbWriter.serviceCaller(serviceDeclaration, [endpointDeclaration]);
         const params = {param1:[{"root":{"child":"text1"}}, {"root":{"child":"text2"}}]};
 
-        serviceCaller.call('postOfMultipartForDocumentArray1', params)
+        serviceCaller.call(endpointDeclaration.functionName, params)
             .then(output => {
                 expect(output).to.eql(["text1", 1]);
                 done();
@@ -87,7 +87,7 @@ describe('Service caller', function() {
         const serviceCaller = dbWriter.serviceCaller(serviceDeclaration, [endpointDeclaration]);
         const params = {param1:[1.2, 3.4]};
 
-        serviceCaller.call('postOfUrlencodedForDocumentArray1', params)
+        serviceCaller.call(endpointDeclaration.functionName, params)
             .then(output => {
                 expect(output).to.eql(["text1", 1]);
                 done();
@@ -110,10 +110,10 @@ describe('Service caller', function() {
         const params1 = {param1:[1.2, 3.4]};
         const params2 = {param1:[{"root":{"child":"text1"}}, {"root":{"child":"text2"}}]};
 
-        serviceCaller.call('postOfMultipartForDocumentArray1', params1)
+        serviceCaller.call(endpointDeclaration1.functionName, params1)
             .then(output => {
                 expect(output).to.eql(["text1", 1]);
-                return serviceCaller.call('postOfMultipartForDocumentTextDocument1', params2);
+                return serviceCaller.call(endpointDeclaration2.functionName, params2);
             })
             .then(output => {
                 expect(output).to.eql('abc');
