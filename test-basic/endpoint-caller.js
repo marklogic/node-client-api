@@ -35,8 +35,7 @@ describe('Endpoint caller', function() {
                 done();
             })
             .catch(err => {
-                expect.fail(err.toString());
-                done();
+                done(err);
             });
     });
 
@@ -53,8 +52,7 @@ describe('Endpoint caller', function() {
                 done();
             })
             .catch(err => {
-                expect.fail(err.toString());
-                done();
+                done(err);
             });
     });
 
@@ -73,8 +71,7 @@ describe('Endpoint caller', function() {
                 done();
             })
             .catch(err => {
-                expect.fail(err.toString());
-                done();
+                done(err);
             });
     });
 
@@ -93,8 +90,7 @@ describe('Endpoint caller', function() {
                 done();
             })
             .catch(err => {
-                expect.fail(err.toString());
-                done();
+                done(err);
             });
     });
 });

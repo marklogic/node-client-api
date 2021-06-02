@@ -327,4 +327,17 @@ describe('processor', function() {
       );}, Error, 'schema cannot be null or empty');
       done();
   });
+    it('generateView with literals', function(done) {
+        generateView(
+            p.fromLiterals([
+                {id:1, val: 2},
+                {id:2, val: 4}
+            ]),
+            'opticUnitTest', 'musicianView'
+        ).then(function(output) {
+            should.exist(output);
+            done();
+        })
+            .catch(err => {console.log(err); done(err);});
+    });
 });
