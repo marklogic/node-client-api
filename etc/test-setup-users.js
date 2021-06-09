@@ -70,6 +70,16 @@ function setupUsers(manager, done) {
             'privilege-name': 'any-uri',
             action: 'http://marklogic.com/xdmp/privileges/any-uri',
             kind: 'execute'
+          },
+	  {
+            'privilege-name': 'xdmp-set-session-field',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-set-session-field',
+            kind: 'execute'
+          },
+	  {
+            'privilege-name': 'xdmp-get-session-field',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-get-session-field',
+            kind: 'execute'
           }
         ]
       }
