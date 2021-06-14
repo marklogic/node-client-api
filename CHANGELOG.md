@@ -1,0 +1,17 @@
+# CHANGELOG
+
+## 3.0.0
+#### New Functionality
+
+- [#543](https://github.com/marklogic/node-client-api/issues/543) - Node-client-api now prefers ipv4 over ipv6
+- [#562](https://github.com/marklogic/node-client-api/issues/562) - CtsQueryBuilder is available
+- [#565](https://github.com/marklogic/node-client-api/issues/565 ) - Node-client-api now uses Node - 14
+- [#567](https://github.com/marklogic/node-client-api/issues/567) - Dynamic interface to Data Service endpoints
+- [#569](https://github.com/marklogic/node-client-api/issues/569) - Optic enhancements in 10.0-7
+
+
+#### Improvements and Bug Fixes
+- [#485](https://github.com/marklogic/node-client-api/issues/485) - Throw error when complexValues is set with a chunked stream
+- [#559](https://github.com/marklogic/node-client-api/issues/559) - Throw error on requests with a released client
+- [#568](https://github.com/marklogic/node-client-api/issues/568) - RejectUnauthorized option ignored in webpacked typescript (impacts mlxprs extension in latest VSCode on Mac)
+- [#570](https://github.com/marklogic/node-client-api/issues/570) - (Documentation Fix) - Changed “testConnection” on DatabaseClient to “checkConnection”
