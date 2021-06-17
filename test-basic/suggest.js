@@ -77,7 +77,9 @@ describe('suggest', function() {
       list[2].should.equal('aSuggestC');
       done();
       })
-    .catch(done);
+    .catch(err => {
+          done(err);
+      });
   });
   it('should handle tagged criteria', function(done) {
     db.documents.suggest(
