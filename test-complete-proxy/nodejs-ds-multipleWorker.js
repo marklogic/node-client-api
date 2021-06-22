@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 MarkLogic Corporation
+ * Copyright 2014-2021 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ var marklogic = require('../');
 var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
-  
+  // Run tests from test-complete-proxy folder. Else adjust paths of worker's js files.
   describe('Multiple-Worker-Test', function(){
 	before(function(done) {
     // runs once before the first test in this block
@@ -44,7 +44,7 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 	var uris2 = ['Test1stream21', 'Test1stream22'];
 			
 	if (isMainThread) {
-		const workerOneInsert = new Worker('./test-complete-proxy/insertFromMultipleStreams.js', {workerData: {files: inputFiles1, uris:uris1}});
+		const workerOneInsert = new Worker('./insertFromMultipleStreams.js', {workerData: {files: inputFiles1, uris:uris1}});
 		workerOneInsert.on('done', (result) => {
 			//console.log('workerOneInsert message is ' + result );			
 	});
@@ -55,7 +55,7 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 		//else console.debug('workerOneInsert exits normally');
       });
 		
-	const workerTwoInsert = new Worker('./test-complete-proxy/insertFromMultipleStreams.js', {workerData: {files: inputFiles2, uris:uris2}});
+	const workerTwoInsert = new Worker('./insertFromMultipleStreams.js', {workerData: {files: inputFiles2, uris:uris2}});
 	workerTwoInsert.on('message', (result) => {
 		//console.log('workerTwoInsert message is ' + result );
 	});
@@ -100,7 +100,7 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 			var searchResults2 = [];
 			
 			if (isMainThread) {
-				const workerOneSearch = new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {search:'Bush'}});
+				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
 				workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
@@ -127,14 +127,14 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 			var searchResults2 = [];
 			
 			if (isMainThread) {
-				const workerOneSearch = new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {search:'Bush'}});
+				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
 				workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
 				expect(searchResults1[0]).to.have.members(["/Test1stream11.json", "/Test1stream21.json"]);
 				});
 				
-				const workerTwoSearch = new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {search:'Lisa'}});
+				const workerTwoSearch = new Worker('./searchMultiple.js', {workerData: {search:'Lisa'}});
 				workerTwoSearch.on('done', (result) => {
 				searchResults2.push(result);
 				//console.log('Results 2 from search is :', searchResults2);
@@ -156,14 +156,14 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 			var searchResults2 = [];
 			
 			if (isMainThread) {
-				const workerOneSearch = new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {search:'Bush'}});
+				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
 				workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
 				expect(searchResults1[0]).to.have.members(["/Test1stream11.json", "/Test1stream21.json"]);
 				});
 				
-				const workerTwoSearch = new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {search:'100'}});
+				const workerTwoSearch = new Worker('./searchMultiple.js', {workerData: {search:'100'}});
 				workerTwoSearch.on('done', (result) => {
 				searchResults2.push(result);
 				//console.log('Results 2 from search is :', searchResults2);
@@ -185,7 +185,7 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 			var searchResults2 = [];
 			
 			if (isMainThread) {
-				const workerOneSearch = new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {search:'Bush'}});
+				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
 				workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
@@ -193,7 +193,7 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 				});
 				
 				expect(
-				() => new Worker('./test-complete-proxy/searchMultiple.js', {workerData: {find:100}}).to.throw('null value not allowed for parameter'));
+				() => new Worker('./searchMultiple.js', {workerData: {find:100}}).to.throw('null value not allowed for parameter'));
 			done();
 		} 
 		}
