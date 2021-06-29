@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 MarkLogic Corporation
+ * Copyright (c) 2021 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ describe('Nodejs Optic generate views test', function(){
 		done();}, done );
   });
   
-  waitForViewCreate(1000);
+  waitForViewCreate(5000);
   
   it('TEST 1a - Verify InnerJoin keymatch view', function(done){
      const qv = pb.fromView('InnerJoin', 'keymatch');
@@ -163,7 +163,7 @@ describe('Nodejs Optic generate views test', function(){
 		done();}, done );
   });
   
-  waitForViewCreate(1000);
+  waitForViewCreate(5000);
   
   it('TEST 2a - Verify sparql groupmin view', function(done){
      const qv = pb.fromView('sparql', 'groupmin');
@@ -222,7 +222,7 @@ describe('Nodejs Optic generate views test', function(){
 		done();}, done );
   });
   
-  waitForViewCreate(1000);
+  waitForViewCreate(5000);
   
   it('TEST 3a - Verify sparql groupmin view', function(done){
      const qv = pb.fromView('lexicons', 'orderbyselect');
