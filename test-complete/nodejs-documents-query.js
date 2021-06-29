@@ -19,6 +19,7 @@ var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 var q = marklogic.queryBuilder;
+var ctsQueryBldr = marklogic.ctsQueryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
@@ -427,7 +428,20 @@ describe('Document query test', function(){
       }, done);
   });
 
-   it('should do false query', function(done){
+   it('ctsQueryBuilder one query', function(done){
+    db.documents.query(
+      q.where(
+        ctsQueryBldr.cts.andQuery(ctsQueryBldr.cts.wordQuery("groundbreaking"))
+      )).result(function(response) {
+		//console.log(JSON.stringify(response, null, 4));
+        response.length.should.equal(1);
+		response[0].content.id.should.equal('0013');
+		response[0].uri.should.equal('/test/query/matchDir/doc3.json');
+        done();
+      }, done);
+  });
+  
+  it('should do false query', function(done){
     db.documents.query(
       q.where(
         q.falseQuery()
