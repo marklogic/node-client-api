@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 MarkLogic Corporation
+ * Copyright (c) 2021 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ function waitForViewCreate(wTime)
    }).timeout(wTime + 120)
 }
 
-describe('Nodejs Optic generate views test', function(){
+describe('Nodejs Optic redaction tests', function(){
 	it('TEST 1 - join left outer with array of on', function(done){
 	  
       const plan1 =
