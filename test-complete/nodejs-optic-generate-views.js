@@ -107,7 +107,7 @@ describe('Nodejs Optic generate views test', function(){
 		done();}, done );
   });
   
-  waitForViewCreate(5000);
+  waitForViewCreate(10000);
   
   it('TEST 1a - Verify InnerJoin keymatch view', function(done){
      const qv = pb.fromView('InnerJoin', 'keymatch');
@@ -163,7 +163,7 @@ describe('Nodejs Optic generate views test', function(){
 		done();}, done );
   });
   
-  waitForViewCreate(5000);
+  waitForViewCreate(10000);
   
   it('TEST 2a - Verify sparql groupmin view', function(done){
      const qv = pb.fromView('sparql', 'groupmin');
@@ -222,7 +222,7 @@ describe('Nodejs Optic generate views test', function(){
 		done();}, done );
   });
   
-  waitForViewCreate(5000);
+  waitForViewCreate(10000);
   
   it('TEST 3a - Verify sparql groupmin view', function(done){
      const qv = pb.fromView('lexicons', 'orderbyselect');
