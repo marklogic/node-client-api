@@ -110,5 +110,36 @@ describe('Database connection negative test', function(){
       done();
     }
   });
+  
+  it('Verify release client error message', function(done){
+    try {
+		
+      var db = marklogic.createDatabaseClient({
+        host: 'localhost',
+        port: '8015',
+        user: 'admin',
+        password: 'admin',
+        authType: 'DIGEST'
+      });
+	  // Force connection to be released
+	  db.connectionParams = null
+	  db.documents.query(
+      q.where(
+          q.term('describe', q.termOptions('stemmed'))
+      )).result(function(response) {
+        done();
+      }, function(err) {
+	  console.log(JSON.stringify(response, null, 4));
+	  done();
+	  });
+      done();
+    } catch(error) {
+		
+      //console.log('### ' + error.message);
+	  error.message.should.equal('Connection has been closed.');
+      error.should.be.ok;
+      done();
+    }
+  });
 
 });
