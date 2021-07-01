@@ -50,6 +50,10 @@ function explainPlan(query, format) {
   const plan = JSON.stringify(query.export());
   return rowMgr.explain(plan, (format === void 0 || format === null) ? 'json' : format);
 }
+function generateViewPlan(query, schema, view, queryType) {
+    const plan = JSON.stringify(query.export());
+    return rowMgr.generateView(plan, schema, view, queryType);
+}
 function testPlan(values, expression) {
     return execPlan(makeTest(makeInput(values), expression));
 }
@@ -94,5 +98,6 @@ module.exports = {
     makeSelectCall:   makeSelectCall,
     makeSelectExport: makeSelectExport,
     makeTest:         makeTest,
-    testPlan:         testPlan
+    testPlan:         testPlan,
+    generateViewPlan: generateViewPlan
 };

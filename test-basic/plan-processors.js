@@ -24,6 +24,9 @@ const pbb = require('./plan-builder-base');
 const execPlan = pbb.execPlan;
 const explainPlan = pbb.explainPlan;
 const getResults = pbb.getResults;
+const  generateView = pbb.generateViewPlan;
+
+var assert = require('assert');
 
 describe('processor', function() {
   describe('prepare', function() {
@@ -314,4 +317,27 @@ describe('processor', function() {
       })
     .catch(done);
   });
+  it('generateView with empty schema', function(done) {
+      assert.throws(function () { generateView(
+          p.fromLiterals([
+              {id:1, val: 2},
+              {id:2, val: 4}
+          ]),
+          '', 'xml', ''
+      );}, Error, 'schema cannot be null or empty');
+      done();
+  });
+    it('generateView with literals', function(done) {
+        generateView(
+            p.fromLiterals([
+                {id:1, val: 2},
+                {id:2, val: 4}
+            ]),
+            'opticUnitTest', 'musicianView'
+        ).then(function(output) {
+            should.exist(output);
+            done();
+        })
+            .catch(err => {console.log(err); done(err);});
+    });
 });

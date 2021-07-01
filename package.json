@@ -3,7 +3,7 @@
   "name": "marklogic",
   "description": "The official MarkLogic Node.js client API.",
   "homepage": "http://github.com/marklogic/node-client-api",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "scripts": {
@@ -27,12 +27,12 @@
   ],
   "dependencies": {
     "concat-stream": "^2.0.0",
-    "deepcopy": "^2.0.0",
+    "deepcopy": "^2.1.0",
     "dicer": "^0.3.0",
-    "json-text-sequence": "^0.1.1",
+    "json-text-sequence": "^0.3.0",
     "multipart-stream": "^2.0.1",
-    "qs": "^6.9.1",
-    "through2": "^3.0.1",
+    "qs": "^6.10.1",
+    "through2": "^4.0.2",
     "www-authenticate": "^0.6.2"
   },
   "repository": {
@@ -40,31 +40,31 @@
     "url": "http://github.com/marklogic/node-client-api.git"
   },
   "engines": {
-    "node": ">=10.15.0"
+    "node": ">=14.0.0"
   },
   "devDependencies": {
-    "ajv": "^6.12.4",
-    "ast-types": "^0.13.2",
-    "astring": "^1.4.3",
-    "bunyan": "^1.8.12",
-    "chai": "^4.2.0",
+    "ajv": "^8.0.1",
+    "ast-types": "^0.14.2",
+    "astring": "^1.7.0",
+    "bunyan": "^1.8.15",
+    "chai": "^4.3.4",
     "core-util-is": "^1.0.2",
     "gulp": "^4.0.2",
-    "gulp-jsdoc3": "^1.0.1",
+    "gulp-jsdoc3": "^3.0.0",
     "gulp-jshint": "^2.1.0",
-    "gulp-mocha": "^6.0.0",
+    "gulp-mocha": "^8.0.0",
     "intercept-stdout": "^0.1.2",
-    "jsdoc": "^3.6.3",
-    "jshint": "^2.11.0",
-    "mocha": "^6.2.2",
-    "moment": "^2.24.0",
+    "jsdoc": "^3.6.6",
+    "jshint": "^2.12.0",
+    "mocha": "^8.3.0",
+    "moment": "^2.29.1",
     "read": "^1.0.7",
-    "sanitize-html": "^1.22.0",
+    "sanitize-html": "^2.3.3",
     "should": "^13.2.3",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "optionalDependencies": {
-    "kerberos": "^1.1.2",
-    "vinyl": "^2.2.0"
+    "kerberos": "^1.1.4",
+    "vinyl": "^2.2.1"
   }
 }

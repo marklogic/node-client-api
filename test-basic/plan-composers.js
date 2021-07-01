@@ -102,6 +102,66 @@ describe('composers', function() {
         })
       .catch(done);
     });
+    it('with exists join', function(done) {
+      execPlan(
+          p.fromLiterals([
+              {masterId:1, masterVal:'A'},
+              {masterId:2, masterVal:'B'},
+              {masterId:3, masterVal:'C'}
+              ])
+            .existsJoin(
+              p.fromLiterals([
+                {detailId:1, masterId:1, detailVal:'a'},
+                {detailId:2, masterId:1, detailVal:'b'},
+                {detailId:3, masterId:3, detailVal:'c'},
+                {detailId:4, masterId:4, detailVal:'d'}
+                ])
+              )
+            .orderBy('masterId')
+      )
+      .then(function(response) {
+        const output = getResults(response);
+          should(output.length).equal(2);
+          should(output[0].masterId.value).equal(1);
+          should(output[0].masterVal.value).equal('A');
+          should.not.exist(output[0].detailId);
+          should.not.exist(output[0].detailVal);
+          should(output[1].masterId.value).equal(3);
+          should(output[1].masterVal.value).equal('C');
+          should.not.exist(output[1].detailId);
+          should.not.exist(output[1].detailVal);
+          done();
+        })
+      .catch(done);
+    });
+    it('with not exists join', function(done) {
+      execPlan(
+          p.fromLiterals([
+              {masterId:1, masterVal:'A'},
+              {masterId:2, masterVal:'B'},
+              {masterId:3, masterVal:'C'}
+              ])
+            .notExistsJoin(
+              p.fromLiterals([
+                {detailId:1, masterIdRef:1, detailVal:'a'},
+                {detailId:2, masterIdRef:1, detailVal:'b'},
+                {detailId:3, masterIdRef:3, detailVal:'c'},
+                {detailId:4, masterIdRef:4, detailVal:'d'}
+                ]),
+              p.on('masterId', 'masterIdRef')
+              )
+      )
+      .then(function(response) {
+        const output = getResults(response);
+          should(output.length).equal(1);
+          should(output[0].masterId.value).equal(2);
+          should(output[0].masterVal.value).equal('B');
+          should.not.exist(output[0].detailId);
+          should.not.exist(output[0].detailVal);
+          done();
+        })
+      .catch(done);
+    });
     it('with key matches on inner join', function(done) {
       execPlan(
           p.fromLiterals([

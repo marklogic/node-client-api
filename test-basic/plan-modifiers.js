@@ -143,6 +143,43 @@ describe('modifier', function() {
         })
       .catch(done);
     });
+    it('with bind', function(done) {
+      execPlan(
+          p.fromLiterals([
+             {row:1, low:4, high:8},
+             {row:2, low:3, high:6},
+             {row:3, low:2, high:4}
+             ])
+           .bind([
+             p.as(p.col('added'), p.add(p.col('low'), p.col('high'))),
+             p.as('subtracted',   p.subtract(p.col('high'), p.col('low'))),
+             p.as('compared',     p.eq(p.col('low'), 3)),
+             p.as('concatted',    p.fn.concat(p.col('low'), p.col('high')))
+             ])
+      ).then(function(response) {
+            const output = getResults(response);
+            should(output.length).equal(3);
+            should(output[0].low.value).equal(4);
+            should(output[0].high.value).equal(8);
+            should(output[0].added.value).equal(12);
+            should(output[0].subtracted.value).equal(4);
+            should(output[0].compared.value).equal(false);
+            should(output[0].concatted.value).equal('48');
+            should(output[1].low.value).equal(3);
+            should(output[1].high.value).equal(6);
+            should(output[1].added.value).equal(9);
+            should(output[1].subtracted.value).equal(3);
+            should(output[1].compared.value).equal(true);
+            should(output[1].concatted.value).equal('36');
+            should(output[2].low.value).equal(2);
+            should(output[2].high.value).equal(4);
+            should(output[2].added.value).equal(6);
+            should(output[2].subtracted.value).equal(2);
+            should(output[2].compared.value).equal(false);
+            should(output[2].concatted.value).equal('24');
+            done();
+          }).catch(done);
+    });
     it('with bindAs', function(done) {
       execPlan(
           p.fromLiterals([

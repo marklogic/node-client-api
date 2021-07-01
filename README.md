@@ -15,6 +15,7 @@ from Node.js applications.
 *  Import libraries as JavaScript mjs modules
 *  Data Services First - MarkLogic's support for microservices
 *  Optic query DSL, document matching, relevance, multiple groups
+*  Generate query based views, redaction on rows
 
 ## Getting Started
 
