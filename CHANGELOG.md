@@ -6,7 +6,7 @@
 - [#543](https://github.com/marklogic/node-client-api/issues/543) - Node-client-api now prefers ipv4 over ipv6
 - [#562](https://github.com/marklogic/node-client-api/issues/562) - CtsQueryBuilder is available
 - [#567](https://github.com/marklogic/node-client-api/issues/567) - Dynamic interface to Data Service endpoints
-- [#569](https://github.com/marklogic/node-client-api/issues/569) - Optic enhancements in 10.0-7
+- [#569](https://github.com/marklogic/node-client-api/issues/569) - Optic enhancements in 10.0-7 - Server release 10.0-7 or above required
 
 
 #### Improvements and Bug Fixes
