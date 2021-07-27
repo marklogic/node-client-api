@@ -39,7 +39,7 @@ function writeBatch(writerId, nextDocument) {
         return;
     }
     var documentDescriptors = createDocumentDescriptors();
-    console.log('wrierId is '+writerId);
+    console.log('writerId is '+writerId);
     console.log('writing batch '+nextDocument+' to '+(nextDocument+10));
     var batch = documentDescriptors.slice(nextDocument, nextDocument +10);
     nextDocument = nextDocument+10;
