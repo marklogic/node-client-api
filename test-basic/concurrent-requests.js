@@ -14,48 +14,48 @@
  * limitations under the License.
  */
 
-var testconfig = require('../etc/test-config.js');
+const testconfig = require('../etc/test-config.js');
 
-var marklogic = require('../');
+const marklogic = require('../');
 
-var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('concurrent-requests test', function(){
 
 
     it('should write 1000 documents concurrently', function(done){
         for(var i=0; i<3; i++) {
-            writeBatch(i,0);
+            writeBatch(i,done);
         }
 
-        done();
     });
 });
 
-
-function writeBatch(writerId, nextDocument) {
+const documentDescriptors = createDocumentDescriptors();
+let nextDocument = 0;
+function writeBatch(writerId, done) {
     if(nextDocument>=1000) {
         console.log(writerId + ' is done');
-        return;
+        return done();
     }
-    var documentDescriptors = createDocumentDescriptors();
     console.log('writerId is '+writerId);
     console.log('writing batch '+nextDocument+' to '+(nextDocument+10));
-    var batch = documentDescriptors.slice(nextDocument, nextDocument +10);
+    const batch = documentDescriptors.slice(nextDocument, nextDocument +10);
     nextDocument = nextDocument+10;
 
-    dbWriter.documents.write(batch).result(writeBatch(writerId, nextDocument)).catch();
+    dbWriter.documents.write(batch).result((output) => writeBatch(writerId, done))
+        .catch((err) => console.log(err));
 
 }
 
 function createDocumentDescriptors() {
-    var documentDescriptors = [];
+    const documentDescriptors = [];
 
     for(var i=0; i<1000; i++) {
-        var temp = {
-            uri: '/test/concurrent/requests'+i+'.json',
+        const temp = {
+            uri: '/test/concurrent/requests/'+i+'.json',
             contentType: 'application/json',
-            content: new Buffer('{"key"'+i+':"value'+i+' 1"}')
+            content: {[ 'key'+i]: 'value'+i+' 1'}
         };
         documentDescriptors.push(temp);
     }
