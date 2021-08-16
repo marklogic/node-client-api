@@ -20,26 +20,21 @@ const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection)
 
 const Stream = require('stream');
 const readable = new Stream.Readable({objectMode: true});
-const writable = new Stream.Writable({objectMode: true});
+const batchSize = 10;
 
 describe('data-movement-requests test', function(){
 
     it('should write 1000 documents', function(done){
 
-        writable._write = (object, encoding, done) => {
-            done();
-        };
-
-        readable.pipe(writable);
-        createDocumentDescriptors();
-        readable.on('readable', function() {
-            writeDocs(readable.read(), done);
-        });
+        createInput();
+        for(var i=0; i<3; i++) {
+            writeDocs(i, done);
+        }
         done();
     });
 });
 
-function createDocumentDescriptors() {
+function createInput() {
 
     for(let i=0; i<1000; i++) {
         const temp = {
@@ -50,15 +45,25 @@ function createDocumentDescriptors() {
         readable.push(temp);
     }
     readable.push(null);
+
 }
 
-function writeDocs(record, done) {
-    if(record === null) {
-        return done();
+function writeDocs(writerId, done) {
+
+    const writeBatchArray = [];
+    for(let i=0; i<batchSize; i++) {
+        const record = readable.read();
+        if(record === null) {
+            if(writeBatchArray.length!==0) {
+                dbWriter.documents.write(writeBatchArray);
+            }
+            return;
+        }
+        writeBatchArray.push(record);
     }
 
-    dbWriter.documents.write(record).result((output) => writeDocs(readable.read(), done))
-        .catch((err) => console.log(err));
+    dbWriter.documents.write(writeBatchArray).result((output) => writeDocs(writerId, done))
+            .catch((err) => console.log(err));
 
 }
 
