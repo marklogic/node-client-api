@@ -54,10 +54,11 @@ function writeDocs(writerId, done) {
     for(let i=0; i<batchSize; i++) {
         const record = readable.read();
         if(record === null) {
-            if(writeBatchArray.length!==0) {
-                dbWriter.documents.write(writeBatchArray);
+            switch(writeBatchArray.length) {
+                case 0: {done(); break;}
+                case batchSize: {dbWriter.documents.write(writeBatchArray).result(writeDocs(writerId, done));break;}
+                default: {dbWriter.documents.write(writeBatchArray).result(done);break;}
             }
-            return;
         }
         writeBatchArray.push(record);
     }
