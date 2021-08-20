@@ -21,6 +21,7 @@ const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection)
 const Stream = require('stream');
 const readable = new Stream.Readable({objectMode: true});
 const batchSize = 10;
+let requesterCount = 0;
 
 describe('data-movement-requests test', function(){
 
@@ -28,6 +29,7 @@ describe('data-movement-requests test', function(){
 
         createInput();
         for(var i=0; i<3; i++) {
+            requesterCount++;
             writeDocs(i, done);
         }
     });
@@ -50,20 +52,29 @@ function createInput() {
 function writeDocs(writerId, done) {
 
     const writeBatchArray = [];
+    a:
     for(let i=0; i<batchSize; i++) {
         const record = readable.read();
         if(record === null) {
             switch(writeBatchArray.length) {
-                case 0: { done(); break;}
-                case batchSize: {dbWriter.documents.write(writeBatchArray,writeDocs(writerId, done));break;}
-                default: {dbWriter.documents.write(writeBatchArray,done);break;}
+                case 0: { finishWriter(writerId, done); break a;}
+                case batchSize: {dbWriter.documents.write(writeBatchArray,writeDocs(writerId, done));break a;}
+                default: {dbWriter.documents.write(writeBatchArray) .result((out) => finishWriter(writerId, done)) .catch((err) => done(err));break a;}
             }
         }
         writeBatchArray.push(record);
     }
 
-    dbWriter.documents.write(writeBatchArray).result((output) => writeDocs(writerId, done))
+    if(writeBatchArray.length !== 0) {
+        dbWriter.documents.write(writeBatchArray).result((output) => writeDocs(writerId, done))
             .catch((err) => console.log(err));
+    }
+}
 
+function finishWriter(writerId, done) {
+    requesterCount--;
+    if(requesterCount<1) {
+        done();
+    }
 }
 
