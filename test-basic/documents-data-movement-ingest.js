@@ -158,9 +158,76 @@ describe('data-movement-requests test', function(){
 
                 documents[0].uri.should.equal(temp.uri);
                 error.toString().length.should.greaterThan(0);
-                readDocs(0, done);
+                return null;
+
             })
         }));
+        setTimeout(()=>{
+                readDocs(0, done);
+            },
+            1000);
+    });
+
+    it('should writeAll with onBatchError sending a retry array', function(done){
+
+        readable = new Stream.Readable({objectMode: true});
+        const temp = {
+            uri: '/test/dataMovement/requests/1.json',
+            contentType: 'application/json',
+            content: 'invalid'
+        };
+        readable.push(temp);
+        readable.push(null);
+        readable.pipe(dbWriter.documents.writeAll({
+
+            onBatchError: ((progressSoFar, documents, error) => {
+                progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(0);
+                progressSoFar.docsFailedToBeWritten.should.be.greaterThanOrEqual(1);
+                progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
+
+                documents[0].uri.should.equal(temp.uri);
+                error.toString().length.should.greaterThan(0);
+                documents[0].content = {'key 1':'value 1'};
+                return documents;
+            })
+        }));
+        setTimeout(()=>{
+                readDocs(1, done);
+            },
+            1000);
+    });
+
+    it('should stop processing when onBatchError throws an error', function(done){
+
+        readable = new Stream.Readable({objectMode: true});
+
+        const temp = {
+            uri: '/test/dataMovement/requests/1.json',
+            contentType: 'application/json',
+            content: 'invalid'
+        };
+        readable.push(temp);
+        readable.push(null);
+        const writable = dbWriter.documents.writeAll({
+
+            onBatchError: ((progressSoFar, documents, error) => {
+                progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(0);
+                progressSoFar.docsFailedToBeWritten.should.be.greaterThanOrEqual(1);
+                progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
+
+                documents[0].uri.should.equal(temp.uri);
+                error.toString().length.should.greaterThan(0);
+                throw new Error('Processing stopped');
+            })
+        });
+        writable.on('error', (err) => {
+            err.message.should.be.equal('Processing stopped');
+        });
+        readable.pipe(writable);
+        setTimeout(()=>{
+                readDocs(0, done);
+            },
+            1000);
     });
 
     it('should writeAll documents with defaultMetadata', function(done){
