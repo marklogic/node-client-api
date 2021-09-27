@@ -55,7 +55,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll  documents with onCompletion option',  function (done){
@@ -89,7 +89,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll documents with batchSize', function(done){
@@ -104,7 +104,7 @@ describe('data-movement-requests test', function(){
             count.should.equal(2);
                 readDocs(1000, done);
             },
-            600);
+            5000);
     });
 
     it('should writeAll documents with concurrentRequests', function(done){
@@ -114,7 +114,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            1000);
+            5000);
     });
 
     it('should throw error with invalid concurrentRequests:multipleOf', function(done){
@@ -165,7 +165,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(0, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll with onBatchError sending a retry array', function(done){
@@ -194,7 +194,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1, done);
             },
-            1000);
+            5000);
     });
 
     it('should stop processing when onBatchError throws an error', function(done){
@@ -227,7 +227,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(0, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll documents with defaultMetadata', function(done){
@@ -262,19 +262,31 @@ describe('data-movement-requests test', function(){
         setTimeout(() => {
                 readDocsWithMetadata(defaultMetadataUris,done);
             },
-            500);
+            5000);
     });
 
     it('should writeAll documents with transform', function(done){
+        let transformUris = [];
+        readable = new Stream.Readable({objectMode: true});
+        for(let i=0; i<200; i++) {
+            const temp = {
+                uri: '/test/dataMovement/requests/'+i+'.json',
+                contentType: 'application/json',
+                content: {['key '+i]:'value '+i}
+            };
+            readable.push(temp);
+            transformUris.push(temp.uri);
+        }
+        readable.push(null);
         let xqyTransformName = 'flagParam';
-            readable.pipe(dbWriter.documents.writeAll({
-                transform: [xqyTransformName, {flag:'tested1'}]
-            }));
+        readable.pipe(dbWriter.documents.writeAll({
+            transform: [xqyTransformName, {flag:'tested1'}]
+        }));
 
         setTimeout(()=>{
                 readDocsWithTransform(done);
             },
-            1000);
+            5000);
     });
 });
 
@@ -323,7 +335,7 @@ function readDocsWithTransform(done){
 
     dbReader.documents.read(uris)
         .result(function (documents) {
-            documents.length.should.equal(1000);
+            documents.length.should.equal(200);
             for(let i=0; i<documents.length; i++){
                 documents[i].content.flagParam.should.equal('tested1');
             }
