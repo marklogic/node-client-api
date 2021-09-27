@@ -38,10 +38,14 @@ describe('data-movement-requests test', function(){
             uris.push(temp.uri);
         }
         readable.push(null);
-        setTimeout(()=>{done();}, 1000);
+        dbWriter.documents.remove(uris)
+            .result(function() {
+                done();
+            })
+            .catch(done);
     });
 
-    afterEach(function(done){
+    after(function(done){
         dbWriter.documents.remove(uris)
             .result(function() {
                 done();
