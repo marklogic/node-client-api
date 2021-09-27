@@ -440,16 +440,14 @@ describe('Nodejs Optic redaction tests', function(){
 
     db.rows.query(qredact)
       .then(function(res) {
-	  console.log(JSON.stringify(res, null, 2));
-      /*expect(output.length).to.equal(1);
-      expect(output[0].value.colorId).to.equal(1);
-      expect(output[0].value.desc).to.equal('Football');
-      expect(output[0].value.colorDesc).to.equal('RED');*/
+//	  console.log(JSON.stringify(res, null, 2));
+      expect(res.rows.length).to.equal(1);
+      expect(res.rows[0].colorId.value).to.equal(1);
+      expect(res.rows[0].desc.value).to.equal('Football');
+      expect(res.rows[0].colorDesc.value).to.equal('RED');
       done();
-    }, function(error) {
-		//console.log(JSON.stringify(error, null, 2)); 
-		//expect(error.body.errorResponse.message).to.contain("Invalid arguments: duplicate column definition for op.as(): DetailSum");	     
-		done();});
+    },
+		done);
   });
   
   
