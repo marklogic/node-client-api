@@ -288,7 +288,7 @@ describe('data-movement-requests test', function(){
         }));
 
         setTimeout(()=>{
-                readDocsWithTransform(done);
+                readDocsWithTransform(transformUris, done);
             },
             5000);
     });
@@ -335,9 +335,9 @@ function readDocsWithMetadata(defaultMetadataUris,done){
         .catch(err=> done(err));
 }
 
-function readDocsWithTransform(done){
+function readDocsWithTransform(transformUris, done){
 
-    dbReader.documents.read(uris)
+    dbReader.documents.read(transformUris)
         .result(function (documents) {
             documents.length.should.equal(200);
             for(let i=0; i<documents.length; i++){
