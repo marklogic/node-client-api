@@ -233,10 +233,9 @@ describe('Nodejs Optic from triples test', function(){
       //console.log(str);
       //console.log(count);
       // Explore usage of chai-like to compare JSON objects.
-	  expect(str).to.contain('{"columns":[{"name":"team_name","type":"xs:string"},{"name":"AverageAge","type":"xs:decimal"}]}');
       expect(str).to.contain('{"team_name":"Athletics","AverageAge":19}');
 	  expect(str).to.contain('{"team_name":"Padres","AverageAge":28.5}');
-	  expect(str).to.contain('{"team_name":"Mariners","AverageAge":');
+	  expect(str).to.contain('{"team_name":"Mariners","AverageAge":28.555555555555557');
 	  expect(str).to.contain('{"team_name":"Giants","AverageAge":29}');
 	  
 	  expect(count).to.equal(5);
