@@ -55,7 +55,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll  documents with onCompletion option',  function (done){
@@ -89,7 +89,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll documents with batchSize', function(done){
@@ -104,7 +104,7 @@ describe('data-movement-requests test', function(){
             count.should.equal(2);
                 readDocs(1000, done);
             },
-            600);
+            5000);
     });
 
     it('should writeAll documents with concurrentRequests', function(done){
@@ -114,7 +114,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            1000);
+            5000);
     });
 
     it('should throw error with invalid concurrentRequests:multipleOf', function(done){
@@ -165,7 +165,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(0, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll with onBatchError sending a retry array', function(done){
@@ -194,7 +194,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1, done);
             },
-            1000);
+            5000);
     });
 
     it('should stop processing when onBatchError throws an error', function(done){
@@ -227,7 +227,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(0, done);
             },
-            1000);
+            5000);
     });
 
     it('should writeAll documents with defaultMetadata', function(done){
@@ -262,7 +262,7 @@ describe('data-movement-requests test', function(){
         setTimeout(() => {
                 readDocsWithMetadata(defaultMetadataUris,done);
             },
-            500);
+            5000);
     });
 
     it('should writeAll documents with transform', function(done){
@@ -274,7 +274,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocsWithTransform(done);
             },
-            1000);
+            5000);
     });
 });
 
