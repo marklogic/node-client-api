@@ -267,14 +267,14 @@ describe('data-movement-requests test', function(){
 
     it('should writeAll documents with transform', function(done){
         let xqyTransformName = 'flagParam';
-            readable.pipe(dbWriter.documents.writeAll({
-                transform: [xqyTransformName, {flag:'tested1'}]
-            }));
+        readable.pipe(dbWriter.documents.writeAll({
+            transform: [xqyTransformName, {flag:'tested1'}]
+        }));
 
         setTimeout(()=>{
                 readDocsWithTransform(done);
             },
-            5000);
+            15000);
     });
 });
 
