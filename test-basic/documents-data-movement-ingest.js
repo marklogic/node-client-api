@@ -17,7 +17,6 @@
 const testconfig = require('../etc/test-config.js');
 const marklogic = require('../');
 const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-const dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
 const Stream = require('stream');
 let readable = new Stream.Readable({objectMode: true});
@@ -38,19 +37,9 @@ describe('data-movement-requests test', function(){
             uris.push(temp.uri);
         }
         readable.push(null);
-        dbWriter.documents.remove(uris)
-            .result(function() {
-                done();
-            })
-            .catch(done);
-    });
-
-    after(function(done){
-        dbWriter.documents.remove(uris)
-            .result(function() {
-                done();
-            })
-            .catch(done);
+        setTimeout(()=>{done();
+            },
+            2000);
     });
 
     it('should writeAll  documents with empty options',  done => {
@@ -59,7 +48,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            5000);
+            3000);
     });
 
     it('should writeAll  documents with onCompletion option',  function (done){
@@ -93,7 +82,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            5000);
+            3000);
     });
 
     it('should writeAll documents with batchSize', function(done){
@@ -108,7 +97,7 @@ describe('data-movement-requests test', function(){
             count.should.equal(2);
                 readDocs(1000, done);
             },
-            5000);
+            3000);
     });
 
     it('should writeAll documents with concurrentRequests', function(done){
@@ -118,7 +107,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            5000);
+            3000);
     });
 
     it('should throw error with invalid concurrentRequests:multipleOf', function(done){
@@ -169,11 +158,12 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(0, done);
             },
-            5000);
+            3000);
     });
 
     it('should writeAll with onBatchError sending a retry array', function(done){
 
+        let retry =0;
         readable = new Stream.Readable({objectMode: true});
         const temp = {
             uri: '/test/dataMovement/requests/1.json',
@@ -192,13 +182,17 @@ describe('data-movement-requests test', function(){
                 documents[0].uri.should.equal(temp.uri);
                 error.toString().length.should.greaterThan(0);
                 documents[0].content = {'key 1':'value 1'};
+                retry++;
                 return documents;
+
             })
         }));
         setTimeout(()=>{
+            if(retry === 1) {
                 readDocs(1, done);
+            }
             },
-            5000);
+            3000);
     });
 
     it('should stop processing when onBatchError throws an error', function(done){
@@ -231,7 +225,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(0, done);
             },
-            5000);
+            3000);
     });
 
     it('should writeAll documents with defaultMetadata', function(done){
@@ -266,7 +260,7 @@ describe('data-movement-requests test', function(){
         setTimeout(() => {
                 readDocsWithMetadata(defaultMetadataUris,done);
             },
-            5000);
+            3000);
     });
 
     it('should writeAll documents with transform', function(done){
@@ -290,21 +284,25 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocsWithTransform(transformUris, done);
             },
-            5000);
+            3000);
     });
 });
 
 function readDocs(val,done){
-    dbReader.documents.read(uris)
+    dbWriter.documents.read(uris)
         .result(function (documents) {
             documents.length.should.equal(val);
-            done();
         })
+        .then(dbWriter.documents.remove(uris)
+            .result(function(response){
+            done();
+        }))
+        .catch(done)
         .catch(err=> done(err));
 }
 
 function readDocsWithMetadata(defaultMetadataUris,done){
-    dbReader.documents.read({uris:defaultMetadataUris, categories:['metadata']})
+    dbWriter.documents.read({uris:defaultMetadataUris, categories:['metadata']})
         .result(function (documents) {
             documents.length.should.equal(400);
             for(let i=0; i<documents.length; i++) {
@@ -330,20 +328,28 @@ function readDocsWithMetadata(defaultMetadataUris,done){
                 });
                 document.quality.should.equal(1);
             }
-            done();
         })
+        .then(dbWriter.documents.remove(defaultMetadataUris)
+            .result(function(response){
+            done();
+        }))
+        .catch(done)
         .catch(err=> done(err));
 }
 
 function readDocsWithTransform(transformUris, done){
 
-    dbReader.documents.read(transformUris)
+    dbWriter.documents.read(transformUris)
         .result(function (documents) {
             documents.length.should.equal(200);
             for(let i=0; i<documents.length; i++){
                 documents[i].content.flagParam.should.equal('tested1');
             }
-            done();
         })
+        .then(dbWriter.documents.remove(transformUris)
+            .result(function(response){
+            done();
+        }))
+        .catch(done)
         .catch(err=> done(err));
 }
