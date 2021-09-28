@@ -20,13 +20,14 @@ const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection)
 
 const Stream = require('stream');
 let readable = new Stream.Readable({objectMode: true});
-const uris = [];
+let uris = [];
 let should = require('should');
 
 describe('data-movement-requests test', function(){
 
     beforeEach(function (done) {
         readable = new Stream.Readable({objectMode: true});
+        uris = [];
         for(let i=0; i<1000; i++) {
             const temp = {
                 uri: '/test/dataMovement/requests/'+i+'.json',
