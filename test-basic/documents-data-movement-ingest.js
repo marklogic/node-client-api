@@ -37,10 +37,17 @@ describe('data-movement-requests test', function(){
             uris.push(temp.uri);
         }
         readable.push(null);
-        setTimeout(()=>{done();
-            },
-            2000);
+        setTimeout(()=>{done();}, 3000);
     });
+
+    afterEach((function(done){
+        dbWriter.documents.remove(uris)
+            .result(function(response){
+                done();
+            })
+            .catch(err=> done(err))
+            .catch(done);
+    }));
 
     it('should writeAll  documents with empty options',  done => {
         readable.pipe(dbWriter.documents.writeAll());
@@ -48,7 +55,7 @@ describe('data-movement-requests test', function(){
         setTimeout(()=>{
                 readDocs(1000, done);
             },
-            3000);
+            4000);
     });
 
     it('should writeAll  documents with onCompletion option',  function (done){
@@ -77,12 +84,11 @@ describe('data-movement-requests test', function(){
                 } catch(err){
                     done(err);
                 }
+            }),
+            onCompletion: ((summary) => {
+                readDocs(1000, done);
             })
         }));
-        setTimeout(()=>{
-                readDocs(1000, done);
-            },
-            3000);
     });
 
     it('should writeAll documents with batchSize', function(done){
@@ -91,23 +97,21 @@ describe('data-movement-requests test', function(){
             batchSize:500,
             onBatchSuccess: ((progressSoFar, documents) => {
                 count++;
+            }),
+            onCompletion: ((summary) => {
+                count.should.equal(2);
+                readDocs(1000, done);
             })
         }));
-        setTimeout(()=>{
-            count.should.equal(2);
-                readDocs(1000, done);
-            },
-            3000);
     });
 
     it('should writeAll documents with concurrentRequests', function(done){
         readable.pipe(dbWriter.documents.writeAll({
-            concurrentRequests : {multipleOf:'hosts', multiplier:4}
-        }));
-        setTimeout(()=>{
+            concurrentRequests : {multipleOf:'hosts', multiplier:4},
+            onCompletion: ((summary) => {
                 readDocs(1000, done);
-            },
-            3000);
+            })
+        }));
     });
 
     it('should throw error with invalid concurrentRequests:multipleOf', function(done){
@@ -153,17 +157,15 @@ describe('data-movement-requests test', function(){
                 error.toString().length.should.greaterThan(0);
                 return null;
 
+            }),
+            onCompletion: ((summary) => {
+                readDocs(0, done);
             })
         }));
-        setTimeout(()=>{
-                readDocs(0, done);
-            },
-            3000);
     });
 
     it('should writeAll with onBatchError sending a retry array', function(done){
 
-        let retry =0;
         readable = new Stream.Readable({objectMode: true});
         const temp = {
             uri: '/test/dataMovement/requests/1.json',
@@ -181,18 +183,13 @@ describe('data-movement-requests test', function(){
 
                 documents[0].uri.should.equal(temp.uri);
                 error.toString().length.should.greaterThan(0);
-                documents[0].content = {'key 1':'value 1'};
-                retry++;
+                documents[0].content = {'key 2':'value 2'};
                 return documents;
-
+            }),
+            onCompletion: ((progressSoFar, documents) => {
+                readDocs(1, done);
             })
         }));
-        setTimeout(()=>{
-            if(retry === 1) {
-                readDocs(1, done);
-            }
-            },
-            3000);
     });
 
     it('should stop processing when onBatchError throws an error', function(done){
@@ -216,16 +213,15 @@ describe('data-movement-requests test', function(){
                 documents[0].uri.should.equal(temp.uri);
                 error.toString().length.should.greaterThan(0);
                 throw new Error('Processing stopped');
+            }),
+            onCompletion: ((summary) => {
+                readDocs(0, done);
             })
         });
         writable.on('error', (err) => {
             err.message.should.be.equal('Processing stopped');
         });
         readable.pipe(writable);
-        setTimeout(()=>{
-                readDocs(0, done);
-            },
-            3000);
     });
 
     it('should writeAll documents with defaultMetadata', function(done){
@@ -255,36 +251,21 @@ describe('data-movement-requests test', function(){
                     {'role-name': 'app-builder', capabilities: ['read', 'update']}
                 ],
                 quality: 1
-            }
-        }));
-        setTimeout(() => {
-                readDocsWithMetadata(defaultMetadataUris,done);
             },
-            3000);
+            onCompletion: ((summary) => {
+                readDocsWithMetadata(defaultMetadataUris, done);
+            })
+        }));
     });
 
     it('should writeAll documents with transform', function(done){
-        let transformUris = [];
-        readable = new Stream.Readable({objectMode: true});
-        for(let i=0; i<200; i++) {
-            const temp = {
-                uri: '/test/dataMovement/requests/'+i+'.json',
-                contentType: 'application/json',
-                content: {['key '+i]:'value '+i}
-            };
-            readable.push(temp);
-            transformUris.push(temp.uri);
-        }
-        readable.push(null);
         let xqyTransformName = 'flagParam';
-        readable.pipe(dbWriter.documents.writeAll({
-            transform: [xqyTransformName, {flag:'tested1'}]
-        }));
-
-        setTimeout(()=>{
-                readDocsWithTransform(transformUris, done);
-            },
-            3000);
+            readable.pipe(dbWriter.documents.writeAll({
+                transform: [xqyTransformName, {flag:'tested1'}],
+                onCompletion: ((summary) => {
+                    readDocsWithTransform(done);
+                })
+            }));
     });
 });
 
@@ -292,11 +273,8 @@ function readDocs(val,done){
     dbWriter.documents.read(uris)
         .result(function (documents) {
             documents.length.should.equal(val);
-        })
-        .then(dbWriter.documents.remove(uris)
-            .result(function(response){
             done();
-        }))
+        })
         .catch(done)
         .catch(err=> done(err));
 }
@@ -328,28 +306,22 @@ function readDocsWithMetadata(defaultMetadataUris,done){
                 });
                 document.quality.should.equal(1);
             }
-        })
-        .then(dbWriter.documents.remove(defaultMetadataUris)
-            .result(function(response){
             done();
-        }))
+        })
         .catch(done)
         .catch(err=> done(err));
 }
 
-function readDocsWithTransform(transformUris, done){
+function readDocsWithTransform(done){
 
-    dbWriter.documents.read(transformUris)
+    dbWriter.documents.read(uris)
         .result(function (documents) {
-            documents.length.should.equal(200);
+            documents.length.should.equal(1000);
             for(let i=0; i<documents.length; i++){
                 documents[i].content.flagParam.should.equal('tested1');
             }
-        })
-        .then(dbWriter.documents.remove(transformUris)
-            .result(function(response){
             done();
-        }))
+        })
         .catch(done)
         .catch(err=> done(err));
 }
