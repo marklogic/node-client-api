@@ -32,7 +32,7 @@ describe('data-movement-requests test', function(){
             const temp = {
                 uri: '/test/dataMovement/requests/'+i+'.json',
                 contentType: 'application/json',
-                content: {['key '+i]:'value '+i}
+                content: {['key'+i]:'value '+i}
             };
             readable.push(temp);
             uris.push(temp.uri);
