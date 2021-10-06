@@ -17,11 +17,13 @@
 const testconfig = require('../etc/test-config.js');
 const marklogic = require('../');
 const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+const restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 const Stream = require('stream');
 let readable = new Stream.Readable({objectMode: true});
 let uris = [];
 let should = require('should');
+let fs = require('fs');
 
 describe('data-movement-requests test', function(){
 
@@ -261,12 +263,17 @@ describe('data-movement-requests test', function(){
 
     it('should writeAll documents with transform', function(done){
         let xqyTransformName = 'flagParam';
-            readable.pipe(dbWriter.documents.writeAll({
-                transform: [xqyTransformName, {flag:'tested1'}],
-                onCompletion: ((summary) => {
-                    readDocsWithTransform(done);
-                })
-            }));
+        let xqyTransformPath = './test-basic/data/flagTransform.xqy';
+        restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
+            .result(function(response){
+                readable.pipe(dbWriter.documents.writeAll({
+                    transform: [xqyTransformName, {flag:'tested1'}],
+                    onCompletion: ((summary) => {
+                        readDocsWithTransform(done);
+                    })
+                }));
+            })
+            .catch(err=> done(err));
     });
 });
 

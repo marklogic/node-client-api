@@ -35,7 +35,7 @@ describe('search', function() {
         should(output.length).equal(2);
         should(output[0].score.value).greaterThan(0);
         should(output[1].score.value).greaterThan(0);
-        should(output[0].score.value).greaterThan(output[1].score.value);
+        should(output[0].score.value).greaterThanOrEqual(output[1].score.value);
         done();
       }).catch(done);
     });
@@ -48,7 +48,7 @@ describe('search', function() {
         should(output.length).equal(2);
         should(output[0].score.value).greaterThan(0);
         should(output[1].score.value).greaterThan(0);
-        should(output[0].score.value).greaterThan(output[1].score.value);
+        should(output[0].score.value).greaterThanOrEqual(output[1].score.value);
         done();
       }).catch(done);
     });
@@ -77,7 +77,7 @@ describe('search', function() {
         should(output.length).equal(2);
         should(output[0]['relevance.score'].value).greaterThan(0);
         should(output[1]['relevance.score'].value).greaterThan(0);
-        should(output[0]['relevance.score'].value).greaterThan(output[1]['relevance.score'].value);
+        should(output[0]['relevance.score'].value).greaterThanOrEqual(output[1]['relevance.score'].value);
         done();
       }).catch(done);
     });
@@ -143,7 +143,7 @@ describe('search', function() {
         should(output[1].uri.value).match(/^\/optic\/test\/musician[0-9]\.json$/);
         should(output[1].doc.type).equal('object');
         should(output[1].doc.value.musician.instrument[0]).equal('trumpet');
-        should(output[0].score.value).greaterThan(output[1].score.value);
+        should(output[0].score.value).greaterThanOrEqual(output[1].score.value);
         done();
       }).catch(done);
     });
@@ -164,7 +164,7 @@ describe('search', function() {
         should(output[1]['relevance.uri'].value).match(/^\/optic\/test\/musician[0-9]\.json$/);
         should(output[1]['relevance.doc'].type).equal('object');
         should(output[1]['relevance.doc'].value.musician.instrument[0]).equal('trumpet');
-        should(output[0]['relevance.score'].value).greaterThan(output[1]['relevance.score'].value);
+        should(output[0]['relevance.score'].value).greaterThanOrEqual(output[1]['relevance.score'].value);
         done();
       }).catch(done);
     });
