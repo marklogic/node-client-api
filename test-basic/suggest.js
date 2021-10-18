@@ -59,7 +59,7 @@ describe('suggest', function() {
     .catch(done);
   });
   it('should handle default criteria', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     db.documents.suggest(
         'aSuggest',
         q.where(
@@ -77,6 +77,7 @@ describe('suggest', function() {
       list[2].should.equal('aSuggestC');
       done();
       })
+    .catch(done)
     .catch(err => {
           done(err);
       });
