@@ -19,8 +19,14 @@ var fs = require('fs');
 var testconfig = require('../etc/test-config.js');
 var expect = require('chai').expect;
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+let gulpConfig = require('../gulpfile.js');
 
 describe('Service caller', function() {
+
+    before(function(done){
+        gulpConfig.loadProxyTests();
+        setTimeout(()=>{done();}, 5000);
+    });
 
     it('moduleInitSjs endpoint', function(done) {
         const serviceDeclaration = JSON.parse(fs.readFileSync('test-basic-proxy/ml-modules/generated/moduleInitSjs/service.json', {encoding: 'utf8'}));
