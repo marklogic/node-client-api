@@ -3,7 +3,7 @@
 ## 2.8.0
 #### New Functionality
 
-- Data Movement in Node.js API - Document(s) ingestion
+- [#621](https://github.com/marklogic/node-client-api/issues/621)- Data Movement in Node.js API - Ingesting Documents using writeAll api.
 
 #### Improvements and Bug Fixes
 - [#270](https://github.com/marklogic/node-client-api/issues/270) - Calling methods on resources with arg list throws error
