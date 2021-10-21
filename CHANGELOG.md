@@ -8,7 +8,6 @@
 #### Improvements and Bug Fixes
 - [#270](https://github.com/marklogic/node-client-api/issues/270) - Calling methods on resources with arg list throws error
 - [#601](https://github.com/marklogic/node-client-api/issues/601) - Regenerate Optic expression functions
-- [#615](https://github.com/marklogic/node-client-api/issues/615) - Include an example for the writeAll api.
 
 
 ## 2.7.0
