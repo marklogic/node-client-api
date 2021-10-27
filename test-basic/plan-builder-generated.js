@@ -1427,6 +1427,13 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('sql.bucket#2', function(done) {
+        testPlan([[p.xs.double(2), p.xs.double(4)], p.xs.double(3)], p.sql.bucket(p.col("1"), p.col("2")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('1');
+            done();
+        }).catch(done);
+    }); 
     it('sql.collatedString#2', function(done) {
         testPlan([p.xs.string("a"), p.xs.string("http://marklogic.com/collation/")], p.sql.collatedString(p.col("1"), p.col("2")))
           .then(function(response) { 

@@ -152,9 +152,9 @@ describe('Nodejs Optic from sql test', function(){
     let str = '';
     const chunks = [];
     const output =
-      op.fromSQL("SELECT opticFunctionalTest.detail.id, opticFunctionalTest.detail.name FROM opticFunctionalTest.detail ORDER BY name \
+      op.fromSQL("SELECT opticFunctionalTest.detail.id, opticFunctionalTest.detail.name FROM opticFunctionalTest.detail ORDER BY opticFunctionalTest.detail.name \
         UNION \
-        SELECT opticFunctionalTest.master.id, opticFunctionalTest.master.name FROM opticFunctionalTest.master ORDER BY name")
+        SELECT opticFunctionalTest.master.id, opticFunctionalTest.master.name FROM opticFunctionalTest.master ORDER BY opticFunctionalTest.master.name")
       .orderBy('id');
     db.rows.queryAsStream(output, 'object', { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'reference' })
     .on('data', function(chunk) {
