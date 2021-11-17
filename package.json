@@ -61,6 +61,7 @@
     "read": "^1.0.7",
     "sanitize-html": "^2.3.3",
     "should": "^13.2.3",
+    "stream-to-array": "^2.3.0",
     "winston": "^3.3.3"
   },
   "optionalDependencies": {
