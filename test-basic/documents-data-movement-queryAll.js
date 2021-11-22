@@ -22,6 +22,7 @@ const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection)
 const q = marklogic.queryBuilder;
 const Stream = require('stream');
 const streamToArray = require('stream-to-array');
+const expect = require('chai').expect;
 
 let readable = new Stream.Readable({objectMode: true});
 let uris = [];
@@ -69,7 +70,10 @@ describe('data-movement-requests-queryAll test', function() {
 
         streamToArray(dbWriter.documents.queryAll(query),
             function(err, arr ) {
-                arr.forEach(item=> result.add((item)));
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item));
                 checkResult(done);
         });
     });
@@ -84,9 +88,144 @@ describe('data-movement-requests-queryAll test', function() {
                 })
             }),
             function(err, arr ) {
-                arr.forEach(item=> result.add((item)));
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item));
                 checkResult(done);
             });
+    });
+
+    it('queryAll should throw error if no query is provided',  function (done){
+
+        try{
+            dbWriter.documents.queryAll();
+        } catch(err){
+            err.toString().should.equal('Error: Query cannot be null or undefined.');
+            done();
+        }
+    });
+
+    it('should queryAll documents with batchSize=1 and output as string stream',  function (done){
+
+        streamToArray(dbWriter.documents.queryAll(query, {
+                batchSize:1
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item.toString()));
+                checkResult(done);
+            });
+    });
+
+    it('queryAll should throw error with batchSize=100001',  function (done){
+
+        try{
+            dbWriter.documents.queryAll(query, {
+                batchSize:100001
+            });
+        } catch(err){
+            err.toString().should.equal('Error: BatchSize cannot be greater than 100000');
+            done();
+        }
+    });
+
+    it('should queryAll documents with queryBatchMultiple option',  function (done){
+
+        streamToArray(dbWriter.documents.queryAll(query, {
+                queryBatchMultiple:10
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item));
+                checkResult(done);
+            });
+    });
+
+    it('should queryAll documents with queryBatchMultiple less than batchSize',  function (done){
+
+        streamToArray(dbWriter.documents.queryAll(query, {
+                queryBatchMultiple:-1,
+                batchSize: 100
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item));
+                checkResult(done);
+            });
+    });
+
+    it('should queryAll documents with queryBatchMultiple greater than batchSize',  function (done){
+
+        streamToArray(dbWriter.documents.queryAll(query, {
+                queryBatchMultiple:10000,
+                batchSize: -1
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item));
+                checkResult(done);
+            });
+    });
+
+    it('should queryAll documents with consistentSnapshot option as true',  function (done){
+
+        streamToArray(dbWriter.documents.queryAll(query, {
+                consistentSnapshot: true,
+                onCompletion: ((summary) => {
+                    summary.urisReadSoFar.should.be.equal(10000);
+                    summary.urisFailedToBeRead.should.be.equal(0);
+                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                    summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
+                })
+            }),
+            function(err, arr ) {
+            if(err){
+                done(err);
+            }
+            arr.forEach(item=> result.add(item));
+            checkResult(done);
+            });
+    });
+
+    it('should queryAll documents with consistentSnapshot option as false',  function (done){
+
+        streamToArray(dbWriter.documents.queryAll(query, {
+                consistentSnapshot: false,
+                onCompletion: ((summary) => {
+                    summary.urisReadSoFar.should.be.equal(10000);
+                    summary.urisFailedToBeRead.should.be.equal(0);
+                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                    expect(summary.consistentSnapshotTimestamp).to.be.undefined;
+                })
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item));
+                checkResult(done);
+            });
+    });
+
+    it('queryAll should throw error with consistentSnapshot as Integer',  function (done){
+
+        try{
+            dbWriter.documents.queryAll(query, {
+                consistentSnapshot: 1
+            });
+        } catch(err){
+            err.toString().should.equal('Error: consistentSnapshot needs to be a boolean.');
+            done();
+        }
     });
 });
 
