@@ -29,7 +29,7 @@ let uris = [];
 let result = new Set();
 const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/queryAll/'));
 
-describe('data-movement-requests-queryAll test', function() {
+describe('data movement queryAll', function() {
     beforeEach(function (done) {
         readable = new Stream.Readable({objectMode: true});
         uris = [];
