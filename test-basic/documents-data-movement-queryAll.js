@@ -48,6 +48,7 @@ describe('data-movement-requests-queryAll test', function() {
     });
 
     afterEach((function(done){
+        result.clear();
         dbWriter.documents.remove(uris)
             .result(function(response){
                 done();
@@ -73,7 +74,7 @@ describe('data-movement-requests-queryAll test', function() {
                 if(err){
                     done(err);
                 }
-                arr.forEach(item=> result.add(item));
+                arr.forEach(item=> result.add(item.toString()));
                 checkResult(done);
         });
     });
@@ -91,7 +92,7 @@ describe('data-movement-requests-queryAll test', function() {
                 if(err){
                     done(err);
                 }
-                arr.forEach(item=> result.add(item));
+                arr.forEach(item=> result.add(item.toString()));
                 checkResult(done);
             });
     });
@@ -127,7 +128,7 @@ describe('data-movement-requests-queryAll test', function() {
                 batchSize:100001
             });
         } catch(err){
-            err.toString().should.equal('Error: BatchSize cannot be greater than 100000');
+            err.toString().should.equal('Error: batchSize cannot be greater than 100000');
             done();
         }
     });
@@ -141,7 +142,7 @@ describe('data-movement-requests-queryAll test', function() {
                 if(err){
                     done(err);
                 }
-                arr.forEach(item=> result.add(item));
+                arr.forEach(item=> result.add(item.toString()));
                 checkResult(done);
             });
     });
@@ -171,7 +172,7 @@ describe('data-movement-requests-queryAll test', function() {
                 if(err){
                     done(err);
                 }
-                arr.forEach(item=> result.add(item));
+                arr.forEach(item=> result.add(item.toString()));
                 checkResult(done);
             });
     });
@@ -191,7 +192,7 @@ describe('data-movement-requests-queryAll test', function() {
             if(err){
                 done(err);
             }
-            arr.forEach(item=> result.add(item));
+            arr.forEach(item=> result.add(item.toString()));
             checkResult(done);
             });
     });
@@ -211,7 +212,7 @@ describe('data-movement-requests-queryAll test', function() {
                 if(err){
                     done(err);
                 }
-                arr.forEach(item=> result.add(item));
+                arr.forEach(item=> result.add(item.toString()));
                 checkResult(done);
             });
     });
