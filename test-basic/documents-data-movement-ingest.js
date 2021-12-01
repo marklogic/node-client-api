@@ -25,7 +25,7 @@ let uris = [];
 let should = require('should');
 let fs = require('fs');
 
-describe('data-movement-requests test', function(){
+describe('data movement writeAll', function(){
 
     beforeEach(function (done) {
         readable = new Stream.Readable({objectMode: true});
