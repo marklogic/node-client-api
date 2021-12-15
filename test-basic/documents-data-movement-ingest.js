@@ -123,7 +123,7 @@ describe('data movement writeAll', function(){
                 concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
             }));
         } catch(err){
-            err.toString().should.equal('Error: Invalid value for onCompletion.multipleOf. Value must be forests or hosts.');
+            err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
             done();
         }
     });
@@ -233,7 +233,7 @@ describe('data movement writeAll', function(){
         readable = new Stream.Readable({objectMode: true});
         for(let i=0; i<400; i++) {
             const temp = {
-                uri: '/test/dataMovement/requests/'+i+'.json',
+                uri: '/test/dataMovement/requests/writeAll/'+i+'.json',
                 contentType: 'application/json',
                 content: {['key '+i]:'value '+i}
             };
