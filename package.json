@@ -29,6 +29,7 @@
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.1.0",
     "dicer": "^0.3.0",
+    "duplexify": "^4.1.2",
     "json-text-sequence": "^0.3.0",
     "multipart-stream": "^2.0.1",
     "qs": "^6.10.1",
