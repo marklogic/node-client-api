@@ -30,7 +30,7 @@ let result = new Set();
 const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/queryAll/'));
 
 describe('data movement queryAll', function() {
-    beforeEach(function (done) {
+    before(function (done) {
         readable = new Stream.Readable({objectMode: true});
         uris = [];
         for(let i=0; i<10000; i++) {
@@ -47,8 +47,7 @@ describe('data movement queryAll', function() {
         setTimeout(()=>{done();}, 3000);
     });
 
-    afterEach((function(done){
-        result.clear();
+    after((function(done){
         dbWriter.documents.remove(uris)
             .result(function(response){
                 done();
@@ -235,5 +234,6 @@ function checkResult(done){
     for(let i=0; i<uris.length; i++){
         result.has(uris[i]).should.equal(true);
     }
-    setTimeout(()=>{done();}, 3000);
+    result.clear();
+    done();
 }
