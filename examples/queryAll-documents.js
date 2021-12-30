@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+
 let exutil = require('./example-util.js');
 const marklogic = exutil.require('marklogic');
 const dbWriter = marklogic.createDatabaseClient(exutil.restWriterConnection);
