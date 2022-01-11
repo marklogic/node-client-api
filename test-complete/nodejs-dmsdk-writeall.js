@@ -33,9 +33,9 @@ const {expect} = require("chai");
 var transformuris = [];
 var batchuris = [];
 
-var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
+var db = marklogic.createDatabaseClient(testconfig.dmsdkrestReaderConnection);
+var dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
+var dbAdmin = marklogic.createDatabaseClient(testconfig.dmsdkrestAdminConnection);
 describe('DMSDK writeAll-tests', function() {
         var transformName = 'dmsdk-timestamp';
         before(function (done) {
