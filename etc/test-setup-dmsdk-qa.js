@@ -74,7 +74,7 @@ function setup(manager) {
             group:              'Default',
             database:           testconfig.dmsdktestServerName,
             'modules-database': testconfig.dmsdktestServerName+'-modules',
-            port:               testconfig.restPort
+            port:               testconfig.dmsdkrestPort
             }
           }
         }).
