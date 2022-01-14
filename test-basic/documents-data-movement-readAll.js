@@ -389,6 +389,20 @@ describe('data movement readAll', function() {
         }));
     });
 
+    it('should readAll documents with consistentSnapshot option as DatabaseClient.Timestamp object', function(done){
+        this.timeout(60000);
+        uriStream.pipe(dbWriter.documents.readAll({
+            consistentSnapshot:dbWriter.createTimestamp((Date.now()*10000).toString()),
+            onCompletion: ((summary) => {
+                summary.docsReadSuccessfully.should.be.equal(10000);
+                summary.docsFailedToBeRead.should.be.equal(0);
+                summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
+                done();
+            })
+        }));
+    });
+
     it('should readAll documents with consistentSnapshot option as false', function(done){
 
         uriStream.pipe(dbWriter.documents.readAll({
