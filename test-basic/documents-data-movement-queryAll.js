@@ -156,7 +156,7 @@ describe('data movement queryAll', function() {
                 if(err){
                     done(err);
                 }
-                arr.forEach(item=> result.add(item));
+                arr.forEach(item=> item.forEach(uri=>result.add(uri)));
                 checkResult(done);
             });
     });
@@ -216,6 +216,51 @@ describe('data movement queryAll', function() {
             });
     });
 
+    it('should queryAll documents with consistentSnapshot option as DatabaseClient.Timestamp object',  function (done){
+        this.timeout(60000);
+        streamToArray(dbWriter.documents.queryAll(query, {
+                consistentSnapshot: dbWriter.createTimestamp((Date.now()*10000).toString()),
+                onCompletion: ((summary) => {
+                    summary.urisReadSoFar.should.be.equal(10000);
+                    summary.urisFailedToBeRead.should.be.equal(0);
+                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                    summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
+                })
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item.toString()));
+                checkResult(done);
+            });
+    });
+
+    it('should queryAll documents with onInitialTimestamp option',  function (done){
+        let onIntitalTimestampValue = null;
+        streamToArray(dbWriter.documents.queryAll(query, {
+                consistentSnapshot: true,
+                onInitialTimestamp: ((timestamp) => {
+                    timestamp.value.should.be.greaterThanOrEqual(0);
+
+                    const timestampValue = (timestamp.value.length>13) ?
+                        (+timestamp.value.substr(0, 13)):
+                        timestamp.value;
+                    onIntitalTimestampValue = new Date(timestampValue);
+                }),
+                onCompletion: ((summary) => {
+                    summary.consistentSnapshotTimestamp.toString().should.equal(onIntitalTimestampValue.toString());
+                })
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item.toString()));
+                checkResult(done);
+            });
+    });
+
     it('queryAll should throw error with consistentSnapshot as Integer',  function (done){
 
         try{
@@ -223,7 +268,7 @@ describe('data movement queryAll', function() {
                 consistentSnapshot: 1
             });
         } catch(err){
-            err.toString().should.equal('Error: consistentSnapshot needs to be a boolean.');
+            err.toString().should.equal('Error: consistentSnapshot needs to be a boolean or DatabaseClient.Timestamp object.');
             done();
         }
     });
