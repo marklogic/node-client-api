@@ -416,6 +416,31 @@ describe('data movement readAll', function() {
             })
         }));
     });
+
+    it('should readAll documents with onInitialTimestamp option',  function (done){
+        let onInitialTimestampValue = null;
+        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+                consistentSnapshot: true,
+                onInitialTimestamp: ((timestamp) => {
+                    timestamp.value.should.be.greaterThanOrEqual(0);
+
+                    const timestampValue = (timestamp.value.length>13) ?
+                        (+timestamp.value.substr(0, 13)):
+                        timestamp.value;
+                    onInitialTimestampValue = new Date(timestampValue);
+                }),
+                onCompletion: ((summary) => {
+                    summary.consistentSnapshotTimestamp.toString().should.equal(onInitialTimestampValue.toString());
+                })
+            })),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item.uri));
+                checkResult(done);
+            });
+    });
 });
 
 function checkResult(done){
