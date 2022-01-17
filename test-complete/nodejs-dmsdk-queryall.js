@@ -30,304 +30,263 @@ var testconfig = require('../etc/test-config-qa.js');
 const stream = require('stream');
 const {expect} = require("chai");
 
-var transformuris = [];
-var batchuris = [];
-
-var db = marklogic.createDatabaseClient(testconfig.dmsdkrestReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.dmsdkrestAdminConnection);
-describe('DMSDK writeAll-tests', function() {
-        var transformName = 'dmsdk-timestamp';
-        before(function (done) {
-            this.timeout(10000);
-            var transformPath = __dirname + '/data/dmsdk/transform/write-transform.sjs';
+describe('queryAll-tests-1', function() {
+    before(function (done) {
+        this.timeout(10000);
+        const selectFiles = [];
 
-            dbAdmin.config.transforms.write({
-                name:transformName, format:'javascript', source:fs.createReadStream(transformPath)
-            }).result(function(response){
-                db.config.transforms.list().result(function(response) {
-                    //console.log('Installed transforms: ');
-                    var installedTransforms = JSON.stringify(response, null, 2);
-                    //console.log(installedTransforms);
-                    expect(installedTransforms).to.have.string(transformName);
-                }, function(error) {
-                    console.log(JSON.stringify(error, null, 2));
-                }); done();
-            }, done);
-        }); // end of before
+        var multiDocreadable = new stream.Readable({objectMode: true});
+        // Handle only .json, .xml and .txt files
+        var allowedFiles = ['.json', '.xml', '.txt'];
 
-        // write docs of different formats
-        it('writeAll different formats', function(done){
-            this.timeout(10000);
-            const selectFiles = [];
+        const dirPath = path.join(__dirname, '/data/dmsdk/writeall/');
 
-            var multiDocreadable = new stream.Readable({objectMode: true});
-            // Handle only .json, .xml and .txt files
-            var allowedFiles = ['.json', '.xml', '.txt'];
+        function includeFile(fName) {
+            var fileExt = path.extname(fName);
+            return allowedFiles.includes(fileExt);
+        }
 
-            const dirPath = path.join(__dirname, '/data/dmsdk/writeall/');
-
-            function includeFile(fName) {
-                var fileExt = path.extname(fName);
-                return allowedFiles.includes(fileExt);
+        var files = fs.readdirSync(dirPath).filter(includeFile);
+        files.forEach(file => {
+            let fileStat = fs.statSync(dirPath + '/' + file).isDirectory();
+            if(!fileStat) {
+                selectFiles.push(file);
             }
-
-            var files = fs.readdirSync(dirPath).filter(includeFile);
-            files.forEach(file => {
-                let fileStat = fs.statSync(dirPath + '/' + file).isDirectory();
-                if(!fileStat) {
-                    selectFiles.push(file);
-                }
-            });
-            //console.log(selectFiles);
-            for (var file of selectFiles) {
-                var fileTobeRead = dirPath + file;
-                var data = fs.readFileSync(fileTobeRead, {encoding:'utf8'});
-                var findCType = path.extname(fileTobeRead);
-                var jsonFN1 = {
-                    uri: file,
-                    contentType: findCType === '.json' ? 'application/json': findCType === '.xml' ? 'application/xml' : 'application/text',
-                    collections: ['qatestsText'],
-                    content: data
-                };
-                //console.log('Contents ' + jsonFN1.content);
-                multiDocreadable.push(jsonFN1);
-            }
-            multiDocreadable.push(null);
-
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
-                onBatchSuccess: ((progressSoFar, documents) => {
-                    try {
-                        //console.log('Progress ' + progressSoFar.docsWrittenSuccessfully);
-                        progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
-                        progressSoFar.docsFailedToBeWritten.should.be.equal(0);
-                        progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                        documents.length.should.equal(5);
-                    } catch(err){
-                        done(err);
-                    }
-                }),
-                onCompletion: ((summary) => {
-                    summary.docsWrittenSuccessfully.should.be.equal(5);
-                    summary.docsFailedToBeWritten.should.be.equal(0);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                })
-            })); // End of pipe to writeAll
-            setTimeout(()=>{done();}, 3000);
-        }); // End of test case
-
-        // write binary doc
-        it('writeAll binary format', function(done){
-            this.timeout(10000);
-            var multiDocreadable = new stream.Readable({objectMode: true});
-            var filename = __dirname+'/data/121-GIF-Image-GIF-gif_sample1.gif';
-            var fileContents ='';
-
-            var data = fs.readFileSync(filename);
-
-            const jsonFN1 = {
-                uri: '/data/121-GIF-Image-GIF-gif_sample1.gif',
-                contentType: 'image/gif',
-                collections: ['qatestsBinary'],
-                directory:'/dmsdktest/',
+        });
+        //console.log(selectFiles);
+        for (var file of selectFiles) {
+            var fileTobeRead = dirPath + file;
+            var data = fs.readFileSync(fileTobeRead, {encoding:'utf8'});
+            var findCType = path.extname(fileTobeRead);
+            var jsonFN1 = {
+                uri: file,
+                contentType: findCType === '.json' ? 'application/json': findCType === '.xml' ? 'application/xml' : 'application/text',
+                collections: ['qatestsReadText'],
                 content: data
             };
-            multiDocreadable.push(jsonFN1);
-            multiDocreadable.push(null);
             //console.log('Contents ' + jsonFN1.content);
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
-                onBatchSuccess: ((progressSoFar, documents) => {
-                    try {
-                        progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
-                        progressSoFar.docsFailedToBeWritten.should.be.equal(0);
-                        progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                    } catch(err){
-                        done(err);
-                    }
-                }),
-                onCompletion: ((summary) => {
-                    summary.docsWrittenSuccessfully.should.be.equal(1);
-                    summary.docsFailedToBeWritten.should.be.equal(0);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                })
-
-            }));
-            setTimeout(()=>{done();}, 3000);
-        });
-
-        // write docs with SJS transforms
-        it('writeAll with sjs transform', function(done){
-            this.timeout(10000);
-            var multiDocreadable = new stream.Readable({objectMode: true});
-
-            for(let i=0; i<10; i++) {
-                const temp = {
-                    uri: '/qa/test/dmsdk/transforms/'+i+'.json',
-                    contentType: 'application/json',
-                    collections: ['qatestsTransform'],
-                    content: {['key '+i]:'value '+i}
-                };
-                multiDocreadable.push(temp);
-                transformuris.push(temp.uri);
-            }
-            multiDocreadable.push(null);
-
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
-                transform: [transformName, {title: 'new title', myInt: 2, myBool: true}],
-                onBatchSuccess: ((progressSoFar, documents) => {
-                    try {
-                        //console.log('Progress ' + progressSoFar.docsWrittenSuccessfully);
-                        progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
-                        progressSoFar.docsFailedToBeWritten.should.be.equal(0);
-                        progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                        documents.length.should.equal(10);
-                    } catch(err){
-                        done(err);
-                    }
-                }),
-                onCompletion: ((summary) => {
-                    summary.docsWrittenSuccessfully.should.be.equal(10);
-                    summary.docsFailedToBeWritten.should.be.equal(0);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                })
-            })); // End of pipe to writeAll transform
-            setTimeout(()=>{done();}, 3000);
-        }); // End of test case
-
-        it('Return transformed content during read', function(done){
-            this.timeout(10000);
-            // Read back one document to make sure transform ran fine
-            db.documents.read({
-                uris: [transformuris[5]],
-                categories: ['content', 'metadata']
-            }).
-            result(function(response) {
-                //console.log(JSON.stringify(response, null, 2));
-                var res1 = response[0].content['key 5'];
-                var res2 = response[0].content['title'];
-                var res3 = response[0].content['myBool'];
-                var res4 = response[0].content['myInt'];
-                res1.should.equal('value 5');
-                res2.should.equal('new title');
-                res3.should.equal('true');
-                res4.should.equal('2');
-                done();
-            }, done);
-        });
-
-        // Verify batch size during ingestion
-        it('writeAll with batch size', function(done){
-            this.timeout(10000);
-            var multiDocreadable = new stream.Readable({objectMode: true});
-
-            for(let i=0; i<10; i++) {
-                const temp = {
-                    uri: '/qa/test/dmsdk/batchsize/'+i+'.json',
-                    contentType: 'application/json',
-                    collections: ['qatestsBatchsize'],
-                    content: {['key '+i]:'value '+i}
-                };
-                multiDocreadable.push(temp);
-                batchuris.push(temp.uri);
-            }
-            multiDocreadable.push(null);
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
-
-                batchSize:3,
-                onBatchSuccess: ((progressSoFar, documents) => {
-                    try {
-                        progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
-                        progressSoFar.docsFailedToBeWritten.should.be.equal(0);
-                        progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                    } catch(err){
-                        done(err);
-                    }
-                }),
-                onCompletion: ((summary) => {
-                    summary.docsWrittenSuccessfully.should.be.equal(10);
-                    summary.docsFailedToBeWritten.should.be.equal(0);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                })
-            })); // End of pipe to writeAll transform
-            setTimeout(()=>{done();}, 3000);
-        }); // End of test case
-
-        it('Return batch size content during read', function(done){
-            this.timeout(10000);
-            // Read back one document to make sure batch sizes ran fine
-            db.documents.read({
-                uris: [batchuris[3]],
-                categories: ['content', 'metadata']
-            }).
-            result(function(response) {
-                var res = response[0].content['key 3'];
-                //console.log(JSON.stringify(res, null, 2));
-                res.should.equal('value 3');
-
-                done();
-            }, done);
-        });
-
-        // Cleanup database contents for writeALL tests based on collections
-        it('should remove the collection', function(done){
-            this.timeout(10000);
-            dbWriter.documents.removeAll({collection:'qatestsBinary'}).
-            result(function(result) {
-                return db.documents.probe('/data/121-GIF-Image-GIF-gif_sample1.gif').result();
-            }, done).
-            then(function(document) {
-                document.exists.should.eql(false);
-                done();
-            }, done);
-        });
-
-        // Cleanup database contents for writeALL tests based on collections
-        // removeAll({all: true}) will not work due to temporal docs present.
-        it('Binary collection delete', function(done){
-            this.timeout(10000);
-            dbWriter.documents.removeAll({collection:'qatestsBinary'}).
-            result(function(result) {
-                return db.documents.probe('/data/121-GIF-Image-GIF-gif_sample1.gif').result();
-            }, done).
-            then(function(document) {
-                document.exists.should.eql(false);
-                done();
-            }, done);
-        });
-
-        it('Batch size collection removal', function(done){
-            this.timeout(10000);
-            dbWriter.documents.removeAll({collection:'qatestsBatchsize'}).
-            result(function(result) {
-                return db.documents.probe('/qa/test/dmsdk/batchsize/4.json').result();
-            }, done).
-            then(function(document) {
-                document.exists.should.eql(false);
-                done();
-            }, done);
-        });
-
-        it('Collection removal - text', function(done){
-            this.timeout(10000);
-            dbWriter.documents.removeAll({collection:'qatestsText'}).
-            result(function(result) {
-                return db.documents.probe('bbq1.xml').result();
-            }, done).
-            then(function(document) {
-                document.exists.should.eql(false);
-                done();
-            }, done);
-        });
-
-        it('Transform docs deleted', function(done){
-            this.timeout(10000);
-            dbWriter.documents.removeAll({collection:'qatestsTransform'}).
-            result(function(result) {
-                return db.documents.probe('/qa/test/dmsdk/transforms/9.json').result();
-            }, done).
-            then(function(document) {
-                document.exists.should.eql(false);
-                done();
-            }, done);
-        });
+            multiDocreadable.push(jsonFN1);
+        }
+        multiDocreadable.push(null);
+        multiDocreadable.pipe(dbWriter.documents.writeAll({
+            onCompletion: ((summary) => {
+                summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
+            })
+        })); // End of pipe to writeAll - single byte
+        setTimeout(()=>{done();}, 1000);
     });
+
+    after(function (done) {
+        this.timeout(10000);
+        const fileName1 = path.join(__dirname, '/data/dmsdk/queryAllColl.txt');
+        const fileName2 = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
+        fs.unlink(fileName1, function (err) {
+            if (err) {
+                console.log(err.toString());
+            }
+        });
+        fs.unlink(fileName2, function (err) {
+            if (err) {
+                console.log(err.toString());
+            }
+        });
+        done();
+    });
+
+    it('queryAll in collection', function (done) {
+        this.timeout(10000);
+        const fileNamequeryAllColl = path.join(__dirname, '/data/dmsdk/queryAllColl.txt');
+        const query = q.where(ctsqb.cts.collectionQuery('qatestsReadText'));
+        var resqueryAllCollFile = fs.createWriteStream(fileNamequeryAllColl, {flag: 'a'});
+        try {
+            dbWriter.documents.queryAll(query, {
+                consistentSnapshot: false,
+                onCompletion: ((summary) => {
+                    var soFar =  summary.urisReadSoFar;
+                    var failedToRead = summary.urisFailedToBeRead;
+                    var timeElapsed = summary.timeElapsed;
+                    var snapshot = summary.consistentSnapshotTimestamp;
+
+                    resqueryAllCollFile.write('soFar : ');
+                    resqueryAllCollFile.write(soFar.toString());
+                    resqueryAllCollFile.write('\n');
+
+                    resqueryAllCollFile.write('failedToRead : ');
+                    resqueryAllCollFile.write(failedToRead.toString());
+                    resqueryAllCollFile.write('\n');
+
+                    resqueryAllCollFile.write('snapshot : ');
+                    resqueryAllCollFile.write(snapshot.toString());
+                    resqueryAllCollFile.write('\n');
+
+                    resqueryAllCollFile.end();
+                })
+            });
+            done();
+        } catch (err) {
+            console.log('Error ' + err);
+            //err.toString().should.equal('Error: Query needs to be a cts query.');
+            done();
+        }
+    });
+
+    it('verify queryAll summary report in collection',function (done) {
+        this.timeout(10000);
+        var arr = new Array('soFar : 5', 'failedToRead : 0', 'snapshot : ' );
+        var lnCnt = 0;
+        const fileName = path.join(__dirname, '/data/dmsdk/queryAllColl.txt');
+
+        verifyqueryAllCollFileContent(fileName);
+        done();
+        async function verifyqueryAllCollFileContent(fileName) {
+            const fileStream = fs.createReadStream(fileName);
+
+            const rl = readline.createInterface({
+                input: fileStream,
+                crlfDelay: Infinity
+            });
+            for await (const line of rl) {
+                // Each line in input txt will be successively available here as `line`.
+                expect(line).to.equal(arr[lnCnt]);
+                //console.log(`Line from file: ${line}`);
+                lnCnt++;
+            }
+        }
+    });
+
+    it('queryAll with one result', function (done) {
+        this.timeout(10000);
+        const query = q.where(ctsqb.cts.wordQuery('Vannevar'));
+        const fileName = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
+        var resqueryAllCollFile = fs.createWriteStream(fileName, {flag: 'a'});
+        //resqueryAllCollFile
+        try {
+            dbWriter.documents.queryAll(query, {
+                consistentSnapshot: false,
+                batchSize: 1,
+                onCompletion: ((summary) => {
+                })
+            }).pipe(resqueryAllCollFile);
+
+            done();
+        } catch (err) {
+            console.log('Error ' + err);
+            done();
+        }
+    });
+
+    it('verify queryAll one output',function (done) {
+        this.timeout(10000);
+        var arr = new Array('constraint1.json' );
+        var lnCnt = 0;
+        const fileName = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
+
+        verifyqueryAllOneFileContent(fileName);
+        done();
+        async function verifyqueryAllOneFileContent(fileName) {
+            const fileStream = fs.createReadStream(fileName);
+
+            const rl = readline.createInterface({
+                input: fileStream,
+                crlfDelay: Infinity
+            });
+            for await (const line of rl) {
+                // Each line in input txt will be successively available here as `line`.
+                expect(line).to.equal(arr[lnCnt]);
+                //console.log(`Line from file: ${line}`);
+                lnCnt++;
+            }
+        }
+    });
+
+}); // End of queryAll tests 1
+
+describe('queryAll-tests-2', function() {
+    before(function (done) {
+        this.timeout(10000);
+        const selectFiles = [];
+
+        var multiDocreadable = new stream.Readable({objectMode: true});
+        // Handle only .json, .xml and .txt files
+        var allowedFiles = ['.json', '.xml', '.txt'];
+
+        const dirPath = path.join(__dirname, '/data/dmsdk/queryall/');
+
+        function includeFile(fName) {
+            var fileExt = path.extname(fName);
+            return allowedFiles.includes(fileExt);
+        }
+
+        var files = fs.readdirSync(dirPath).filter(includeFile);
+        files.forEach(file => {
+            let fileStat = fs.statSync(dirPath + '/' + file).isDirectory();
+            if (!fileStat) {
+                selectFiles.push(file);
+            }
+        });
+        for (var file of selectFiles) {
+            var fileTobeRead = dirPath + file;
+            var data = fs.readFileSync(fileTobeRead, {encoding: 'utf8'});
+            var findCType = path.extname(fileTobeRead);
+            var jsonFN1 = {
+                uri: file,
+                contentType: findCType === '.json' ? 'application/json' : findCType === '.xml' ? 'application/xml' : 'application/text',
+                collections: ['multibyte'],
+                content: data
+            };
+            //console.log('Contents ' + jsonFN1.content);
+            multiDocreadable.push(jsonFN1);
+        }
+        multiDocreadable.push(null);
+        multiDocreadable.pipe(dbWriter.documents.writeAll({
+            onCompletion: ((summary) => {
+                summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
+            })
+        })); // End of pipe to writeAll - single byte
+        setTimeout(() => {
+            done();
+        }, 1000);
+    });
+
+    after(function (done) {
+        this.timeout(10000);
+        const fileNameMB = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
+        fs.unlinkSync(fileNameMB);
+        done();
+    });
+
+    it('Multibyte queryAll with one result', function (done) {
+        this.timeout(10000);
+        try {
+        const query = q.where(ctsqb.cts.collectionQuery('multibyte'));
+        const fileName = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
+
+        var resFile = fs.createWriteStream(fileName, {flag: 'a'});
+
+        dbWriter.documents.queryAll(query, {
+                consistentSnapshot: false,
+                batchSize: 1,
+                onCompletion: ((summary) => {
+                })
+            }).pipe(resFile);
+            setTimeout(() => {
+                const i = 0;
+                done();
+            }, 5000);
+        } catch (err) {
+            console.log('Error ' + err);
+            done();
+        }
+    });
+
+    it('verify queryAll output report for one doc',function (done) {
+        this.timeout(10000);
+        const fileName = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
+        const data = fs.readFileSync(fileName, {encoding:'utf8', flag:'r'});
+        var uriName = data.replace(/\s/g, "");
+        expect(uriName).to.equal('multibyte1.xml');
+        done();
+    });
+}); // End of queryAll tests 2
