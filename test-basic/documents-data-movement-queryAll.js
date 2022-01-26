@@ -219,7 +219,7 @@ describe('data movement queryAll', function() {
     it('should queryAll documents with consistentSnapshot option as DatabaseClient.Timestamp object',  function (done){
         this.timeout(60000);
         streamToArray(dbWriter.documents.queryAll(query, {
-                consistentSnapshot: dbWriter.createTimestamp((Date.now()*10000).toString()),
+                consistentSnapshot: dbWriter.createTimestamp(Date.now().toString()+'0000'),
                 onCompletion: ((summary) => {
                     summary.urisReadSoFar.should.be.equal(10000);
                     summary.urisFailedToBeRead.should.be.equal(0);

@@ -24,7 +24,7 @@ const streamToArray = require('stream-to-array');
 const fs = require('fs');
 const expect = require('chai').expect;
 
-let uriStream = new Stream.Readable();
+let uriStream = new Stream.PassThrough({objectMode: true});
 let urisList = [];
 let result = new Set();
 let summaryValue = null;
@@ -51,7 +51,7 @@ describe('data movement readAll', function() {
 
                 for (let i = 0; i < 400; i++) {
                     const temp = {
-                        uri: '/test/dataMovement/requests/readAll/categories/' + i + '.json',
+                        uri: '/test/dataMovement/requests/categories/' + i + '.json',
                         contentType: 'application/json',
                         content: {['key ' + i]: 'value ' + i}
                     };
@@ -433,6 +433,56 @@ describe('data movement readAll', function() {
                     summary.consistentSnapshotTimestamp.toString().should.equal(onInitialTimestampValue.toString());
                 })
             })),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item.uri));
+                checkResult(done);
+            });
+    });
+
+    it('should queryToReadAll documents with onCompletion option', function(done){
+        const ctsQb = marklogic.ctsQueryBuilder;
+        const q = marklogic.queryBuilder;
+        const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/readAll/'));
+        streamToArray(dbWriter.documents.queryToReadAll(query,{
+            onCompletion:((summary) => {
+                summary.docsReadSuccessfully.should.be.equal(10000);
+                summary.docsFailedToBeRead.should.be.equal(0);
+                summary.timeElapsed.should.be.greaterThanOrEqual(0);
+            })
+            }),
+            function(err, arr ) {
+                if(err){
+                    done(err);
+                }
+                arr.forEach(item=> result.add(item.uri));
+                checkResult(done);
+            });
+    });
+
+    it('should queryToReadAll documents with onCompletion, consistentSnapshot and onInitialTimestamp options', function(done){
+        const ctsQb = marklogic.ctsQueryBuilder;
+        const q = marklogic.queryBuilder;
+        const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/readAll/'));
+        let onInitialTimestampValue = null;
+        streamToArray(dbWriter.documents.queryToReadAll(query,{
+                consistentSnapshot: true,
+                onInitialTimestamp:((timestamp)=> {
+                    timestamp.value.should.be.greaterThanOrEqual(0);
+                    const timestampValue = (timestamp.value.length>13) ?
+                        (+timestamp.value.substr(0, 13)):
+                        timestamp.value;
+                   onInitialTimestampValue = new Date(timestampValue);
+                }),
+                onCompletion:((summary) => {
+                    summary.docsReadSuccessfully.should.be.equal(10000);
+                    summary.docsFailedToBeRead.should.be.equal(0);
+                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                    summary.consistentSnapshotTimestamp.toString().should.equal(onInitialTimestampValue.toString());
+                })
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
