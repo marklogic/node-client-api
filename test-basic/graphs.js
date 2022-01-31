@@ -369,5 +369,18 @@ describe('graph operations', function(){
         done();
       }, done);
     });
+    it('test graphs', function(done){
+      let myQuery = "SELECT * WHERE { ?s ?p ?o .}";
+      db.graphs.sparql({
+        contentType: 'application/json',
+        query: myQuery,
+        begin: 10,
+        end: 30
+      }).
+      result(function(response){
+        response.results.bindings.length.should.equal(20);
+        done();
+      }, done);
+    });
   });
 });
