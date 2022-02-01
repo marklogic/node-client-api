@@ -491,6 +491,45 @@ describe('data movement readAll', function() {
                 checkResult(done);
             });
     });
+
+    it('should throw error with categories options rawContent and permissions', function(done){
+        uriStream = new Stream.PassThrough({objectMode: true});
+        categoriesUrisList.forEach(uri => uriStream.push(uri));
+        uriStream.push(null);
+        const readAllStream = dbWriter.documents.readAll({categories: ['rawContent','permissions']});
+        readAllStream.on('error', function(err){
+            err.toString().should.equal('Error: Categories should not have other option(s) if rawContent is needed.');
+            done();
+        });
+
+        uriStream.pipe(readAllStream);
+    });
+
+    it('should queryToReadAll documents with categories options rawContent', function(done){
+        uriStream = new Stream.PassThrough({objectMode: true});
+        categoriesUrisList.forEach(uri => uriStream.push(uri));
+        uriStream.push(null);
+        let docCount = 0;
+        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+                categories: ['rawContent']
+            })),
+            function (err, arr) {
+                if (err) {
+                    done(err);
+                }
+                arr.forEach(item => {
+                    let keyCount = 0;
+                    docCount++;
+                    for(let key in item){
+                        key.should.containEql('key');
+                        keyCount++;
+                    }
+                    keyCount.should.be.equal(1);
+                });
+                docCount.should.be.equal(categoriesUrisList.length);
+                done();
+            });
+    });
 });
 
 function checkResult(done){
