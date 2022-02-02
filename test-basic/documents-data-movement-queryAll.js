@@ -217,7 +217,7 @@ describe('data movement queryAll', function() {
     });
 
     it('should queryAll documents with consistentSnapshot option as DatabaseClient.Timestamp object',  function (done){
-        this.timeout(60000);
+        this.timeout(120000);
         streamToArray(dbWriter.documents.queryAll(query, {
                 consistentSnapshot: dbWriter.createTimestamp(Date.now().toString()+'0000'),
                 onCompletion: ((summary) => {
