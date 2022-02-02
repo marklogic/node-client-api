@@ -390,7 +390,7 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with consistentSnapshot option as DatabaseClient.Timestamp object', function(done){
-        this.timeout(60000);
+        this.timeout(120000);
         uriStream.pipe(dbWriter.documents.readAll({
             consistentSnapshot:dbWriter.createTimestamp((Date.now()*10000).toString()),
             onCompletion: ((summary) => {
