@@ -316,6 +316,9 @@ function readDocsWithMetadata(defaultMetadataUris,done){
             }
             done();
         })
+        .then(function(docs){
+            dbWriter.documents.remove(defaultMetadataUris);
+        })
         .catch(done)
         .catch(err=> done(err));
 }
