@@ -505,7 +505,7 @@ describe('data movement readAll', function() {
         uriStream.pipe(readAllStream);
     });
 
-    it('should queryToReadAll documents with categories options rawContent', function(done){
+    it('should readAll documents with categories options rawContent', function(done){
         uriStream = new Stream.PassThrough({objectMode: true});
         categoriesUrisList.forEach(uri => uriStream.push(uri));
         uriStream.push(null);
@@ -529,6 +529,28 @@ describe('data movement readAll', function() {
                 docCount.should.be.equal(categoriesUrisList.length);
                 done();
             });
+    });
+
+    it('should return empty with cts wordQuery when no documents are found', function(done) {
+        const ctsqb = marklogic.ctsQueryBuilder;
+        const q = marklogic.queryBuilder;
+        const query = q.where(ctsqb.cts.wordQuery('zero'));
+        var res = '';
+        var chk = '';
+        const queryToReadAllStream = dbWriter.documents.queryToReadAll(query,{
+            onCompletion:((summary) => {
+                res = summary;
+            })
+        });
+        queryToReadAllStream.on('error', function (err) { throw new Error(err);});
+        queryToReadAllStream.on('data', function(chunk){
+            chk = chunk;
+        });
+        queryToReadAllStream.on('end', function(end){
+            expect(res).to.be.empty;
+            expect(chk).to.be.empty;
+            done();
+        });
     });
 });
 
