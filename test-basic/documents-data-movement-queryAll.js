@@ -43,8 +43,11 @@ describe('data movement queryAll', function() {
             uris.push(temp.uri);
         }
         readable.push(null);
-        readable.pipe(dbWriter.documents.writeAll());
-        setTimeout(()=>{done();}, 3000);
+        readable.pipe(dbWriter.documents.writeAll({
+            onCompletion: ((summary) => {
+                done();
+            })
+        }));
     });
 
     after((function(done){
