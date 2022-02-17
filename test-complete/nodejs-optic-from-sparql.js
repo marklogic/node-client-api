@@ -344,4 +344,101 @@ describe('Nodejs Optic from sparql test', function(){
     });
   });
 
+  // Dedup tests
+  it('TEST 17a - with valid where value and dedup on', function(done){
+    const output =
+        op.fromSPARQL("PREFIX ad: <http://marklogicsparql.com/addressbook#> \
+             PREFIX id: <http://marklogicsparql.com/id#> \
+            SELECT ?firstName \
+            WHERE {id:5555 ad:firstName ?firstName .}"
+            , 'sparql', {dedup:'on'});
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
+        .then(function(output) {
+          //console.log(JSON.stringify(output, null, 2));
+          expect(output.rows.length).to.equal(1);
+          expect(output.rows[0]['sparql.firstName']).to.equal('Jim');
+          done();
+        }, done);
+  });
+
+  it('TEST 17b - with valid where value and dedup off', function(done){
+    const output =
+        op.fromSPARQL("PREFIX ad: <http://marklogicsparql.com/addressbook#> \
+             PREFIX id: <http://marklogicsparql.com/id#> \
+            SELECT ?firstName \
+            WHERE {id:5555 ad:firstName ?firstName .}"
+            , 'sparql', {dedup:'off'});
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
+        .then(function(output) {
+          //console.log(JSON.stringify(output, null, 2));
+          expect(output.rows.length).to.equal(2);
+          expect(output.rows[0]['sparql.firstName']).to.equal('Jim');
+          expect(output.rows[1]['sparql.firstName']).to.equal('Jim');
+          done();
+        }, done);
+  });
+
+  it('TEST 17c - with Invalid where value and dedup off', function(done){
+    const output =
+        op.fromSPARQL("PREFIX ad: <http://marklogicsparql.com/addressbook#> \
+             PREFIX id: <http://marklogicsparql.com/id#> \
+            SELECT ?firstName \
+            WHERE {id:5555661 ad:firstName ?firstName .}"
+            , 'sparql', {dedup:'on'});
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
+        .then(function(output) {
+          //console.log(JSON.stringify(output, null, 2));
+          expect(output).to.be.undefined;
+          done();
+        }, done);
+  });
+
+  it('TEST 17d - with Invalid where value and dedup on', function(done){
+    const output =
+        op.fromSPARQL("PREFIX ad: <http://marklogicsparql.com/addressbook#> \
+             PREFIX id: <http://marklogicsparql.com/id#> \
+            SELECT ?firstName \
+            WHERE {id:5555661 ad:firstName ?firstName .}"
+            , 'sparql', {dedup:'on'});
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
+        .then(function(output) {
+          //console.log(JSON.stringify(output, null, 2));
+          expect(output).to.be.undefined;
+          done();
+        }, done);
+  });
+
+  it('TEST 17e - with valid where value and invalid dedup value', function(done){
+    try {
+    const output =
+        op.fromSPARQL("PREFIX ad: <http://marklogicsparql.com/addressbook#> \
+             PREFIX id: <http://marklogicsparql.com/id#> \
+            SELECT ?firstName \
+            WHERE {id:5555 ad:firstName ?firstName .}"
+            , 'sparql', {dedup:'ex'});
+      db.rows.query(output, {format: 'json', structure: 'object', columnTypes: 'header'});
+    }
+    catch(error) {
+          //console.log(JSON.stringify(error, null, 2));
+          expect(error.message).to.contain('option argument at 2 of PlanBuilder.fromSPARQL() values for dedup can only be "on" or "off" for PlanSparqlOption options');
+          done();
+        }
+  });
+  // Dedup and base URI test
+  it('TEST 17f - with valid where value dedup on and base URI', function(done){
+    const output =
+        op.fromSPARQL("PREFIX ad: <http://marklogicsparql.com/addressbook#> \
+             PREFIX id: <http://marklogicsparql.com/id#> \
+            SELECT ?firstName \
+            WHERE {id:5555 ad:firstName ?firstName .}"
+            , 'sparql', {dedup:'on', base:'http://marklogicsparql.com/id#'});
+    db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
+        .then(function(output) {
+          //console.log(JSON.stringify(output, null, 2));
+          expect(output.rows.length).to.equal(1);
+          expect(output.rows[0]['sparql.firstName']).to.equal('Jim');
+          done();
+        }, done);
+  });
+
 });

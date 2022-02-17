@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 MarkLogic Corporation
+ * Copyright (c) 2022 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 'use strict';
 
 /* IMPORTANT: Do not edit. This file is generated. */
+
 const should = require('should');
 
 const marklogic = require('../');
@@ -29,11 +30,11 @@ describe('plan builder', function() {
   describe('expression functions', function() { 
     it('cts.box#4', function(done) {
         testPlan([p.xs.double(1), p.xs.double(2), p.xs.double(3), p.xs.double(4)], p.cts.box(p.col("1"), p.col("2"), p.col("3"), p.col("4")))
-          .then(function(response) {
+          .then(function(response) { 
             should(getResult(response).value).eql("[1, 2, 3, 4]");
             done();
         }).catch(done);
-    });
+    }); 
     it('cts.boxEast#1', function(done) {
         testPlan([p.cts.box(1, 2, 3, 4)], p.cts.boxEast(p.col("1")))
           .then(function(response) { 
@@ -62,6 +63,13 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('cts.circle#2', function(done) {
+        testPlan([p.xs.double(1.2), p.cts.point(1, 2)], p.cts.circle(p.col("1"), p.col("2")))
+          .then(function(response) { 
+            should(getResult(response).value).eql("@1.2 1,2");
+            done();
+        }).catch(done);
+    }); 
     it('cts.partOfSpeech#1', function(done) {
         testPlan([p.xs.string("abc")], p.cts.partOfSpeech(p.col("1")))
           .then(function(response) { 
@@ -69,13 +77,20 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('cts.period#2', function(done) {
+        testPlan([p.xs.dateTime("2016-01-02T10:09:08Z"), p.xs.dateTime("2016-01-03T10:09:08Z")], p.cts.period(p.col("1"), p.col("2")))
+          .then(function(response) { 
+            should(getResult(response).value).eql('cts.period(xs.dateTime("2016-01-02T10:09:08Z"),xs.dateTime("2016-01-03T10:09:08Z"))');
+            done();
+        }).catch(done);
+    }); 
     it('cts.point#2', function(done) {
         testPlan([p.xs.double(1), p.xs.double(2)], p.cts.point(p.col("1"), p.col("2")))
-          .then(function(response) {
+          .then(function(response) { 
             should(getResult(response).value).eql("1,2");
             done();
         }).catch(done);
-    });
+    }); 
     it('cts.pointLatitude#1', function(done) {
         testPlan([p.cts.point(1, 2)], p.cts.pointLatitude(p.col("1")))
           .then(function(response) { 
@@ -227,6 +242,13 @@ describe('plan builder', function() {
         testPlan([[p.xs.double(1), p.xs.double(2), p.xs.double(3)], p.xs.double(4)], p.fn.count(p.col("1"), p.col("2")))
           .then(function(response) { 
             should(String(getResult(response).value).replace(/^ /, '')).equal('3');
+            done();
+        }).catch(done);
+    }); 
+    it('fn.dateTime#2', function(done) {
+        testPlan([p.xs.date("2016-01-02Z"), p.xs.time("10:09:08Z")], p.fn.dateTime(p.col("1"), p.col("2")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('2016-01-02T10:09:08Z');
             done();
         }).catch(done);
     }); 
@@ -827,21 +849,21 @@ describe('plan builder', function() {
     }); 
     it('geo.arcIntersection#5', function(done) {
         testPlan([p.cts.point(1, 2), p.cts.point(1, 2), p.cts.point(1, 2), p.cts.point(1, 2), p.xs.string("precision=float")], p.geo.arcIntersection(p.col("1"), p.col("2"), p.col("3"), p.col("4"), p.col("5")))
-          .then(function(response) {
+          .then(function(response) { 
             should(getResult(response).value).eql("1,2");
             done();
         }).catch(done);
     }); 
     it('geo.bearing#2', function(done) {
         testPlan([p.cts.point(1, 2), p.cts.point(3, 4)], p.geo.bearing(p.col("1"), p.col("2")))
-          .then(function(response) {
+          .then(function(response) { 
             should(parseFloat(getResult(response).value).toFixed(2)).equal('0.79');
             done();
         }).catch(done);
     }); 
     it('geo.bearing#3', function(done) {
         testPlan([p.cts.point(1, 2), p.cts.point(3, 4), p.xs.string("precision=float")], p.geo.bearing(p.col("1"), p.col("2"), p.col("3")))
-          .then(function(response) {
+          .then(function(response) { 
             should(parseFloat(getResult(response).value).toFixed(2)).equal('0.79');
             done();
         }).catch(done);
@@ -855,7 +877,7 @@ describe('plan builder', function() {
     }); 
     it('geo.destination#4', function(done) {
         testPlan([p.cts.point(1, 2), p.xs.double(1.2), p.xs.double(1.2), p.xs.string("precision=float")], p.geo.destination(p.col("1"), p.col("2"), p.col("3"), p.col("4")))
-          .then(function(response) {
+          .then(function(response) { 
             should(getResult(response).value).eql("1.0063286,2.0161717");
             done();
         }).catch(done);
@@ -869,7 +891,7 @@ describe('plan builder', function() {
     }); 
     it('geo.distance#3', function(done) {
         testPlan([p.cts.point(1, 2), p.cts.point(1, 2), p.xs.string("precision=float")], p.geo.distance(p.col("1"), p.col("2"), p.col("3")))
-          .then(function(response) {
+          .then(function(response) { 
             should(String(getResult(response).value).replace(/^ /, '')).equal('0');
             done();
         }).catch(done);
@@ -890,7 +912,7 @@ describe('plan builder', function() {
     }); 
     it('geo.ellipsePolygon#6', function(done) {
         testPlan([p.cts.point(1, 2), p.xs.double(1.2), p.xs.double(1.2), p.xs.double(1.2), p.xs.double(1.2), p.xs.string("precision=float")], p.geo.ellipsePolygon(p.col("1"), p.col("2"), p.col("3"), p.col("4"), p.col("5"), p.col("6")))
-          .then(function(response) {
+          .then(function(response) { 
             should(getResult(response).value).eql("1.0063287,2.0162783 0.98657537,2.0110099 0.98537451,1.9905261 1.0043854,1.983135 1.0173359,1.9990506 1.0063287,2.0162783");
             done();
         }).catch(done);
@@ -933,7 +955,7 @@ describe('plan builder', function() {
     it('geo.parseWkt#1', function(done) {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)");
+            should(getResult(response).value).eql("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)");
             done();
         }).catch(done);
     }); 
@@ -967,6 +989,13 @@ describe('plan builder', function() {
     }); 
     it('map.map#0', function(done) {
         testPlan(undefined, p.map.map())
+          .then(function(response) { 
+            should(getResult(response).value).eql({});
+            done();
+        }).catch(done);
+    }); 
+    it('map.new#0', function(done) {
+        testPlan(undefined, p.map.new())
           .then(function(response) { 
             should(getResult(response).value).eql({});
             done();
@@ -2078,6 +2107,20 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('xdmp.uriContentType#1', function(done) {
+        testPlan([p.xs.string("a.json")], p.xdmp.uriContentType(p.col("1")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('application/json');
+            done();
+        }).catch(done);
+    }); 
+    it('xdmp.uriFormat#1', function(done) {
+        testPlan([p.xs.string("a.json")], p.xdmp.uriFormat(p.col("1")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('json');
+            done();
+        }).catch(done);
+    }); 
     it('xdmp.urlDecode#1', function(done) {
         testPlan([p.xs.string("a+b")], p.xdmp.urlDecode(p.col("1")))
           .then(function(response) { 
@@ -2149,9 +2192,9 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('xs.date#1', function(done) {
-        testPlan([p.xs.string("2016-01-02")], p.xs.date(p.col("1")))
+        testPlan([p.xs.string("2016-01-02Z")], p.xs.date(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('2016-01-02');
+            should(String(getResult(response).value).replace(/^ /, '')).equal('2016-01-02Z');
             done();
         }).catch(done);
     }); 
@@ -2466,7 +2509,7 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('in#2', function(done) {
-        testPlan([p.xs.double(1), p.xs.double(1), p.xs.double(2)], p.in(p.col("1"), [p.col("2"), p.col("3")]))
+        testPlan([p.xs.double(2), [p.xs.double(1), p.xs.double(2), p.xs.double(3)]], p.in(p.col("1"), p.col("2")))
           .then(function(response) {
             should(getResult(response).value).equal(true);
             done();

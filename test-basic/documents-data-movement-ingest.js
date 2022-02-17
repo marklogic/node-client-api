@@ -25,7 +25,7 @@ let uris = [];
 let should = require('should');
 let fs = require('fs');
 
-describe('data-movement-requests test', function(){
+describe('data movement writeAll', function(){
 
     beforeEach(function (done) {
         readable = new Stream.Readable({objectMode: true});
@@ -123,7 +123,7 @@ describe('data-movement-requests test', function(){
                 concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
             }));
         } catch(err){
-            err.toString().should.equal('Error: Invalid value for onCompletion.multipleOf. Value must be forests or hosts.');
+            err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
             done();
         }
     });
@@ -233,7 +233,7 @@ describe('data-movement-requests test', function(){
         readable = new Stream.Readable({objectMode: true});
         for(let i=0; i<400; i++) {
             const temp = {
-                uri: '/test/dataMovement/requests/'+i+'.json',
+                uri: '/test/dataMovement/requests/writeAll/'+i+'.json',
                 contentType: 'application/json',
                 content: {['key '+i]:'value '+i}
             };
@@ -315,6 +315,9 @@ function readDocsWithMetadata(defaultMetadataUris,done){
                 document.quality.should.equal(1);
             }
             done();
+        })
+        .then(function(docs){
+            dbWriter.documents.remove(defaultMetadataUris);
         })
         .catch(done)
         .catch(err=> done(err));

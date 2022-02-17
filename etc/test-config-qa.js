@@ -16,6 +16,7 @@
 var testHost = 'localhost';
 
 var restPort     = '8015';
+var dmsdkrestPort     = '8025';
 var restAuthType = 'DIGEST';
 
 var managePort     = '8002';
@@ -40,15 +41,25 @@ var configAdminUser     = 'admin';
 var configAdminPassword = 'admin';
 
 var testServerName = 'node-client-api-rest-server';
+var dmsdktestServerName = 'dmsdk-api-rest-server';
 
 // For SSL without client cert, use rejectUnauthorized: false
 module.exports = {
     testServerName: testServerName,
     testHost:       testHost,
     restPort:       restPort,
+    dmsdktestServerName: dmsdktestServerName,
+    dmsdkrestPort:  dmsdkrestPort,
     restAdminConnection: {
         host:     testHost,
         port:     restPort,
+        user:     restAdminUser,
+        password: restAdminPassword,
+        authType: restAuthType
+    },
+    dmsdkrestAdminConnection: {
+        host:     testHost,
+        port:     dmsdkrestPort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: restAuthType
@@ -60,9 +71,23 @@ module.exports = {
         password: restReaderPassword,
         authType: restAuthType
     },
+    dmsdkrestReaderConnection: {
+        host:     testHost,
+        port:     dmsdkrestPort,
+        user:     restReaderUser,
+        password: restReaderPassword,
+        authType: restAuthType
+    },
     restWriterConnection: {
         host:     testHost,
         port:     restPort,
+        user:     restWriterUser,
+        password: restWriterPassword,
+        authType: restAuthType
+    },
+    dmsdkrestWriterConnection: {
+        host:     testHost,
+        port:     dmsdkrestPort,
         user:     restWriterUser,
         password: restWriterPassword,
         authType: restAuthType

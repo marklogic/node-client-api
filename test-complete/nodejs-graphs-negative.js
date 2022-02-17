@@ -140,8 +140,9 @@ describe('graph negative test', function(){
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.message.should.containEql('Role does not exist: role-name = invalid-role');
+      //console.log(error.body.errorResponse.message);
+      var eMsg = error.body.errorResponse.message;
+      eMsg.should.containEql('Role does not exist: sec:role-name = invalid-role');
       done();
     });
   });

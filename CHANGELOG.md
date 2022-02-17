@@ -1,9 +1,23 @@
 # CHANGELOG
 
+## 2.9.0
+#### New Functionality
+
+- [#620](https://github.com/marklogic/node-client-api/issues/620) - Exporting Documents - readAll api.
+- [#622](https://github.com/marklogic/node-client-api/issues/622) - Collecting Document URIs - queryAll api.
+- [#629](https://github.com/marklogic/node-client-api/issues/629) - Add a category option for reading only the contents of document(s).
+
+#### Improvements and Bug Fixes
+
+- [#599](https://github.com/marklogic/node-client-api/issues/599) - Optic fromSPARQL method support options parameter - Server release 10.0-8 or above required.
+- [#638](https://github.com/marklogic/node-client-api/issues/638) - (Documentation Fix) - Parameters "start" and "length" for graphs.sparql are renamed to "begin" and "end".
+- [#647](https://github.com/marklogic/node-client-api/issues/647) - QueryToReadAll on a Query with no results produces no response.
+
+
 ## 2.8.0
 #### New Functionality
 
-- [#621](https://github.com/marklogic/node-client-api/issues/621)- Data Movement in Node.js API - Ingesting Documents using writeAll api.
+- [#621](https://github.com/marklogic/node-client-api/issues/621) - Data Movement in Node.js API - Ingesting Documents using writeAll api.
 
 #### Improvements and Bug Fixes
 - [#270](https://github.com/marklogic/node-client-api/issues/270) - Calling methods on resources with arg list throws error
