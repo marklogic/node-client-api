@@ -9,8 +9,8 @@
 
 #### Improvements and Bug Fixes
 
-- [#599](https://github.com/marklogic/node-client-api/issues/599) - Expose the 3rd parameter of op.fromSPARQL.
-- [#638](https://github.com/marklogic/node-client-api/issues/638) - (Documentation Fix) - Parameters "start" and "length" have no effect for db.graphs.sparql call.
+- [#599](https://github.com/marklogic/node-client-api/issues/599) - Optic fromSPARQL method support options parameter - Server release 10.0-8 or above required.
+- [#638](https://github.com/marklogic/node-client-api/issues/638) - (Documentation Fix) - Parameters "start" and "length" for graphs.sparql are renamed to "begin" and "end".
 - [#647](https://github.com/marklogic/node-client-api/issues/647) - QueryToReadAll on a Query with no results produces no response.
 
 
