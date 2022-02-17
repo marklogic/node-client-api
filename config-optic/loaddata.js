@@ -127,6 +127,10 @@ var dataFiles = [
       uri:'/optic/plan/test/planTriples.json',
       collections:['/optic/plan/test'],
       content:fs.createReadStream('./config-optic/qa-data/planTriples.json') 
+    },{
+      uri:'/optic/sparql/test/dedupdoc1.xml',
+      collections:['/optic/plan/test'],
+      content:fs.createReadStream('./config-optic/qa-data/dedupdoc1.xml') 
     }];
 
 var graphFiles1 = [
