@@ -9,6 +9,7 @@
 
 #### Improvements and Bug Fixes
 
+- [#599](https://github.com/marklogic/node-client-api/issues/599) - Expose the 3rd parameter of op.fromSPARQL.
 - [#638](https://github.com/marklogic/node-client-api/issues/638) - (Documentation Fix) - Parameters "start" and "length" have no effect for db.graphs.sparql call.
 - [#647](https://github.com/marklogic/node-client-api/issues/647) - QueryToReadAll on a Query with no results produces no response.
 
