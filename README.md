@@ -5,17 +5,18 @@ from Node.js applications.
 
 ## Features
 
-*  Writing, reading, patching, and deleting documents in JSON, XML, text, or binary formats
-*  Querying over documents including parsing string queries, extracting properties, and calculating facets
-*  Projecting tuples (like table rows) out of documents
-*  Single transactions and multi-statement transactions for database changes
-*  Writing, reading, and deleting graphs and executing SPARQL queries over graphs
-*  Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
-*  Basic, digest, certificate, Kerberos, and SAML authentication
-*  Import libraries as JavaScript mjs modules
-*  Data Services First - MarkLogic's support for microservices
-*  Optic query DSL, document matching, relevance, multiple groups
-*  Generate query based views, redaction on rows
+* Writing, reading, patching, and deleting documents in JSON, XML, text, or binary formats
+* Querying over documents including parsing string queries, extracting properties, and calculating facets
+* Projecting tuples (like table rows) out of documents
+* Single transactions and multi-statement transactions for database changes
+* Writing, reading, and deleting graphs and executing SPARQL queries over graphs
+* Extending the built-in services or evaluating or invoking your own JavaScript or XQuery on the server
+* Basic, digest, certificate, Kerberos, and SAML authentication
+* Import libraries as JavaScript mjs modules
+* Data Services First - MarkLogic's support for microservices
+* Optic query DSL, document matching, relevance, multiple groups
+* Generate query based views, redaction on rows
+* Data Movement SDK - move large amounts of data into, out of, or within a MarkLogic cluster
 
 ## Getting Started
 
