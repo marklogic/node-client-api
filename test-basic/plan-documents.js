@@ -75,6 +75,18 @@ describe('documents', function() {
         })
       .catch(done);
     });
+    it('sample by', function(done) {
+      execPlan(
+        p.fromView('opticUnitTest', 'musician', null, p.fragmentIdCol('musicianDocId'))
+          .sampleBy({limit:2})
+          )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(2);
+          done();
+        })
+      .catch(done);
+    });
     it('with xpath', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'musician', null, p.fragmentIdCol('musicianDocId'))
