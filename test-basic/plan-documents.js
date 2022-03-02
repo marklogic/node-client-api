@@ -50,6 +50,32 @@ describe('documents', function() {
       .catch(done);
     });
   });
+  describe('sample by', function() {
+    it('sample by limit 2 number', function(done) {
+      execPlan(
+        p.fromView('opticUnitTest', 'musician', null, p.fragmentIdCol('musicianDocId'))
+          .sampleBy({limit:2})
+          )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(2);
+          done();
+        })
+      .catch(done);
+    });
+    it('sample by no arguments', function(done) {
+       execPlan(
+        p.fromView('opticUnitTest', 'musician', null, p.fragmentIdCol('musicianDocId'))
+          .sampleBy({})
+          )
+        .then(function(response) {
+          const output = getResults(response);
+          should(output.length).equal(4);
+          done();
+        })
+      .catch(done);
+    });
+  });
   describe('join content', function() {
     it('with fragment id', function(done) {
       execPlan(
