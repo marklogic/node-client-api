@@ -22,7 +22,6 @@ const restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnectio
 const Stream = require('stream');
 const fs = require('fs');
 
-let readable = new Stream.Readable({objectMode: true});
 let transformStream = new Stream.PassThrough({objectMode: true});
 let uris = [];
 let transformName = 'WriteBatcherTest_transform';
@@ -42,7 +41,7 @@ describe('data movement transformAll', function() {
     });
 
     beforeEach(function (done) {
-        readable = new Stream.Readable({objectMode: true});
+        let readable = new Stream.Readable({objectMode: true});
         transformStream = new Stream.PassThrough({objectMode: true});
         for(let i=0; i<100; i++) {
             const temp = {
@@ -148,8 +147,6 @@ describe('data movement transformAll', function() {
             onBatchError: ((progress, urisList, error)=>{
                 urisList[0].should.equal('invalid');
                 error.toString().should.equal('Error: Invalid Request');
-                onBatchErrorStream = new Stream.PassThrough({objectMode: true});
-                onBatchErrorStream.push(null);
                 return uris;
             }),
             onCompletion: ((summary) => {
