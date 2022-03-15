@@ -103,32 +103,6 @@ describe('documents', function() {
                 })
                 .catch(done);
         });
-        it('group-bucket-3', function (done) {
-            execPlan(
-                p.fromLiterals([
-
-                    {"r": 1, "c1": "a", "c2": 1, "c3": "m"},
-                    {"r": 2, "c1": "b", "c2": 1},
-                    {"r": 3, "c1": "a", "c3": "n"},
-                    {"r": 4, "c2": 3, "c3": 0},
-                    {"r": 5, "c1": "b"},
-                    {"r": 6, "c2": 5},
-                    {"r": 7, "c3": "p"},
-                    {"r": 8, "c1": "b", "c2": 1, "c3": "q"}
-
-                ])
-                    .groupToArrays(
-                        p.bucketGroup("rBucket", p.col("r"), [0, 8]),
-                        p.count("numRows")
-                    )
-            )
-                .then(function (response) {
-                    const output = getResults(response);
-                    should(output[0]['rBucket']['value'].length).equal(1);
-                    done();
-                })
-                .catch(done);
-        });
     });
 
     describe('sample by', function() {
