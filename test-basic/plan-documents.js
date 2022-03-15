@@ -50,7 +50,62 @@ describe('documents', function() {
       .catch(done);
     });
   });
-  describe('sample by', function() {
+    describe('group-bucket', function() {
+        it('group-bucket-1', function (done) {
+            execPlan(
+                p.fromLiterals([
+
+                    {"r": 1, "c1": "a", "c2": 1, "c3": "m"},
+                    {"r": 2, "c1": "b", "c2": 1},
+                    {"r": 3, "c1": "a", "c3": "n"},
+                    {"r": 4, "c2": 3, "c3": 0},
+                    {"r": 5, "c1": "b"},
+                    {"r": 6, "c2": 5},
+                    {"r": 7, "c3": "p"},
+                    {"r": 8, "c1": "b", "c2": 1, "c3": "q"}
+
+                ])
+                    .groupToArrays(
+                        p.bucketGroup("rBucket", p.col("r"), [2, 4]),
+                        p.count("numRows")
+                    )
+            )
+                .then(function (response) {
+                    const output = getResults(response);
+                    should(output[0]['rBucket']['value'].length).equal(3);
+                    done();
+                })
+                .catch(done);
+        });
+        it('group-bucket-2', function (done) {
+            execPlan(
+                p.fromLiterals([
+
+                    {"r": 1, "c1": "a", "c2": 1, "c3": "m"},
+                    {"r": 2, "c1": "b", "c2": 1},
+                    {"r": 3, "c1": "a", "c3": "n"},
+                    {"r": 4, "c2": 3, "c3": 0},
+                    {"r": 5, "c1": "b"},
+                    {"r": 6, "c2": 5},
+                    {"r": 7, "c3": "p"},
+                    {"r": 8, "c1": "b", "c2": 1, "c3": "q"}
+
+                ])
+                    .groupToArrays(
+                        p.bucketGroup("rBucket", p.col("r"), [0, 7]),
+                        p.count("numRows")
+                    )
+            )
+                .then(function (response) {
+                    const output = getResults(response);
+                    should(output[0]['rBucket']['value'].length).equal(2);
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('sample by', function() {
     it('sample by limit 2 number', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'musician', null, p.fragmentIdCol('musicianDocId'))
