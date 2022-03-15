@@ -26,6 +26,9 @@ let transformStream = new Stream.PassThrough({objectMode: true});
 let uris = [];
 let transformName = 'WriteBatcherTest_transform';
 let transformPath = './test-basic/data/transformAll_transform.js';
+const ctsQb = marklogic.ctsQueryBuilder;
+const q = marklogic.queryBuilder;
+const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/transformAll/'));
 
 describe('data movement transformAll', function() {
 
@@ -247,6 +250,39 @@ describe('data movement transformAll', function() {
                 err.toString().should.equal('Error: onBatchError should return null, empty array or a replacement array.');
                 done();
             });
+    });
+
+    it('should queryToTransformAll documents with onCompletion option', function(done){
+
+        dbWriter.documents.queryToTransformAll(query,{
+            transform: [transformName, {newValue:'transformedValue'}],
+            onCompletion:((summary) => {
+                summary.docsTransformedSuccessfully.should.be.equal(100);
+                summary.docsFailedToBeTransformed.should.be.equal(0);
+                summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                verifyDocs('transformedValue', done);
+            })
+        });
+    });
+
+    it('should queryToTransformAll documents with onCompletion, transform, concurrentRequests and transformStrategy as ignore',
+            done => {
+
+        dbWriter.documents.queryToTransformAll(query, {
+            transform: [transformName, {newValue:'transformedValue'}],
+            concurrentRequests : {multipleOf:'hosts', multiplier:4},
+            transformStrategy: 'ignore',
+            onCompletion: ((summary) => {
+                try {
+                    summary.docsTransformedSuccessfully.should.be.equal(100);
+                    summary.docsFailedToBeTransformed.should.be.equal(0);
+                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                    verifyDocs('initialValue', done);
+                } catch(err) {
+                    done(err);
+                }
+            })
+        });
     });
 });
 
