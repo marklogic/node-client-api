@@ -584,6 +584,20 @@ describe('document query', function(){
         })
       .catch(done);
     });
+    it('should get result estimate', function(done){
+      let estimate;
+      db.documents.query(
+          q.where(q.word('wordKey', 'matchWord1')), null, (resultEstimate)=>{
+            estimate = resultEstimate;
+          }
+      )
+          .result(function(response) {
+            response.length.should.equal(1);
+            estimate.should.equal('1');
+            done();
+          })
+          .catch(done);
+    });
     it('should get the query plan and permissions', function(done){
       db.documents.query(
         q.where(
