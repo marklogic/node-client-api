@@ -27,10 +27,11 @@ let removeStream = new Stream.PassThrough({objectMode: true});
 let uris = [];
 
 describe('data movement removeAllUris', function() {
-
+    this.timeout(15000);
     beforeEach(function (done) {
         let readable = new Stream.Readable({objectMode: true});
         removeStream = new Stream.PassThrough({objectMode: true});
+        uris = [];
         for(let i=0; i<100; i++) {
             const temp = {
                 uri: '/test/dataMovement/requests/removeAllUris/'+i+'.json',
