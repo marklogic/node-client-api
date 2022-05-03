@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var testHost = 'localhost';
+let testHost = 'localhost';
 
-var restPort     = '8015';
-var restAuthType = 'DIGEST';
+let restPort     = '8015';
+let restAuthType = 'DIGEST';
 
-var managePort     = '8002';
-var manageAuthType = 'DIGEST';
+let managePort     = '8002';
+let manageAuthType = 'DIGEST';
 
-var restAdminUser     = 'rest-admin';
-var restAdminPassword = 'x';
+let restAdminUser     = 'rest-admin';
+let restAdminPassword = 'x';
 
-var restReaderUser     = 'rest-reader';
+let restReaderUser     = 'rest-reader';
 var restReaderPassword = 'x';
 
-var restWriterUser     = 'rest-writer';
-var restWriterPassword = 'x';
+let restWriterUser     = 'rest-writer';
+let restWriterPassword = 'x';
 
-var restEvaluatorUser     = 'rest-evaluator';
-var restEvaluatorPassword = 'x';
+let restEvaluatorUser     = 'rest-evaluator';
+let restEvaluatorPassword = 'x';
 
-var restTemporalUser     = 'rest-temporal-writer';
-var restTemporalPassword = 'x';
+let restTemporalUser     = 'rest-temporal-writer';
+let restTemporalPassword = 'x';
 
-var testServerName = 'unittest-nodeapi';
+let testServerName = 'unittest-nodeapi';
 
-var testUser = 'test-user';
-var testPassword = 'x';
+let testUser = 'test-user';
+let testPassword = 'x';
+
+let tdeUser = 'tde-user';
+let tdePassword = 'x';
 
 // For SSL without client cert, use rejectUnauthorized: false
 module.exports = {
@@ -103,6 +106,14 @@ module.exports = {
         port:     restPort,
         user:     testUser,
         password: testPassword,
+        authType: restAuthType,
+        rejectUnauthorized: false
+    },
+    tdeConnection: {
+        host:     testHost,
+        port:     restPort,
+        user:     tdeUser,
+        password: tdePassword,
         authType: restAuthType,
         rejectUnauthorized: false
     }

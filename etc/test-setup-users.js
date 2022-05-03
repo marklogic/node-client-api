@@ -143,6 +143,29 @@ function setupUsers(manager, done) {
   }).
   then(function(response) {
     return manager.get({
+      endpoint: '/manage/v2/roles/'+encodeURIComponent('tde-User')
+    }).result();
+  }).
+  then(function(response) {
+    if (response.statusCode < 400) {
+      return this;
+    }
+    return manager.post({
+      endpoint: '/manage/v2/roles',
+      body: {
+        'role-name': 'tde-User',
+        description: 'test user to write tde to modules database',
+        role: ['tde-view', 'tde-admin','rest-writer'],
+        privilege: [{
+          'privilege-name': 'xdmp-eval-in',
+          action: 'http://marklogic.com/xdmp/privileges/xdmp-eval-in',
+          kind: 'execute'
+        }]
+      }
+    }).result();
+  }).
+  then(function(response) {
+    return manager.get({
       endpoint: '/manage/v2/users'
       }).result();
   }).
@@ -192,9 +215,17 @@ function setupUsers(manager, done) {
       description: 'test user to check the connection',
       password:    testconfig.testConnection.password
       };
+    userName = testconfig.tdeConnection.user;
+    requiredUsers[userName]  = {
+      role: 'tde-User',
+      'user-name': userName,
+      description: 'test user to write tde to modules database',
+      password:    testconfig.tdeConnection.password
+    };
 
     response.data['user-default-list']['list-items']['list-item'].
     forEach(function(user) {
+      console.log(user)
       userName = user.nameref;
       if (!valcheck.isUndefined(requiredUsers[userName])) {
         requiredUsers[userName] = undefined;
@@ -203,6 +234,7 @@ function setupUsers(manager, done) {
 
     var missingUsers = Object.keys(requiredUsers).map(function(key) {
       var user = requiredUsers[key];
+      console.log(user)
       if (!valcheck.isUndefined(user)) {
         return user;
       }
@@ -233,6 +265,7 @@ function addUser(manager, users, next, done) {
   }
 
   var userdef = users[next];
+  console.log(userdef)
   manager.post({
     endpoint: '/manage/v2/users',
     body: {

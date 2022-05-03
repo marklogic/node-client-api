@@ -425,6 +425,11 @@
         "yoctodelay": "^1.1.0"
       }
     },
+    "big-integer": {
+      "version": "1.6.51",
+      "resolved": "https://registry.npmjs.org/big-integer/-/big-integer-1.6.51.tgz",
+      "integrity": "sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg=="
+    },
     "binary-extensions": {
       "version": "1.13.1",
       "resolved": "https://registry.npmjs.org/binary-extensions/-/binary-extensions-1.13.1.tgz",
