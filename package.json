@@ -26,6 +26,7 @@
     "xpath"
   ],
   "dependencies": {
+    "big-integer": "^1.6.51",
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.1.0",
     "dicer": "^0.3.0",
