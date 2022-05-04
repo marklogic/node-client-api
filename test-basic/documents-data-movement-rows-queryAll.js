@@ -36,7 +36,7 @@ let uris = new Set();
 let result = [];
 const planFromBuilderTemplate = p.fromView('soccer', 'matches', '');
 
-describe('data movement queryAll', function() {
+describe('data movement rows-queryAll', function() {
     this.timeout(15000);
     before(function(done){
         const view = [
