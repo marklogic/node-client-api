@@ -26,7 +26,7 @@ let should = require('should');
 let fs = require('fs');
 
 describe('data movement writeAll', function(){
-
+    this.timeout(20000);
     beforeEach(function (done) {
         readable = new Stream.Readable({objectMode: true});
         uris = [];
