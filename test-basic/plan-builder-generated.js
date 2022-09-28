@@ -920,7 +920,7 @@ describe('plan builder', function() {
     it('geo.geohashDecode#1', function(done) {
         testPlan([p.xs.string("s01mtw")], p.geo.geohashDecode(p.col("1")))
           .then(function(response) { 
-            should(getResult(response).value).eql("[0.99975586, 1.9995117, 1.005249, 2.010498]");
+            should(getResult(response).value).eql("[0.9997558, 1.9995116, 1.005249, 2.010498]");
             done();
         }).catch(done);
     }); 
@@ -955,7 +955,7 @@ describe('plan builder', function() {
     it('geo.parseWkt#1', function(done) {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
           .then(function(response) { 
-            should(getResult(response).value).eql("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)");
+            should(getResult(response).value).eql("LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)");
             done();
         }).catch(done);
     }); 
