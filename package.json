@@ -10,7 +10,8 @@
     "doc": "gulp doc",
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
-    "test": "gulp test"
+    "test": "gulp test",
+    "preinstall": "npx npm-force-resolutions"
   },
   "keywords": [
     "marklogic",
@@ -28,11 +29,11 @@
   "dependencies": {
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.1.0",
-    "dicer": "^0.3.0",
+    "dicer": "^0.3.1",
     "duplexify": "^4.1.2",
-    "json-text-sequence": "^0.3.0",
+    "json-text-sequence": "^1.0.1",
     "multipart-stream": "^2.0.1",
-    "qs": "^6.10.1",
+    "qs": "^6.11.0",
     "through2": "^4.0.2",
     "www-authenticate": "^0.6.2"
   },
@@ -44,29 +45,34 @@
     "node": ">=14.0.0"
   },
   "devDependencies": {
-    "ajv": "^8.0.1",
+    "ajv": "^8.11.0",
     "ast-types": "^0.14.2",
-    "astring": "^1.7.0",
+    "astring": "^1.8.3",
     "bunyan": "^1.8.15",
-    "chai": "^4.3.4",
-    "core-util-is": "^1.0.2",
+    "chai": "^4.3.6",
+    "core-util-is": "^1.0.3",
     "gulp": "^4.0.2",
     "gulp-jsdoc3": "^3.0.0",
     "gulp-jshint": "^2.1.0",
     "gulp-mocha": "^8.0.0",
     "intercept-stdout": "^0.1.2",
-    "jsdoc": "^3.6.6",
-    "jshint": "^2.12.0",
-    "mocha": "^8.3.0",
-    "moment": "^2.29.1",
+    "jsdoc": "^3.6.11",
+    "jshint": "^2.13.5",
+    "mocha": "^10.0.0",
+    "moment": "^2.29.4",
     "read": "^1.0.7",
-    "sanitize-html": "^2.3.3",
     "should": "^13.2.3",
     "stream-to-array": "^2.3.0",
-    "winston": "^3.3.3"
+    "winston": "^3.8.2"
   },
   "optionalDependencies": {
-    "kerberos": "^1.1.4",
-    "vinyl": "^2.2.1"
+    "kerberos": "^2.0.1",
+    "vinyl": "^3.0.0"
+  },
+  "resolutions": {
+    "glob-parent": "^6.0.2",
+    "nanoid": "^4.0.0",
+    "simple-get": "^4.0.1",
+    "sanitize-html": "^2.7.2"
   }
 }
