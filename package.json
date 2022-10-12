@@ -11,7 +11,7 @@
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
     "test": "gulp test",
-    "preinstall": "npx npm-force-resolutions"
+    "preinstall": "yes | npx npm-force-resolutions"
   },
   "keywords": [
     "marklogic",
