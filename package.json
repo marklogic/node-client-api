@@ -27,10 +27,10 @@
     "xpath"
   ],
   "dependencies": {
+    "@fastify/busboy": "^1.1.0",
     "big-integer": "^1.6.51",
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.1.0",
-    "dicer": "^0.3.1",
     "duplexify": "^4.1.2",
     "json-text-sequence": "^1.0.1",
     "multipart-stream": "^2.0.1",
