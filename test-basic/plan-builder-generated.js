@@ -918,9 +918,9 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('geo.geohashDecode#1', function(done) {
-        testPlan([p.xs.string("s01mtw")], p.geo.geohashDecode(p.col("1")))
+        testPlan([p.xs.string("abc")], p.geo.geohashDecode(p.col("1")))
           .then(function(response) { 
-            should(getResult(response).value).eql("[0.9997558, 1.9995116, 1.005249, 2.010498]");
+            should(getResult(response).value).eql("[-90, -180, 90, 180]");
             done();
         }).catch(done);
     }); 
@@ -2104,6 +2104,27 @@ describe('plan builder', function() {
         testPlan([p.xs.string("a")], p.xdmp.type(p.col("1")))
           .then(function(response) { 
             should(String(getResult(response).value).replace(/^ /, '')).equal('string');
+            done();
+        }).catch(done);
+    }); 
+    it('xdmp.unquote#1', function(done) {
+        testPlan([p.xs.string("abc")], p.xdmp.unquote(p.col("1")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
+            done();
+        }).catch(done);
+    }); 
+    it('xdmp.unquote#2', function(done) {
+        testPlan([p.xs.string("abc"), p.xs.string("abc")], p.xdmp.unquote(p.col("1"), p.col("2")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
+            done();
+        }).catch(done);
+    }); 
+    it('xdmp.unquote#3', function(done) {
+        testPlan([p.xs.string("abc"), p.xs.string("abc"), p.xs.string("abc")], p.xdmp.unquote(p.col("1"), p.col("2"), p.col("3")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
