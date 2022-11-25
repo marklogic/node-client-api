@@ -175,11 +175,13 @@ describe('triples', function() {
         should(output[0].datastore.value).equal('/datastore/id#A');
         should(output[0].title.value).equal('The A datastore');
         should(output[0].sourceDocCheck.value).equal(true);
-        should.not.exist(output[0].sourceDocId);
+        should.exist(output[0].sourceDocId);
+        should(output[0].sourceDocId.value).containEql('http://marklogic.com/fragment');
         should(output[1].datastore.value).equal('/datastore/id#B');
         should(output[1].title.value).equal('The B datastore');
         should(output[1].sourceDocCheck.value).equal(true);
-        should.not.exist(output[1].sourceDocId);
+        should.exist(output[1].sourceDocId);
+        should(output[1].sourceDocId.value).containEql('http://marklogic.com/fragment');
         done();
         })
       .catch(done);
