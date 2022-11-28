@@ -26,6 +26,10 @@ using [npm](https://www.npmjs.com/package/marklogic):
 ```
 npm install marklogic --save
 ```
+For Windows OS please use the below for Node Client 2.9.1: 
+```
+npm install marklogic --save --ignore-scripts
+```
 
 With the marklogic package installed, the following inserts two documents in a
 collection into the Documents database using MarkLogic's built-in REST server
