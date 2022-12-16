@@ -2108,23 +2108,9 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('xdmp.unquote#1', function(done) {
-        testPlan([p.xs.string("abc")], p.xdmp.unquote(p.col("1")))
+        testPlan([p.xs.string("[123]")], p.xdmp.unquote(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
-            done();
-        }).catch(done);
-    }); 
-    it('xdmp.unquote#2', function(done) {
-        testPlan([p.xs.string("abc"), p.xs.string("abc")], p.xdmp.unquote(p.col("1"), p.col("2")))
-          .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
-            done();
-        }).catch(done);
-    }); 
-    it('xdmp.unquote#3', function(done) {
-        testPlan([p.xs.string("abc"), p.xs.string("abc"), p.xs.string("abc")], p.xdmp.unquote(p.col("1"), p.col("2"), p.col("3")))
-          .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
+            should(getResult(response).value).eql([123]);
             done();
         }).catch(done);
     }); 
