@@ -116,5 +116,13 @@ module.exports = {
         password: tdePassword,
         authType: restAuthType,
         rejectUnauthorized: false
+    },
+    restWriterConnectionWithBasePath: {
+        host:     testHost,
+        port:     restPort,
+        user:     restWriterUser,
+        password: restWriterPassword,
+        authType: restAuthType,
+        basePath: ''
     }
 };
