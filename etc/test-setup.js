@@ -67,6 +67,17 @@ const moduleFiles = [
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
     ],
     content:fs.createReadStream('./etc/data/employees.tdej')
+  }, { uri:'/etc/optic/unnestView.tdej',
+    contentType:'application/json',
+    collections:['http://marklogic.com/xdmp/tde'],
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/unnestView.tdej')
   }];
 
 const dataFiles = [
