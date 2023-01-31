@@ -44,7 +44,7 @@ describe('basePath tests', function() {
             .result(function(response){})
             .catch(err=>
             {
-                assert(err.toString().includes('path: invalid/v1/documents'));
+                assert(err.toString().includes('path: /invalid/v1/documents'));
                 done();
             });
     });
@@ -68,7 +68,7 @@ describe('basePath tests', function() {
             .result(function(response){})
             .catch(err=>
             {
-                assert(err.toString().includes('path: invalid/v1/documents'));
+                assert(err.toString().includes('path: /invalid/v1/documents'));
                 done();
             });
     });
@@ -81,7 +81,7 @@ describe('basePath tests', function() {
             .catch(err=>
             {
                 try{
-                    assert(err.toString().includes('path: /invalid//v1/documents'));
+                    assert(err.toString().includes('path: //invalid//v1/documents'));
                     done();
                 } catch(err){
                     done(err);
