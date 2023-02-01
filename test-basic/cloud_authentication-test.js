@@ -16,6 +16,8 @@
 
 const marklogic = require('../');
 let assert = require('assert');
+const testconfig = require("../etc/test-config");
+const mlutil = require("../lib/mlutil");
 
 describe('cloud-authentication tests', function() {
     it('should throw error without apiKey.', function(done){
@@ -27,6 +29,21 @@ describe('cloud-authentication tests', function() {
         } catch(error) {
             assert(error.toString().includes('apiKey needed for MarkLogic cloud authentication.'));
             done();
+        }
+    });
+
+    it('basePath and database should be included in the endpoint', function(done){
+        testconfig.restWriterConnectionWithBasePath.basePath = '//invalid//';
+        testconfig.restWriterConnectionWithBasePath.database = 'test-database';
+        testconfig.restWriterConnectionWithBasePath.authType = 'cloud';
+        testconfig.restWriterConnectionWithBasePath.apiKey = 'apiKey';
+        const returnValue = mlutil.databaseParam(testconfig.restWriterConnectionWithBasePath,
+            'test-endpoint','&');
+        try {
+            assert(returnValue.toString() === '//invalid/test-endpoint&database=test-database');
+            done();
+        } catch(error){
+            done(error);
         }
     });
 });
