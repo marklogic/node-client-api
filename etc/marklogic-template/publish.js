@@ -12,7 +12,7 @@ var template = require('jsdoc/template'),
   _ = require('underscore'),
   path = require('jsdoc/path'),
 
-  taffy = require('taffydb').taffy,
+  taffy = require('@jsdoc/salty').taffy,
   handle = require('jsdoc/util/error').handle,
   helper = require('jsdoc/util/templateHelper'),
   moment = require("moment"),
@@ -459,7 +459,7 @@ function buildNav(members) {
 }
 
 /**
- @param {TAFFY} taffyData See <http://taffydb.com/>.
+ @param {TAFFY} taffyData See <https://github.com/jsdoc/jsdoc/tree/main/packages/jsdoc-salty>.
  @param {object} opts
  @param {Tutorial} tutorials
  */
