@@ -2,8 +2,8 @@
   "author": "MarkLogic",
   "name": "marklogic",
   "description": "The official MarkLogic Node.js client API.",
-  "homepage": "http://github.com/marklogic/node-client-api",
-  "version": "2.10.0",
+  "homepage": "https://github.com/marklogic/node-client-api",
+  "version": "3.0.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "scripts": {
@@ -36,14 +36,15 @@
     "multipart-stream": "^2.0.1",
     "qs": "^6.11.0",
     "through2": "^4.0.2",
-    "www-authenticate": "^0.6.2"
+    "www-authenticate": "^0.6.2",
+    "@jsdoc/salty": "0.2.3"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/marklogic/node-client-api.git"
+    "url": "https://github.com/marklogic/node-client-api.git"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "ajv": "^8.11.0",
@@ -57,7 +58,6 @@
     "gulp-jshint": "^2.1.0",
     "gulp-mocha": "^8.0.0",
     "intercept-stdout": "^0.1.2",
-    "jsdoc": "^3.6.11",
     "jshint": "^2.13.5",
     "mocha": "^10.0.0",
     "moment": "^2.29.4",
@@ -71,10 +71,13 @@
     "vinyl": "^3.0.0"
   },
   "resolutions": {
-    "glob-parent": "^6.0.2",
-    "nanoid": "^3.1.31",
-    "simple-get": "^4.0.1",
-    "sanitize-html": "^2.7.2",
-    "minimatch": "^5.1.0"
+    "glob-parent": "6.0.2",
+    "nanoid": "3.1.31",
+    "simple-get": "4.0.1",
+    "sanitize-html": "2.7.2",
+    "minimatch": "5.1.0"
+  },
+  "overrides": {
+    "jsdoc": "4.0.0"
   }
 }
