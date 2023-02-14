@@ -25,15 +25,18 @@ pipeline{
     triggers{
         parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
     }
+    parameters{
+          booleanParam(name: 'regressions', defaultValue: false, description: 'indicator if build is for regressions')
+    }
     options {
         checkoutToSubdirectory 'node-client-api'
         buildDiscarder logRotator(artifactDaysToKeepStr: '7', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '10')
       }
-      environment{
+    environment{
           NODE_HOME_DIR= "/home/builder/nodeJs/node-v18.14.0-linux-x64"
           DMC_USER     = credentials('MLBUILD_USER')
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
-        }
+    }
     stages{
         stage('runtests-11.0.0'){
             steps{
