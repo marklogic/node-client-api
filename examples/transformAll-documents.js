@@ -31,11 +31,11 @@ for(let i=0; i<100; i++) {
 }
 transformStream.push(null);
 
-transformStream.pipe(dbWriter.documents.transformAll({
+dbWriter.documents.transformAll(transformStream,{
     transform: [transformName, {'field_in_the_document':'Transformation_needed'}],
     onCompletion: ((summary) => {
         console.log(summary.docsTransformedSuccessfully+' documents were transformed successfully.');
         console.log(summary.docsFailedToBeTransformed+' documents failed to be transformed.');
         console.log('Time taken was '+summary.timeElapsed+' milliseconds.');
     })
-}));
+});

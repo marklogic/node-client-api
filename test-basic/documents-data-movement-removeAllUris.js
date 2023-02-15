@@ -45,16 +45,16 @@ describe('data movement removeAllUris', function() {
         readable.push(null);
         removeStream.push(null);
 
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
             onCompletion: ((summary) => {
                 done();
             })
-        }));
+        });
 
     });
 
     it('should removeAllUris documents with onCompletion, concurrentRequests options', done => {
-        removeStream.pipe(dbWriter.documents.removeAllUris({
+        dbWriter.documents.removeAllUris(removeStream,{
             concurrentRequests : {multipleOf:'hosts', multiplier:4},
             onCompletion: ((summary) => {
                 try {
@@ -66,12 +66,12 @@ describe('data movement removeAllUris', function() {
                     done(err);
                 }
             })
-        }));
+        });
     });
 
     it('should removeAllUris documents with onBatchSuccess and batchSize options', done => {
 
-        removeStream.pipe(dbWriter.documents.removeAllUris({
+        dbWriter.documents.removeAllUris(removeStream, {
             onBatchSuccess: (function(progress, documents) {
                 progress.docsRemovedSuccessfully.should.be.greaterThanOrEqual(10);
                 progress.docsFailedToBeRemoved.should.be.equal(0);
@@ -85,15 +85,15 @@ describe('data movement removeAllUris', function() {
                 summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 verifyDocs(done);
             })
-        }));
+        });
     });
 
     it('should throw error with invalid batchSize and inputKind as array option', function(done){
         try{
-            removeStream.pipe(dbWriter.documents.removeAllUris({
+            dbWriter.documents.removeAllUris(removeStream,{
                 batchSize:10,
                 inputKind:'array'
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: batchSize not expected when inputKind is array.');
             done();
@@ -108,7 +108,7 @@ describe('data movement removeAllUris', function() {
         }
         removeStream.push(null);
 
-        removeStream.pipe(dbWriter.documents.removeAllUris({
+        dbWriter.documents.removeAllUris(removeStream,{
             inputKind:'aRRaY',
             onBatchSuccess: (function(progress, documents) {
                 try{
@@ -127,14 +127,14 @@ describe('data movement removeAllUris', function() {
                     done(error);
                 }
             })
-        }));
+        });
     });
 
     it('should throw error with invalid concurrentRequests option', function(done){
         try{
-            removeStream.pipe(dbWriter.documents.removeAllUris({
+            dbWriter.documents.removeAllUris(removeStream,{
                 concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
             done();
@@ -172,8 +172,6 @@ describe('data movement removeAllUris', function() {
         });
 
 });
-
-
 
 function verifyDocs(done){
     dbWriter.documents.read(uris)

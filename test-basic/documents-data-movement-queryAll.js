@@ -31,6 +31,7 @@ const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/quer
 
 describe('data movement queryAll', function() {
     before(function (done) {
+        this.timeout(5000);
         readable = new Stream.Readable({objectMode: true});
         uris = [];
         for(let i=0; i<10000; i++) {
@@ -43,11 +44,11 @@ describe('data movement queryAll', function() {
             uris.push(temp.uri);
         }
         readable.push(null);
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable, {
             onCompletion: ((summary) => {
                 done();
             })
-        }));
+        });
     });
 
     after((function(done){

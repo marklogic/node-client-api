@@ -29,11 +29,11 @@ for(let i=0; i<100; i++) {
 }
 removeAllUrisStream.push(null);
 
-removeAllUrisStream.pipe(dbWriter.documents.removeAllUris({
+dbWriter.documents.removeAllUris(removeAllUrisStream,{
     concurrentRequests : {multipleOf:'hosts', multiplier:4},
     onCompletion: ((summary) => {
         console.log(summary.docsRemovedSuccessfully+' documents were removed successfully.');
         console.log(summary.docsFailedToBeRemoved+' documents failed to be removed.');
         console.log('Time taken was '+summary.timeElapsed+' milliseconds.');
     })
-}));
+});

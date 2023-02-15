@@ -33,11 +33,11 @@ for(let i=0; i<100; i++) {
 }
 uriStream.push(null);
 
-uriStream.pipe(dbWriter.documents.readAll({
+dbWriter.documents.readAll(uriStream,{
     categories: ['permissions', 'metadataValues', 'collections', 'quality'],
     onCompletion: ((summary) => {
         console.log(summary.docsReadSuccessfully+' documents were read successfully.');
         console.log(summary.docsFailedToBeRead+' documents failed to be read.');
         console.log('Time taken was '+summary.timeElapsed+' milliseconds.');
     })
-}));
+});

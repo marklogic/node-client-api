@@ -70,11 +70,11 @@ describe('queryAll-tests-1', function() {
             multiDocreadable.push(jsonFN1);
         }
         multiDocreadable.push(null);
-        multiDocreadable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(multiDocreadable, {
             onCompletion: ((summary) => {
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
             })
-        })); // End of pipe to writeAll - single byte
+        }); // End of pipe to writeAll - single byte
         setTimeout(()=>{done();}, 1000);
     });
 

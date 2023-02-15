@@ -48,11 +48,11 @@ describe('Functional tests - data movement removeAllUris', function() {
         readable.push(null);
         removeStream.push(null);
 
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
             onCompletion: ((summary) => {
                 done();
             })
-        }));
+        });
 
     });
 
@@ -62,7 +62,7 @@ describe('Functional tests - data movement removeAllUris', function() {
         removeStream.push('nonExistent.json');
         removeStream.push('nonExistent2.json');
         removeStream.push(null);
-        removeStream.pipe(dbWriter.documents.removeAllUris({
+        dbWriter.documents.removeAllUris(removeStream,{
             concurrentRequests : {multipleOf:'hosts', multiplier:4},
             onCompletion: ((summary) => {
                 summary.docsRemovedSuccessfully.should.be.equal(2);
@@ -70,13 +70,13 @@ describe('Functional tests - data movement removeAllUris', function() {
                 summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 done();
             })
-        }));
+        });
     });
 
     it('should not removeAllUris with onBatchError returning null', function(done){
 
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-        removeStream.pipe(testUser.documents.removeAllUris({
+        testUser.documents.removeAllUris(removeStream,{
 
             onBatchError: ((progressSoFar, documents, error) => {
                 error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -95,14 +95,14 @@ describe('Functional tests - data movement removeAllUris', function() {
                     .catch(done)
                     .catch(err=> done(err));
             })
-        }));
+        });
     });
 
     it('should throw error with invalid batchSize', function(done){
         try{
-            removeStream.pipe(dbWriter.documents.removeAllUris({
+            dbWriter.documents.removeAllUris(removeStream,{
                 batchSize:-1
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid batchSize. batchSize cannot be less than or equal to 0.');
             done();
@@ -113,7 +113,7 @@ describe('Functional tests - data movement removeAllUris', function() {
 
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-        const remove = testUser.documents.removeAllUris({
+        const remove = testUser.documents.removeAllUris(removeStream,{
 
             onBatchError: ((progressSoFar, documents, error) => {
                 error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -137,13 +137,12 @@ describe('Functional tests - data movement removeAllUris', function() {
         remove.on('error', (err) => {
             err.message.should.be.equal('Stop Processing');
         });
-        removeStream.pipe(remove);
     });
 
     it('should throw error with invalid onBatchError option', function(done){
 
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-        const remove = (testUser.documents.removeAllUris({
+        const remove = (testUser.documents.removeAllUris(removeStream,{
 
             onBatchError: ((progressSoFar, documents, error) => {
                 error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -168,7 +167,6 @@ describe('Functional tests - data movement removeAllUris', function() {
                 })
                 .catch(err=> done(err));
         });
-        removeStream.pipe(remove);
     });
 
     it('should queryToRemoveAll documents with onBatchError returning empty array',

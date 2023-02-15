@@ -32,7 +32,7 @@ for(let i=0; i<1000; i++) {
 }
 readable.push(null);
 
-readable.pipe(dbWriter.documents.writeAll({
+dbWriter.documents.writeAll(readable,{
 
     onCompletion: ((summary) => {
         console.log(summary.docsWrittenSuccessfully+' documents were written successfully.');
@@ -46,4 +46,4 @@ readable.pipe(dbWriter.documents.writeAll({
         console.log('Time taken was '+progressSoFar.timeElapsed+' milliseconds.');
         return null;
     })
-}));
+});

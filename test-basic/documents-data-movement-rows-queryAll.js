@@ -72,7 +72,7 @@ describe('data movement rows-queryAll', function() {
                     readable.push(temp);
                 }
                 readable.push(null);
-                readable.pipe(dbWriter.documents.writeAll({
+                dbWriter.documents.writeAll(readable,{
                     defaultMetadata: {
                         collections: ['source1'],
                         permissions: [
@@ -82,7 +82,7 @@ describe('data movement rows-queryAll', function() {
                     },onCompletion: ((summary) => {
                         done();
                     })
-                }));
+                });
             });
     });
 
