@@ -106,13 +106,13 @@ describe('Update doc and readAll with Snapshot', function() {
             inputContents.push(tempJson.content);
         }
         jsonDocreadable.push(null);
-        jsonDocreadable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(jsonDocreadable,{
             onCompletion: ((summary) => {
                 //console.log('OnCompleteion summary ' + summary.docsWrittenSuccessfully);
                 setTimeout(()=>{var i = 0; i++;}, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1000);
             })
-        })); // End of pipe to writeAll
+        }); // End of pipe to writeAll
         // Use uriStream as the input to readAll()
         uriStream = new stream.PassThrough({objectMode: true});
         inputJsonUris.forEach(uri => uriStream.push(uri));
@@ -159,11 +159,11 @@ describe('Update doc and readAll with Snapshot', function() {
             //console.log('value is:', memStore.before.toString());
             expect(memStore.before.toString()).to.equal(exptdResult);
         });
-        uriStream.pipe(dbWriter.documents.readAll({
+        dbWriter.documents.readAll(uriStream,{
             inputkind: 'Array',
             consistentSnapshot:true,
             batch: 50
-        })).pipe(filteredSnapshot).pipe(mlqawstream);/* Add.pipe(process.stdout) to debug */
+        }).pipe(filteredSnapshot).pipe(mlqawstream);/* Add.pipe(process.stdout) to debug */
         done();
     });
 });

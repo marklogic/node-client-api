@@ -113,12 +113,12 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
             inputContents.push(tempJson.content);
         }
         jsonDocreadable.push(null);
-        jsonDocreadable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(jsonDocreadable, {
             onCompletion: ((summary) => {
                 setTimeout(()=>{var i = 0; i++;}, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(100);
             })
-        })); // End of pipe to writeAll
+        }); // End of pipe to writeAll
         // Use uriStream as the input to readAll()
         uriStream = new stream.PassThrough({objectMode: true});
         inputJsonUris.forEach(uri => uriStream.push(uri));
@@ -167,7 +167,7 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
             //console.log( memStore.after.toString());
             expect(memStore.after.toString()).to.equal(exptdResult);
         });
-        var readFn = dbWriter.documents.readAll({
+        var readFn = dbWriter.documents.readAll(uriStream, {
             inputkind: 'Array',
             consistentSnapshot:true,
             batch: 10
@@ -197,7 +197,7 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
             isUpdateDone = true;
         }
         });
-        uriStream.pipe(readFn).pipe(filteredSnapshot).pipe(mlqawstreamAft); /*Add.pipe(process.stdout) to debug */
+        readFn.pipe(filteredSnapshot).pipe(mlqawstreamAft); /*Add.pipe(process.stdout) to debug */
         done();
     });
 
@@ -231,10 +231,10 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
                         let inputStream = new stream.PassThrough({objectMode: true});
                         inputStream.push('/data/dmsdk/upd-readall/1.json');
                         inputStream.push(null);
-                        streamToArray(inputStream.pipe(dbWriter.documents.readAll({
+                        streamToArray(dbWriter.documents.readAll(inputStream, {
                                 batchSize:10,
                                 consistentSnapshot: timestampValue,
-                            })),
+                            }),
                             function (err, arr) {
                                 if (err) {
                                     done(err);

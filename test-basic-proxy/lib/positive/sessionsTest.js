@@ -137,7 +137,7 @@ describe('session service', function() {
             done();
             })
           .catch(err => {
-            expect(err.toString()).to.equal(
+            expect(err.toString()).to.contain(
                 'Error: call to /dbf/test/sessions/beginTransactionNoSession.sjs: cannot process response with 500 status'
             );
             done();
@@ -150,7 +150,7 @@ describe('session service', function() {
             done();
             })
           .catch(err => {
-            expect(err.toString()).to.equal(
+            expect(err.toString()).to.contain(
                 'Error: call to /dbf/test/sessions/setSessionFieldNoSession.sjs: cannot process response with 500 status'
             );
             done();

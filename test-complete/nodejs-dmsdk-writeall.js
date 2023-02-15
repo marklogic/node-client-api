@@ -95,7 +95,7 @@ describe('DMSDK writeAll-tests', function() {
             }
             multiDocreadable.push(null);
 
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
+            dbWriter.documents.writeAll(multiDocreadable, {
                 onBatchSuccess: ((progressSoFar, documents) => {
                     try {
                         //console.log('Progress ' + progressSoFar.docsWrittenSuccessfully);
@@ -112,7 +112,7 @@ describe('DMSDK writeAll-tests', function() {
                     summary.docsFailedToBeWritten.should.be.equal(0);
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 })
-            })); // End of pipe to writeAll
+            }); // End of pipe to writeAll
             setTimeout(()=>{done();}, 3000);
         }); // End of test case
 
@@ -135,7 +135,7 @@ describe('DMSDK writeAll-tests', function() {
             multiDocreadable.push(jsonFN1);
             multiDocreadable.push(null);
             //console.log('Contents ' + jsonFN1.content);
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
+            dbWriter.documents.writeAll(multiDocreadable, {
                 onBatchSuccess: ((progressSoFar, documents) => {
                     try {
                         progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
@@ -146,12 +146,13 @@ describe('DMSDK writeAll-tests', function() {
                     }
                 }),
                 onCompletion: ((summary) => {
+                    console.log(summary)
                     summary.docsWrittenSuccessfully.should.be.equal(1);
                     summary.docsFailedToBeWritten.should.be.equal(0);
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 })
 
-            }));
+            });
             setTimeout(()=>{done();}, 3000);
         });
 
@@ -172,7 +173,7 @@ describe('DMSDK writeAll-tests', function() {
             }
             multiDocreadable.push(null);
 
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
+            dbWriter.documents.writeAll(multiDocreadable,{
                 transform: [transformName, {title: 'new title', myInt: 2, myBool: true}],
                 onBatchSuccess: ((progressSoFar, documents) => {
                     try {
@@ -190,7 +191,7 @@ describe('DMSDK writeAll-tests', function() {
                     summary.docsFailedToBeWritten.should.be.equal(0);
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 })
-            })); // End of pipe to writeAll transform
+            }); // End of pipe to writeAll transform
             setTimeout(()=>{done();}, 3000);
         }); // End of test case
 
@@ -231,7 +232,7 @@ describe('DMSDK writeAll-tests', function() {
                 batchuris.push(temp.uri);
             }
             multiDocreadable.push(null);
-            multiDocreadable.pipe(dbWriter.documents.writeAll({
+            dbWriter.documents.writeAll(multiDocreadable,{
 
                 batchSize:3,
                 onBatchSuccess: ((progressSoFar, documents) => {
@@ -248,7 +249,7 @@ describe('DMSDK writeAll-tests', function() {
                     summary.docsFailedToBeWritten.should.be.equal(0);
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 })
-            })); // End of pipe to writeAll transform
+            }); // End of pipe to writeAll transform
             setTimeout(()=>{done();}, 3000);
         }); // End of test case
 

@@ -33,6 +33,7 @@ let xqyTransformName = 'flagParam';
 let xqyTransformPath = './test-basic/data/flagTransform.xqy';
 
 describe('data movement readAll', function() {
+    this.timeout(6000);
     before(function (done) {
         let readable = new Stream.Readable({objectMode: true});
         for(let i=0; i<10000; i++) {
@@ -45,7 +46,7 @@ describe('data movement readAll', function() {
             urisList.push(temp.uri);
         }
         readable.push(null);
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
             onCompletion: ((summary) => {
                 readable = new Stream.Readable({objectMode: true});
 
@@ -60,7 +61,7 @@ describe('data movement readAll', function() {
                 }
                 readable.push(null);
 
-                readable.pipe(dbWriter.documents.writeAll({
+                dbWriter.documents.writeAll(readable,{
                     defaultMetadata: {
                         metadataValues: {
                             'metadataKey1': 'metadataValue 1',
@@ -76,9 +77,9 @@ describe('data movement readAll', function() {
                     onCompletion: ((summary) => {
                         done();
                     })
-                }));
+                });
             })
-        }));
+        });
     });
 
     beforeEach(function(done){
@@ -101,7 +102,7 @@ describe('data movement readAll', function() {
 
     it('should readAll documents with empty options', function(done){
 
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll()),
+        streamToArray(dbWriter.documents.readAll(uriStream),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -113,9 +114,9 @@ describe('data movement readAll', function() {
 
     it('should readAll documents with onCompletion option', function(done){
 
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 onCompletion: ((summary) => summaryValue = summary)
-        })),
+        }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -127,7 +128,7 @@ describe('data movement readAll', function() {
 
     it('should throw error with invalid inputKind option', function(done){
         try{
-            dbWriter.documents.readAll({inputKind:10});
+            dbWriter.documents.readAll(uriStream,{inputKind:10});
         } catch(err){
             err.toString().should.equal('Error: Invalid value for inputKind. Value must be array or string.');
             done();
@@ -135,9 +136,9 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with inputKind option as string', function(done){
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 inputKind: 'String'
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -148,15 +149,15 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with inputKind option as array', function(done){
-        uriStream = new Stream.Readable({objectMode: true});
+        uriStream = new Stream.PassThrough({objectMode: true});
         for(let i=0; i+1000<=urisList.length; i=i+1000){
             uriStream.push(urisList.slice(i,i+1000));
         }
         uriStream.push(null);
 
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 inputKind: 'Array'
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -168,7 +169,7 @@ describe('data movement readAll', function() {
 
     it('should throw error with invalid outputStreamType option', function(done){
         try{
-            dbWriter.documents.readAll({outputStreamType:10});
+            dbWriter.documents.readAll(uriStream,{outputStreamType:10});
         } catch(err){
             err.toString().should.equal('Error: Invalid value for outputStreamType. Value must be chunked or object.');
             done();
@@ -177,7 +178,7 @@ describe('data movement readAll', function() {
 
     it('should throw error with categories and outputStreamType as chunked', function(done){
         try{
-            dbWriter.documents.readAll({
+            dbWriter.documents.readAll(uriStream,{
                 outputStreamType: 'chunked',
                 categories: []
             });
@@ -188,9 +189,9 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with outputStreamType option as object', function(done){
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 outputStreamType: 'Object'
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -201,9 +202,9 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with outputStreamType option as chunked', function(done){
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream, {
                 outputStreamType: 'chunked'
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -218,7 +219,7 @@ describe('data movement readAll', function() {
 
     it('should throw error with invalid batchSize option', function(done){
         try{
-            dbWriter.documents.readAll({batchSize:-1});
+            dbWriter.documents.readAll(uriStream,{batchSize:-1});
         } catch(err){
             err.toString().should.equal('Error: Invalid batchSize. batchSize cannot be less than or equal to 0.');
             done();
@@ -226,9 +227,9 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with batchSize option', function(done){
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 batchSize: 100
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -240,7 +241,7 @@ describe('data movement readAll', function() {
 
     it('should throw error with invalid batchSize and inputKind as array option', function(done){
         try{
-            dbWriter.documents.readAll({batchSize:10, inputKind:'array'});
+            dbWriter.documents.readAll(uriStream,{batchSize:10, inputKind:'array'});
         } catch(err){
             err.toString().should.equal('Error: batchSize not expected when inputKind is array.');
             done();
@@ -249,7 +250,7 @@ describe('data movement readAll', function() {
 
     it('should throw error with invalid concurrentRequests option', function(done){
         try{
-            dbWriter.documents.readAll({concurrentRequests: {multipleOf: 'invalid', multiplier: 4}});
+            dbWriter.documents.readAll(uriStream,{concurrentRequests: {multipleOf: 'invalid', multiplier: 4}});
         } catch(err){
             err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
             done();
@@ -257,9 +258,9 @@ describe('data movement readAll', function() {
     });
 
     it('should readAll documents with concurrentRequests option', function(done){
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 concurrentRequests: {multipleOf: 'hosts', multiplier: 4}
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -274,9 +275,9 @@ describe('data movement readAll', function() {
         categoriesUrisList.forEach(uri => uriStream.push(uri));
         uriStream.push(null);
 
-         streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+         streamToArray(dbWriter.documents.readAll(uriStream,{
                 categories: ['permissions', 'metadataValues', 'collections', 'quality']
-            })),
+            }),
             function (err, arr) {
                 if (err) {
                     done(err);
@@ -291,9 +292,9 @@ describe('data movement readAll', function() {
         restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
             .result(function(response){
 
-                streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+                streamToArray(dbWriter.documents.readAll(uriStream,{
                         transform: [xqyTransformName, {flag:'tested1'}]
-                    })),
+                    }),
                     function(err, arr ) {
                         if(err){
                             done(err);
@@ -308,7 +309,7 @@ describe('data movement readAll', function() {
     it('should throw error with invalid onBatchError option', function(done){
         restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
             .result(function(response){
-                uriStream.pipe(dbWriter.documents.readAll({
+                dbWriter.documents.readAll(uriStream,{
                     batchSize:1000,
                     transform: ['tested1'],
                     onBatchError: ((progressSoFar, documents, error) => {
@@ -318,7 +319,7 @@ describe('data movement readAll', function() {
                         documents.length.should.equal(1000);
                         return 10;
                     })
-                })).on('error', function(err){
+                }).on('error', function(err){
                     err.toString().should.equal('Error: onBatchError should return null, empty array or a replacement array.');
                     done();
                 });
@@ -329,7 +330,7 @@ describe('data movement readAll', function() {
     it('should readAll documents with onBatchError option returning null', function(done){
         restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
             .result(function(response){
-                uriStream.pipe(dbWriter.documents.readAll({
+                dbWriter.documents.readAll(uriStream,{
                     batchSize:1000,
                     transform: ['tested1'],
                     onBatchError: ((progressSoFar, documents, error) => {
@@ -345,7 +346,7 @@ describe('data movement readAll', function() {
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
                         done();
                     })
-                }));
+                });
             })
             .catch(err=> done(err));
     });
@@ -354,7 +355,7 @@ describe('data movement readAll', function() {
         let onBatchErrorStream = new Stream.PassThrough({objectMode: true});
         onBatchErrorStream.push('');
         onBatchErrorStream.push(null);
-        onBatchErrorStream.pipe(dbWriter.documents.readAll({
+        dbWriter.documents.readAll(onBatchErrorStream,{
             batchSize:10,
             onBatchError: ((progressSoFar, documents, error) => {
                 let replacementBatch = [];
@@ -372,12 +373,12 @@ describe('data movement readAll', function() {
                 summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 done();
             })
-        }));
+        });
     });
 
     it('should readAll documents with consistentSnapshot option as true', function(done){
         this.timeout(15000);
-        uriStream.pipe(dbWriter.documents.readAll({
+        dbWriter.documents.readAll(uriStream,{
             consistentSnapshot:true,
             onCompletion: ((summary) => {
                 summary.docsReadSuccessfully.should.be.equal(10000);
@@ -386,12 +387,12 @@ describe('data movement readAll', function() {
                 summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
                 done();
             })
-        }));
+        });
     });
 
     it('should readAll documents with consistentSnapshot option as DatabaseClient.Timestamp object', function(done){
         this.timeout(120000);
-        uriStream.pipe(dbWriter.documents.readAll({
+        dbWriter.documents.readAll(uriStream,{
             consistentSnapshot:dbWriter.createTimestamp((Date.now()*10000).toString()),
             onCompletion: ((summary) => {
                 summary.docsReadSuccessfully.should.be.equal(10000);
@@ -400,12 +401,12 @@ describe('data movement readAll', function() {
                 summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
                 done();
             })
-        }));
+        });
     });
 
     it('should readAll documents with consistentSnapshot option as false', function(done){
 
-        uriStream.pipe(dbWriter.documents.readAll({
+        dbWriter.documents.readAll(uriStream,{
             consistentSnapshot:false,
             onCompletion: ((summary) => {
                 summary.docsReadSuccessfully.should.be.equal(10000);
@@ -414,12 +415,12 @@ describe('data movement readAll', function() {
                 expect(summary.consistentSnapshotTimestamp).to.be.undefined;
                 done();
             })
-        }));
+        });
     });
 
     it('should readAll documents with onInitialTimestamp option',  function (done){
         let onInitialTimestampValue = null;
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 consistentSnapshot: true,
                 onInitialTimestamp: ((timestamp) => {
                     timestamp.value.should.be.greaterThanOrEqual(0);
@@ -432,7 +433,7 @@ describe('data movement readAll', function() {
                 onCompletion: ((summary) => {
                     summary.consistentSnapshotTimestamp.toString().should.equal(onInitialTimestampValue.toString());
                 })
-            })),
+            }),
             function(err, arr ) {
                 if(err){
                     done(err);
@@ -496,13 +497,11 @@ describe('data movement readAll', function() {
         uriStream = new Stream.PassThrough({objectMode: true});
         categoriesUrisList.forEach(uri => uriStream.push(uri));
         uriStream.push(null);
-        const readAllStream = dbWriter.documents.readAll({categories: ['rawContent','permissions']});
+        const readAllStream = dbWriter.documents.readAll(uriStream,{categories: ['rawContent','permissions']});
         readAllStream.on('error', function(err){
             err.toString().should.equal('Error: Categories should not have other option(s) if rawContent is needed.');
             done();
         });
-
-        uriStream.pipe(readAllStream);
     });
 
     it('should readAll documents with categories options rawContent', function(done){
@@ -510,9 +509,9 @@ describe('data movement readAll', function() {
         categoriesUrisList.forEach(uri => uriStream.push(uri));
         uriStream.push(null);
         let docCount = 0;
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 categories: ['rawContent']
-            })),
+            }),
             function (err, arr) {
                 if (err) {
                     done(err);

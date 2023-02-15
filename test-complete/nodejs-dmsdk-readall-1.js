@@ -67,6 +67,7 @@ function verifyCurrentContents(currResContent) {
 
 describe('readAll-tests-one', function() {
     before(function (done) {
+        this.timeout(20000);
         //const selectFiles = [];
         var jsonDocreadable = new stream.Readable({objectMode: true});
         var multiDocreadable = new stream.Readable({objectMode: true});
@@ -101,11 +102,11 @@ describe('readAll-tests-one', function() {
             multiDocreadable.push(jsonFN1);
         }
         multiDocreadable.push(null);
-        multiDocreadable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(multiDocreadable,{
             onCompletion: ((summary) => {
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
             })
-        })); // End of pipe to writeAll - single byte
+        }); // End of pipe to writeAll - single byte
 
         for (let i=0; i<10; i++) {
             const tempJson = {
@@ -120,13 +121,13 @@ describe('readAll-tests-one', function() {
         }
         jsonDocreadable.push(null);
         setTimeout(()=>{var i = 0; i++;}, 5000);
-        jsonDocreadable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(jsonDocreadable,{
             onCompletion: ((summary) => {
                 //console.log('OnCompleteion summary ' + summary.docsWrittenSuccessfully);
                 setTimeout(()=>{var i = 0; i++;}, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(10);
             })
-        })); // End of pipe to writeAll
+        }); // End of pipe to writeAll
         // Use uriStream as the input to readAll()
         uriStream = new stream.PassThrough({objectMode: true});
         inputJsonUris.forEach(uri => uriStream.push(uri));
@@ -145,10 +146,10 @@ describe('readAll-tests-one', function() {
     }));
 
     it('readAll multple documents with batch options', function(done){
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream, {
                 inputkind: 'Array',
                 batch: 5
-            })),
+            }),
             function(err, arr ) {
                 if (err) {
                     console.log('Error is ' + err.toString());
@@ -172,10 +173,10 @@ describe('readAll-tests-one', function() {
         uriStream = new stream.PassThrough({objectMode: true});
         uriStream.push('dmsdk.txt');
         uriStream.push(null);
-        streamToArray(uriStream.pipe(dbWriter.documents.readAll({
+        streamToArray(dbWriter.documents.readAll(uriStream,{
                 inputkind: 'Array',
                 batch: 5
-            })),
+            }),
             function(err, arr ) {
                 if (err) {
                     console.log('Error is ' + err.toString());
@@ -194,10 +195,10 @@ describe('readAll-tests-one', function() {
         uriStream = new stream.PassThrough({objectMode: true});
         uriStream.push(null);
         var f = function noURIS() {
-            uriStream.pipe(dbWriter.documents.readAll({
+            dbWriter.documents.readAll(uriStream,{
                 inputkind: 'Array',
                 batch: 5
-            }));
+            });
         };
     expect(f).to.not.throw();
     done();

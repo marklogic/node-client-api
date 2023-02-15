@@ -24,7 +24,7 @@ const TEAM_MEMBER_NAME_COLUMN = "teamMemberName";
 
 describe('test unnest function', function () {
 
-    before(function (done) {
+    beforeEach(function (done) {
 
         db.documents.remove(['/optic/test/office1.json'])
             .result(function(_response){

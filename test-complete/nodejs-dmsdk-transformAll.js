@@ -58,11 +58,11 @@ describe('data movement transformAll', function() {
         readable.push(null);
         transformStream.push(null);
 
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
             onCompletion: ((summary) => {
                 done();
             })
-        }));
+        });
 
     });
 
@@ -77,7 +77,7 @@ describe('data movement transformAll', function() {
 
     it('should transformAll documents with transform, onBatchSuccess and batchSize options', done => {
 
-        transformStream.pipe(dbWriter.documents.transformAll({
+        dbWriter.documents.transformAll(transformStream,{
             transform: [transformName, {newValue:'transformedValue'}],
             onBatchSuccess: (function(progress, documents) {
                 progress.docsTransformedSuccessfully.should.be.greaterThanOrEqual(20);
@@ -92,14 +92,14 @@ describe('data movement transformAll', function() {
                 summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 verifyDocs('transformedValue', done);
             })
-        }));
+        });
     });
 
     it('should throw error with missing transform name', function(done){
         try{
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 concurrentRequests: {multipleOf: 'hosts', multiplier: 4}
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: transform name needed while using transformAll api');
             done();
@@ -108,10 +108,10 @@ describe('data movement transformAll', function() {
 
     it('should throw error with invalid batchSize less than 0', function(done){
         try{
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 transform: [transformName, {newValue:'transformedValue'}],
                 batchSize:-10,
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid batchSize. batchSize cannot be less than or equal to 0.');
             done();
@@ -120,10 +120,10 @@ describe('data movement transformAll', function() {
 
     it('should throw error with invalid batchSize greater than 100000', function(done){
         try{
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 transform: [transformName, {newValue:'transformedValue'}],
                 batchSize: 110000,
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid batchSize. batchSize cannot be greater than 100000.');
             done();
@@ -132,7 +132,7 @@ describe('data movement transformAll', function() {
 
     it('should transformAll documents with transformStrategy as ignore', done => {
 
-        transformStream.pipe(dbWriter.documents.transformAll({
+        dbWriter.documents.transformAll(transformStream,{
             transform: [transformName, {newValue:'transformedValue'}],
             concurrentRequests : {multipleOf:'hosts', multiplier:4},
             transformStrategy: 'ignore',
@@ -146,16 +146,16 @@ describe('data movement transformAll', function() {
                     done(err);
                 }
             })
-        }));
+        });
     });
 
     it('should throw error with invalid transformStrategy', done => {
         try {
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 transform: [transformName, {newValue:'transformedValue'}],
                 concurrentRequests : {multipleOf:'hosts', multiplier:4},
                 transformStrategy: 'invalid',
-            }));
+            });
         } catch (e) {
             e.toString().should.equal('Error: Invalid value for transformStrategy. Value must be replace or ignore.');
             done();
@@ -164,10 +164,10 @@ describe('data movement transformAll', function() {
 
     it('should throw error with invalid concurrentRequests option', function(done){
         try{
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 transform: [transformName, {newValue:'transformedValue'}],
                 concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
             done();
@@ -176,10 +176,10 @@ describe('data movement transformAll', function() {
 
     it('should throw error with invalid concurrentRequests.multiplier option', function(done){
         try{
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 transform: [transformName, {newValue:'transformedValue'}],
                 concurrentRequests: {multipleOf: 'hosts', multiplier: -2}
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: concurrentRequests.multiplier cannot be less than one');
             done();
@@ -188,10 +188,10 @@ describe('data movement transformAll', function() {
 
     it('should throw error with invalid inputKind option', function(done){
         try{
-            transformStream.pipe(dbWriter.documents.transformAll({
+            dbWriter.documents.transformAll(transformStream,{
                 transform: [transformName, {newValue:'transformedValue'}],
                 inputKind: 'invalid'
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid value for inputKind. Value must be array or string.');
             done();

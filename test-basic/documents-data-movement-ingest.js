@@ -43,17 +43,17 @@ describe('data movement writeAll', function(){
         setTimeout(()=>{done();}, 3000);
     });
 
-    afterEach((function(done){
+    afterEach(function(done){
         dbWriter.documents.remove(uris)
             .result(function(response){
                 done();
             })
             .catch(err=> done(err))
             .catch(done);
-    }));
+    });
 
     it('should writeAll  documents with empty options',  done => {
-        readable.pipe(dbWriter.documents.writeAll());
+        dbWriter.documents.writeAll(readable);
 
         setTimeout(()=>{
                 readDocs(1000, done);
@@ -63,7 +63,7 @@ describe('data movement writeAll', function(){
 
     it('should writeAll  documents with onCompletion option',  function (done){
 
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable, {
 
             onCompletion: ((summary) => {
                     summary.docsWrittenSuccessfully.should.be.equal(1000);
@@ -71,12 +71,12 @@ describe('data movement writeAll', function(){
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
                     readDocs(1000, done);
             })
-        }));
+        });
     });
 
     it('should writeAll documents with onBatchSuccess', function(done){
 
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable, {
 
             onBatchSuccess: ((progressSoFar, documents) => {
                 try {
@@ -91,12 +91,12 @@ describe('data movement writeAll', function(){
             onCompletion: ((summary) => {
                 readDocs(1000, done);
             })
-        }));
+        });
     });
 
     it('should writeAll documents with batchSize', function(done){
         let count = 0;
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
             batchSize:500,
             onBatchSuccess: ((progressSoFar, documents) => {
                 count++;
@@ -105,23 +105,23 @@ describe('data movement writeAll', function(){
                 count.should.equal(2);
                 readDocs(1000, done);
             })
-        }));
+        });
     });
 
     it('should writeAll documents with concurrentRequests', function(done){
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
             concurrentRequests : {multipleOf:'hosts', multiplier:4},
             onCompletion: ((summary) => {
                 readDocs(1000, done);
             })
-        }));
+        });
     });
 
     it('should throw error with invalid concurrentRequests:multipleOf', function(done){
         try {
-            readable.pipe(dbWriter.documents.writeAll({
+            dbWriter.documents.writeAll(readable, {
                 concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
             done();
@@ -130,9 +130,9 @@ describe('data movement writeAll', function(){
 
     it('should throw error with invalid concurrentRequests:multiplier', function(done){
         try {
-            readable.pipe(dbWriter.documents.writeAll({
+            dbWriter.documents.writeAll(readable, {
                 concurrentRequests: {multipleOf: 'hosts', multiplier: -4}
-            }));
+            });
         } catch(err){
             err.toString().should.equal('Error: concurrentRequests.multiplier cannot be less than zero');
             done();
@@ -149,7 +149,7 @@ describe('data movement writeAll', function(){
         };
         readable.push(temp);
         readable.push(null);
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable,{
 
             onBatchError: ((progressSoFar, documents, error) => {
                 progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(0);
@@ -164,7 +164,7 @@ describe('data movement writeAll', function(){
             onCompletion: ((summary) => {
                 readDocs(0, done);
             })
-        }));
+        });
     });
 
     it('should writeAll with onBatchError sending a retry array', function(done){
@@ -177,7 +177,7 @@ describe('data movement writeAll', function(){
         };
         readable.push(temp);
         readable.push(null);
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable, {
 
             onBatchError: ((progressSoFar, documents, error) => {
                 progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(0);
@@ -192,7 +192,7 @@ describe('data movement writeAll', function(){
             onCompletion: ((progressSoFar, documents) => {
                 readDocs(1, done);
             })
-        }));
+        });
     });
 
     it('should stop processing when onBatchError throws an error', function(done){
@@ -206,7 +206,7 @@ describe('data movement writeAll', function(){
         };
         readable.push(temp);
         readable.push(null);
-        const writable = dbWriter.documents.writeAll({
+        const writable = dbWriter.documents.writeAll(readable, {
 
             onBatchError: ((progressSoFar, documents, error) => {
                 progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(0);
@@ -224,7 +224,6 @@ describe('data movement writeAll', function(){
         writable.on('error', (err) => {
             err.message.should.be.equal('Processing stopped');
         });
-        readable.pipe(writable);
     });
 
     it('should writeAll documents with defaultMetadata', function(done){
@@ -242,7 +241,7 @@ describe('data movement writeAll', function(){
         }
         readable.push(null);
 
-        readable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(readable, {
             defaultMetadata: {
                 metadataValues: {
                     'metadataKey1': 'metadataValue 1',
@@ -258,7 +257,7 @@ describe('data movement writeAll', function(){
             onCompletion: ((summary) => {
                 readDocsWithMetadata(defaultMetadataUris, done);
             })
-        }));
+        });
     });
 
     it('should writeAll documents with transform', function(done){
@@ -266,12 +265,12 @@ describe('data movement writeAll', function(){
         let xqyTransformPath = './test-basic/data/flagTransform.xqy';
         restAdminDB.config.transforms.write(xqyTransformName, 'xquery', fs.createReadStream(xqyTransformPath))
             .result(function(response){
-                readable.pipe(dbWriter.documents.writeAll({
+                dbWriter.documents.writeAll(readable,{
                     transform: [xqyTransformName, {flag:'tested1'}],
                     onCompletion: ((summary) => {
                         readDocsWithTransform(done);
                     })
-                }));
+                });
             })
             .catch(err=> done(err));
     });
