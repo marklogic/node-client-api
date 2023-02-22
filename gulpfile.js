@@ -105,7 +105,7 @@ function loadProxyTestData(callback) {
   });
 }
 
-function loadProxyTestCases(callback) {
+function loadProxyTestCases() {
   const databaseClient   = getTestModulesClient();
   const documentMetadata = {
     collections: ['/dbf/test/cases'],
@@ -151,25 +151,18 @@ function runProxyTests() {
         }
       }));
 }
-function proxyDocTests() {
-  return gulp.src(['test-basic-proxy/lib/positive/DescribedBundle.js'])
-      .pipe(jsdoc({opts:{destination:'test-basic-proxy/doc'}}));
-}
 
 exports.doc = doc;
 exports.lint = lint;
 exports.loadProxyTests     = parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases);
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
-exports.generateProxyDocTests = proxyDocTests;
 exports.runProxyTests = runProxyTests;
 exports.setupProxyTests = series(
     parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
-    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests),
-    proxyDocTests);
+    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests));
 exports.proxyTests = series(
     parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
     parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests),
-    proxyDocTests,
     runProxyTests);
 exports.test = test;
 exports.default = lint;
