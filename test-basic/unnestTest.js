@@ -27,28 +27,27 @@ describe('test unnest function', function () {
     beforeEach(function (done) {
 
         db.documents.remove(['/optic/test/office1.json'])
-            .result(function(_response){
-
+            .result(function(response){
+                const doc = {
+                    office: [
+                        { department: "Engineering", teamMembers: "Cindy,Alice,Dan" },
+                        { department: "Sales", teamMembers: "Bob" },
+                        { department: "Marketing", teamMembers: null }
+                    ]
+                };
+                db.documents.write({
+                    uri: '/optic/test/office1.json',
+                    contentType: 'application/json',
+                    content: doc
+                }).result(function() {
+                    done();
+                }, function(error) {
+                    done(error);
+                });
             })
-            .catch(err=> {});
+            .catch(err=> done(err));
 
-        const doc = {
-            office: [
-                { department: "Engineering", teamMembers: "Cindy,Alice,Dan" },
-                { department: "Sales", teamMembers: "Bob" },
-                { department: "Marketing", teamMembers: null }
-            ]
-        };
 
-        db.documents.write({
-            uri: '/optic/test/office1.json',
-            contentType: 'application/json',
-            content: doc
-        }).result(function() {
-            done();
-        }, function(error) {
-            done(error);
-        });
     });
 
     it('unnestInner', function (done) {
