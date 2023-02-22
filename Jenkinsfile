@@ -14,8 +14,6 @@ def runTests(String type,String version){
         ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ -g \'logging|archivePath\' --invert >> $WORKSPACE/test-basic-reports.xml || true
         ./node_modules/.bin/gulp setupProxyTests || true
         ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js -g \'logging|archivePath\' --invert >> $WORKSPACE/test-basic-proxy-reports.xml || true
-        sed -n \'/^<testsuite/, $p\' test-basic-reports.xml > test-basic-reports-filtered.xml || true
-        sed -n \'/^<testsuite/, $p\' test-basic-proxy-reports.xml >> test-basic-proxy-reports-filtered.xml || true
     '''
     junit '**/*.xml'
 
