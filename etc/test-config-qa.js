@@ -15,7 +15,7 @@
  */
 var testHost = 'localhost';
 
-var restPort     = '8015';
+var restPort     = '8024';
 var dmsdkrestPort     = '8025';
 var restAuthType = 'DIGEST';
 
