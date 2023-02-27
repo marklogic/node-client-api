@@ -107,4 +107,24 @@ describe('database clients', function() {
     timestamp.value.should.equal('123');
     done();
   });
+  it('should throw Error when server expects DIGEST and authType is CERTIFICATE', function(done) {
+    const db = marklogic.createDatabaseClient({
+      host: "localhost",
+      port: 8015,
+      authType:'certificate'
+    });
+    const query = marklogic.queryBuilder
+        .where(marklogic.ctsQueryBuilder.cts.directoryQuery('/optic/test/'));
+
+    db.documents.query(query)
+        .result(function (documents) {
+          documents.forEach(function (document) {
+          });
+        })
+        .catch(error =>{
+            assert(error.toString().includes('response with invalid 401 status with path: /v1/search'));
+            marklogic.releaseClient(db);
+            done();
+        });
+  });
 });
