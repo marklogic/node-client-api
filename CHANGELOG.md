@@ -1,9 +1,30 @@
 # CHANGELOG
 
+## 3.0.0
+#### New Functionality
+
+- [#614](https://github.com/marklogic/node-client-api/issues/614) - Exporting Rows - queryAll api.
+- [#644](https://github.com/marklogic/node-client-api/issues/644) - Reprocessing documents - transformAll and queryToTransformAll apis.
+- [#665](https://github.com/marklogic/node-client-api/issues/665) - Deleting Documents  - removeAllUris and queryToRemoveAll api.
+
+#### Improvements and Bug Fixes
+
+- Fix for Dicer and other security vulnerabilities.
+- [#540](https://github.com/marklogic/node-client-api/issues/540) - Expose total on all responses to documents.query.
+- [#592](https://github.com/marklogic/node-client-api/issues/592) - Expose op:sample-by in Node Client API.
+- [#694](https://github.com/marklogic/node-client-api/issues/694) - MarkLogic module v 2.9.1 for Node.js at Windows OS does not work.
+
+
+## 2.9.1
+
+#### Improvements and Bug Fixes
+
+- Fix for security vulnerabilities (except Dicer)
+
 ## 2.9.0
 #### New Functionality
 
-- [#620](https://github.com/marklogic/node-client-api/issues/620) - Exporting Documents - readAll api.
+- [#620](https://github.com/marklogic/node-client-api/issues/620) - Exporting Documents - readAll and queryToReadAll apis.
 - [#622](https://github.com/marklogic/node-client-api/issues/622) - Collecting Document URIs - queryAll api.
 - [#629](https://github.com/marklogic/node-client-api/issues/629) - Add a category option for reading only the contents of document(s).
 

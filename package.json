@@ -44,7 +44,7 @@
     "url": "https://github.com/marklogic/node-client-api.git"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=16.14.0"
   },
   "devDependencies": {
     "ajv": "^8.11.0",
