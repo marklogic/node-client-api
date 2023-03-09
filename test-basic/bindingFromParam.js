@@ -399,34 +399,15 @@ describe('binding from param', function () {
 
     });
 
-    it('test fromParam with op.docColTypes', function (done) {
-        const rows = [{uri: '/test/fromDocUris/0.json'}];
-
-        const planBuilderTemplate = op.fromParam('myDocs', null, op.docColTypes());
-        const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).then(res => {
-            try {
-                const rows = res.rows;
-                rows[0].uri.value.should.equal("/test/fromDocUris/0.json");
-                done();
-            } catch (e) {
-                done(e);
-            }
-        }).catch(e => {
-            done(e);
-        });
-
-    });
-
     it('test with data as file', function (done) {
         const rowsData = fs.readFileSync('./test-basic/data/dataFromParam.json', 'utf8');
-        const rows = JSON.parse(rowsData);
+        // const rows = JSON.parse(rowsData);
         const outputCols = [
             {"column": "rowId"},
             {"column": "colorId", "nullable": true},
         ];
         const planBuilderTemplate = op.fromParam('bindingParam', null, outputCols);
-        const temp = {bindingParam: rows};
+        const temp = {bindingParam: rowsData};
         db.rows.query(planBuilderTemplate, temp).then(res => {
             try {
                 const rows = res.rows;
@@ -442,6 +423,201 @@ describe('binding from param', function () {
             done(e);
         });
 
+    });
+
+    it('test fromParam binding binary files', function (done) {
+        const bindingParam = "bindingParam";
+
+        const rows = [{rowId: 1, doc: 'doc1.bin'}, {rowId: 2, doc: 'doc2.bin'}];
+        const attachments = [{"doc1.bin": "test bin 1"}, {"doc2.bin": "this is test for bin 2"}];
+        const metadata = {"attachments": {"docs": [{"rowsField": bindingParam, "column": "doc"}]}};
+        const outputCols = [{"column": "rowId", "type": "integer", "nullable": false}, {
+            "column": "doc",
+            "type": "none",
+            "nullable": true
+        }];
+
+        const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
+        const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
+        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+            try {
+                const rows = res.rows;
+                rows[0].rowId.value.should.equal(1);
+                rows[1].rowId.value.should.equal(2);
+                rows[0].doc.type.should.equal('binary');
+                rows[1].doc.type.should.equal('binary');
+                rows[0].doc.value.should.equal('746573742062696e2031');
+                rows[1].doc.value.should.equal('74686973206973207465737420666f722062696e2032');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
+        });
+    });
+
+    it('test fromParam binding xml files', function (done) {
+        const bindingParam = "bindingXmlFiles";
+
+        const rows = [{rowId: 1, doc: 'doc1.xml'}, {rowId: 2, doc: 'doc2.xml'}];
+        const attachments = [{"doc1.xml": "<doc>1</doc>"}, {"doc2.xml": "<doc>2</doc>"}];
+        const metadata = {"attachments": {"docs": [{"rowsField": bindingParam, "column": "doc"}]}};
+        const outputCols = [{"column": "rowId", "type": "integer", "nullable": false}, {
+            "column": "doc",
+            "type": "none",
+            "nullable": true
+        }];
+        const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
+        const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
+        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+            try {
+                const rows = res.rows;
+                rows[0].rowId.value.should.equal(1);
+                rows[1].rowId.value.should.equal(2);
+                rows[0].doc.type.should.equal('element');
+                rows[1].doc.type.should.equal('element');
+                rows[0].doc.value.should.equal('<doc>1</doc>');
+                rows[1].doc.value.should.equal('<doc>2</doc>');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
+        });
+    });
+
+    it('test fromParam binding txt files', function (done) {
+        const bindingParam = "bindingTxtFiles";
+
+        const rows = [{rowId: 1, doc: 'doc1.txt'}, {rowId: 2, doc: 'doc2.txt'}];
+        const attachments = [{"doc1.txt": "doc1-text"}, {"doc2.txt": "doc2-text"}];
+        const metadata = {"attachments": {"docs": [{"rowsField": bindingParam, "column": "doc"}]}};
+        const outputCols = [{"column": "rowId", "type": "integer", "nullable": false}, {
+            "column": "doc",
+            "type": "none",
+            "nullable": true
+        }];
+
+        const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
+        const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
+
+        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+            try {
+                const rows = res.rows;
+                rows[0].rowId.value.should.equal(1);
+                rows[1].rowId.value.should.equal(2);
+                rows[0].doc.type.should.equal('text');
+                rows[1].doc.type.should.equal('text');
+                rows[0].doc.value.should.equal('doc1-text');
+                rows[1].doc.value.should.equal('doc2-text');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
+        });
+    });
+
+    it('test fromParam single doc attachment as object', function (done) {
+        const bindingParam = "bindingSingleDoc";
+
+        const rows = [{rowId: 1, doc: 'doc1.txt'}];
+        const attachments = {"doc1.txt": "doc1-text"};
+        const metadata = {"attachments": {"docs": [{"rowsField": bindingParam, "column": "doc"}]}};
+        const outputCols = [{"column": "rowId", "type": "integer", "nullable": false}, {
+            "column": "doc",
+            "type": "none",
+            "nullable": true
+        }];
+
+        const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
+        const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
+
+        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+            try {
+                const rows = res.rows;
+                rows[0].rowId.value.should.equal(1);
+                rows[0].doc.type.should.equal('text');
+                rows[0].doc.value.should.equal('doc1-text');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
+        });
+    });
+
+    it('test fromParam with multiple attachments column', function (done) {
+        const bindingParam = "bindingMultipleAttachments columns";
+
+        const rows = [{rowId: 1, doc: 'doc.xml', otherDoc: 'otherDoc.xml'}];
+        const attachments = [{"doc.xml": "<doc>doc1</doc>"}, {'otherDoc.xml': "<otherDoc>otherDoc1</otherDoc>"}];
+        const metadata = {
+            "attachments": {
+                "docs": [
+                    {"rowsField": bindingParam, "column": "doc"},
+                    {"rowsField": bindingParam, "column": "otherDoc"}
+                ]
+            }
+        };
+        const outputCols = [{"column": "rowId", "type": "integer", "nullable": false}, {
+            "column": "doc",
+            "type": "none",
+            "nullable": true
+        }, {"column": "otherDoc", "type": "none", "nullable": true}];
+
+        const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
+        const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
+
+        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+            try {
+                const rows = res.rows;
+                rows[0].rowId.value.should.equal(1);
+                rows[0].doc.type.should.equal('element');
+                rows[0].otherDoc.type.should.equal('element');
+                rows[0].doc.value.should.equal('<doc>doc1</doc>');
+                rows[0].otherDoc.value.should.equal('<otherDoc>otherDoc1</otherDoc>');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
+        });
+    });
+
+    it('test fromParam binding xml files with no metadata', function (done) {
+        const bindingParam = "bindingXmlFiles";
+
+        const rows = [{rowId: 1, doc: 'doc1.xml'}, {rowId: 2, doc: 'doc2.xml'}];
+        const attachments = [{"doc1.xml": "<doc>1</doc>"}, {"doc2.xml": "<doc>2</doc>"}];
+        const outputCols = [{"column": "rowId", "type": "integer", "nullable": false}, {
+            "column": "doc",
+            "type": "none",
+            "nullable": true
+        }];
+
+        const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
+        const bindParam = {[bindingParam]: rows, attachments: attachments};
+
+        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+            try {
+                const rows = res.rows;
+                rows[0].rowId.value.should.equal(1);
+                rows[1].rowId.value.should.equal(2);
+                rows[0].doc.value.should.equal('doc1.xml');
+                rows[1].doc.value.should.equal('doc2.xml');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
+        });
     });
 
 });
