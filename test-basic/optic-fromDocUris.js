@@ -27,12 +27,12 @@ describe('fromDocUris', function() {
             readable.push(temp);
         }
         readable.push(null);
-        readable.pipe(db.documents.writeAll({
+        db.documents.writeAll(readable, {
             onCompletion: ((summary) => {
                 done();
 
             })
-        }));
+        });
     });
 
     it('basic', function (done) {
