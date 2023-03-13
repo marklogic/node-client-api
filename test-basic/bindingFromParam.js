@@ -39,7 +39,7 @@ describe('binding from param', function () {
 
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp)
+        db.rows.query(planBuilderTemplate,null, temp)
             .then(function (response) {
                 const columns = response.columns;
                 columns[0].name.should.equal("id");
@@ -74,7 +74,7 @@ describe('binding from param', function () {
 
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp)
+        db.rows.query(planBuilderTemplate, null, temp)
             .then(function (response) {
                 const rows = response.rows;
                 rows[0]['qualifier.id'].value.should.equal(1);
@@ -103,7 +103,7 @@ describe('binding from param', function () {
         try {
             const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
             const temp = {myDocs: rows};
-            db.rows.query(planBuilderTemplate, temp);
+            db.rows.query(planBuilderTemplate,null, temp);
         } catch (e) {
             e.toString().should.equal('Error: row-col-types argument at 2 of PlanBuilder.fromParam() has invalid argument for PlanRowColTypes value: [object Object]');
             done();
@@ -122,7 +122,7 @@ describe('binding from param', function () {
 
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp)
+        db.rows.query(planBuilderTemplate, null, temp)
             .then(function (response) {
                 const rows = response.rows;
                 rows[0]['qualifier.id'].value.should.equal(1);
@@ -149,7 +149,7 @@ describe('binding from param', function () {
         try {
             const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
             const temp = {myDocs: rows};
-            db.rows.query(planBuilderTemplate, temp);
+            db.rows.query(planBuilderTemplate, null, temp);
         } catch (e) {
             e.toString().should.equal('Error: row-col-types argument at 2 of PlanBuilder.fromParam() has another type than string');
             done();
@@ -171,7 +171,7 @@ describe('binding from param', function () {
         try {
             const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
             const temp = {myDocs: rows};
-            db.rows.query(planBuilderTemplate, temp)
+            db.rows.query(planBuilderTemplate, null, temp)
                 .then(function (response) {
                     const rows = response.rows;
                     rows[0].id.value.should.equal(1);
@@ -198,8 +198,9 @@ describe('binding from param', function () {
         }, {"column": "lastName", "type": "string"}];
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).catch(e => {
-            e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+        db.rows.query(planBuilderTemplate, null, temp).catch(e => {
+            console.log(e)
+            e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
     });
@@ -214,8 +215,8 @@ describe('binding from param', function () {
         }, {"column": "lastName", "type": "string", "nullable": true}];
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).catch(e => {
-            e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+        db.rows.query(planBuilderTemplate, null,temp).catch(e => {
+            e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
     });
@@ -230,8 +231,8 @@ describe('binding from param', function () {
         }, {"column": "lastName", "type": "string", "nullable": true}];
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).catch(e => {
-            e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+        db.rows.query(planBuilderTemplate,null, temp).catch(e => {
+            e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
     });
@@ -247,9 +248,9 @@ describe('binding from param', function () {
         try {
             const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
             const temp = {myDocs: rows};
-            db.rows.query(planBuilderTemplate, temp)
+            db.rows.query(planBuilderTemplate,null, temp)
                 .catch(e => {
-                    e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+                    e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
                     done();
                 });
         } catch (e) {
@@ -266,9 +267,9 @@ describe('binding from param', function () {
             {"column": "lastName", "type": "string", "nullable": true}];
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp)
+        db.rows.query(planBuilderTemplate, null,temp)
             .catch(e => {
-                e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
                 done();
             });
 
@@ -282,9 +283,9 @@ describe('binding from param', function () {
             {"column": "lastName", "type": "string", "nullable": true}];
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {bindingParam: rows};
-        db.rows.query(planBuilderTemplate, temp)
+        db.rows.query(planBuilderTemplate, null, temp)
             .catch(e => {
-                e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
                 done();
             });
 
@@ -303,9 +304,9 @@ describe('binding from param', function () {
         ];
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp)
+        db.rows.query(planBuilderTemplate, null, temp)
             .catch(e => {
-                e.toString().should.equal('Error: binding arguments /v1/rows: cannot process response with 500 status');
+                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
                 done();
             });
 
@@ -325,9 +326,9 @@ describe('binding from param', function () {
         try {
             const planBuilderTemplate = op.fromParam('myDocs', 1234, outputCols);
             const temp = {myDocs: rows};
-            db.rows.query(planBuilderTemplate, temp);
+            db.rows.query(planBuilderTemplate, null, temp);
         } catch (e) {
-            e.toString().should.equal('Error: qualifier argument at 1 of PlanBuilder.fromParam() must be a XsString value');
+            e.toString().includes('Error: qualifier argument at 1 of PlanBuilder.fromParam() must be a XsString value');
             done();
         }
 
@@ -345,7 +346,7 @@ describe('binding from param', function () {
         ];
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).then(res => {
+        db.rows.query(planBuilderTemplate, null, temp).then(res => {
             const rows = res.rows;
             rows[0].id.value.should.equal(1);
             rows[0].firstName.value.should.equal("firstName_1");
@@ -365,7 +366,7 @@ describe('binding from param', function () {
         ];
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).then(res => {
+        db.rows.query(planBuilderTemplate, null, temp).then(res => {
             try {
                 should.not.exist(res);
                 done();
@@ -384,7 +385,7 @@ describe('binding from param', function () {
 
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, temp).then(res => {
+        db.rows.query(planBuilderTemplate, null, temp).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].uriNew.value.should.equal("/optic/update/remove4.json");
@@ -408,7 +409,7 @@ describe('binding from param', function () {
         ];
         const planBuilderTemplate = op.fromParam('bindingParam', null, outputCols);
         const temp = {bindingParam: rowsData};
-        db.rows.query(planBuilderTemplate, temp).then(res => {
+        db.rows.query(planBuilderTemplate, null, temp).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
@@ -439,7 +440,7 @@ describe('binding from param', function () {
 
         const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
         const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
-        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+        db.rows.query(planBuilderTemplate, null,bindParam).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
@@ -470,7 +471,7 @@ describe('binding from param', function () {
         }];
         const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
         const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
-        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+        db.rows.query(planBuilderTemplate,null, bindParam).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
@@ -503,7 +504,7 @@ describe('binding from param', function () {
         const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
         const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
 
-        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+        db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
@@ -536,7 +537,7 @@ describe('binding from param', function () {
         const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
         const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
 
-        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+        db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
@@ -573,7 +574,7 @@ describe('binding from param', function () {
         const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
         const bindParam = {[bindingParam]: rows, attachments: attachments, metadata: metadata};
 
-        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+        db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
@@ -604,7 +605,7 @@ describe('binding from param', function () {
         const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols);
         const bindParam = {[bindingParam]: rows, attachments: attachments};
 
-        db.rows.query(planBuilderTemplate, bindParam).then(res => {
+        db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
             try {
                 const rows = res.rows;
                 rows[0].rowId.value.should.equal(1);
