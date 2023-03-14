@@ -199,7 +199,6 @@ describe('binding from param', function () {
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
         db.rows.query(planBuilderTemplate, null, temp).catch(e => {
-            console.log(e)
             e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
@@ -402,7 +401,6 @@ describe('binding from param', function () {
 
     it('test with data as file', function (done) {
         const rowsData = fs.readFileSync('./test-basic/data/dataFromParam.json', 'utf8');
-        // const rows = JSON.parse(rowsData);
         const outputCols = [
             {"column": "rowId"},
             {"column": "colorId", "nullable": true},
@@ -423,7 +421,6 @@ describe('binding from param', function () {
         }).catch(e => {
             done(e);
         });
-
     });
 
     it('test fromParam binding binary files', function (done) {
