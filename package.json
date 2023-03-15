@@ -76,10 +76,10 @@
     "glob-parent": "6.0.2",
     "nanoid": "3.1.31",
     "simple-get": "4.0.1",
-    "sanitize-html": "2.7.2",
     "minimatch": "5.1.0"
   },
   "overrides": {
-    "jsdoc": "4.0.0"
+    "jsdoc": "4.0.0",
+    "sanitize-html": "2.10.0"
   }
 }
