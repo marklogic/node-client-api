@@ -81,10 +81,6 @@ check.then(function(response) {
   return testUser.addRestEvalRole(manager).result();
 })
 .then(function(response){
-  console.log('setting up rest eval user');
-  return testUser.addRestEvalUser(manager).result();
-})
-.then(function(response){
   console.log('setting up rest reader user');
   return testUser.addRestReaderUser(manager).result();
 })
