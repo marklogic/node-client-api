@@ -401,12 +401,13 @@ describe('binding from param', function () {
 
     it('test with data as file', function (done) {
         const rowsData = fs.readFileSync('./test-basic/data/dataFromParam.json', 'utf8');
+        const rows = JSON.parse(rowsData);
         const outputCols = [
             {"column": "rowId"},
             {"column": "colorId", "nullable": true},
         ];
         const planBuilderTemplate = op.fromParam('bindingParam', null, outputCols);
-        const temp = {bindingParam: rowsData};
+        const temp = {bindingParam: rows};
         db.rows.query(planBuilderTemplate, null, temp).then(res => {
             try {
                 const rows = res.rows;
