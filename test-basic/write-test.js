@@ -369,8 +369,7 @@ describe('optic write function', function () {
             uri: '/test/fromDocDescriptors/data1.json',
             doc: {"desc": "doc2"},
             collections: ['fromDocDescriptors'],
-            permissions: [{"role-name": 'rest-reader', capability: ['read', 'update']}, {"role-name": 'rest-writer', capability: ['read', 'update']}],
-            // permissions: {"role-name": 'rest-reader'},
+            permissions: [{"role-name": 'rest-reader', capabilities: ['read', 'update']}, {"role-name": 'rest-writer', capabilities: ['read', 'update']}],
             metadata: {'meta': 'value1'},
             quality: 1,
         };
