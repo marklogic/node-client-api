@@ -83,6 +83,21 @@ describe('execute ', function () {
         }
     });
 
+    it('test with fromDocUris using query function -> remove', function (done) {
+        try {
+            db.rows.query(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove())
+                .then(res => {
+                    const arrayOfUris = res.rows.map(item => item.uri.value).sort();
+                    arrayOfUris.should.deepEqual(uris.sort());
+                    done();
+                }).catch(e => {
+                done(e);
+            });
+        } catch (e) {
+            done(e);
+        }
+    });
+
 
 });
 
