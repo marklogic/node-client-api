@@ -78,6 +78,17 @@ const moduleFiles = [
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
     ],
     content:fs.createReadStream('./etc/data/unnestView.tdej')
+  }, { uri:'/etc/articleCitation.json',
+    contentType:'application/json',
+    collections:['http://marklogic.com/xdmp/tde'],
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/articleCitation.json')
   }];
 
 const dataFiles = [
@@ -211,6 +222,22 @@ const dataFiles = [
       {triple:{subject:'/optic/test/albums4_2', predicate:'/optic/test/albumName',   object:'In a Silent Way'}},
       {triple:{subject:'/optic/test/albums4_2', predicate:'/optic/test/musicianUri', object:'/optic/test/musician4.json'}}
     ]}
+  },{
+    uri:'/graphQL-Publisher_1.xml',
+    collections:['/graphQL'],
+    permissions: [
+      {'role-name':'rest-reader',    capabilities:['read']},
+      {'role-name':'rest-writer', capabilities:['read', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/Publisher-1.xml')
+  },{
+    uri:'/graphQL-Publisher_2.xml',
+    collections:['/graphQL'],
+    permissions: [
+      {'role-name':'rest-reader',    capabilities:['read']},
+      {'role-name':'rest-writer', capabilities:['read', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/Publisher-2.xml')
   }];
 
 promptForAdmin(createManager);
