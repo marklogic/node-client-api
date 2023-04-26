@@ -269,8 +269,8 @@ describe('fromDocDescriptors ', function () {
                 rows[0].collections.value.should.equal("fromDocDescriptors");
                 rows[0].doc.value.desc.should.equal("doc2");
                 rows[0].metadata.value.meta.should.equal("value1");
-                rows[0].permissions.value["role-name"].should.equal("app-user");
-                rows[0].permissions.value.capabilities.should.equal("read");
+                rows[0].permissions.value.roleName.should.equal("app-user");
+                rows[0].permissions.value.capability.should.equal("read");
                 rows[0].quality.value.should.equal(1);
                 rows[0].uri.value.should.equal("/test/fromDocDescriptors/data1.json");
                 done();
