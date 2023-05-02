@@ -93,7 +93,6 @@ describe('Error-Map-Test', function(){
           expect(errMapResp.messageDetail.messageTitle).to.contain('MLQA-ERROR-2');
           done();
         });
-	done();
 	});
 	
 	it('Valid return and Error mapping 2', function(done){
