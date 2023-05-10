@@ -127,4 +127,24 @@ describe('database clients', function() {
             done();
         });
   });
+
+  it('rejectUnauthorized param should be populated correctly', function(done) {
+
+    const connectionOptions = {
+      host: testconfig.restWriterConnection.host,
+      port: testconfig.restWriterConnection.port,
+      user: testconfig.restWriterConnection.user,
+      password: testconfig.restWriterConnection.password,
+      rejectUnauthorized: false,
+      ssl:      true
+    };
+    let databaseClient = marklogic.createDatabaseClient(connectionOptions);
+    try{
+      assert(databaseClient);
+      assert(databaseClient.connectionParams.rejectUnauthorized === false);
+      done();
+    } catch (error) {
+      done(error);
+    }
+  });
 });
