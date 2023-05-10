@@ -27,7 +27,7 @@ let uris = [];
 describe('execute ', function () {
     this.timeout(30000);
 
-    before(function (done) {
+    beforeEach(function (done) {
         let readable = new Stream.Readable({objectMode: true});
         removeStream = new Stream.PassThrough({objectMode: true});
         uris = [];
@@ -49,7 +49,15 @@ describe('execute ', function () {
                 done();
             })
         });
+    });
 
+    afterEach(function(done){
+        db.documents.remove(uris)
+            .result(function(response){
+                done();
+            })
+            .catch(err=> done(err))
+            .catch(done);
     });
 
     it('test with fromDocUris -> remove', function (done) {
@@ -97,8 +105,6 @@ describe('execute ', function () {
             done(e);
         }
     });
-
-
 });
 
 function verifyDocs(done){

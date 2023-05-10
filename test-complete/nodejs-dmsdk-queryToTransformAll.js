@@ -67,7 +67,6 @@ describe('data movement transformAll', function () {
     });
 
     afterEach((function (done) {
-        console.log(uris.length)
         dbWriter.documents.remove(uris)
             .result(function (response) {
                 done();
@@ -137,7 +136,6 @@ describe('data movement transformAll', function () {
             batchSize: 10,
             onBatchSuccess: (function (progress, documents) {
                 try {
-                    console.log(documents)
                     progress.docsTransformedSuccessfully.should.be.greaterThanOrEqual(10);
                     progress.docsFailedToBeTransformed.should.be.equal(0);
                     progress.timeElapsed.should.be.greaterThanOrEqual(0);

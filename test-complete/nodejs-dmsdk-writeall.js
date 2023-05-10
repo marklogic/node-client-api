@@ -46,12 +46,10 @@ describe('DMSDK writeAll-tests', function() {
                 name:transformName, format:'javascript', source:fs.createReadStream(transformPath)
             }).result(function(response){
                 db.config.transforms.list().result(function(response) {
-                    //console.log('Installed transforms: ');
                     var installedTransforms = JSON.stringify(response, null, 2);
-                    //console.log(installedTransforms);
                     expect(installedTransforms).to.have.string(transformName);
                 }, function(error) {
-                    console.log(JSON.stringify(error, null, 2));
+                    done(error)
                 }); done();
             }, done);
         }); // end of before
@@ -79,7 +77,6 @@ describe('DMSDK writeAll-tests', function() {
                     selectFiles.push(file);
                 }
             });
-            //console.log(selectFiles);
             for (var file of selectFiles) {
                 var fileTobeRead = dirPath + file;
                 var data = fs.readFileSync(fileTobeRead, {encoding:'utf8'});
@@ -90,7 +87,6 @@ describe('DMSDK writeAll-tests', function() {
                     collections: ['qatestsText'],
                     content: data
                 };
-                //console.log('Contents ' + jsonFN1.content);
                 multiDocreadable.push(jsonFN1);
             }
             multiDocreadable.push(null);
@@ -98,7 +94,6 @@ describe('DMSDK writeAll-tests', function() {
             dbWriter.documents.writeAll(multiDocreadable, {
                 onBatchSuccess: ((progressSoFar, documents) => {
                     try {
-                        //console.log('Progress ' + progressSoFar.docsWrittenSuccessfully);
                         progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
                         progressSoFar.docsFailedToBeWritten.should.be.equal(0);
                         progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
@@ -134,7 +129,6 @@ describe('DMSDK writeAll-tests', function() {
             };
             multiDocreadable.push(jsonFN1);
             multiDocreadable.push(null);
-            //console.log('Contents ' + jsonFN1.content);
             dbWriter.documents.writeAll(multiDocreadable, {
                 onBatchSuccess: ((progressSoFar, documents) => {
                     try {
@@ -146,7 +140,6 @@ describe('DMSDK writeAll-tests', function() {
                     }
                 }),
                 onCompletion: ((summary) => {
-                    console.log(summary)
                     summary.docsWrittenSuccessfully.should.be.equal(1);
                     summary.docsFailedToBeWritten.should.be.equal(0);
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
@@ -177,7 +170,6 @@ describe('DMSDK writeAll-tests', function() {
                 transform: [transformName, {title: 'new title', myInt: 2, myBool: true}],
                 onBatchSuccess: ((progressSoFar, documents) => {
                     try {
-                        //console.log('Progress ' + progressSoFar.docsWrittenSuccessfully);
                         progressSoFar.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1);
                         progressSoFar.docsFailedToBeWritten.should.be.equal(0);
                         progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
@@ -203,7 +195,6 @@ describe('DMSDK writeAll-tests', function() {
                 categories: ['content', 'metadata']
             }).
             result(function(response) {
-                //console.log(JSON.stringify(response, null, 2));
                 var res1 = response[0].content['key 5'];
                 var res2 = response[0].content['title'];
                 var res3 = response[0].content['myBool'];
@@ -262,7 +253,6 @@ describe('DMSDK writeAll-tests', function() {
             }).
             result(function(response) {
                 var res = response[0].content['key 3'];
-                //console.log(JSON.stringify(res, null, 2));
                 res.should.equal('value 3');
 
                 done();
