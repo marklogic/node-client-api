@@ -63,7 +63,6 @@ class MLQASnapshotTransform extends stream.Transform {
             var currValue = chunk.content.key300;
             // Change the key values here in transform stream so that we can be sure that snaphot ON and ReadAll works as expected
             var retStr = 'Modified Key In Transform:' + '300' + ', Modified Value In Transform:' + currValue;
-            //console.log(retStr);
             this.push(retStr);
         }
         return setImmediate(callback);
@@ -134,7 +133,6 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
         fs.unlink(fileName1, function (err) {
         if (err) {
             // do nothing logging messes up test report file.
-            //console.log(err.toString());
             }
         });
         dbWriter.documents.remove(inputJsonUris)
@@ -164,7 +162,6 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
         setTimeout(()=>{var i = 0; i++;}, 3000);
         // Have listeners before calling pipe.
         mlqawstreamAft.on('finish', function () {
-            //console.log( memStore.after.toString());
             expect(memStore.after.toString()).to.equal(exptdResult);
         });
         var readFn = dbWriter.documents.readAll(uriStream, {
@@ -191,7 +188,6 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
                 return dbWriterUpd.transactions.commit(tid).result(function (response) {
                     var i = 0;
                     i++;
-                    //console.log('Txn Committed!!!!!!!');
                 });
             });
             isUpdateDone = true;
