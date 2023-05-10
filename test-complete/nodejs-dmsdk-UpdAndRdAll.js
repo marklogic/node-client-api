@@ -52,7 +52,6 @@ class MLQASnapshotTransform extends stream.Transform {
             chunk = this._lastLineData + chunk;
         }
         // Filter what we need and push. We will verify only 900.json piped from ReadAll
-        //console.log(chunk.uri);
         if (chunk.uri === this.docId) {
             //Push transformed content onto the stream with changed key names such as Matched ID and Matched Name
             var currId = chunk.content.id;
@@ -108,7 +107,6 @@ describe('Update doc and readAll with Snapshot', function() {
         jsonDocreadable.push(null);
         dbWriter.documents.writeAll(jsonDocreadable,{
             onCompletion: ((summary) => {
-                //console.log('OnCompleteion summary ' + summary.docsWrittenSuccessfully);
                 setTimeout(()=>{var i = 0; i++;}, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1000);
             })
@@ -156,7 +154,6 @@ describe('Update doc and readAll with Snapshot', function() {
         // Have listeners before calling pipe.
         setTimeout(()=>{var i = 0; i++;}, 3000);
         mlqawstream.on('finish', function () {
-            //console.log('value is:', memStore.before.toString());
             expect(memStore.before.toString()).to.equal(exptdResult);
         });
         dbWriter.documents.readAll(uriStream,{

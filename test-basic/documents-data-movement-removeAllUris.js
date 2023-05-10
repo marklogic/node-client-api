@@ -50,7 +50,6 @@ describe('data movement removeAllUris', function() {
                 done();
             })
         });
-
     });
 
     it('should removeAllUris documents with onCompletion, concurrentRequests options', done => {
@@ -96,7 +95,9 @@ describe('data movement removeAllUris', function() {
             });
         } catch(err){
             err.toString().should.equal('Error: batchSize not expected when inputKind is array.');
-            done();
+            dbWriter.documents.remove(uris)
+                .result(function(response) {done();})
+                .catch(error => done(error));
         }
     });
 
@@ -137,7 +138,9 @@ describe('data movement removeAllUris', function() {
             });
         } catch(err){
             err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
-            done();
+            dbWriter.documents.remove(uris)
+                .result(function(response) {done();})
+                .catch(error => done(error));
         }
     });
 
@@ -177,7 +180,6 @@ function verifyDocs(done){
     dbWriter.documents.read(uris)
         .result(function (documents) {
             documents.length.should.equal(0);
-
         })
         .then(()=> done())
         .catch(err=> done(err));

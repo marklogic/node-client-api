@@ -13,6 +13,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var q = marklogic.queryBuilder;
 const Stream = require('stream');
 let result = new Set();
+let uris = [];
 
 describe('fromDocUris', function() {
     this.timeout(15000);
@@ -25,6 +26,7 @@ describe('fromDocUris', function() {
                 content: {['key '+i]:'value '+i}
             };
             readable.push(temp);
+            uris.push(temp.uri);
         }
         readable.push(null);
         db.documents.writeAll(readable, {
@@ -33,6 +35,15 @@ describe('fromDocUris', function() {
 
             })
         });
+    });
+
+    after(function(done){
+        db.documents.remove(uris)
+            .result(function(response){
+                done();
+            })
+            .catch(err=> done(err))
+            .catch(done);
     });
 
     it('basic', function (done) {

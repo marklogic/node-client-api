@@ -33,14 +33,11 @@ let inputJsonUris = [];
 let inputContents = [];
 function verifyArrays(arr1, arr2) {
     var isEqual = false;
-    //console.log('arr length are ' + arr1.length + '     ' + arr2.length);
     if (arr1.length !== arr2.length) {
         return false;
     }
     for(var i=0; i<arr1.length; i++){
-        //console.log('arr1 is ' + arr1[i]);
         for(const e of arr2) {
-            //console.log('arr2 e is ' + e);
             if (e === arr1[i]) {
                 isEqual = true;
                 break;
@@ -123,7 +120,6 @@ describe('readAll-tests-one', function() {
         setTimeout(()=>{var i = 0; i++;}, 5000);
         dbWriter.documents.writeAll(jsonDocreadable,{
             onCompletion: ((summary) => {
-                //console.log('OnCompleteion summary ' + summary.docsWrittenSuccessfully);
                 setTimeout(()=>{var i = 0; i++;}, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(10);
             })
@@ -152,10 +148,9 @@ describe('readAll-tests-one', function() {
             }),
             function(err, arr ) {
                 if (err) {
-                    console.log('Error is ' + err.toString());
+                    done(err);
                 }
                 arr.forEach(item => {
-                    //console.log('URI pushed into resultUris ' + item.uri);
                     setTimeout(()=>{var i = 0; i++;}, 3000);
                     resultUris.push(item.uri);
                     resulContents.push(item.content);
@@ -179,10 +174,9 @@ describe('readAll-tests-one', function() {
             }),
             function(err, arr ) {
                 if (err) {
-                    console.log('Error is ' + err.toString());
+                    done(err);
                 }
                 arr.forEach(item => {
-                    //console.log('URI pushed into resultUris ' + item.uri);
                     setTimeout(()=>{var i = 0; i++;}, 3000);
                     expect(item.uri).to.equal('dmsdk.txt');
                 });

@@ -43,7 +43,15 @@ describe('optic joinDocCols test ', function () {
                 done();
             })
         });
+    });
 
+    after(function(done){
+        db.documents.remove("/test/optic/joinDocCols/musician1.json")
+            .result(function(response){
+                done();
+            })
+            .catch(err=> done(err))
+            .catch(done);
     });
 
     it('test default columns with no qualifier', function (done) {

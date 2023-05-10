@@ -55,7 +55,6 @@ describe('queryAll-tests-1', function() {
                 selectFiles.push(file);
             }
         });
-        //console.log(selectFiles);
         for (var file of selectFiles) {
             var fileTobeRead = dirPath + file;
             var data = fs.readFileSync(fileTobeRead, {encoding:'utf8'});
@@ -66,7 +65,6 @@ describe('queryAll-tests-1', function() {
                 collections: ['qatestsReadText'],
                 content: data
             };
-            //console.log('Contents ' + jsonFN1.content);
             multiDocreadable.push(jsonFN1);
         }
         multiDocreadable.push(null);
@@ -84,12 +82,12 @@ describe('queryAll-tests-1', function() {
         const fileName2 = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
         fs.unlink(fileName1, function (err) {
             if (err) {
-                console.log(err.toString());
+                done(err);
             }
         });
         fs.unlink(fileName2, function (err) {
             if (err) {
-                console.log(err.toString());
+                done(err);
             }
         });
         done();
@@ -126,9 +124,7 @@ describe('queryAll-tests-1', function() {
             });
             done();
         } catch (err) {
-            console.log('Error ' + err);
-            //err.toString().should.equal('Error: Query needs to be a cts query.');
-            done();
+            done(err);
         }
     });
 
@@ -150,7 +146,6 @@ describe('queryAll-tests-1', function() {
             for await (const line of rl) {
                 // Each line in input txt will be successively available here as `line`.
                 expect(line).to.equal(arr[lnCnt]);
-                //console.log(`Line from file: ${line}`);
                 lnCnt++;
             }
         }
@@ -172,8 +167,7 @@ describe('queryAll-tests-1', function() {
 
             done();
         } catch (err) {
-            console.log('Error ' + err);
-            done();
+            done(err);
         }
     });
 
@@ -195,7 +189,6 @@ describe('queryAll-tests-1', function() {
             for await (const line of rl) {
                 // Each line in input txt will be successively available here as `line`.
                 expect(line).to.equal(arr[lnCnt]);
-                //console.log(`Line from file: ${line}`);
                 lnCnt++;
             }
         }
@@ -236,15 +229,14 @@ describe('queryAll-tests-2', function() {
                 collections: ['multibyte'],
                 content: data
             };
-            //console.log('Contents ' + jsonFN1.content);
             multiDocreadable.push(jsonFN1);
         }
         multiDocreadable.push(null);
-        multiDocreadable.pipe(dbWriter.documents.writeAll({
+        dbWriter.documents.writeAll(multiDocreadable,{
             onCompletion: ((summary) => {
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
             })
-        })); // End of pipe to writeAll - single byte
+        }); // End of pipe to writeAll - single byte
         setTimeout(() => {
             done();
         }, 1000);
@@ -276,8 +268,7 @@ describe('queryAll-tests-2', function() {
                 done();
             }, 5000);
         } catch (err) {
-            console.log('Error ' + err);
-            done();
+            done(err);
         }
     });
 

@@ -105,7 +105,7 @@ describe('data movement transformAll', function() {
                 }
             }),
             onBatchError: ((progressSoFar, documents, error) => {
-                console.log(error);
+                done(error);
             })
         });
     });
