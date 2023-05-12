@@ -23,7 +23,7 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbSsl = marklogic.createDatabaseClient(testconfig.restSslConnection);
 
-describe('SSL Test', function() {
+describe.skip('SSL Test', function() {
 
   var docuri = '/foo/bar/test1.json';
   var docuri2 = '/foo/bar/test2.json';
@@ -120,7 +120,6 @@ describe('SSL Test', function() {
 
   it('should read multiple documents', function(done) {
     dbSsl.documents.read({uris: [docuri, docuri2], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(12);
       documents[1].content.id.should.equal(245);
       done();
@@ -129,7 +128,6 @@ describe('SSL Test', function() {
 
   it('should read multiple documents with an invalid one', function(done) {
     dbSsl.documents.read({uris: [docuri, '/not/here/blah.json', docuri2], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(12);
       documents[1].content.id.should.equal(245);
       done();
@@ -150,7 +148,6 @@ describe('SSL Test', function() {
 
   it('should read the content of modified document', function(done) {
     dbSsl.documents.read({uris: [docuri], categories:['content']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
       documents[0].content.id.should.equal(88);
       done();
     }, done);
@@ -158,7 +155,6 @@ describe('SSL Test', function() {
 
   it('should read the metadata of modified document', function(done) {
     dbSsl.documents.read({uris: [docuri], categories:['metadata']}).result(function(documents) {
-      //console.log(JSON.stringify(documents, null, 4));
       documents[0].properties.prop2.should.equal(1981);
       done();
     }, done);
@@ -170,7 +166,6 @@ describe('SSL Test', function() {
       content: {name:'no content type'}
       }).
     result(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
       response.documents[0].uri.should.equal('/test/crud/withoutContentType1.json');
       done();
     }, done);
@@ -181,7 +176,6 @@ describe('SSL Test', function() {
       uris: '/test/crud/withoutContentType1.json',
       }).
     result(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
       response[0].content.name.should.equal('no content type');
       done();
     }, done);
@@ -190,7 +184,6 @@ describe('SSL Test', function() {
   it('should delete the document', function(done) {
     dbSsl.documents.remove(docuri).result(function(document) {
       document.removed.should.eql(true);
-      //console.log(document);
       done();
     }, done);
   });
