@@ -15,8 +15,16 @@ def runTests(String type,String version){
         ./node_modules/.bin/gulp setupProxyTests || true
         ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
     '''
-    junit '**/*.xml'
 
+}
+def runAuditReport(){
+    sh '''
+        export PATH=${NODE_HOME_DIR}/bin:$PATH
+        cd node-client-api
+        npm install
+        rm -rf $WORKSPACE/npm-audit-report.json || true
+        npm audit -json > $WORKSPACE/npm-audit-report.json
+    '''
 }
 
 def runE2ETests(String type,String version){
@@ -40,14 +48,12 @@ def runE2ETests(String type,String version){
         cp *.js ../test-complete/
         cp -R ml-modules/ ../test-complete
         cd ../test-complete
-        rm -rf $WORKSPACE/ds-*.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 nodejs-ds-setup-docs.js
         ../node_modules/.bin/mocha -R xunit --timeout 60000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-required-params-results.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
-        sed -n \'/^<testsuite/, $p\' $WORKSPACE/test-complete-results.txt --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/nodejs-test-results.xml || true
     '''
      junit '**/*.xml'
 
@@ -72,56 +78,61 @@ pipeline{
     stages{
         stage('runtests-11.0.2'){
             steps{
+                runAuditReport()
                 runTests('Release','11.0.2')
                 runE2ETests('Release','11.0.2')
             }
         }
-        stage('runtests-11-nightly'){
-            when{
-                allOf{
-                    branch 'develop'
-                    expression {return params.regressions}
+        stage('regressions'){
+            parallel{
+                stage('runtests-11-nightly'){
+                    when{
+                        allOf{
+                            branch 'develop'
+                                expression {return params.regressions}
+                            }
+                        }
+                    steps{
+                        runTests('Latest','11')
+                        runE2ETests('Latest','11')
+                    }
                 }
-            }
-            steps{
-                runTests('Latest','11')
-                runE2ETests('Latest','11')
-            }
-        }
-        stage('runtests-12.0-nightly'){
-            when{
-                allOf{
-                    branch 'develop'
-                    expression {return params.regressions}
+                stage('runtests-12-nightly'){
+                    when{
+                        allOf{
+                            branch 'develop'
+                                expression {return params.regressions}
+                            }
+                        }
+                    steps{
+                        runTests('Latest','12.0')
+                        runE2ETests('Latest','12.0')
+                    }
                 }
-            }
-            steps{
-                runTests('Latest','12.0')
-                runE2ETests('Latest','12.0')
-            }
-        }
-        stage('runtests-10.0-nightly'){
-            when{
-                allOf{
-                    branch 'develop'
-                    expression {return params.regressions}
+                stage('runtests-10-nightly'){
+                    when{
+                        allOf{
+                            branch 'develop'
+                                expression {return params.regressions}
+                            }
+                        }
+                    steps{
+                        runTests('Latest','10.0')
+                        runE2ETests('Latest','10.0')
+                    }
                 }
-            }
-            steps{
-                runTests('Latest','10.0')
-                runE2ETests('Latest','10.0')
-            }
-        }
-        stage('runtests-10.0-9.5'){
-            when{
-                allOf{
-                    branch 'develop'
-                    expression {return params.regressions}
+                stage('runtests-10.0-9.5'){
+                    when{
+                        allOf{
+                            branch 'develop'
+                                expression {return params.regressions}
+                            }
+                        }
+                    steps{
+                        runTests('Release','10.0-9.5')
+                        runE2ETests('Release','10.0-9.5')
+                    }
                 }
-            }
-            steps{
-                runTests('Release','10.0-9.5')
-                runE2ETests('Release','10.0-9.5')
             }
         }
     }
