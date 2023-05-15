@@ -137,7 +137,8 @@ describe('Nodejs Optic from lexicons test', function(){
       expect(output[5][1].value).to.equal('london');
       expect(output[5][3].value).to.equal('2007-01-01');
       done();
-    }, done);
+    }, done)
+        .catch(error => done(error));
   });
 
   it('TEST 4 - using element reference and null viewname', function(done){
@@ -207,7 +208,8 @@ describe('Nodejs Optic from lexicons test', function(){
       //console.log(outputStr);
       expect(outputStr).to.equal('<t:table xmlns:t="http://marklogic.com/table"><t:columns><t:column name="myCity.city" type="xs:string"/><t:column name="myCity.popularity" type="xs:integer"/><t:column name="myCity.date" type="xs:date"/><t:column name="myCity.distance" type="xs:double"/><t:column name="myCity.point" type="http://marklogic.com/cts#point"/></t:columns><t:rows><t:row><t:cell name="myCity.city">cape town</t:cell><t:cell name="myCity.popularity">3</t:cell><t:cell name="myCity.date">1999-04-22</t:cell><t:cell name="myCity.distance">377.9</t:cell><t:cell name="myCity.point">-33.91,18.42</t:cell></t:row><t:row><t:cell name="myCity.city">beijing</t:cell><t:cell name="myCity.popularity">5</t:cell><t:cell name="myCity.date">1981-11-09</t:cell><t:cell name="myCity.distance">134.5</t:cell><t:cell name="myCity.point">39.900002,116.4</t:cell></t:row><t:row><t:cell name="myCity.city">london</t:cell><t:cell name="myCity.popularity">5</t:cell><t:cell name="myCity.date">2007-01-01</t:cell><t:cell name="myCity.distance">50.4</t:cell><t:cell name="myCity.point">51.5,-0.12</t:cell></t:row><t:row><t:cell name="myCity.city">new york</t:cell><t:cell name="myCity.popularity">5</t:cell><t:cell name="myCity.date">2006-06-23</t:cell><t:cell name="myCity.distance">23.3</t:cell><t:cell name="myCity.point">40.709999,-74.009995</t:cell></t:row></t:rows></t:table>');
       done();
-    }, done);
+    }, done)
+        .catch(error => done(error));
   });
 
   it('TEST 6 - join inner with plan accessor column identifier', function(done){
@@ -311,7 +313,8 @@ describe('Nodejs Optic from lexicons test', function(){
       expect(output).to.contain('myCity.uri,myCity.city,myCity.popularity,myCity.date,myCity.distance,myCity.point,doc');
       expect(output).to.contain('/optic/lexicon/test/doc1.json,london,5,2007-01-01,50.4,"51.5,-0.12","{""city"":""london"", ""distance"":50.4, ""date"":""2007-01-01"", ""metro"":true, ""description"":""Two recent discoveries indicate probable very early settlements near the Thames"", ""popularity"":5, ""location"":{""latLonPoint"":""51.50, -0.12"", ""latLonPair"":{""lat"":51.5, ""long"":-0.12}, ""latLonParent"":{""latLonChild"":""51.50, -0.12""}}}"');
       done();
-    }, done);
+    }, done)
+        .catch(error => done(error));
   });
 
   it('TEST 9 - export plan and execute the plan', function(done){
@@ -445,7 +448,10 @@ describe('Nodejs Optic from lexicons test', function(){
       expect(str).to.equal('\u001e{"columns":[{"name":"myCity.uri1","type":"xs:string"},{"name":"myCity.city","type":"xs:string"},{"name":"myCity.popularity","type":"xs:integer"},{"name":"myCity.date","type":"xs:date"},{"name":"myCity.distance","type":"xs:double"},{"name":"myCity.point","type":"http://marklogic.com/cts#point"},{"name":"myTeam.uri2","type":"xs:string"},{"name":"myTeam.cityName","type":"xs:string"},{"name":"myTeam.cityTeam","type":"xs:string"},{"name":"nodes","type":"array"}]}\u001e{"myCity.uri1":"/optic/lexicon/test/doc3.json","myCity.city":"new jersey","myCity.popularity":2,"myCity.date":"1971-12-23","myCity.distance":12.9,"myCity.point":"40.720001,-74.07","myTeam.uri2":"/optic/lexicon/test/city3.json","myTeam.cityName":"new jersey","myTeam.cityTeam":"nets","nodes":"nets"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc4.xml","myCity.city":"beijing","myCity.popularity":5,"myCity.date":"1981-11-09","myCity.distance":134.5,"myCity.point":"39.900002,116.4","myTeam.uri2":"/optic/lexicon/test/city4.json","myTeam.cityName":"beijing","myTeam.cityTeam":"ducks","nodes":"ducks"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc5.xml","myCity.city":"cape town","myCity.popularity":3,"myCity.date":"1999-04-22","myCity.distance":377.9,"myCity.point":"-33.91,18.42","myTeam.uri2":"/optic/lexicon/test/city5.json","myTeam.cityName":"cape town","myTeam.cityTeam":"pirates","nodes":"pirates"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc2.json","myCity.city":"new york","myCity.popularity":5,"myCity.date":"2006-06-23","myCity.distance":23.3,"myCity.point":"40.709999,-74.009995","myTeam.uri2":"/optic/lexicon/test/city2.json","myTeam.cityName":"new york","myTeam.cityTeam":"yankee","nodes":"yankee"}\u001e{"myCity.uri1":"/optic/lexicon/test/doc1.json","myCity.city":"london","myCity.popularity":5,"myCity.date":"2007-01-01","myCity.distance":50.4,"myCity.point":"51.5,-0.12","myTeam.uri2":"/optic/lexicon/test/city1.json","myTeam.cityName":"london","myTeam.cityTeam":"arsenal","nodes":"arsenal"}');
       expect(count).to.equal(6);
       done();
-    }, done);
+    }, done)
+        .on('error', function(error){
+            done(error);
+        });
   });
 
   it('TEST 12 - join inner with joinInnerDoc and xpath - with queryAsStream chunked', function(done){
@@ -607,7 +613,8 @@ describe('Nodejs Optic from lexicons test', function(){
       expect(output.rows[0]['myCity.city']).to.equal('london');
       expect(output.rows[0]['myCity.date']).to.equal('2007-01-01');
       done();
-    }, done);
+    }, done)
+        .catch(error => done(error));
   });
 
   it('TEST 16 - sql condition with between and AND operator', function(done){

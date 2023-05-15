@@ -15,10 +15,10 @@
  */
 
 const should = require('should');
-const testconfig = require('../etc/test-config.js');
+const testconfig = require('../etc/test-config-qa.js');
 const marklogic = require('../');
-const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-const restAdminDB = marklogic.createDatabaseClient(testconfig.restAdminConnection);
+const dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
+const restAdminDB = marklogic.createDatabaseClient(testconfig.dmsdkrestAdminConnection);
 const Stream = require('stream');
 const fs = require('fs');
 
@@ -40,7 +40,8 @@ describe('data movement transformAll', function() {
                     uris.push('/test/dataMovement/requests/transformAll/'+i+'.txt');
                 }
             })
-            .then(()=> done());
+            .then(()=> done())
+            .catch(error => done(error));
     });
 
     beforeEach(function (done) {
