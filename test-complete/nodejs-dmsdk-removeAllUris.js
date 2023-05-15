@@ -18,9 +18,9 @@
 //
 
 const should = require('should');
-const testconfig = require('../etc/test-config.js');
+const testconfig = require('../etc/test-config-qa.js');
 const marklogic = require('../');
-const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+const dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
 const Stream = require('stream');
 const ctsQb = marklogic.ctsQueryBuilder;
 const q = marklogic.queryBuilder;
@@ -171,7 +171,7 @@ describe('Functional tests - data movement removeAllUris', function() {
 
     it('should queryToRemoveAll documents with onBatchError returning empty array',
         done => {
-            const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+            const testUser = marklogic.createDatabaseClient(testconfig.dmsdkrestReaderConnection);
             testUser.documents.queryToRemoveAll(query,{
 
                 onBatchError: ((progressSoFar, documents, error) => {

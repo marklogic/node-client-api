@@ -15,9 +15,9 @@
  */
 
 const should = require('should');
-const testconfig = require('../etc/test-config.js');
+const testconfig = require('../etc/test-config-qa.js');
 const marklogic = require('../');
-const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+const dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
 
 const Stream = require('stream');
 const streamToArray = require('stream-to-array');
@@ -26,7 +26,7 @@ const fs = require('fs');
 const tdeWriter = marklogic.createDatabaseClient({
     database: 'unittest-nodeapi-modules',
     host: 'localhost',
-    port: 8015,
+    port: 8025,
     user: 'tde-user',
     password: 'x',
     authType: 'DIGEST'
@@ -83,7 +83,8 @@ describe('data movement rows-queryAll', function () {
                         done();
                     })
                 });
-            });
+            })
+            .catch(error => done(error));
     });
 
     after(function (done) {
@@ -95,7 +96,8 @@ describe('data movement rows-queryAll', function () {
                 tdeWriter.documents.remove('/test/exporting-rows.xml')
                     .result(function (response) {
                     })
-                    .then(done());
+                    .then(done())
+                    .catch(error => done(error));
             })
         });
     });

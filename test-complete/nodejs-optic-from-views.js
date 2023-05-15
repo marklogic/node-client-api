@@ -689,7 +689,8 @@ describe('Nodejs Optic from views test', function(){
       expect(output.node).to.equal('plan');
       expect(output.expr.expr.columns[0].name).to.equal('MasterName');
       done();
-    }, done);
+    }, done)
+        .catch(error => done(error));
   });
 
   it('TEST 22 - using explain - format xml', function(done){
