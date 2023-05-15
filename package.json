@@ -37,8 +37,7 @@
     "multipart-stream": "^2.0.1",
     "qs": "^6.11.0",
     "through2": "^4.0.2",
-    "www-authenticate": "^0.6.3",
-    "@jsdoc/salty": "0.2.3"
+    "www-authenticate": "^0.6.3"
   },
   "repository": {
     "type": "git",
@@ -60,6 +59,7 @@
     "gulp-mocha": "^8.0.0",
     "intercept-stdout": "^0.1.2",
     "jshint": "^2.13.5",
+    "@jsdoc/salty": "0.2.3",
     "mocha": "^10.0.0",
     "mocha-junit-reporter": "2.2.0",
     "moment": "^2.29.4",
