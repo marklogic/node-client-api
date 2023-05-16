@@ -89,7 +89,43 @@ const moduleFiles = [
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
     ],
     content:fs.createReadStream('./etc/data/articleCitation.json')
-  }];
+  }, {
+    uri:'/optic/test/transformDoc-test.mjs',
+    contentType:'application/vnd.marklogic-javascript',
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/transformDoc-test.mjs')
+  },
+  {
+    uri:'/optic/test/transformDoc-test.xslt',
+    contentType:'application/vnd.marklogic-tde+xml',
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/transformDoc-test.xslt')
+  },
+  {
+    uri:'/optic/test/transformDoc-test-two-params.mjs',
+    contentType:'application/vnd.marklogic-tde+xml',
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/transformDoc-test-two-params.mjs')
+  }
+];
 
 const dataFiles = [
   {
