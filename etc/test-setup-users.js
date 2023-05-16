@@ -357,7 +357,6 @@ function setupUsers(manager, done) {
 
     response.data['user-default-list']['list-items']['list-item'].
     forEach(function(user) {
-      console.log(user)
       userName = user.nameref;
       if (!valcheck.isUndefined(requiredUsers[userName])) {
         requiredUsers[userName] = undefined;
@@ -366,7 +365,6 @@ function setupUsers(manager, done) {
 
     var missingUsers = Object.keys(requiredUsers).map(function(key) {
       var user = requiredUsers[key];
-      console.log(user)
       if (!valcheck.isUndefined(user)) {
         return user;
       }
