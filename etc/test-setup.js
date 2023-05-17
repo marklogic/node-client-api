@@ -559,7 +559,7 @@ function setup(manager) {
       });
     } else {
       console.log(testconfig.testServerName+' test server is available on port '+
-          response.data.port);
+          JSON.parse(response.data).port);
     }
   });
 }
