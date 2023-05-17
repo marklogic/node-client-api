@@ -1,6 +1,7 @@
 @Library('shared-libraries') _
 
 def runTests(String type,String version){
+    sh 'rm -rf $WORKSPACE/xdmp'
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
@@ -29,6 +30,7 @@ def runAuditReport(){
 }
 
 def runE2ETests(String type,String version){
+    sh 'rm -rf $WORKSPACE/xdmp'
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
