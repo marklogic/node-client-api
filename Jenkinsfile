@@ -1,7 +1,6 @@
 @Library('shared-libraries') _
 
 def runTests(String type,String version){
-    sh 'rm -rf $WORKSPACE/xdmp'
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
@@ -30,7 +29,6 @@ def runAuditReport(){
 }
 
 def runE2ETests(String type,String version){
-    sh 'rm -rf $WORKSPACE/xdmp'
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
@@ -63,7 +61,7 @@ def runE2ETests(String type,String version){
 
 }
 pipeline{
-    agent {label 'nodeclientpool'}
+    agent none
     triggers{
         parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
     }
@@ -81,6 +79,7 @@ pipeline{
     }
     stages{
         stage('runtests-11.0.2'){
+            agent {label 'nodeclientpool'}
             steps{
                 runAuditReport()
                 runTests('Release','11.0.2')
@@ -96,6 +95,7 @@ pipeline{
                                 expression {return params.regressions}
                             }
                         }
+                    agent {label 'nodeclientpool'}
                     steps{
                         runTests('Latest','11')
                         runE2ETests('Latest','11')
@@ -108,6 +108,7 @@ pipeline{
                                 expression {return params.regressions}
                             }
                         }
+                    agent {label 'nodeclientpool'}
                     steps{
                         runTests('Latest','12.0')
                         runE2ETests('Latest','12.0')
@@ -120,6 +121,7 @@ pipeline{
                                 expression {return params.regressions}
                             }
                         }
+                    agent {label 'nodeclientpool'}
                     steps{
                         runTests('Latest','10.0')
                         runE2ETests('Latest','10.0')
@@ -132,6 +134,7 @@ pipeline{
                                 expression {return params.regressions}
                             }
                         }
+                    agent {label 'nodeclientpool'}
                     steps{
                         runTests('Release','10.0-9.5')
                         runE2ETests('Release','10.0-9.5')
