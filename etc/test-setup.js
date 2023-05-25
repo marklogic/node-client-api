@@ -89,6 +89,37 @@ const moduleFiles = [
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
     ],
     content:fs.createReadStream('./etc/data/articleCitation.json')
+  },{ uri:'/validateDoc-test.json',
+    contentType:'application/json',
+    collections:['http://marklogic.com/xdmp/tde'],
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/validateDoc-test.json')
+  }, { uri:'/validateDoc-test.sch',
+    contentType:'application/vnd.marklogic-tde+xml',
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/validateDoc-test.sch')
+  },{ uri:'/validateDoc-test.sch-validator.xsl',
+    contentType:'application/vnd.marklogic-tde+xml',
+    permissions: [
+      {'role-name':'app-user',                           capabilities:['read', 'execute']},
+      {'role-name':'app-builder',                        capabilities:['read', 'execute']},
+      {'role-name':testconfig.restReaderConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restWriterConnection.user, capabilities:['read', 'execute', 'update']},
+      {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
+    ],
+    content:fs.createReadStream('./etc/data/validateDoc-test.sch-validator.xsl')
   }, {
     uri:'/optic/test/transformDoc-test.mjs',
     contentType:'application/vnd.marklogic-javascript',
@@ -595,7 +626,7 @@ function setup(manager) {
       });
     } else {
       console.log(testconfig.testServerName+' test server is available on port '+
-          response.data.port);
+          JSON.parse(response.data).port);
     }
   });
 }
