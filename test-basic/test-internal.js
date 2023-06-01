@@ -63,6 +63,25 @@ describe('internal tests', function() {
             should.deepEqual(requestOptions.path, '/v1/internal/forestinfo');
             should.deepEqual(requestOptions.method, 'GET');
             should.deepEqual(requestOptions.headers.Accept, 'application/json');
+
+            // Example of how the operationCallback would work
+            dbWriter.internal.sendRequest(requestOptions, operation => {
+                operation.requestBody = {"hello":"world"};
+                operation.validStatusCodes = [200, 201];
+            });
+
+            // Even simpler - a path, a chance to fiddle with request options, and a chance to fiddle with the Operation
+            dbWriter.sendRequest(
+                "/v1/internal/forestinfo",
+                requestOptions => {
+                    requestOptions.method = "GET";
+                    requestOptions.headers = {"Accept": "application/json"}
+                },
+                operation => operation.requestBody = {"hello":"world"}
+            );
+
+            dbWriter.internal.sendRequest(requestOptions, operation => operation.requestBody = {"hello":"world"});
+
             dbWriter.internal.sendRequest(requestOptions, 'read forestInfo','single', 'empty')
                 .result(function(response){
                     for(let i=0; i<response.length; i++){
