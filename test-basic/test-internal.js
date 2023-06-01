@@ -26,70 +26,83 @@ describe('internal tests', function() {
         done();
     }));
 
-    it('test internal object exists', function(done){
-
+    it('test internal sendRequest GET', function(done){
         try {
-            should.exist(dbWriter.internal);
-            done();
+            dbWriter.internal.sendRequest(
+                "/v1/internal/forestinfo",
+                requestOptions => {
+                    requestOptions.method = "GET";
+                    requestOptions.headers = {"Accept": "application/json"}
+                }
+            )
+            .result(function(response){
+                for(let i=0; i<response.length; i++){
+                    should.exist(response[i].host);
+                    should.exist(response[i].name);
+                    should.exist(response[i].id);
+                }
+            }).then(() => done())
+            .catch(error=>done(error));
         } catch(error){
             done(error);
         }
     });
 
-    it('test newRequestOptions creation', function(done){
-        const requestOptions = dbWriter.internal.newRequestOptions('/v1/ping');
-        requestOptions.method = 'POST';
-        requestOptions.headers = {
-            'Accept':       'application/json',
-            'Content-Type': 'application/json'
-        };
+    it('test internal sendRequest POST', function(done){
         try {
-            should.deepEqual(requestOptions.path, '/v1/ping');
-            should.deepEqual(requestOptions.headers.Accept, 'application/json');
-            should.deepEqual(requestOptions.headers['Content-Type'], 'application/json');
-            done();
+            dbWriter.internal.sendRequest(
+                "/v1/search",
+                requestOptions => {
+                    requestOptions.method = "POST";
+                    requestOptions.headers = {"Accept": "application/json", "Content-type": "application/json"};
+                },
+                null
+            )
+            .result(function(response){
+                should.exist(response.total);
+                should.exist(response.start);
+                should.exist(response['page-length']);
+                for(let i=0; i<response.length; i++){
+                    should.exist(response.results[i]);
+                }
+            })
+            .then(() => done())
+            .catch(error=>done(error));
         } catch(error){
             done(error);
         }
     });
 
-    it('test internal sendRequest', function(done){
-        const requestOptions = dbWriter.internal.newRequestOptions('/v1/internal/forestinfo');
-        requestOptions.method = 'GET';
-        requestOptions.headers = {
-            'Accept':       'application/json'
-        };
+    it('test internal sendRequest without path', function(done){
         try {
-            should.deepEqual(requestOptions.path, '/v1/internal/forestinfo');
-            should.deepEqual(requestOptions.method, 'GET');
-            should.deepEqual(requestOptions.headers.Accept, 'application/json');
-            dbWriter.internal.sendRequest(requestOptions, 'read forestInfo','single', 'empty')
-                .result(function(response){
-                    for(let i=0; i<response.length; i++){
-                        should.exist(response[i].host);
-                        should.exist(response[i].name);
-                        should.exist(response[i].id);
-                    }
-                }).then(() => done())
-                .catch(e=>done(e));
+            dbWriter.internal.sendRequest(
+                null,
+                requestOptions => {
+                    requestOptions.method = "GET";
+                    requestOptions.headers = {"Accept": "application/json"}
+                }
+            )
         } catch(error){
-            done(error);
+            should.equal(error.message, 'Path is needed to send request.');
+            done();
         }
     });
 
-    it('test newRequestOptions creation with optional database and basePath', function(done){
-        testconfig.restWriterConnection.basePath = '/test-basePath';
-        testconfig.restWriterConnection.database = 'test-database';
-        dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-        const requestOptions = dbWriter.internal.newRequestOptions('/v1/ping');
-        requestOptions.method = 'POST';
-        requestOptions.headers = {
-            'Accept':       'application/json',
-            'Content-Type': 'application/json'
-        };
+    it('test internal sendRequest without optional callbacks', function(done){
         try {
-            should.deepEqual(requestOptions.path, '/test-basePath/v1/ping?database=test-database');
-            done();
+            dbWriter.internal.sendRequest(
+                "/v1/search"
+            )
+            .result(function(response){
+                should.exist(response.total);
+                should.exist(response.start);
+                should.exist(response['page-length']);
+                for(let i=0; i<response.length; i++){
+                    should.exist(response.results[i]);
+                }
+            })
+            .then(() => done())
+            .catch(error=>done(error));
         } catch(error){
             done(error);
         }
