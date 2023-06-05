@@ -1,11 +1,24 @@
 # CHANGELOG
 
+## 3.1.0
+#### New Functionality
+
+- Can now perform update operations in Optic.
+- Can now submit GraphQL queries.
+- Auto-refresh expired token when using MarkLogic Cloud authentication.
+
+#### Improvements and Bug Fixes
+
+- Fix for security vulnerabilities.
+
+
 ## 3.0.0
 #### New Functionality
 
 - [#614](https://github.com/marklogic/node-client-api/issues/614) - Exporting Rows - queryAll api.
 - [#644](https://github.com/marklogic/node-client-api/issues/644) - Reprocessing documents - transformAll and queryToTransformAll apis.
 - [#665](https://github.com/marklogic/node-client-api/issues/665) - Deleting Documents  - removeAllUris and queryToRemoveAll api.
+- Connect to MarkLogic Cloud using apiKey.
 
 #### Improvements and Bug Fixes
 
