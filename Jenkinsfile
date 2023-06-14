@@ -78,6 +78,22 @@ pipeline{
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
     }
     stages{
+        stage('runtests-10.0-10'){
+            agent {label 'nodeclientpool'}
+            steps{
+                runAuditReport()
+                runTests('Release','10.0-10')
+                runE2ETests('Release','10.0-10')
+            }
+        }
+        stage('runtests-10-nightly'){
+            agent {label 'nodeclientpool'}
+            steps{
+                runAuditReport()
+                runTests('Latest','10.0')
+                runE2ETests('Latest','10.0')
+            }
+        }
         stage('runtests-11.0.2'){
             agent {label 'nodeclientpool'}
             steps{
@@ -86,60 +102,20 @@ pipeline{
                 runE2ETests('Release','11.0.2')
             }
         }
-        stage('regressions'){
-            parallel{
-                stage('runtests-11-nightly'){
-                    when{
-                        allOf{
-                            branch 'develop'
-                                expression {return params.regressions}
-                            }
-                        }
-                    agent {label 'nodeclientpool'}
-                    steps{
-                        runTests('Latest','11')
-                        runE2ETests('Latest','11')
-                    }
-                }
-                stage('runtests-12-nightly'){
-                    when{
-                        allOf{
-                            branch 'develop'
-                                expression {return params.regressions}
-                            }
-                        }
-                    agent {label 'nodeclientpool'}
-                    steps{
-                        runTests('Latest','12.0')
-                        runE2ETests('Latest','12.0')
-                    }
-                }
-                stage('runtests-10-nightly'){
-                    when{
-                        allOf{
-                            branch 'develop'
-                                expression {return params.regressions}
-                            }
-                        }
-                    agent {label 'nodeclientpool'}
-                    steps{
-                        runTests('Latest','10.0')
-                        runE2ETests('Latest','10.0')
-                    }
-                }
-                stage('runtests-10.0-10'){
-                    when{
-                        allOf{
-                            branch 'develop'
-                                expression {return params.regressions}
-                            }
-                        }
-                    agent {label 'nodeclientpool'}
-                    steps{
-                        runTests('Release','10.0-10')
-                        runE2ETests('Release','10.0-10')
-                    }
-                }
+        stage('runtests-11-nightly'){
+            agent {label 'nodeclientpool'}
+            steps{
+                runAuditReport()
+                runTests('Latest','11')
+                runE2ETests('Latest','11')
+            }
+        }
+        stage('runtests-12-nightly'){
+            agent {label 'nodeclientpool'}
+            steps{
+                runAuditReport()
+                runTests('Latest','12.0')
+                runE2ETests('Latest','12.0')
             }
         }
     }
