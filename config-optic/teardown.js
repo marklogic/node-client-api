@@ -80,11 +80,6 @@ manager.get({
       })
     .then(function(response) {
       return manager.remove({
-        endpoint: '/manage/v2/users/rest-evaluator'
-      }).result();
-    })
-    .then(function(response) {
-      return manager.remove({
         endpoint: '/manage/v2/users/rest-reader-optic'
       }).result();
     })
