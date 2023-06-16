@@ -317,7 +317,7 @@ describe('Nodejs Optic from sparql test', function(){
       expect(output.node).to.equal('plan');
       expect(output.expr.from['default-graph'][0].value).to.equal('/optic/sparql/test/companies.ttl');
       done();
-    }, done);
+    }, done).catch(error=> done(error));
   });
 
   it('TEST 16 - negative case', function(done){
@@ -341,7 +341,7 @@ describe('Nodejs Optic from sparql test', function(){
       //console.log(JSON.stringify(error, null, 2));
       expect(error.body.errorResponse.message).to.contain('limit must be a positive number');
       done();
-    });
+    }).catch(error=> done(error));
   });
 
   // Dedup tests
@@ -358,7 +358,7 @@ describe('Nodejs Optic from sparql test', function(){
           expect(output.rows.length).to.equal(1);
           expect(output.rows[0]['sparql.firstName']).to.equal('Jim');
           done();
-        }, done);
+        }, done).catch(error=> done(error));
   });
 
   it('TEST 17b - with valid where value and dedup off', function(done){
@@ -375,7 +375,7 @@ describe('Nodejs Optic from sparql test', function(){
           expect(output.rows[0]['sparql.firstName']).to.equal('Jim');
           expect(output.rows[1]['sparql.firstName']).to.equal('Jim');
           done();
-        }, done);
+        }, done).catch(error=> done(error));
   });
 
   it('TEST 17c - with Invalid where value and dedup off', function(done){
@@ -390,7 +390,7 @@ describe('Nodejs Optic from sparql test', function(){
           //console.log(JSON.stringify(output, null, 2));
           expect(output).to.be.undefined;
           done();
-        }, done);
+        }, done).catch(error=> done(error));
   });
 
   it('TEST 17d - with Invalid where value and dedup on', function(done){
@@ -405,7 +405,7 @@ describe('Nodejs Optic from sparql test', function(){
           //console.log(JSON.stringify(output, null, 2));
           expect(output).to.be.undefined;
           done();
-        }, done);
+        }, done).catch(error=> done(error));
   });
 
   it('TEST 17e - with valid where value and invalid dedup value', function(done){
@@ -416,7 +416,7 @@ describe('Nodejs Optic from sparql test', function(){
             SELECT ?firstName \
             WHERE {id:5555 ad:firstName ?firstName .}"
             , 'sparql', {dedup:'ex'});
-      db.rows.query(output, {format: 'json', structure: 'object', columnTypes: 'header'});
+      db.rows.query(output, {format: 'json', structure: 'object', columnTypes: 'header'}).catch(error=> done(error));
     }
     catch(error) {
           //console.log(JSON.stringify(error, null, 2));
@@ -438,7 +438,7 @@ describe('Nodejs Optic from sparql test', function(){
           expect(output.rows.length).to.equal(1);
           expect(output.rows[0]['sparql.firstName']).to.equal('Jim');
           done();
-        }, done);
+        }, done).catch(error=> done(error));
   });
 
 });

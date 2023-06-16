@@ -121,6 +121,5 @@ check.then(function(response) {
   console.log('setup done');
   })
 .catch(function(error){
-  console.log('error');
-  console.log(util.inspect(error, {depth:null}));
+  console.log(error);
   });
