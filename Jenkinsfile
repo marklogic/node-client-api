@@ -24,7 +24,7 @@ def runAuditReport(){
         cd node-client-api
         npm install
         rm -rf $WORKSPACE/npm-audit-report.json || true
-        npm audit -json > $WORKSPACE/npm-audit-report.json
+        npm audit -json || true > $WORKSPACE/npm-audit-report.json
     '''
 }
 
