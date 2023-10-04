@@ -83,12 +83,12 @@ pipeline{
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
     }
     stages{
-        stage('runtests-11.0.2'){
+        stage('runtests-11.0.3'){
             agent {label 'nodeclientpool'}
             steps{
                 runAuditReport()
-                runTests('Release','11.0.2')
-                runE2ETests('Release','11.0.2')
+                runTests('Release','11.0.3')
+                runE2ETests('Release','11.0.3')
             }
         }
         stage('regressions'){
