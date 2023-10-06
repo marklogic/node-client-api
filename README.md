@@ -37,15 +37,26 @@ collection into the Documents database using MarkLogic's built-in REST server
 at port 8000:
 
 ```javascript
-var marklogic = require('marklogic');
+const marklogic = require('marklogic');
 
-var db = marklogic.createDatabaseClient({
+const db = marklogic.createDatabaseClient({
   host:     'localhost',
   port:     '8000',
   database: 'Documents',
   user:     'admin',
   password: 'admin',
   authType: 'DIGEST'
+});
+
+// For MarkLogic Cloud
+const db = marklogic.createDatabaseClient({
+    apiKey:   'changeme',
+    host:     'example.beta.marklogic.com',
+    authType: 'cloud',
+    // basePath is optional.
+    basePath: '/marklogic/test',
+    // accessTokenDuration (in seconds) is optional and can be used to customize the expiration of the access token.
+    accessTokenDuration: 10
 });
 
 db.createCollection(

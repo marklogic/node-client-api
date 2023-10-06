@@ -19,17 +19,18 @@ and writes a document in database - Documents */
 
 const marklogic = require('../');
 
-let db = marklogic.createDatabaseClient({
+const db = marklogic.createDatabaseClient({
     // The below key-value pairs are required
-    apiKey:     'apiKey',
-    host:     'example.marklogic.com',
+    apiKey:     'changeme',
+    host:     'example.beta.marklogic.com',
     authType: 'cloud',
-    basePath: 'basePath',
-    // accessTokenDuration is optional and can be used to customize the expiration of the access token.
+    // basePath is optional.
+    basePath: '/marklogic/test',
+    // accessTokenDuration (in seconds) is optional and can be used to customize the expiration of the access token.
     accessTokenDuration: 10
 });
 
-let writeObject = {
+const writeObject = {
     uri: '/write/string1.json',
     contentType: 'application/json',
     content: '{"key1":"value 1"}'
