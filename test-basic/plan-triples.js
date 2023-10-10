@@ -21,6 +21,7 @@ const marklogic = require('../');
 const p = marklogic.planBuilder;
 
 const pbb = require('./plan-builder-base');
+const testlib = require("../etc/test-lib");
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -77,7 +78,19 @@ describe('triples', function() {
         'WHERE {?datastore dc:type <http://purl.org/dc/dcmitype/Dataset> ; dc:title ?title .}'
       ]}
     ]}};
+
+  let serverConfiguration={};
   describe('accessors', function() {
+    this.timeout(6000);
+    before(function (done) {
+      try {
+        testlib.findServerConfiguration(serverConfiguration);
+        setTimeout(()=>{done();}, 3000);
+      } catch(error){
+        done(error);
+      }
+    });
+
     it('with bare patterns', function(done) {
       execPlan(
         p.fromTriples([
@@ -175,16 +188,21 @@ describe('triples', function() {
         should(output[0].datastore.value).equal('/datastore/id#A');
         should(output[0].title.value).equal('The A datastore');
         should(output[0].sourceDocCheck.value).equal(true);
-        should.exist(output[0].sourceDocId);
-        should(output[0].sourceDocId.value).containEql('http://marklogic.com/fragment');
+
         should(output[1].datastore.value).equal('/datastore/id#B');
         should(output[1].title.value).equal('The B datastore');
         should(output[1].sourceDocCheck.value).equal(true);
-        should.exist(output[1].sourceDocId);
-        should(output[1].sourceDocId.value).containEql('http://marklogic.com/fragment');
+        if(serverConfiguration.serverVersion >= 11){
+          should.exist(output[0].sourceDocId);
+          should(output[0].sourceDocId.value).containEql('http://marklogic.com/fragment');
+          should.exist(output[1].sourceDocId);
+          should(output[1].sourceDocId.value).containEql('http://marklogic.com/fragment');
+        }
         done();
         })
-      .catch(done);
+      .catch(done)
+      .catch(err=> done(err));
+
     });
     it('having col method', function(done) {
       const accessor = p.fromTriples([

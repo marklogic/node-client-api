@@ -23,11 +23,22 @@ const marklogic = require('../');
 const p = marklogic.planBuilder;
 
 const pbb = require('./plan-builder-base');
+const testlib = require("../etc/test-lib");
 const testPlan = pbb.testPlan;
 const getResult = pbb.getResult;
+let serverConfiguration = {};
 
 describe('plan builder', function() {
-  describe('expression functions', function() { 
+  describe('expression functions', function() {
+      before(function (done) {
+          this.timeout(6000);
+          try {
+              testlib.findServerConfiguration(serverConfiguration);
+              setTimeout(()=>{done();}, 3000);
+          } catch(error){
+              done(error);
+          }
+      });
     it('cts.box#4', function(done) {
         testPlan([p.xs.double(1), p.xs.double(2), p.xs.double(3), p.xs.double(4)], p.cts.box(p.col("1"), p.col("2"), p.col("3"), p.col("4")))
           .then(function(response) { 
@@ -954,8 +965,10 @@ describe('plan builder', function() {
     }); 
     it('geo.parseWkt#1', function(done) {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
-          .then(function(response) { 
-            should(getResult(response).value).eql("LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)");
+          .then(function(response) {
+              const responseValue = (serverConfiguration.serverVersion >= 11)?"LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)":
+                  "LINESTRING(-112.25 47.1,-112.3 47.1,-112.39999 47.2)";
+            should(getResult(response).value).eql(responseValue);
             done();
         }).catch(done);
     }); 
@@ -2108,6 +2121,9 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('xdmp.unquote#1', function(done) {
+        if(serverConfiguration.serverVersion < 11){
+            this.skip();
+        }
         testPlan([p.xs.string("[123]")], p.xdmp.unquote(p.col("1")))
           .then(function(response) { 
             should(getResult(response).value).eql([123]);

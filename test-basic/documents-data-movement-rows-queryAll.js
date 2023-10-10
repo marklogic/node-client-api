@@ -23,6 +23,7 @@ const Stream = require('stream');
 const streamToArray = require('stream-to-array');
 const p = marklogic.planBuilder;
 const fs = require('fs');
+const testlib = require("../etc/test-lib");
 const tdeWriter = marklogic.createDatabaseClient({
     database: 'unittest-nodeapi-modules',
     host: 'localhost',
@@ -35,68 +36,37 @@ const tdeWriter = marklogic.createDatabaseClient({
 let uris = new Set();
 let result = [];
 const planFromBuilderTemplate = p.fromView('soccer', 'matches', '');
+let serverConfiguration = {};
 
-describe.skip('data movement rows-queryAll', function() {
+describe('data movement rows-queryAll', function() {
     this.timeout(15000);
     before(function(done){
-        const view = [
-            {
-                uri:'/test/exporting-rows.xml',
-                collections:['http://marklogic.com/xdmp/tde'],
-                contentType:'application/xml',
-                content:fs.createReadStream('./test-basic/data/exportingRows.tdex'),
-                permissions: [
-                    {'role-name': 'rest-reader', capabilities: ['read']},
-                    {'role-name': 'rest-writer', capabilities: ['read', 'update','execute']}
-                ]
-            }];
-        tdeWriter.documents.write(view)
-            .result(function(response){
-                let readable = new Stream.Readable({objectMode: true});
-                for(let i=1; i<=200;i++){
-                    let temp = {
-                        uri: '/test/dataMovement/requests/exporting-rows/'+i+'.xml',
-                        contentType: 'application/xml',
-                        content: '<?xml version="1.0" encoding="UTF-8"?>\n' +
-                            '<match>\n' +
-                            '<id>'+i+'</id>\n' +
-                            '<docUri>/test/dataMovement/requests/exporting-rows/'+i+'.xml</docUri>\n' +
-                            '<match-date>2016-10-12</match-date>\n' +
-                            '<league>Premier-'+i+'</league>\n' +
-                            '<score>\n' +
-                            '<home>'+i+'</home>\n' +
-                            '</score>\n' +
-                            '</match>'
-                    };
-                    uris.add(temp.uri);
-                    readable.push(temp);
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{
+                if(serverConfiguration.serverVersion >= 12){
+                    this.skip();
                 }
-                readable.push(null);
-                dbWriter.documents.writeAll(readable,{
-                    defaultMetadata: {
-                        collections: ['source1'],
-                        permissions: [
-                            {'role-name': 'rest-reader', capabilities: ['read']},
-                            {'role-name': 'rest-writer', capabilities: ['read', 'update']}
-                        ],
-                    },onCompletion: ((summary) => {
-                        done();
-                    })
-                });
-            });
+                setUp(done);
+                }, 3000);
+        } catch(error){
+            done(error);
+        }
     });
 
     after(function(done){
-        const q = marklogic.queryBuilder;
-        const ctsQb = marklogic.ctsQueryBuilder;
-        const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/exporting-rows/'));
-        dbWriter.documents.queryToRemoveAll(query, {
-            onCompletion: ((summary) => {
-                tdeWriter.documents.remove('/test/exporting-rows.xml')
-                    .result(function(response){})
-                    .then(done());
-            })
-        });
+        if(serverConfiguration.serverVersion < 12){
+            const q = marklogic.queryBuilder;
+            const ctsQb = marklogic.ctsQueryBuilder;
+            const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/exporting-rows/'));
+            dbWriter.documents.queryToRemoveAll(query, {
+                onCompletion: ((summary) => {
+                    tdeWriter.documents.remove('/test/exporting-rows.xml')
+                        .result(function(response){})
+                        .then(done());
+                })
+            });
+        } else {done();}
     });
 
     it('should queryAll documents with onCompletion, batchSize and concurrentRequests options',  function (done){
@@ -270,4 +240,52 @@ function verifyDocs(done){
     }
     result = [];
     done();
+}
+
+function setUp(done) {
+    const view = [
+        {
+            uri:'/test/exporting-rows.xml',
+            collections:['http://marklogic.com/xdmp/tde'],
+            contentType:'application/xml',
+            content:fs.createReadStream('./test-basic/data/exportingRows.tdex'),
+            permissions: [
+                {'role-name': 'rest-reader', capabilities: ['read']},
+                {'role-name': 'rest-writer', capabilities: ['read', 'update','execute']}
+            ]
+        }];
+    tdeWriter.documents.write(view)
+        .result(function(response){
+            let readable = new Stream.Readable({objectMode: true});
+            for(let i=1; i<=200;i++){
+                let temp = {
+                    uri: '/test/dataMovement/requests/exporting-rows/'+i+'.xml',
+                    contentType: 'application/xml',
+                    content: '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                        '<match>\n' +
+                        '<id>'+i+'</id>\n' +
+                        '<docUri>/test/dataMovement/requests/exporting-rows/'+i+'.xml</docUri>\n' +
+                        '<match-date>2016-10-12</match-date>\n' +
+                        '<league>Premier-'+i+'</league>\n' +
+                        '<score>\n' +
+                        '<home>'+i+'</home>\n' +
+                        '</score>\n' +
+                        '</match>'
+                };
+                uris.add(temp.uri);
+                readable.push(temp);
+            }
+            readable.push(null);
+            dbWriter.documents.writeAll(readable,{
+                defaultMetadata: {
+                    collections: ['source1'],
+                    permissions: [
+                        {'role-name': 'rest-reader', capabilities: ['read']},
+                        {'role-name': 'rest-writer', capabilities: ['read', 'update']}
+                    ],
+                },onCompletion: ((summary) => {
+                    done();
+                })
+            });
+        });
 }

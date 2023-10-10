@@ -195,10 +195,12 @@ function createManager(adminClient) {
   return new Manager(adminClient);
 }
 
-function findServerConfiguration(){
+function findServerConfiguration(serverConfiguration){
   const manageClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
-  return new Manager(manageClient).get({
+    new Manager(manageClient).get({
     endpoint: '/manage/v2?format=json',
+  }).result(function(response){
+      serverConfiguration.serverVersion =  parseFloat(response.data['local-cluster-default'].version).toFixed(2);
   });
 }
 
