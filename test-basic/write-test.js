@@ -22,19 +22,21 @@ const op = marklogic.planBuilder;
 const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 let assert = require('assert');
 const testlib = require("../etc/test-lib");
-let serverVersionGreaterThanEqual11 = false;
+let serverConfiguration = {};
 describe('optic-update validateDoc tests', function() {
+    this.timeout(20000);
     before(function (done) {
-        testlib.findServerConfiguration().result(function (response) {
-            serverVersionGreaterThanEqual11 = (parseInt(response.data['local-cluster-default'].version) >= 11);
-            done();
-        }).catch(error => done(error));
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{done();}, 3000);
+        } catch(error){
+            done(error);
+        }
     });
 
     describe('optic write function', function () {
-        this.timeout(20000);
         before(function(done){
-            if(!serverVersionGreaterThanEqual11){
+            if(serverConfiguration.serverVersion < 11){
                 this.skip();
             }
             done();

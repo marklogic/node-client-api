@@ -24,19 +24,22 @@ const op = marklogic.planBuilder;
 const dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 let removeStream = new Stream.PassThrough({objectMode: true});
 let uris = [];
-let serverVersionGreaterThanEqual11 = false;
+let serverConfiguration = {};
 describe('optic-update remove tests', function() {
+    this.timeout(6000);
     before(function (done) {
-        testlib.findServerConfiguration().result(function (response) {
-            serverVersionGreaterThanEqual11 = (parseInt(response.data['local-cluster-default'].version) >= 11);
-            done();
-        }).catch(error => done(error));
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{done();}, 3000);
+        } catch(error){
+            done(error);
+        }
     });
 
     describe('optic remove function ', function () {
-        this.timeout(4000);
+
         before(function (done) {
-            if(!serverVersionGreaterThanEqual11){
+            if(serverConfiguration.serverVersion < 11){
                 this.skip();
             }
             let readable = new Stream.Readable({objectMode: true});

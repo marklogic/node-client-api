@@ -20,18 +20,21 @@ const marklogic = require('../');
 const testlib = require("../etc/test-lib");
 const db = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 const op = marklogic.planBuilder;
-let serverVersionGreaterThanEqual11 = false;
+let serverConfiguration = {};
 describe('optic-update fromDocDescriptors tests', function() {
+    this.timeout(10000);
     before(function (done) {
-        testlib.findServerConfiguration().result(function (response) {
-            serverVersionGreaterThanEqual11 = (parseInt(response.data['local-cluster-default'].version) >= 11);
-            done();
-        }).catch(error => done(error));
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{done();}, 3000);
+        } catch(error){
+            done(error);
+        }
     });
 
     describe('fromDocDescriptors ', function () {
         before(function(done){
-            if(!serverVersionGreaterThanEqual11){
+            if(serverConfiguration.serverVersion < 11){
                 this.skip();
             }
             done();

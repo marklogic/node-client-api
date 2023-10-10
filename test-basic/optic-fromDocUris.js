@@ -14,19 +14,22 @@ const Stream = require('stream');
 const testlib = require("../etc/test-lib");
 let result = new Set();
 let uris = [];
-let serverVersionGreaterThanEqual11 = false;
+let serverConfiguration = {};
 describe('optic-update fromDocUris tests', function() {
+    this.timeout(15000);
     before(function (done) {
-        testlib.findServerConfiguration().result(function (response) {
-            serverVersionGreaterThanEqual11 = (parseInt(response.data['local-cluster-default'].version) >= 11);
-            done();
-        }).catch(error => done(error));
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{done();}, 3000);
+        } catch(error){
+            done(error);
+        }
     });
 
     describe('fromDocUris', function () {
-        this.timeout(15000);
+
         before(function (done) {
-            if(!serverVersionGreaterThanEqual11){
+            if(serverConfiguration.serverVersion < 11){
                 this.skip();
             }
             let readable = new Stream.Readable({objectMode: true});
@@ -49,12 +52,16 @@ describe('optic-update fromDocUris tests', function() {
         });
 
         after(function (done) {
-            db.documents.remove(uris)
-                .result(function (response) {
-                    done();
-                })
-                .catch(err => done(err))
-                .catch(done);
+            if(serverConfiguration.serverVersion < 11){
+                db.documents.remove(uris)
+                    .result(function (response) {
+                        done();
+                    })
+                    .catch(err => done(err))
+                    .catch(done);
+            } else {
+                done();
+            }
         });
 
         it('basic', function (done) {

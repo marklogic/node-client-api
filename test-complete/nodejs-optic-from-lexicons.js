@@ -21,12 +21,22 @@ const fs     = require('fs');
 const marklogic = require('../');
 
 const connectdef = require('../config-optic/connectdef.js');
+const testlib = require("../etc/test-lib");
 
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
+let serverConfiguration = {};
 
 describe('Nodejs Optic from lexicons test', function(){
-
+    this.timeout(6000);
+    before(function (done) {
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{done();}, 3000);
+        } catch(error){
+            done(error);
+        }
+    });
   it('TEST 1 - access with where orderby select - columnTypes header and data types', function(done){
     const popCol = op.col('popularity');
     const dateCol = op.col('date');
@@ -126,12 +136,12 @@ describe('Nodejs Optic from lexicons test', function(){
       .orderBy(op.asc(op.col('date')));
     db.rows.query(output, { format: 'json', structure: 'array', columnTypes: 'rows' })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.length).to.equal(6);
       expect(output[1][1].value).to.equal('new jersey');
       expect(output[1][3].value).to.equal('1971-12-23');
       expect(output[1][5].type).to.equal('http://marklogic.com/cts#point');
-      expect(output[1][5].value).to.equal('40.720001,-74.07');
+      const outputValue = (serverConfiguration.serverVersion >= 11)?'POINT(-74.07 40.720001)':'40.720001,-74.07';
+      expect(output[1][5].value).to.equal(outputValue);
       expect(output[1][7].value).to.equal('new jersey');
       expect(output[1][8].value).to.equal('nets');
       expect(output[5][1].value).to.equal('london');

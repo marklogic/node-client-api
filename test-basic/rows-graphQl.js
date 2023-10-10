@@ -18,12 +18,27 @@ const testconfig = require('../etc/test-config.js');
 const marklogic = require('../');
 const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 const assert = require('assert');
+const testlib = require("../etc/test-lib");
 const volumeSet = new Set().add('118').add('120');
 const dateSet = new Set().add('1970-12-07').add('1968-12-07');
 const idSet = new Set().add(123).add(456);
 const issnSet = new Set().add('1234').add('5678');
+let serverConfiguration = {};
 
 describe('graphQL endpoint tests', function() {
+this.timeout(6000);
+    before(function (done) {
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{
+                if(serverConfiguration.serverVersion < 11){
+                    this.skip();
+                }
+                done();}, 3000);
+        } catch(error){
+            done(error);
+        }
+    });
 
     it('should throw error when graphql query is not provided', function (done) {
         try{
