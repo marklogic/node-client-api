@@ -44,9 +44,6 @@ describe('data movement rows-queryAll', function() {
         try {
             testlib.findServerConfiguration(serverConfiguration);
             setTimeout(()=>{
-                if(serverConfiguration.serverVersion >= 12){
-                    this.skip();
-                }
                 setUp(done);
                 }, 3000);
         } catch(error){
@@ -55,7 +52,6 @@ describe('data movement rows-queryAll', function() {
     });
 
     after(function(done){
-        if(serverConfiguration.serverVersion < 12){
             const q = marklogic.queryBuilder;
             const ctsQb = marklogic.ctsQueryBuilder;
             const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/exporting-rows/'));
@@ -66,7 +62,6 @@ describe('data movement rows-queryAll', function() {
                         .then(done());
                 })
             });
-        } else {done();}
     });
 
     it('should queryAll documents with onCompletion, batchSize and concurrentRequests options',  function (done){
