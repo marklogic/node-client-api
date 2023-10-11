@@ -967,7 +967,7 @@ describe('plan builder', function() {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
           .then(function(response) {
               const responseValue = (serverConfiguration.serverVersion >= 11)?"LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)":
-                  "LINESTRING(-112.25 47.1,-112.3 47.1,-112.39999 47.2)";
+                  "LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)";
             should(getResult(response).value).eql(responseValue);
             done();
         }).catch(done);

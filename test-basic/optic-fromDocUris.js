@@ -52,7 +52,7 @@ describe('optic-update fromDocUris tests', function() {
         });
 
         after(function (done) {
-            if(serverConfiguration.serverVersion < 11){
+            if(serverConfiguration.serverVersion >= 11){
                 db.documents.remove(uris)
                     .result(function (response) {
                         done();

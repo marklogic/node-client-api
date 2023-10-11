@@ -185,7 +185,7 @@ describe('view', function() {
         should(output[0].id.value).equal(1);
         should(output[0].name.value).equal('Master 1');
         should(output[0].sourceDocCheck.value).equal(true);
-        if(serverConfiguration.serverVersion >= 11){
+        if(serverConfiguration.serverVersion < 11){
           should.not.exist(output[0].sourceDocId);
         }
         else{
