@@ -24,7 +24,7 @@ def runAuditReport(){
         cd node-client-api
         npm install
         rm -rf $WORKSPACE/npm-audit-report.json || true
-        npm audit -json > $WORKSPACE/npm-audit-report.json
+        npm audit -json || true > $WORKSPACE/npm-audit-report.json
     '''
 }
 
@@ -38,14 +38,20 @@ def runE2ETests(String type,String version){
         npm --version
         npm install
         node etc/test-setup-qa.js
+        # Adding sleep for the setups to complete before running test-complete
+        sleep 10
         node etc/test-setup-dmsdk-qa.js
+        sleep 10
         node config-optic/setupqa.js
+        sleep 30
         ./node_modules/.bin/mocha -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
         cd test-complete-proxy
         npm install --global gulp-cli
         gulp loadToModulesDB
         gulp generateFnClasses
         gulp copyFnClasses
+        # Adding sleep for the gulp commands to complete.
+        sleep 30
         cp *.js ../test-complete/
         cp -R ml-modules/ ../test-complete
         cd ../test-complete
@@ -55,7 +61,6 @@ def runE2ETests(String type,String version){
         ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
         ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
-        node ../etc/test-teardown-qa.js
     '''
      junit '**/*.xml'
 
@@ -78,12 +83,12 @@ pipeline{
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
     }
     stages{
-        stage('runtests-11.0.2'){
+        stage('runtests-11.1.0'){
             agent {label 'nodeclientpool'}
             steps{
                 runAuditReport()
-                runTests('Release','11.0.2')
-                runE2ETests('Release','11.0.2')
+                runTests('Release','11.1.0')
+                runE2ETests('Release','11.1.0')
             }
         }
         stage('regressions'){

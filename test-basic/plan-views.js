@@ -21,6 +21,7 @@ const marklogic = require('../');
 const p = marklogic.planBuilder;
 
 const pbb = require('./plan-builder-base');
+const testlib = require("../etc/test-lib");
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -33,6 +34,7 @@ function testValue(row, col, val) {
 }
 
 describe('view', function() {
+  this.timeout(10000);
   const exportedView =
     {$optic:{ns:'op', fn:'operators', args:[
       {ns:'op', fn:'from-view', args:['opticUnitTest', 'master']},
@@ -50,7 +52,16 @@ describe('view', function() {
         'SELECT id, name, date FROM master WHERE id = 1'
       ]}
     ]}};
+  let serverConfiguration = {};
   describe('accessors', function() {
+    before(function (done) {
+      try {
+        testlib.findServerConfiguration(serverConfiguration);
+        setTimeout(()=>{done();}, 3000);
+      } catch(error){
+        done(error);
+      }
+    });
     it('basic', function(done) {
       execPlan(
         p.fromView('opticUnitTest', 'master')
@@ -174,7 +185,12 @@ describe('view', function() {
         should(output[0].id.value).equal(1);
         should(output[0].name.value).equal('Master 1');
         should(output[0].sourceDocCheck.value).equal(true);
-        should.not.exist(output[0].sourceDocId);
+        if(serverConfiguration.serverVersion < 11){
+          should.not.exist(output[0].sourceDocId);
+        }
+        else{
+          should.exist(output[0].sourceDocId);
+        }
         done();
         })
       .catch(done);

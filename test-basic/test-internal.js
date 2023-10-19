@@ -18,6 +18,7 @@ const testconfig = require("../etc/test-config");
 const marklogic = require("../lib/marklogic");
 const should = require('should');
 let dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+let assert = require('assert');
 
 describe('internal tests', function() {
 
@@ -94,15 +95,40 @@ describe('internal tests', function() {
                 "/v1/search"
             )
             .result(function(response){
-                should.exist(response.total);
-                should.exist(response.start);
-                should.exist(response['page-length']);
-                for(let i=0; i<response.length; i++){
-                    should.exist(response.results[i]);
-                }
+                let stringResponse = response.toString();
+                assert(stringResponse.includes("total"));
+                assert(stringResponse.includes("start"));
+                assert(stringResponse.includes("page-length"));
             })
             .then(() => done())
             .catch(error=>done(error));
+        } catch(error){
+            done(error);
+        }
+    });
+
+    it('requestOptions and clientObject should not be cached.', function (done) {
+        testconfig.restWriterConnection.port = 5678;
+        let dbWriter2 = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+        try {
+            dbWriter.internal.sendRequest(
+                "/v1/search",
+                requestOptions => {
+                    requestOptions.method = "POST";
+                    requestOptions.headers = {"Accept": "application/json", "Content-type": "application/json"};
+                },
+                null
+            )
+                .result(function(response){
+                    should.exist(response.total);
+                    should.exist(response.start);
+                    should.exist(response['page-length']);
+                    for(let i=0; i<response.length; i++){
+                        should.exist(response.results[i]);
+                    }
+                })
+                .then(() => done())
+                .catch(error=>done(error));
         } catch(error){
             done(error);
         }

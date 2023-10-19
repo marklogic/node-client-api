@@ -19,6 +19,8 @@ var valcheck = require('core-util-is');
 var mlutil    = require('../lib/mlutil.js');
 var Operation = require('../lib/operation.js');
 var requester = require('../lib/requester.js');
+const marklogic = require("../lib/marklogic");
+const testconfig = require("./test-config");
 
 //CAUTION: the functions in this module are not part of the supported API and
 //may change or may be removed at any time.
@@ -191,8 +193,18 @@ function makePath(endpoint, params) {
 
 function createManager(adminClient) {
   return new Manager(adminClient);
-};
+}
+
+function findServerConfiguration(serverConfiguration){
+  const manageClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
+    new Manager(manageClient).get({
+    endpoint: '/manage/v2?format=json',
+  }).result(function(response){
+      serverConfiguration.serverVersion =  parseFloat(response.data['local-cluster-default'].version).toFixed(2);
+  });
+}
 
 module.exports = {
-    createManager: createManager
+    createManager: createManager,
+    findServerConfiguration: findServerConfiguration
 };

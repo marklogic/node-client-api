@@ -20,9 +20,28 @@ const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 const op = marklogic.planBuilder;
 let should = require('should');
 const fs = require("fs");
+const testlib = require("../etc/test-lib");
+let serverConfiguration = {};
 
-describe('binding from param', function () {
+describe('optic-update fromParam tests', function(){
     this.timeout(20000);
+    before(function (done) {
+        try {
+            testlib.findServerConfiguration(serverConfiguration);
+            setTimeout(()=>{done();}, 3000);
+        } catch(error){
+            done(error);
+        }
+    });
+
+    describe('binding from param', function () {
+
+        before(function(done){
+            if(serverConfiguration.serverVersion < 11){
+                this.skip();
+            }
+            done();
+        });
 
     it('test bindParam with null qualifier', function (done) {
         const rows = [{id: 1, firstName: "FirstName1", lastName: "LastName1"}, {
@@ -619,4 +638,5 @@ describe('binding from param', function () {
         });
     });
 
+});
 });

@@ -380,7 +380,7 @@ describe('graph operations', function(){
       result(function(response){
         response.results.bindings.length.should.equal(20);
         done();
-      }, done);
+      }, done).catch(error=>done(error));
     });
   });
 });
