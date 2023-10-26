@@ -23,7 +23,7 @@ const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection)
 let assert = require('assert');
 const testlib = require("../etc/test-lib");
 let serverConfiguration = {};
-describe('optic-update write tests', function() {
+describe('optic-update validateDoc tests', function() {
     this.timeout(20000);
     before(function (done) {
         try {
