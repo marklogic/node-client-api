@@ -53,6 +53,7 @@ const db = marklogic.createDatabaseClient({
     apiKey:   'changeme',
     host:     'example.beta.marklogic.com',
     authType: 'cloud',
+
     // basePath is optional.
     basePath: '/marklogic/test',
     // accessTokenDuration (in seconds) is optional and can be used to customize the expiration of the access token.

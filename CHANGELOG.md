@@ -1,5 +1,6 @@
 # CHANGELOG
 
+
 ## 3.2.0
 #### New Functionality
 
@@ -11,6 +12,7 @@
     https://github.com/advisories/GHSA-4q6p-r6v2-jvc5, 
     https://github.com/advisories/GHSA-c2qf-rxjj-qqgw and
     https://github.com/advisories/GHSA-7fh5-64p2-3v2j
+
 
 
 ## 3.1.0
