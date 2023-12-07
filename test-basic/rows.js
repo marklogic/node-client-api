@@ -221,6 +221,30 @@ describe('rows', function(){
             should(rows[7].album.value).equal('Kind of Blue');
           });
     });
+
+      it('should read rows with enableGzippedResponses', function(){
+          testconfig.restReaderConnection.enableGzippedResponses = true;
+          const client = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+          return client.rows.query(
+              `op.fromView('opticUnitTest', 'musician')
+             .where(cts.andQuery([
+                  cts.jsonPropertyWordQuery('instrument', 'trumpet'),
+                  cts.jsonPropertyWordQuery('lastName', ['Armstrong', 'Davis'])
+                  ]))
+             .select(null, '')
+             .orderBy('lastName');`,
+              {queryType: 'dsl'}
+          ).then(function(response) {
+              const rows = response.rows;
+              should(rows.length).equal(2);
+              should(rows[0].lastName.value).equal('Armstrong');
+              should(rows[0].firstName.value).equal('Louis');
+              should(rows[0].dob.value).equal('1901-08-04');
+              should(rows[1].lastName.value).equal('Davis');
+              should(rows[1].firstName.value).equal('Miles');
+              should(rows[1].dob.value).equal('1926-05-26');
+          });
+      });
   });
 
   describe('from a TDE view', function(){

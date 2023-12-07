@@ -112,12 +112,16 @@ describe('document negative', function(){
     }, function(error){
 // TODO: REMOVE TEMPORARY WORKAROUND BELOW
 //      error.statusCode.should.equal(400);
-      error.should.have.property('body');
-      error.body.should.have.property('errorResponse');
-      error.body.errorResponse.should.have.property('message');
-      error.body.errorResponse.message.should.containEql('XDMP-RWINVAL');
-      error.body.errorResponse.message.should.containEql('set-transaction');
-      done();
+      try {
+        error.should.have.property('body');
+        error.body.should.have.property('errorResponse');
+        error.body.errorResponse.should.have.property('message');
+        error.body.errorResponse.message.should.containEql('XDMP-RWINVAL');
+        error.body.errorResponse.message.should.containEql('set-transaction');
+        done();
+      } catch(error){
+        done(error);
+      }
       });
   });
   it('should fail to delete a document as reader', function(done){
@@ -143,12 +147,16 @@ describe('document negative', function(){
     }, function(error){
 // TODO: REMOVE TEMPORARY WORKAROUND BELOW
 //    error.statusCode.should.equal(400);
-      error.should.have.property('body');
-      error.body.should.have.property('errorResponse');
-      error.body.errorResponse.should.have.property('message');
-      error.body.errorResponse.message.should.containEql('XDMP-RWINVAL');
-      error.body.errorResponse.message.should.containEql('set-transaction');
-      done();
+      try {
+        error.should.have.property('body');
+        error.body.should.have.property('errorResponse');
+        error.body.errorResponse.should.have.property('message');
+        error.body.errorResponse.message.should.containEql('XDMP-RWINVAL');
+        error.body.errorResponse.message.should.containEql('set-transaction');
+        done();
+      } catch(error){
+        done(error);
+      }
       });
   });
   it('should fail to write a document with a mismapped extension', function(done){
