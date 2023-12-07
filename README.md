@@ -45,7 +45,10 @@ const db = marklogic.createDatabaseClient({
   database: 'Documents',
   user:     'admin',
   password: 'admin',
-  authType: 'DIGEST'
+  authType: 'DIGEST',
+  // enableGzippedResponses is optional and can be set to true in order to request MarkLogic to compress the response for better performance,
+    // the client will automatically decompress the response before it returns a value.
+  enableGzippedResponses: true
 });
 
 // For MarkLogic Cloud
@@ -56,7 +59,10 @@ const db = marklogic.createDatabaseClient({
     // basePath is optional.
     basePath: '/marklogic/test',
     // accessTokenDuration (in seconds) is optional and can be used to customize the expiration of the access token.
-    accessTokenDuration: 10
+    accessTokenDuration: 10,
+    // enableGzippedResponses is optional and can be set to true in order to request MarkLogic to compress the response for better performance,
+    // the client will automatically decompress the response before it returns a value.
+    enableGzippedResponses: true
 });
 
 db.createCollection(

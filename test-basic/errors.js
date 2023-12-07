@@ -33,15 +33,19 @@ describe('error generated from a server call', function() {
       response.should.equal('SHOULD HAVE FAILED');
       done();
     }, function(error){
-      error.statusCode.should.equal(403);
-      // verify client-side stack
-      error.should.have.property('stack');
-      const errorResponse = error.body.errorResponse;
-      errorResponse.statusCode.should.equal(403);
-      errorResponse.status.should.equal('Forbidden');
-      errorResponse.messageCode.should.equal('SEC-PRIV');
-      errorResponse.message.should.equal('You do not have permission to this method and URL.');
-      done();
+      try {
+        error.statusCode.should.equal(403);
+        // verify client-side stack
+        error.should.have.property('stack');
+        const errorResponse = error.body.errorResponse;
+        errorResponse.statusCode.should.equal(403);
+        errorResponse.status.should.equal('Forbidden');
+        errorResponse.messageCode.should.equal('SEC-PRIV');
+        errorResponse.message.should.equal('You do not have permission to this method and URL.');
+        done();
+      } catch(error){
+        done(error);
+      }
       });
   });
 
