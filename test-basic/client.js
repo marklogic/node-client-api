@@ -147,4 +147,22 @@ describe('database clients', function() {
       done(error);
     }
   });
+
+  it('should throw Error when SSL is used and server does not use SSL', function(done) {
+    const db = marklogic.createDatabaseClient(testconfig.restWriterConnectionWithSsl);
+    db.documents.write({
+      uri: '/test/write/string1.json',
+      contentType: 'application/json',
+      content: '{"key1":"value 1"}'
+    })
+        .result()
+        .catch(error => {
+          try{
+            assert(error.message.toString().includes('You have attempted to access an HTTP server using HTTPS. Please check your configuration.'));
+            done();
+          } catch(err){
+            done(err);
+          }
+        });
+  });
 });
