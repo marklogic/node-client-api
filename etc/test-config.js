@@ -134,5 +134,14 @@ module.exports = {
         authType: restAuthType,
         basePath: '',
         enableGzippedResponses: true
+    },
+    restWriterConnectionWithSsl: {
+        host:     testHost,
+        port:     restPort,
+        user:     restWriterUser,
+        password: restWriterPassword,
+        authType: restAuthType,
+        enableGzippedResponses: true,
+        ssl: true
     }
 };
