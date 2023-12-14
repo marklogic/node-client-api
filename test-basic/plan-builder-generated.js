@@ -956,6 +956,13 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('geo.geohashSubhashes#1', function(done) {
+        testPlan([p.xs.string("s01mtw")], p.geo.geohashSubhashes(p.col("1")))
+          .then(function(response) { 
+            should(getResult(response).value).eql(["s01mtw0", "s01mtw1", "s01mtw2", "s01mtw3", "s01mtw4", "s01mtw5", "s01mtw6", "s01mtw7", "s01mtw8", "s01mtw9", "s01mtwb", "s01mtwc", "s01mtwd", "s01mtwe", "s01mtwf", "s01mtwg", "s01mtwh", "s01mtwj", "s01mtwk", "s01mtwm", "s01mtwn", "s01mtwp", "s01mtwq", "s01mtwr", "s01mtws", "s01mtwt", "s01mtwu", "s01mtwv", "s01mtww", "s01mtwx", "s01mtwy", "s01mtwz"]);
+            done();
+        }).catch(done);
+    }); 
     it('geo.geohashSubhashes#2', function(done) {
         testPlan([p.xs.string("s01mtw"), p.xs.string("S")], p.geo.geohashSubhashes(p.col("1"), p.col("2")))
           .then(function(response) { 
