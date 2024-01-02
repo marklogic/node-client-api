@@ -104,22 +104,6 @@ directory of the marklogic package:
 The documentation is generated in a doc subdirectory. The documentation can also be
 accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
 
-### Running Tests
-
-To set up the database and REST server for tests, execute the following
-command from the root directory for the marklogic package:
-
-    npm run test:setup
-
-After setup, you can run tests for the Node.js Client API with the following
-command:
-
-    npm test
-
-To tear down the test database and REST server, execute the following:
-
-    npm run test:teardown
-
 ## Support
 
 The MarkLogic Node.js Client API is maintained by MarkLogic Engineering.
