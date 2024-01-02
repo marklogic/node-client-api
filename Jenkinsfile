@@ -9,7 +9,9 @@ def runTests(String type,String version){
         node --version
         npm --version
         npm install
-        node etc/test-setup.js -u admin:admin
+        cd test-app
+        ./gradlew -i mlDeploy
+        cd ..
         rm -rf $WORKSPACE/*.xml || true
         ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
         ./node_modules/.bin/gulp setupProxyTests || true
