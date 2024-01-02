@@ -1,0 +1,8 @@
+{
+  "user-name": "qbvuser",
+  "description": "qbvuser for test complete tests.",
+  "password": "qbvuser",
+  "role": [
+    "qbvuser-role"
+  ]
+}

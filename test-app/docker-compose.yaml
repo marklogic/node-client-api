@@ -1,0 +1,18 @@
+version: '1.0'
+name: node-client
+
+services:
+
+  marklogic:
+    image: "marklogicdb/marklogic-db:11.1.0-centos-1.1.0"
+    platform: linux/amd64
+    environment:
+      - INSTALL_CONVERTERS=true
+      - MARKLOGIC_INIT=true
+      - MARKLOGIC_ADMIN_USERNAME=admin
+      - MARKLOGIC_ADMIN_PASSWORD=admin
+    volumes:
+      - ./docker/marklogic/logs:/var/opt/MarkLogic/Logs
+    ports:
+      - 8000-8002:8000-8002
+      - 8015:8015

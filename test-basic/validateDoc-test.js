@@ -269,7 +269,7 @@ describe('optic-update validateDoc tests', function() {
                 const plan = op.fromDocDescriptors([{uri: "/test/optic/validateDoc/toValidate4.json"}])
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validateDoc-test.json'});
+                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validation/validateDoc-test.json'});
                 db.rows.query(plan).then((res) => {
                     try {
                         res.rows.length.should.equal(1);
@@ -336,7 +336,7 @@ describe('optic-update validateDoc tests', function() {
                     {uri: "/test/optic/validateDoc/toValidate4.json"}])
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validateDoc-test.json', mode: 'strict'});
+                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validation/validateDoc-test.json', mode: 'strict'});
                 db.rows.query(plan).then((res) => {
                     try {
                         res.rows.length.should.equal(1);
@@ -364,7 +364,7 @@ describe('optic-update validateDoc tests', function() {
                 const plan = op.fromDocDescriptors(docsDescriptor)
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: "/validateDoc-test.json", mode: "full"});
+                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: "/validation/validateDoc-test.json", mode: "full"});
                 db.rows.query(plan).then((res) => {
                     try {
                         res.rows.length.should.equal(1);

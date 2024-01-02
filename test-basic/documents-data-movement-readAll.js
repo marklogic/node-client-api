@@ -33,7 +33,11 @@ let xqyTransformName = 'flagParam';
 let xqyTransformPath = './test-basic/data/flagTransform.xqy';
 
 describe('data movement readAll', function() {
-    this.timeout(6000);
+    // This "before" frequently fails to finish before the timeout triggers
+    // TODO:
+    //      short-term -> run with "timeout 0" and/or change/add "this.timeout(0)" to both methods
+    //      long-term -> Do we need 10000 records for these tests?
+    this.timeout(120000);
     before(function (done) {
         let readable = new Stream.Readable({objectMode: true});
         for(let i=0; i<10000; i++) {

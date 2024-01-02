@@ -1,0 +1,3 @@
+{srchFood:"citron", srchNumber:1, srchLevel:10, srchCity:"Bonn",
+  srchPoint: "35.25, 35.25",
+  srchContainer:{srchColA:"outlier", srchColB:"common", srchColC:"common"}}

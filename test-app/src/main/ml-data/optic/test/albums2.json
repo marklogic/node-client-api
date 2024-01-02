@@ -1,0 +1,6 @@
+{style:["avantgarde"], albums:[
+  {triple:{subject:"/optic/test/albums2_1", predicate:"/optic/test/albumName",   object:"Four Thoughts on Marvin Gaye"}},
+  {triple:{subject:"/optic/test/albums2_1", predicate:"/optic/test/musicianUri", object:"/optic/test/musician2.json"}},
+  {triple:{subject:"/optic/test/albums2_2", predicate:"/optic/test/albumName",   object:"A Ballad For Many"}},
+  {triple:{subject:"/optic/test/albums2_2", predicate:"/optic/test/musicianUri", object:"/optic/test/musician2.json"}}
+]}

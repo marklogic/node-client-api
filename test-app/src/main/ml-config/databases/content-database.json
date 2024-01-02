@@ -1,0 +1,118 @@
+{
+  "database-name": "%%DATABASE%%",
+  "schema-database": "%%SCHEMAS_DATABASE%%",
+  "collection-lexicon": true,
+  "uri-lexicon":        true,
+  "triple-index":       true,
+  "range-element-index": [
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "rangeKey1",
+      "collation": "http://marklogic.com/collation/",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "rangeKey2",
+      "collation": "http://marklogic.com/collation/",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "rangeKey3",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "rangeKey4",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "rangeKey5",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "srchCity",
+      "collation": "http://marklogic.com/collation/",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "srchLevel",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "srchNumber",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "systemStartTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "systemEndTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "validStartTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "validEndTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    }
+  ],
+  "geospatial-element-index": [
+    {
+      "namespace-uri": "",
+      "localname": "point",
+      "coordinate-system": "wgs84",
+      "range-value-positions": false,
+      "point-format": "point",
+      "invalid-values": "ignore"
+    }
+  ],
+  "element-word-lexicon": [
+    {
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "defaultWordKey"
+    },
+    {
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "taggedWordKey"
+    }
+  ]
+}
