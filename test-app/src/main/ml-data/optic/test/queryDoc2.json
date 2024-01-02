@@ -1,0 +1,3 @@
+{srchFood:"banannas", srchNumber:3, srchLevel:30, srchCity:"Antioch",
+  srchPoint: "25.25, 25.25",
+  srchContainer:{srchColA:"common", srchColB:"common", srchColC:"outlier"}}

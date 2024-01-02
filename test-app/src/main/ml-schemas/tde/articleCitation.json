@@ -1,0 +1,33 @@
+{
+  "template": {
+    "context": "/Citation/Article",
+    "rows": [
+      {
+      "schemaName": "Medical",
+      "viewName": "Publications",
+      "columns": [
+            {
+            "name": "ID",
+            "scalarType": "long",
+            "val": "../ID"
+            },
+            {
+            "name": "ISSN",
+            "scalarType": "string",
+            "val": "Journal/ISSN"
+            },
+            {
+            "name": "Volume",
+            "scalarType": "string",
+            "val": "Journal/JournalIssue/Volume"
+            },
+            {
+            "name": "Date",
+            "scalarType": "date",
+            "val":"Journal/JournalIssue/PubDate/Year||'-'||Journal/JournalIssue/PubDate/Month||'-'||Journal/JournalIssue/PubDate/Day"
+            }
+        ]
+      }
+    ]
+  }
+}

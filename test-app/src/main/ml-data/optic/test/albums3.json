@@ -1,0 +1,6 @@
+{style:["avantgarde"], albums:[
+  {triple:{subject:"/optic/test/albums3_1", predicate:"/optic/test/albumName",   object:"Impressions"}},
+  {triple:{subject:"/optic/test/albums3_1", predicate:"/optic/test/musicianUri", object:"/optic/test/musician3.json"}},
+  {triple:{subject:"/optic/test/albums3_2", predicate:"/optic/test/albumName",   object:"Crescent"}},
+  {triple:{subject:"/optic/test/albums3_2", predicate:"/optic/test/musicianUri", object:"/optic/test/musician3.json"}}
+]}

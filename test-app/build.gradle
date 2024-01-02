@@ -1,0 +1,5 @@
+// Only used for setting up the test AppServer in MarkLogic
+plugins {
+  id 'net.saliman.properties' version '1.5.2'
+  id "com.marklogic.ml-gradle" version "4.6.0"
+}

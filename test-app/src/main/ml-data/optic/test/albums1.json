@@ -1,0 +1,6 @@
+{style:["dixieland"], albums:[
+  {triple:{subject:"/optic/test/albums1_1", predicate:"/optic/test/albumName",   object:"Hot Fives"}},
+  {triple:{subject:"/optic/test/albums1_1", predicate:"/optic/test/musicianUri", object:"/optic/test/musician1.json"}},
+  {triple:{subject:"/optic/test/albums1_2", predicate:"/optic/test/albumName",   object:"Porgy and Bess"}},
+  {triple:{subject:"/optic/test/albums1_2", predicate:"/optic/test/musicianUri", object:"/optic/test/musician1.json"}}
+]}
