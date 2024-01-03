@@ -4,6 +4,7 @@ def runTests(String type,String version){
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
+        export JAVA_HOME=/home/builder/java/openjdk-1.8.0-262
         export PATH=${NODE_HOME_DIR}/bin:$PATH
         cd node-client-api
         node --version
