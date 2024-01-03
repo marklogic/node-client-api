@@ -853,6 +853,7 @@ describe('optic-update validateDoc tests', function() {
 
             db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
                 try {
+                    console.log(res)
                     const rows = res.rows;
                     rows[0].rowId.value.should.equal(1);
                     rows[1].rowId.value.should.equal(2);
@@ -934,6 +935,7 @@ describe('optic-update validateDoc tests', function() {
 
             db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
                 try {
+                    console.log(res)
                     const rows = res.rows;
                     rows[0].rowId.value.should.equal(1);
                     assert(JSON.stringify(rows[0].doc.value).includes('desc1'));
