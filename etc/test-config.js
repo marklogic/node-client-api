@@ -55,42 +55,48 @@ module.exports = {
         port:     restPort,
         user:     restAdminUser,
         password: restAdminPassword,
-        authType: restAuthType
+        authType: restAuthType,
+        enableGzippedResponses: true
     },
     restReaderConnection: {
         host:     testHost,
         port:     restPort,
         user:     restReaderUser,
         password: restReaderPassword,
-        authType: restAuthType
+        authType: restAuthType,
+        enableGzippedResponses: true
     },
     restWriterConnection: {
         host:     testHost,
         port:     restPort,
         user:     restWriterUser,
         password: restWriterPassword,
-        authType: restAuthType
+        authType: restAuthType,
+        enableGzippedResponses: true
     },
     restEvaluatorConnection: {
       host:     testHost,
       port:     restPort,
       user:     restEvaluatorUser,
       password: restEvaluatorPassword,
-      authType: restAuthType
+      authType: restAuthType,
+      enableGzippedResponses: true
     },
     restTemporalConnection: {
       host:     testHost,
       port:     restPort,
       user:     restTemporalUser,
       password: restTemporalPassword,
-      authType: restAuthType
+      authType: restAuthType,
+      enableGzippedResponses: true
     },
     manageAdminConnection: {
         host:     testHost,
         port:     managePort,
         user:     restAdminUser,
         password: restAdminPassword,
-        authType: manageAuthType
+        authType: manageAuthType,
+        enableGzippedResponses: true
     },
     restSslConnection: {
         host:     testHost,
@@ -99,7 +105,8 @@ module.exports = {
         password: restAdminPassword,
         authType: 'BASIC',
         rejectUnauthorized: false,
-        ssl:      true
+        ssl:      true,
+        enableGzippedResponses: true
     },
     testConnection: {
         host:     testHost,
@@ -107,7 +114,8 @@ module.exports = {
         user:     testUser,
         password: testPassword,
         authType: restAuthType,
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        enableGzippedResponses: true
     },
     tdeConnection: {
         host:     testHost,
@@ -115,7 +123,8 @@ module.exports = {
         user:     tdeUser,
         password: tdePassword,
         authType: restAuthType,
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        enableGzippedResponses: true
     },
     restWriterConnectionWithBasePath: {
         host:     testHost,
@@ -123,6 +132,16 @@ module.exports = {
         user:     restWriterUser,
         password: restWriterPassword,
         authType: restAuthType,
-        basePath: ''
+        basePath: '',
+        enableGzippedResponses: true
+    },
+    restWriterConnectionWithSsl: {
+        host:     testHost,
+        port:     restPort,
+        user:     restWriterUser,
+        password: restWriterPassword,
+        authType: restAuthType,
+        enableGzippedResponses: true,
+        ssl: true
     }
 };

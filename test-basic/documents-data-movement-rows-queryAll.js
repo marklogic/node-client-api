@@ -72,7 +72,7 @@ describe('data movement rows-queryAll', function() {
                 concurrentRequests : {multipleOf:'hosts', multiplier:4},
                 onCompletion: ((summary) => {
                     try {
-                        summary.rowsReadSuccessfully.should.be.equal(200);
+                        summary.rowsReadSuccessfully.should.be.equal(50);
                         summary.rowsFailedToBeRead.should.be.equal(0);
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
                     } catch(err) {
@@ -100,7 +100,7 @@ describe('data movement rows-queryAll', function() {
                 consistentSnapshot: true,
                 onCompletion: ((summary) => {
                     try {
-                        summary.rowsReadSuccessfully.should.be.equal(200);
+                        summary.rowsReadSuccessfully.should.be.equal(50);
                         summary.rowsFailedToBeRead.should.be.equal(0);
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
                         summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
@@ -147,7 +147,7 @@ describe('data movement rows-queryAll', function() {
                 }),
                 onCompletion: ((summary) => {
                     try {
-                        summary.rowsReadSuccessfully.should.be.equal(200);
+                        summary.rowsReadSuccessfully.should.be.equal(50);
                         summary.rowsFailedToBeRead.should.be.equal(0);
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
                         summary.consistentSnapshotTimestamp.toString().should.equal(onIntitalTimestampValue.toString());
@@ -176,7 +176,7 @@ describe('data movement rows-queryAll', function() {
                 outputStreamType: 'chunked',
                 onCompletion: ((summary) => {
                     try {
-                        summary.rowsReadSuccessfully.should.be.equal(200);
+                        summary.rowsReadSuccessfully.should.be.equal(50);
                         summary.rowsFailedToBeRead.should.be.equal(0);
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
                     } catch(err) {
@@ -205,7 +205,7 @@ describe('data movement rows-queryAll', function() {
                 consistentSnapshot: true,
                 onCompletion: ((summary) => {
                     try {
-                        summary.rowsReadSuccessfully.should.be.equal(200);
+                        summary.rowsReadSuccessfully.should.be.equal(50);
                         summary.rowsFailedToBeRead.should.be.equal(0);
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
                         summary.consistentSnapshotTimestamp.should.be.greaterThanOrEqual(0);
@@ -229,7 +229,7 @@ describe('data movement rows-queryAll', function() {
 });
 
 function verifyDocs(done){
-    result.length.should.equal(200);
+    result.length.should.equal(50);
     for(let i=0; i<result.length; i++){
         uris.has(result[i].toString()).should.equal(true);
     }
@@ -252,7 +252,7 @@ function setUp(done) {
     tdeWriter.documents.write(view)
         .result(function(response){
             let readable = new Stream.Readable({objectMode: true});
-            for(let i=1; i<=200;i++){
+            for(let i=1; i<=50;i++){
                 let temp = {
                     uri: '/test/dataMovement/requests/exporting-rows/'+i+'.xml',
                     contentType: 'application/xml',

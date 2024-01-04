@@ -45,7 +45,10 @@ const db = marklogic.createDatabaseClient({
   database: 'Documents',
   user:     'admin',
   password: 'admin',
-  authType: 'DIGEST'
+  authType: 'DIGEST',
+  // enableGzippedResponses is optional and can be set to true in order to request MarkLogic to compress the response for better performance,
+    // the client will automatically decompress the response before it returns a value.
+  enableGzippedResponses: true
 });
 
 // For MarkLogic Cloud
@@ -56,7 +59,10 @@ const db = marklogic.createDatabaseClient({
     // basePath is optional.
     basePath: '/marklogic/test',
     // accessTokenDuration (in seconds) is optional and can be used to customize the expiration of the access token.
-    accessTokenDuration: 10
+    accessTokenDuration: 10,
+    // enableGzippedResponses is optional and can be set to true in order to request MarkLogic to compress the response for better performance,
+    // the client will automatically decompress the response before it returns a value.
+    enableGzippedResponses: true
 });
 
 db.createCollection(
@@ -97,22 +103,6 @@ directory of the marklogic package:
 
 The documentation is generated in a doc subdirectory. The documentation can also be
 accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
-
-### Running Tests
-
-To set up the database and REST server for tests, execute the following
-command from the root directory for the marklogic package:
-
-    npm run test:setup
-
-After setup, you can run tests for the Node.js Client API with the following
-command:
-
-    npm test
-
-To tear down the test database and REST server, execute the following:
-
-    npm run test:teardown
 
 ## Support
 

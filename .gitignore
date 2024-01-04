@@ -2,5 +2,10 @@ benchmarks
 doc
 node_modules
 tmp
+.idea
 .project
 .settings
+test-app/build
+test-app/.gradle
+test-app/gradle-local.properties
+test-app/docker

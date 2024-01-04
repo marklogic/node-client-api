@@ -21,6 +21,7 @@ const marklogic = require('../');
 const p = marklogic.planBuilder;
 
 const pbb = require('./plan-builder-base');
+const testconfig = require("../etc/test-config");
 const execPlan = pbb.execPlan;
 const getResults = pbb.getResults;
 
@@ -34,6 +35,18 @@ describe('lexicons', function() {
       },
       'docRange']}
     ]}};
+
+  // This document sometimes gets left behind, so try to remove it before running the test
+  // TODO - Need a better method to clean-up the test content database
+  before(function (done) {
+    const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
+    db.documents.remove(['/optic/test/office1.json']).result(function () {
+      done();
+    }, function (error) {
+      done(error);
+    });
+  });
+
   it('on access', function(done) {
     execPlan(
       p.fromLexicons({

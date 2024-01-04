@@ -1,0 +1,3 @@
+{srchFood:"apples", srchNumber:2, srchLevel:20, srchCity:"Cairo",
+  srchPoint: "15.25, 15.25",
+  srchContainer:{srchColA:"common", srchColB:"outlier", srchColC:"common"}}

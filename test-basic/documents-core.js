@@ -28,7 +28,7 @@ var testutil   = require('./test-util.js');
 var marklogic = require('../');
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+
 
 describe('document content', function(){
   describe('write', function(){
@@ -57,6 +57,37 @@ describe('document content', function(){
             })
           .catch(done);
       });
+        it('should read back zipped contents with enableGzippedResponses as true', function(done){
+            const dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+            dbReader.documents.read('/test/write/string1.json')
+                .result(function(documents) {
+                    valcheck.isUndefined(documents).should.equal(false);
+                    documents.length.should.equal(1);
+                    let document = documents[0];
+                    document.should.have.property('content');
+
+                    document.content.should.have.property('key1');
+                    document.content.key1.should.equal('value 1');
+                    done();
+                })
+                .catch(error=> done(error));
+        });
+
+        it('should read back normal contents with enableGzippedResponses as false', function(done){
+            testconfig.restReaderConnection.enableGzippedResponses = false;
+            const dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+            dbReader.documents.read('/test/write/string1.json')
+                .result(function(documents) {
+                    valcheck.isUndefined(documents).should.equal(false);
+                    documents.length.should.equal(1);
+                    let document = documents[0];
+                    document.should.have.property('content');
+                    document.content.should.have.property('key1');
+                    document.content.key1.should.equal('value 1');
+                    done();
+                })
+                .catch(done);
+        });
     });
     describe('a JSON object', function(){
       before(function(done){

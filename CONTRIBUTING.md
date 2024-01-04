@@ -1,148 +1,55 @@
-# Contributing to the MarkLogic Node.js Client API
+# Contributing to the MarkLogic Node.js Client
 
-The MarkLogic Node.js Client API welcomes new contributors. This document will guide you
-through the process.
-
- - [Question or Problem?](#question)
- - [Issues and Bugs](#issue)
- - [Feature Requests](#feature)
- - [Submission Guidelines](#submit)
-
-## <a name="question"></a> Have a Question or Problem?
-
-If you have questions about how to use the Node.js Client API, you can ask on
-[StackOverflow](http://stackoverflow.com/tags/marklogic), tagging the question
-with MarkLogic.
-
-## <a name="issue"></a> Found an Issue?
-If you find a bug in the source code or a mistake in the documentation, you can help us by
-submitting an issue to our [GitHub Issue Tracker](https://github.com/marklogic/node-client-api/issues). Even better
-you can submit a Pull Request with a fix for the issue you filed.
-
-## <a name="feature"></a> Want a Feature?
-You can request a new feature by submitting an issue to our [GitHub Issue Tracker](https://github.com/marklogic/node-client-api/issues).  If you would like to implement a new feature, first create a new issue and discuss it with one of our project
-maintainers.
-
-## <a name="submit"></a> Submission Guidelines
-
-### Submitting an Issue
-If your issue appears to be a bug, and hasn’t been reported, open a new issue.
-Providing the following information will increase the chances of your issue being dealt with quickly:
-
-* **Overview of the Issue** - If an error is being thrown a stack trace helps
-* **Motivation for or Use Case** - Explain why this is a bug for you
-* **Environment** - Which [version of MarkLogic](https://docs.marklogic.com/xdmp.version)? Which version of the Node.js Client API? Mac, Windows, Linux?  Details help.
-* **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point
-to what might be causing the problem (line of code or commit)
-
-### Submitting a Pull Request
-
-A pull request is the standard way to submit changes to a repository to which you don’t have commit privileges. GitHub provides a nice UI for viewing, discussing, and merging pull requests.
-
-#### Fill in the CLA
-
-Before we can accept your pull request, you need to sign a [Contributor License Agreement](http://developer.marklogic.com/products/cla).
-
-#### Fork the Node.js Client API
-
-Fork the project [on GitHub](https://github.com/marklogic/node-client-api/fork)
-and clone your copy.
-
-    $ git clone git@github.com:username/node-client-api.git
-    $ cd node-client-api
-    $ git remote add upstream git://github.com/marklogic/node-client-api.git
-
-All bug fixes and new features go into the `develop` branch.
-
-We ask that you open an issue in the [issue tracker](https://github.com/marklogic/node-client-api/issues) and get agreement from at least one of the project maintainers before you start coding.
-
-Nothing is more frustrating than seeing your hard work go to waste because your vision does not align with that of a project maintainer.
-
-#### Create a branch for your changes
-
-Okay, so you have decided to fix something. Create a feature branch and start hacking:
-
-    $ git checkout -b issue/123 -t origin/dev
-
-In this case, the branch name, `issue/123`, references the fact that your changes address the issue (#123) that you just filed. Replace the `123` with your issue number. This naming convention is not required, but is generally helpful in navigating your branches.
-
-#### Commit your changes
-
-Make sure git knows your name and email address:
-
-    $ git config --global user.name "J. Random User"
-    $ git config --global user.email "j.random.user@example.com"
-
-Writing good commit logs is important. A commit log should describe what changed and why. Follow these guidelines when writing one:
-
-1. The first line should be 50 characters or less and contain a short description of the change including the Issue number prefixed by a hash (`#`).
-2. Keep the second line blank.
-3. Wrap all other lines at 72 columns.
-
-A good commit log looks like this:
-
-```
-Fixes #123: Makes the whatchamajigger work in MarkLogic 8
-
-Body of commit message is a few lines of text, explaining things
-in more detail, possibly giving some background about the issue
-being fixed, etc etc.
-
-The body of the commit message can be several paragraphs, and
-please do proper word-wrap and keep columns shorter than about
-72 characters or so. That way `git log` will show things
-nicely even when it is indented.
-```
-
-The header line should be meaningful; it is what other people see when they
-run `git shortlog` or `git log --oneline`.
-
-#### Rebase your repo
-
-Use `git rebase` (not `git merge`) to sync your work from time to time to make sure you don’t stray too far from the active development work.
-
-    $ git fetch upstream
-    $ git rebase upstream/develop
-
-#### Test your code
-
-Be sure to run the tests before submitting your pull request. PRs with failing tests won’t be accepted.
-
-    $ node etc/test-setup.js
-    $ mocha test-basic
-    $ node etc/test-teardown.js
-
-#### Push your changes
-
-    $ git push origin issue/123
-
-#### Submit the pull request
-
-Go to your fork (i.e. https://github.com/username/node-client-api) and select your feature branch. Click the “Pull Request” button and fill out the form.
-
-Pull requests are usually reviewed within a few days. If you get comments that need to be to addressed, apply your changes in a separate commit and push that to your feature branch. Post a comment in the pull request afterwards; GitHub does not send out notifications when you add commits to existing pull requests.
-
-That’s it. Thanks in advance for your contribution.
+This guide describes how to develop and test the Node.js Client. For questions about how to use the Node.js Client API,
+please see the README file.
 
 
-#### After your pull request is merged
+## Initial Setup
 
-After your pull request is merged, you can safely delete your branch and pull
-the changes from the main (upstream) repository:
+To run any of the steps below, first verify that you have the following available;
+[sdkman](https://sdkman.io/) is recommended for installing and maintaining versions of Java:
+* Java 8.x
 
-* Delete the remote branch on GitHub either through the GitHub web UI or your
-local shell as follows:
+You will also need to clone this repository locally and open a CLI in the root directory of the cloned project.
 
-    $ git push origin --delete issue/123
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) is recommended for automating and simplifying the setup for developing and testing the connector.
+Without it, you can still deploy the test app to your local MarkLogic instance and run the tests, but it could cause
+conflicts with other MarkLogic AppServers and/or databases.
 
-* Check out the dev branch:
+If you are not using Docker, you can skip to the next section, the assumption being that you have a MarkLogic
+instance available for testing.
 
-    $ git checkout develop -f
+If you are able to use Docker, run the following:
 
-* Delete the local branch:
+    cd test-app
+    docker-compose up -d --build
 
-    $ git branch -D issue/123
+This will create a container with the MarkLogic service. The MarkLogic service will take a minute or two to initialize.
+Point your browser to http://localhost:8001 to verify that the service is running and has been initialized. The default
+username and password are in the docker-compose.yaml file in the /test-app directory.
 
-* Update your dev with the latest upstream version:
+Once the container is finished initializing, you need to deploy the test application to the MarkLogic service.
+While still in the test-app directory run the following gradle command.
 
-    $ git pull --ff upstream develop
+    ./gradlew -i mlDeploy
+
+Once the deploy has completed successfully, use "cd .." to return to the root directory of the project.
+
+
+## Running the test suite
+
+To run the tests contained in the project, you will need to install Mocha globally. This only needs to be done once.
+
+    npm install mocha -g
+
+Once Mocha has been installed, you can run the entire test suite with this command. This will take several minutes to complete.
+
+    mocha test-basic -timeout 0
+
+Alternatively, to run a single test or a single "describe" group of tests, use this command with the description text
+contained in either the "it" function or the "describe" function, respectively.
+
+    mocha test-basic -timeout 0 -g 'optic-update fromParam tests'
+or
+
+    mocha test-basic -timeout 0 -g 'test bindParam with qualifier'

@@ -1,0 +1,24 @@
+{
+  "role-name": "rest-temporal-writer",
+  "description": "REST writer with temporal privileges",
+  "role": [
+    "rest-writer"
+  ],
+  "privilege": [
+    {
+      "privilege-name": "temporal-statement-set-system-time",
+      "action": "http://marklogic.com/xdmp/privileges/temporal-statement-set-system-time",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "temporal-document-protect",
+      "action": "http://marklogic.com/xdmp/privileges/temporal-document-protect",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "temporal-document-wipe",
+      "action": "http://marklogic.com/xdmp/privileges/temporal-document-wipe",
+      "kind": "execute"
+    }
+  ]
+}

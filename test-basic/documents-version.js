@@ -98,8 +98,12 @@ describe('document versions', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
-        done();
+        try {
+          error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+          done();
+        } catch(error){
+          done(error);
+        }
       });
     });
     it('should fail with the wrong versionId', function(done) {
@@ -108,8 +112,12 @@ describe('document versions', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
-        done();
+        try {
+          error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
+          done();
+        } catch(error){
+          done(error);
+        }
       });
     });
     it('should succeed with the rightversionId', function(done) {
@@ -157,8 +165,12 @@ describe('document versions', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
-        done();
+        try {
+          error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTNOVERSION');
+          done();
+        } catch(error){
+          done(error);
+        }
       });
     });
     it('should fail with the wrong versionId', function(done) {
@@ -172,8 +184,13 @@ describe('document versions', function() {
         response.should.equal('SHOULD HAVE FAILED');
         done();
       }, function(error) {
-        error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
-        done();
+        try {
+          console.log(typeof error)
+          error.body.errorResponse.messageCode.should.equal('RESTAPI-CONTENTWRONGVERSION');
+          done();
+        } catch(error){
+          done(error);
+        }
       });
     });
     it('should succeed with the right versionId', function(done) {

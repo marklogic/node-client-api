@@ -4,12 +4,15 @@ def runTests(String type,String version){
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
+        export JAVA_HOME=/home/builder/java/openjdk-1.8.0-262
         export PATH=${NODE_HOME_DIR}/bin:$PATH
         cd node-client-api
         node --version
         npm --version
         npm install
-        node etc/test-setup.js -u admin:admin
+        cd test-app
+        ./gradlew -i mlDeploy
+        cd ..
         rm -rf $WORKSPACE/*.xml || true
         ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
         ./node_modules/.bin/gulp setupProxyTests || true

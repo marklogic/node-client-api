@@ -1,0 +1,8 @@
+{
+    "user-name": "test-user",
+    "description": "test user to check the connection",
+    "password": "x",
+    "role": [
+        "test-User"
+    ]
+}
