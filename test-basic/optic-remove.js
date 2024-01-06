@@ -67,8 +67,9 @@ describe('optic-update remove tests', function() {
         });
 
         it('test remove 1 of three documents', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(op.fromDocUris("/test/optic/remove/doc1.xml").remove());
+                db.rows.execute(op.fromDocUris("/test/optic/remove/doc1.xml").remove(), options);
                 setTimeout(function () {
                     verifyOneDocDeleted(done);
                 }, 3000);
@@ -78,8 +79,9 @@ describe('optic-update remove tests', function() {
         });
 
         it('test with uri column specified', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(op.fromDocUris("/test/optic/remove/doc1.xml").remove(op.col('uri')));
+                db.rows.execute(op.fromDocUris("/test/optic/remove/doc1.xml").remove(op.col('uri')), options);
                 setTimeout(function () {
                     verifyOneDocDeleted(done);
                 }, 3000);
@@ -89,6 +91,7 @@ describe('optic-update remove tests', function() {
         });
 
         it('test with multiple qualified uri columns', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
                 const plan = op.fromDocUris(op.cts.documentQuery(op.xs.string("/test/optic/remove/doc1.xml")), "view1")
                     .joinLeftOuter(
@@ -99,7 +102,7 @@ describe('optic-update remove tests', function() {
                         )
                     )
                     .remove(op.viewCol("view1", "uri"));
-                db.rows.execute(plan);
+                db.rows.execute(plan, options);
                 setTimeout(function () {
                     verifyOneDocDeleted(done);
                 }, 3000);
@@ -109,13 +112,14 @@ describe('optic-update remove tests', function() {
         });
 
         it('test with custom uri column', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
                 const rows = [{uriNew: '/test/optic/remove/doc1.xml'}];
                 const outputCols = {"column": "uriNew", "type": "string", "nullable": false};
 
                 const planBuilderTemplate = op.fromParam('bindingParam', null, outputCols).remove(op.col("uriNew"));
                 const temp = {bindingParam: rows};
-                db.rows.query(planBuilderTemplate, null, temp).then(res => {
+                db.rows.query(planBuilderTemplate, options, temp).then(res => {
                     try {
                         verifyOneDocDeleted(done);
                     } catch (e) {
@@ -130,13 +134,14 @@ describe('optic-update remove tests', function() {
         });
 
         it('test with from param with qualified uri column', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
                 const rows = [{uri: '/test/optic/remove/doc1.xml'}, {uri: '/test/optic/remove/doc2.xml'}];
                 const outputCols = {"column": "uri", "type": "string", "nullable": false};
 
                 const planBuilderTemplate = op.fromParam('bindingParam', "myQualifier", outputCols).remove(op.viewCol("myQualifier", "uri"));
                 const temp = {bindingParam: rows};
-                db.rows.query(planBuilderTemplate, null, temp).then(res => {
+                db.rows.query(planBuilderTemplate, options, temp).then(res => {
                     try {
                         verifyTwoDocsDeleted(done);
                     } catch (e) {
@@ -153,6 +158,7 @@ describe('optic-update remove tests', function() {
         it('test remove temporal ', function (done) {
             const uri = "/test/optic/remove/temporalRemove.json";
             const tempCollection = 'temporalCollection';
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
                 const docsDescriptor = [
                     {
@@ -167,7 +173,8 @@ describe('optic-update remove tests', function() {
                     },
                 ];
 
-                db.rows.query(op.fromDocDescriptors(docsDescriptor).write(op.docCols(null, ["uri", "doc", "temporalCollection", "permissions"]))).then(res => {
+                db.rows.query(op.fromDocDescriptors(docsDescriptor).write(op.docCols(null, ["uri", "doc", "temporalCollection", "permissions"])), options)
+                    .then(res => {
                     checkTemporalDoc(uri, tempCollection, true, done);
                 });
                 setTimeout(() => {
@@ -175,7 +182,7 @@ describe('optic-update remove tests', function() {
                         temporalCollection: op.col("tempColl"),
                         uri: op.col('uri')
                     });
-                    dbAdmin.rows.query(plan)
+                    dbAdmin.rows.query(plan, options)
                         .then(res => {
                             checkTemporalDoc(uri, tempCollection, false, done);
                         })
