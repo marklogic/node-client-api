@@ -23,7 +23,7 @@ const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection)
 let assert = require('assert');
 const testlib = require("../etc/test-lib");
 let serverConfiguration = {};
-describe('optic-update validateDoc tests', function() {
+describe('optic-update write tests', function() {
     this.timeout(20000);
     before(function (done) {
         try {
@@ -65,9 +65,11 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true};
 
             try {
-                db.rows.execute(op.fromDocDescriptors(docsDescriptor).write());
+                db.rows.execute(op.fromDocDescriptors(docsDescriptor).write(),options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -140,8 +142,10 @@ describe('optic-update validateDoc tests', function() {
 
         it('test with single object without parameters', function (done) {
             const docsDescriptor = {uri: '/test/fromDocDescriptors/data1.json', doc: {"desc": "doc1"}};
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true};
             try {
-                db.rows.execute(op.fromDocDescriptors(docsDescriptor).write());
+                db.rows.execute(op.fromDocDescriptors(docsDescriptor).write(), options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -171,7 +175,8 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true};
             try {
                 db.rows.execute(op.fromDocDescriptors(docsDescriptor).write(
                     {
@@ -182,7 +187,7 @@ describe('optic-update validateDoc tests', function() {
                         permissions: 'permissions1',
                         quality: 'quality1'
                     }
-                ));
+                ), options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -220,7 +225,8 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true};
             try {
                 db.rows.execute(op.fromDocDescriptors(docsDescriptor).write({
                     uri: 'doc',
@@ -229,7 +235,7 @@ describe('optic-update validateDoc tests', function() {
                     metadata: 'metadata1',
                     permissions: 'permissions1',
                     quality: 'quality1'
-                }));
+                }),options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -256,6 +262,7 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
                 db.rows.execute(op.fromDocDescriptors(docsDescriptor).write({
                     uri: 'uri',
@@ -265,7 +272,7 @@ describe('optic-update validateDoc tests', function() {
                     permissions: 'permissions1',
                     quality: 'quality1',
                     describe: "this is a test"
-                }));
+                }), options);
 
             } catch (e) {
                 e.toString().includes('Error: doc-cols argument at 0 of PlanModifyPlan.write() - unknown document descriptor found: describe');
@@ -284,9 +291,9 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null :{'update' : true};
             try {
-                db.rows.execute(op.fromDocDescriptors(docsDescriptor).write(op.docCols()));
+                db.rows.execute(op.fromDocDescriptors(docsDescriptor).write(op.docCols()), options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -328,7 +335,7 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
                 db.rows.execute(op.fromDocDescriptors(docsDescriptor).write({
                     uri: 'uri',
@@ -337,7 +344,7 @@ describe('optic-update validateDoc tests', function() {
                     metadata: 'metadata',
                     permissions: 'permissions',
                     quality: 'quality'
-                }));
+                }), options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -379,9 +386,9 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(op.fromDocDescriptors(docsDescriptor, 'view').write(op.docCols('view')));
+                db.rows.execute(op.fromDocDescriptors(docsDescriptor, 'view').write(op.docCols('view')), options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json', '/test/fromDocDescriptors/data2.json', '/test/fromDocDescriptors/data3.json'], done).then(res => {
                         try {
@@ -424,9 +431,9 @@ describe('optic-update validateDoc tests', function() {
                 metadata: {'meta': 'value1'},
                 quality: 1,
             }];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             const plan = op.fromDocDescriptors(docsDescriptor).write(op.docCols());
-            db.rows.query(plan).then(res => {
+            db.rows.query(plan, options).then(res => {
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.json'], done).then(resReader => {
                         try {
@@ -466,9 +473,9 @@ describe('optic-update validateDoc tests', function() {
                     metadata: {'operation': 'doc3'}
                 }
             ];
-
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(op.fromDocDescriptors(docsDescriptor, 'view').write(op.docCols('view')));
+                db.rows.execute(op.fromDocDescriptors(docsDescriptor, 'view').write(op.docCols('view')), options);
                 setTimeout(() => {
                     readDocs(['/test/fromDocDescriptors/data1.xml', '/test/fromDocDescriptors/data2.xml', '/test/fromDocDescriptors/data3.xml'], done).then(res => {
                         try {
@@ -526,8 +533,9 @@ describe('optic-update validateDoc tests', function() {
                 doc: op.col('doc')
             });
             const bindParam = {[bindingParam]: rows};
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(planBuilderTemplate, null, bindParam);
+                db.rows.execute(planBuilderTemplate, options, bindParam);
                 setTimeout(() => {
                     readDocs(['/test/bindFromParam/data1.json'], done).then(res => {
                         try {
@@ -579,8 +587,9 @@ describe('optic-update validateDoc tests', function() {
                 quality: op.col('quality')
             });
             const bindParam = {[bindingParam]: rows};
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(planBuilderTemplate, null, bindParam);
+                db.rows.execute(planBuilderTemplate, options, bindParam);
                 setTimeout(() => {
                     readDocs(['/test/bindFromParam/data2.json', '/test/bindFromParam/data3.json'], done).then(res => {
                         try {
@@ -633,8 +642,9 @@ describe('optic-update validateDoc tests', function() {
                 quality: op.col('quality')
             });
             const bindParam = {[bindingParam]: rows};
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(planBuilderTemplate, null, bindParam);
+                db.rows.execute(planBuilderTemplate, options, bindParam);
                 setTimeout(() => {
                     readDocs(['/test/bindFromParam/data1.json'], done).then(res => {
                         try {
@@ -693,8 +703,9 @@ describe('optic-update validateDoc tests', function() {
                 permissions: op.col('permissions')
             });
             const bindParam = {[bindingParam]: rows};
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(planBuilderTemplate, null, bindParam);
+                db.rows.execute(planBuilderTemplate, options, bindParam);
                 setTimeout(() => {
                     readDocs(['/test/bindFromParam/data2.json', '/test/bindFromParam/data3.json'], done).then(res => {
                         try {
@@ -753,8 +764,9 @@ describe('optic-update validateDoc tests', function() {
 
             const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols).write();
             const bindParam = {[bindingParam]: rows};
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(planBuilderTemplate, null, bindParam);
+                db.rows.execute(planBuilderTemplate, options, bindParam);
                 setTimeout(() => {
                     readDocs(['/test/bindFromParam/data2.json', '/test/bindFromParam/data3.json'], done).then(res => {
                         try {
@@ -804,8 +816,9 @@ describe('optic-update validateDoc tests', function() {
                 collections: op.col('collect')
             });
             const bindParam = {[bindingParam]: rows};
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
+                db.rows.query(planBuilderTemplate, options, bindParam).then(res => {
                     setTimeout(() => {
                         readDocs(['/test/bindFromParam/data5.json',], done).then(resReader => {
                             try {
@@ -850,8 +863,9 @@ describe('optic-update validateDoc tests', function() {
 
             const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols).write();
             const bindParam = {[bindingParam]: rows, attachments: attachments, metadata};
-
-            db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true, structure:'object'};
+            db.rows.query(planBuilderTemplate, options, bindParam).then(res => {
                 try {
                     const rows = res.rows;
                     rows[0].rowId.value.should.equal(1);
@@ -889,8 +903,9 @@ describe('optic-update validateDoc tests', function() {
 
             const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols).write();
             const bindParam = {[bindingParam]: rows, attachments: attachments, metadata};
-
-            db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true, structure:'object'};
+            db.rows.query(planBuilderTemplate, options, bindParam).then(res => {
                 try {
                     const rows = res.rows;
                     rows[0].rowId.value.should.equal(1);
@@ -931,8 +946,9 @@ describe('optic-update validateDoc tests', function() {
 
             const planBuilderTemplate = op.fromParam(bindingParam, null, outputCols).write();
             const bindParam = {[bindingParam]: rows};
-
-            db.rows.query(planBuilderTemplate, null, bindParam).then(res => {
+            const options = serverConfiguration.serverVersion <= 11.1? null :
+                {'update' : true, structure:'object'};
+            db.rows.query(planBuilderTemplate, options, bindParam).then(res => {
                 try {
                     const rows = res.rows;
                     rows[0].rowId.value.should.equal(1);

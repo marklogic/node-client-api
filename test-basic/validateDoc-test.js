@@ -125,7 +125,7 @@ describe('optic-update validateDoc tests', function() {
             });
         });
 
-        after(function (done) {
+        /*after(function (done) {
             if(serverConfiguration.serverVersion < 11){
                 done();
             } else {
@@ -136,7 +136,7 @@ describe('optic-update validateDoc tests', function() {
                     .catch(err => done(err))
                     .catch(done);
             }
-        });
+        });*/
 
         it('test validateDoc with 0 arg, exception', function (done) {
             try {
