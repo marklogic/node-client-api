@@ -101,7 +101,7 @@ describe('optic-update lockForUpdate tests', function() {
             const rows = [{myUri: '/optic/test/musician1.json'}];
             const outputCols = [{"column": "myUri", "type": "string", "nullable": false}];
             const options = serverConfiguration.serverVersion <= 11.1? null :
-                {'update' : true, 'structure' : 'object'};
+                {'update' : true};
             db.rows.query(op.fromParam('bindingParam', null, outputCols).lockForUpdate(op.col('myUri')), options, {bindingParam: rows}).then((res) => {
                 try {
                     res.rows.length.should.equal(1);
@@ -116,7 +116,7 @@ describe('optic-update lockForUpdate tests', function() {
             const rows = [{myUri: '/optic/test/musician1.json'}];
             const outputCols = [{"column": "myUri", "type": "string", "nullable": false}];
             const options = serverConfiguration.serverVersion <= 11.1? null :
-                {'update' : true, 'structure' : 'object'};
+                {'update' : true};
             db.rows.query(op.fromParam('bindingParam', "myQualifier", outputCols).lockForUpdate(op.viewCol('myQualifier', 'myUri')),
                 options, {bindingParam: rows}).then((res) => {
                 try {
