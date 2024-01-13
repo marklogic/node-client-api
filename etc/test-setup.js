@@ -89,7 +89,7 @@ const moduleFiles = [
       {'role-name':testconfig.restAdminConnection.user,  capabilities:['read', 'execute', 'update']}
     ],
     content:fs.createReadStream('./etc/data/articleCitation.json')
-  },{ uri:'/validateDoc-test.json',
+  },{ uri:'/validation/validateDoc-test.json',
     contentType:'application/json',
     collections:['http://marklogic.com/xdmp/tde'],
     permissions: [
