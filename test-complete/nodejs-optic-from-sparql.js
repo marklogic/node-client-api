@@ -21,12 +21,22 @@ const fs     = require('fs');
 const marklogic = require('../');
 
 const connectdef = require('../config-optic/connectdef.js');
+const testlib = require("../etc/test-lib");
 
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
+let serverConfiguration = {};
 
 describe('Nodejs Optic from sparql test', function(){
-
+  this.timeout(6000);
+  before(function (done) {
+    try {
+      testlib.findServerConfiguration(serverConfiguration);
+      setTimeout(()=>{done();}, 3000);
+    } catch(error){
+      done(error);
+    }
+  });
   it('TEST 1 - simple sparql select with offsetLimit - format json, structure object, columnTypes header', function(done){
     const output =
       op.fromSPARQL("PREFIX foaf: <http://xmlns.com/foaf/0.1/> \
@@ -313,9 +323,12 @@ describe('Nodejs Optic from sparql test', function(){
         ORDER BY ?sum_sales", 'MySPARQL');
     db.rows.explain(output, 'json')
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.node).to.equal('plan');
-      expect(output.expr.from['default-graph'][0].value).to.equal('/optic/sparql/test/companies.ttl');
+      if(serverConfiguration.serverVersion >= 11){
+        expect(output.expr.expr.from['default-graph'][0].value).to.equal('/optic/sparql/test/companies.ttl');
+      } else {
+        expect(output.expr.from['default-graph'][0].value).to.equal('/optic/sparql/test/companies.ttl');
+      }
       done();
     }, done).catch(error=> done(error));
   });
