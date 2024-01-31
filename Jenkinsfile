@@ -138,7 +138,7 @@ pipeline{
                         runE2ETests('Latest','10.0')
                     }
                 }
-                stage('runtests-10.0-10'){
+                stage('runtests-10.0-10.2'){
                     when{
                         allOf{
                             branch 'develop'
@@ -147,8 +147,8 @@ pipeline{
                         }
                     agent {label 'nodeclientpool'}
                     steps{
-                        runTests('Release','10.0-10')
-                        runE2ETests('Release','10.0-10')
+                        runTests('Release','10.0-10.2')
+                        runE2ETests('Release','10.0-10.2')
                     }
                 }
             }
