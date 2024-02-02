@@ -21,12 +21,22 @@ const fs     = require('fs');
 const marklogic = require('../');
 
 const connectdef = require('../config-optic/connectdef.js');
+const testlib = require("../etc/test-lib");
 
 const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
-
+let serverConfiguration = {};
 describe('Nodejs Optic from views test', function(){
   var oldTimestamp = db.createTimestamp('123');
+  this.timeout(6000);
+  before(function (done) {
+    try {
+      testlib.findServerConfiguration(serverConfiguration);
+      setTimeout(()=>{done();}, 3000);
+    } catch(error){
+      done(error);
+    }
+  });
 
   it('TEST 1 - join inner with keymatch - object structure, columnType rows', function(done){
     const plan1 =
@@ -685,9 +695,12 @@ describe('Nodejs Optic from views test', function(){
       .orderBy(op.desc(op.col('DetailName')));
     db.rows.explain(output, 'json')
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.node).to.equal('plan');
-      expect(output.expr.expr.columns[0].name).to.equal('MasterName');
+      if(serverConfiguration.serverVersion >= 11){
+        expect(output.expr.columns[0].name).to.equal('MasterName');
+      } else {
+        expect(output.expr.expr.columns[0].name).to.equal('MasterName');
+      }
       done();
     }, done)
         .catch(error => done(error));
@@ -718,11 +731,13 @@ describe('Nodejs Optic from views test', function(){
       .orderBy(op.desc(op.col('DetailName')));
     db.rows.explain(output, 'xml')
     .then(function(output) {
-      //console.log(output);
-      expect(output).to.contain('<plan:plan xmlns:plan=\"http:\/\/marklogic.com\/plan\">');
-      //expect(output).to.contain('<plan:right type=\"column-def\" schema=\"opticFunctionalTest\" view=\"detail\" column=\"masterId\" column-number=\"2\" column-index=\"7\"\/>');
+      if(serverConfiguration.serverVersion >= 11){
+        expect(output).to.contain('xmlns:plan=\"http:\/\/marklogic.com\/plan\"');
+      } else {
+        expect(output).to.contain('<plan:plan xmlns:plan=\"http:\/\/marklogic.com\/plan\">');
+      }
       done();
-    }, done);
+    }, done).catch(error => done(error));
   });
 
   it('TEST 23 - date sort', function(done){
@@ -898,7 +913,6 @@ describe('Nodejs Optic from views test', function(){
       .orderBy(op.desc(op.col('DetailName')));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
       expect(output.rows[0].MasterName).to.equal('Master 2');
       expect(output.rows[0].DetailName).to.equal('Detail 6');
@@ -925,7 +939,6 @@ describe('Nodejs Optic from views test', function(){
       .orderBy(op.viewCol('myDetail', 'id'));
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(6);
       expect(output.rows[0]['myDetail.id']).to.equal(1);
       expect(output.rows[0]['myMaster.id']).to.equal(1);
@@ -953,7 +966,6 @@ describe('Nodejs Optic from views test', function(){
 
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', complexValues: 'inline' })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(4);
       expect(output.rows[0]['myDetail.id']).to.equal(6);
       expect(output.rows[0]['myDetail.name']).to.equal('Detail 6');
@@ -985,7 +997,6 @@ describe('Nodejs Optic from views test', function(){
       }
     })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
       expect(output.rows[0]['myMaster.id']).to.equal(1);
       expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
@@ -1015,7 +1026,6 @@ describe('Nodejs Optic from views test', function(){
       .offsetLimit(1, 3);
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header'})
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(3);
       expect(output.rows[0]['myMaster.id']).to.equal(1);
       expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
@@ -1048,7 +1058,6 @@ describe('Nodejs Optic from views test', function(){
       count++;
     }).
     on('error', function(error) {
-      //console.log(JSON.stringify(error, null, 2));
       expect(error.body.errorResponse.message).to.contain('Unknown table: Table \'opticFunctionalTest.invalidFoo\' not found');
     }).
     on('end', function() {
@@ -1082,7 +1091,6 @@ describe('Nodejs Optic from views test', function(){
       .orderBy({keys: [op.desc({column: op.col({column: 'DetailName'})})]});
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.columns[1].type).to.equal('xs:date');
       expect(output.rows.length).to.equal(6);
       expect(output.rows[0].MasterName).to.equal('Master 2');
@@ -1113,7 +1121,6 @@ describe('Nodejs Optic from views test', function(){
       .offsetLimit({start: 1, length: 100});
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
       expect(output.rows[0]['myMaster.id']).to.equal(1);
       expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
@@ -1145,7 +1152,6 @@ describe('Nodejs Optic from views test', function(){
       .offsetLimit({start: 1, length: 100});
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: timestamp })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output.rows.length).to.equal(1);
       expect(output.rows[0]['myMaster.id']).to.equal(1);
       expect(output.rows[0]['myMaster.name']).to.equal('Master 1');
@@ -1177,13 +1183,11 @@ describe('Nodejs Optic from views test', function(){
       .offsetLimit({start: 1, length: 100});
     db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: oldTimestamp })
     .then(function(output) {
-      //console.log(JSON.stringify(output, null, 2));
       expect(output).to.be.undefined;
       done();
     }, function(error) {
-      //console.log(error);
       expect(error.body.errorResponse.message).to.contain('XDMP-OLDSTAMP: Timestamp too old');
       done();
-    });
+    }).catch(error => done(error));
   });
 });

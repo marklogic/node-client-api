@@ -3,7 +3,7 @@
   "name": "marklogic",
   "description": "The official MarkLogic Node.js client API.",
   "homepage": "https://github.com/marklogic/node-client-api",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "scripts": {

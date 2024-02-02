@@ -236,8 +236,9 @@ describe('optic-update transformDoc tests', function() {
                         permissions: 'permissions',
                         quality: 'quality'
                     });
-
-                db.rows.query(plan).then(res => {
+                const options = serverConfiguration.serverVersion <= 11.1? null :
+                    {'update' : true};
+                db.rows.query(plan,options).then(res => {
                     const transformPlan = op.fromDocUris(op.cts.documentQuery("/optic/update/write8.xml"))
                         .joinDoc(op.col("doc"), op.col('uri'))
                         .transformDoc(op.col("doc"), {"path": "/optic/test/transformDoc-test.xslt", "kind": "xslt"});
@@ -299,7 +300,8 @@ describe('optic-update transformDoc tests', function() {
                         params: {patch1: op.col('id'), patch2: op.col('val')}
                     })
                     .write({uri: 'uri', doc: 'doc'});
-                db.rows.query(plan, null, {bindings: rows}).then(res => {
+                const options = serverConfiguration.serverVersion <= 11.1 ? null:{ update:true,structure: 'object'};
+                db.rows.query(plan, options, {bindings: rows}).then(res => {
                     const row = res.rows[0];
                     row.uri.value.should.containEql("/optic/update/write11.json");
                     row.doc.value.should.deepEqual({

@@ -32,10 +32,11 @@ describe('Transform save json as xml', function(){
     this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/savejsonasxmltransform.xml',
-      contentType: 'application/json',
-      content: {name: 'bob'}
-    }).
-    result(function(response){done();}, done);
+      contentType: 'application/xml',
+      content: "<?xml version=\"1.0\"?>\n" +
+          "<added-root>'name': 'bob'</added-root>"
+    }).result(function(response){done();}, done)
+      .catch(error => done(error));
   });
 
   var transformName = 'to-xml';
@@ -78,7 +79,8 @@ describe('Transform save json as xml', function(){
       response[0].content.should.containEql('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<name>bob</name>\n');
       response[0].format.should.equal('xml');
       done();
-    }, done);
+    }, done)
+    .catch(error => done(error));
   });
 
   it('should modify during query', function(done){
@@ -97,7 +99,8 @@ describe('Transform save json as xml', function(){
       response[0].content.should.containEql('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<name>bob</name>');
       response[0].format.should.equal('xml');
       done();
-    }, done);
+    }, done)
+        .catch(error=> done(error));
   });
 
   it('should modify during write', function(done){

@@ -77,8 +77,9 @@ describe('optic-update execute tests', function() {
         });
 
         it('test with fromDocUris -> remove', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.execute(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove());
+                db.rows.execute(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove(), options);
                 setTimeout(function () {
                     verifyDocs(done);
                 }, 3000);
@@ -97,8 +98,9 @@ describe('optic-update execute tests', function() {
         });
 
         it('test with fromDocUris and trace option -> remove', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? {trace: "fromDocUris"} : {trace: "fromDocUris",'update' : true};
             try {
-                db.rows.execute(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove(), {trace: "fromDocUris"});
+                db.rows.execute(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove(), options);
                 setTimeout(function () {
                     verifyDocs(done);
                 }, 3000);
@@ -108,8 +110,9 @@ describe('optic-update execute tests', function() {
         });
 
         it('test with fromDocUris using query function -> remove', function (done) {
+            const options = serverConfiguration.serverVersion <= 11.1? null : {'update' : true};
             try {
-                db.rows.query(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove())
+                db.rows.query(op.fromDocUris(op.cts.directoryQuery('/test/fromDocUris/')).remove(), options)
                     .then(res => {
                         const arrayOfUris = res.rows.map(item => item.uri.value).sort();
                         arrayOfUris.should.deepEqual(uris.sort());
