@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 3.3.1
+#### Bug Fix
+
+- Fixed a bug where a database property caused a problem when creating a URL path for querying ML.
+
 ## 3.3.0
 #### New Functionality
 

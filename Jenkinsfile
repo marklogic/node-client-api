@@ -4,8 +4,9 @@ def runTests(String type,String version){
     copyRPM type,version
     setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
     sh '''
-        export JAVA_HOME=/home/builder/java/openjdk-1.8.0-262
-        export PATH=${NODE_HOME_DIR}/bin:$PATH
+        export JAVA_HOME=$JAVA_HOME_DIR
+        export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
+        export PATH=$JAVA_HOME/bin:$GRADLE_USER_HOME:${NODE_HOME_DIR}/bin:$PATH
         cd node-client-api
         node --version
         npm --version
@@ -84,6 +85,8 @@ pipeline{
           NODE_HOME_DIR= "/home/builder/nodeJs/node-v18.14.0-linux-x64"
           DMC_USER     = credentials('MLBUILD_USER')
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
+          GRADLE_DIR=".gradle"
+          JAVA_HOME_DIR="/home/builder/java/openjdk-1.8.0-262"
     }
     stages{
         stage('runtests-11.1.0'){

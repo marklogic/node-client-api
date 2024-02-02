@@ -80,11 +80,8 @@ db.createCollection(
 ### Resources
 
 * [Node.js Client API Documentation](https://docs.marklogic.com/jsdoc/index.html)
-* [Feature Overview of the Node.js Client API](http://developer.marklogic.com/features/node-client-api)
-* [The Node.js Client API in 5 Minutes](https://developer.marklogic.com/learn/node-in-5-minutes)
 * [Node.js Application Developer's Guide](http://docs.marklogic.com/guide/node-dev)
 * [MarkLogic Training for the Node.js Client API](http://www.marklogic.com/training-courses/developing-marklogic-applications-i-node-js/)
-* [MarkLogic On-Demand Courses for Node.js](https://mlu.marklogic.com/ondemand/index.xqy?q=Series%3A%22Node.js%22)
 
 ### Code Examples
 
