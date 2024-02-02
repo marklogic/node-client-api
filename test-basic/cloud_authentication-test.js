@@ -38,10 +38,9 @@ describe('cloud-authentication tests', function() {
         testconfig.restWriterConnectionWithBasePath.database = 'test-database';
         testconfig.restWriterConnectionWithBasePath.authType = 'cloud';
         testconfig.restWriterConnectionWithBasePath.apiKey = 'apiKey';
-        const returnValue = mlutil.newRequestOptions(testconfig.restWriterConnectionWithBasePath,
-            'test-endpoint','&').path;
+        const returnValue = mlutil.newRequestOptions(testconfig.restWriterConnectionWithBasePath, 'test-endpoint').path;
         try {
-            assert(returnValue.toString() === '//invalid/test-endpoint&database=test-database');
+            assert(returnValue.toString() === '//invalid/test-endpoint?database=test-database');
             done();
         } catch(error){
             done(error);
