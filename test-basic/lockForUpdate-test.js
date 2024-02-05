@@ -131,8 +131,10 @@ describe('optic-update lockForUpdate tests', function() {
         it('test with fromParam with custom uri and array response', function (done) {
             const rows = [{myUri: '/optic/test/musician1.json'}];
             const outputCols = [{"column": "myUri", "type": "string", "nullable": false}];
-            const options = serverConfiguration.serverVersion <= 11.1? null :
-                {'update' : true, 'structure' : 'array'};
+            const options = {'structure' : 'array'};
+            if(serverConfiguration.serverVersion > 11.1){
+                options.update = true;
+            }
             db.rows.query(op.fromParam('bindingParam', null, outputCols).lockForUpdate(op.col('myUri')), options, {bindingParam: rows}).then((res) => {
                 try {
                     res[0][0].name.should.equal('myUri');
