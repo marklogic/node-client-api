@@ -141,7 +141,7 @@ describe('readAll-tests-one', function() {
             .catch(done);
     }));
 
-    it('readAll multple documents with batch options', function(done){
+    it('readAll multiple documents with batch options', function(done){
         streamToArray(dbWriter.documents.readAll(uriStream, {
                 inputkind: 'Array',
                 batch: 5

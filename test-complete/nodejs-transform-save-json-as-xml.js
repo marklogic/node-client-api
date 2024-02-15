@@ -31,12 +31,11 @@ describe('Transform save json as xml', function(){
   before(function(done){
     this.timeout(10000);
     dbWriter.documents.write({
-      uri: '/test/transform/savejsonasxmltransform.xml',
-      contentType: 'application/xml',
-      content: "<?xml version=\"1.0\"?>\n" +
-          "<added-root>'name': 'bob'</added-root>"
-    }).result(function(response){done();}, done)
-      .catch(error => done(error));
+      uri: '/test/transform/savejsonasxmltransform',
+      contentType: 'application/json',
+      content: {name: 'bob'}
+    }).
+    result(function(response){done();}, done);
   });
 
   var transformName = 'to-xml';
@@ -67,7 +66,7 @@ describe('Transform save json as xml', function(){
     }, done);
   });
 
-  var uri = '/test/transform/savejsonasxmltransform.xml';
+  var uri = '/test/transform/savejsonasxmltransform';
 
   it('should modify during read', function(done){
     db.documents.read({
@@ -85,21 +84,20 @@ describe('Transform save json as xml', function(){
 
   it('should modify during query', function(done){
     this.timeout(10000);
+
     db.documents.query(
       q.where(
         q.and(
           q.directory('/test/transform/'),
           q.term('name', 'bob')
         )
-      ).
-      slice(1, 10, q.transform(transformName))
+      ) .slice(0, q.transform(transformName))
     ).
     result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
       response[0].content.should.containEql('<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<name>bob</name>');
       response[0].format.should.equal('xml');
       done();
-    }, done)
+    })
         .catch(error=> done(error));
   });
 
@@ -118,17 +116,16 @@ describe('Transform save json as xml', function(){
         response[0].format.should.equal('xml');
         done();
       }, done);
-    }, done);
+    }).catch(error=> done(error));
   });
 
-  it('should remove the documents', function(done){
+  after(function(done){
     dbAdmin.documents.removeAll({
       directory: '/test/transform/'
     }).
     result(function(response) {
       response.should.be.ok;
       done();
-    }, done);
+    }).catch(error=> done(error));
   });
-
 });
