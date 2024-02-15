@@ -24,7 +24,7 @@ const streamToArray = require('stream-to-array');
 const p = marklogic.planBuilder;
 const fs = require('fs');
 const tdeWriter = marklogic.createDatabaseClient({
-    database: 'unittest-nodeapi-modules',
+    database: 'dmsdk-api-rest-server-modules',
     host: 'localhost',
     port: 8025,
     user: 'tde-user',
