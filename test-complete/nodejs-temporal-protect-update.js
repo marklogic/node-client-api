@@ -32,12 +32,12 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
 describe('Temporal protect update test', function() {
-
+  this.timeout(10000);
   var docuri = 'temporalUpdateDoc1.json';
   var expTime = '2026-11-03T19:56:17.681154-07:00';
 
   before(function(done) {
-    this.timeout(10000);
+
     db.documents.write({
       uri: docuri,
       collections: ['coll0', 'coll1'],
@@ -207,7 +207,7 @@ describe('Temporal protect update test', function() {
       response[0].metadataValues.temporalArchiveStatus.should.equal('succeeded,succeeded');
       response[0].metadataValues.temporalProtectExTime.should.equal(expTime);
       done();
-    }, done);
+    }).catch(error=>done(error));
   });
 
   it('negative - protect document with invalid duration', function(done) {

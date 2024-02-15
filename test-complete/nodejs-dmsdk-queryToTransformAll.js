@@ -141,7 +141,7 @@ describe('data movement transformAll', function () {
                     progress.docsFailedToBeTransformed.should.be.equal(0);
                     progress.timeElapsed.should.be.greaterThanOrEqual(0);
                 } catch (err) {
-                    done(err)
+                    done(err);
                 }
 
             }),

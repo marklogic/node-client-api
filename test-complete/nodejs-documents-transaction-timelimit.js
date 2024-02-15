@@ -26,30 +26,6 @@ var tid = null;
 
 describe('Document transaction test', function() {
 
-  // Set transaction time limit to be 3 second
- /* it('should commit the write document', function(done) {
-    db.transactions.open({transactionName: "nodeTransaction", timeLimit: 3}).result().
-    then(function(response) {
-      tid = response.txid;
-      return db.documents.write({
-        txid: tid,
-        uri: '/test/transaction/doc1.json',
-        contentType: 'application/json',
-        content: {firstname: "John", lastname: "Doe", txKey: tid}
-      }).result(function(response) {done();}, done);
-    })
-  });
-
-  // Read about transaction status
-  it('should read transaction status', function(done) {
-    db.transactions.read(tid).result(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
-      response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
-      response['transaction-status']['time-limit'].should.equal('3');
-      done();
-    }, done);
-  });
-*/
   var tid = 0;
 it('should commit the write document', function(done) {
     db.transactions.open({transactionName: "nodeTransaction", timeLimit: 3})
@@ -72,15 +48,13 @@ it('should commit the write document', function(done) {
      response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
       parseInt(response['transaction-status']['time-limit']).should.be.above(0);
     done();
-    }, done);
-    /*.catch(function(error) {
-      console.log(error);
-      done();
-    }, done);*/
+    }).catch(error=> done(error));
+
   });
 
  // Wait for 3 seconds so that transaction can time out
  it('should wait for 3 seconds', function(done) {
+     this.timeout(4000);
     setTimeout(function() {
       done();
 
@@ -96,8 +70,7 @@ it('should commit the write document', function(done) {
       err.statusCode.should.equal(400);
       err.body.errorResponse.messageCode.should.equal("XDMP-NOTXN");
       done();
-    },
-    done);
+    }).catch(error=> done(error));
   });
 
   it('should commit the document', function(done) {
@@ -111,13 +84,14 @@ it('should commit the write document', function(done) {
         err.statusCode.should.equal(400);
         err.body.errorResponse.messageCode.should.equal("XDMP-NOTXN");
         done();
-      });
+      })
+        .catch(error=> done(error));
   });
 
   it('should remove all documents', function(done) {
       dbAdmin.documents.removeAll({all: true}).
       result(function(response) {
         done();
-      }, done);
+      }).catch(error=> done(error));
   });
 });
