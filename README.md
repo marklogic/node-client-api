@@ -65,6 +65,14 @@ const db = marklogic.createDatabaseClient({
     enableGzippedResponses: true
 });
 
+// For OAUTH
+const db = marklogic.createDatabaseClient({
+    host:     'localhost',
+    port:     '8000',
+    authType: 'oauth',
+    oauthToken: '<OAUTH Token>'
+});
+
 db.createCollection(
   '/books',
   {author: 'Beryl Markham', ...},
