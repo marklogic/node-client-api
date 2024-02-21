@@ -165,4 +165,13 @@ describe('database clients', function () {
           }
         });
   });
+
+  it('should throw error when authType is OAuth and oauthToken is missing', function(done){
+    try {
+       marklogic.createDatabaseClient(testconfig.restConnectionForOauth);
+    } catch(error){
+      assert(error.message.toString().includes('oauthToken required for OAuth authentication. '));
+      done();
+    }
+  });
 });
