@@ -143,5 +143,10 @@ module.exports = {
         authType: restAuthType,
         enableGzippedResponses: true,
         ssl: true
+    },
+    restConnectionForOauth: {
+        host:     testHost,
+        port:     restPort,
+        authType: 'oauth'
     }
 };
