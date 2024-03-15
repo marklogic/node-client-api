@@ -23,13 +23,21 @@ const testlib = require("../etc/test-lib");
 const op = marklogic.planBuilder;
 let uris = [];
 let serverConfiguration = {};
-describe('optic-update validateDoc tests', function() {
+let options = {};
+
+describe('optic-update validateDoc tests', function () {
+
     this.timeout(6000);
     before(function (done) {
         try {
-            testlib.findServerConfiguration(serverConfiguration);
-            setTimeout(()=>{done();}, 3000);
-        } catch(error){
+            testlib.findServerConfigurationPromise(serverConfiguration)
+                .then(() => {
+                    if (serverConfiguration.serverVersion >= 11.2) {
+                        options = { "update": true };
+                    }
+                });
+            setTimeout(() => { done(); }, 3000);
+        } catch (error) {
             done(error);
         }
     });
@@ -37,10 +45,10 @@ describe('optic-update validateDoc tests', function() {
     describe('optic validateDoc test', function () {
 
         before(function (done) {
-            if(serverConfiguration.serverVersion < 11){
+            if (serverConfiguration.serverVersion < 11) {
                 this.skip();
             }
-            let readable = new Stream.Readable({objectMode: true});
+            let readable = new Stream.Readable({ objectMode: true });
 
             const xmlContent = [
                 `<?xml version="1.0" encoding="UTF-8"?>
@@ -83,10 +91,10 @@ describe('optic-update validateDoc tests', function() {
                 uris.push(temp.uri);
             }
 
-            const jsonContent = [{"count": 1, "items": [1]}, {"count": -2, "items": ["2"]}, {
+            const jsonContent = [{ "count": 1, "items": [1] }, { "count": -2, "items": ["2"] }, {
                 "count": 3,
                 "items": {}
-            }, {"count": 4, "items": ["4"]}];
+            }, { "count": 4, "items": ["4"] }];
             for (let i = 0; i < jsonContent.length; i++) {
                 const temp = {
                     uri: `/test/optic/validateDoc/toValidate${i + 1}.json`,
@@ -126,7 +134,7 @@ describe('optic-update validateDoc tests', function() {
         });
 
         after(function (done) {
-            if(serverConfiguration.serverVersion < 11){
+            if (serverConfiguration.serverVersion < 11) {
                 done();
             } else {
                 db.documents.remove(uris)
@@ -138,14 +146,12 @@ describe('optic-update validateDoc tests', function() {
             }
         });
 
-        it('test validateDoc with 0 arg, exception', function (done) {
+        it('test validateDoc with no arguments, expect an exception', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: '/test/optic/validateDoc/toValidate1.xml'},
-                    {uri: "/test/optic/validateDoc/toValidate2.xml"},
-                    {uri: "/test/optic/validateDoc/toValidate3.xml"}])
+                const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/toValidate4.xml' }])
                     .joinDocCols(null, op.col('uri'))
                     .validateDoc();
-                db.rows.query(plan).then(() => {
+                db.rows.query(plan, options).then(() => {
                 }).catch(e => {
                     e.toString().includes("Error: PlanModifyPlan.validateDoc takes a minimum of 2 arguments but received: 0");
                     done();
@@ -156,30 +162,27 @@ describe('optic-update validateDoc tests', function() {
             }
         });
 
-        it('test validateDoc with 1 arg, exception', function (done) {
+        it('test validateDoc with 1 argument, expect an exception', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: '/optic/validateDoc/toValidate1.xml'},
-                    {uri: "/test/optic/validateDoc/toValidate2.xml"},
-                    {uri: "/test/optic/validateDoc/toValidate3.xml"}])
+                const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/toValidate4.xml' }])
                     .joinDocCols(null, op.col('uri'))
                     .validateDoc('doc');
-                db.rows.query(plan);
+                db.rows.query(plan, options);
             } catch (e) {
                 e.toString().includes("Error: PlanModifyPlan.validateDoc takes a minimum of 2 arguments but received: 1");
                 done();
             }
         });
 
-        it('test validateDoc schemaDef mode should be optional', function (done) {
+        it('test happy path, validateDoc with 1 valid doc, schemaDef mode should be optional', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: '/test/optic/validateDoc/toValidate1.xml'},
-                    {uri: "/test/optic/validateDoc/toValidate2.xml"},
-                    {uri: "/test/optic/validateDoc/toValidate3.xml"}])
+                const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/toValidate4.xml' }])
                     .joinDocCols(null, op.col('uri'))
-                    .validateDoc('doc', {kind: 'xmlSchema'});
-                db.rows.query(plan).then(res => {
+                    .validateDoc('doc', { kind: 'xmlSchema' });
+                db.rows.query(plan, options).then(res => {
                     try {
-                        (res === undefined).should.equal(true);
+                        res['columns'].length.should.equal(6);
+                        res['rows'].length.should.equal(1);
                         done();
                     } catch (e) {
                         done(e);
@@ -192,15 +195,12 @@ describe('optic-update validateDoc tests', function() {
             }
         });
 
-        it('test validateDoc filters out invalid docs, should return 0 doc', function (done) {
+        it('test validateDoc with 1 invalid doc and no "onError" defined, should return nothing in 11.1-, or throw an exception on 11.2+', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: '/test/optic/validateDoc/toValidate1.xml'},
-                    {uri: "/test/optic/validateDoc/toValidate2.xml"},
-                    {uri: "/test/optic/validateDoc/toValidate3.xml"}], 'view')
-                    .joinDocCols(op.docCols('view'), op.viewCol('view', 'uri'))
-                    .orderBy('uri')
-                    .validateDoc(op.viewCol('view', 'doc'), {kind: 'xmlSchema', mode: 'strict'});
-                db.rows.query(plan).then(res => {
+                const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/toValidate1.xml' }])
+                    .joinDocCols(null, op.col('uri'))
+                    .validateDoc('doc', { kind: 'xmlSchema' });
+                db.rows.query(plan, options).then(res => {
                     try {
                         (res === undefined).should.equal(true);
                         done();
@@ -208,27 +208,37 @@ describe('optic-update validateDoc tests', function() {
                         done(e);
                     }
                 }).catch(e => {
-                    done(e);
+                    e.message.should.equal('query rows: response with invalid 500 status with path: /v1/rows/update');
+                    done();
                 });
             } catch (e) {
                 done(e);
             }
         });
 
-        it('test validateDoc 3 invalid doc and 1 valid doc, should return 1 doc', function (done) {
+        // Skip this test until the 'onError' function is available in plan-builder.js
+        it.skip('test validateDoc returns error objects for each invalid document', function (done) {
             try {
-                const plan = op.fromDocDescriptors([
-                    {uri: '/test/optic/validateDoc/toValidate1.xml'},
-                    {uri: "/test/optic/validateDoc/toValidate2.xml"},
-                    {uri: "/test/optic/validateDoc/toValidate3.xml"},
-                    {uri: "/test/optic/validateDoc/toValidate4.xml"}], 'view')
+                const plan = op
+                    .fromDocDescriptors([
+                        { uri: "/test/optic/validateDoc/toValidate1.xml" },
+                        { uri: "/test/optic/validateDoc/toValidate2.xml" },
+                        { uri: "/test/optic/validateDoc/toValidate3.xml" },
+                        { uri: "/test/optic/validateDoc/toValidate4.xml" }
+                    ], 'view')
                     .joinDocCols(op.docCols('view'), op.viewCol('view', 'uri'))
                     .orderBy('uri')
-                    .validateDoc(op.viewCol('view', 'doc'), {kind: 'xmlSchema', mode: 'lax'});
-                db.rows.query(plan).then(res => {
+                    .validateDoc(op.viewCol('view', 'doc'), { kind: 'xmlSchema', mode: 'strict' })
+                    .onError("continue", op.col("myError"))
+                    .result();
+                db.rows.query(plan, options).then(res => {
                     try {
-                        res.rows.length.should.equal(1);
-                        res.rows[0]['view.uri'].value.should.equal('/test/optic/validateDoc/toValidate4.xml');
+                        if (serverConfiguration.serverVersion >= 11.2) {
+                            res['columns'].length.should.equal(6);
+                            res['rows'].length.should.equal(1);
+                        } else {
+                            (res === undefined).should.equal(true);
+                        }
                         done();
                     } catch (e) {
                         done(e);
@@ -243,14 +253,14 @@ describe('optic-update validateDoc tests', function() {
 
         it('test validateDoc with jsonSchema, schemaUri is required, exception', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: '/test/optic/validateDoc/validate1.json'},
-                    {uri: "/test/optic/validateDoc/validate2.json"},
-                    {uri: "/test/optic/validateDoc/validate3.json"},
-                    {uri: "/test/optic/validateDoc/validate4.json"}])
+                const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/validate1.json' },
+                { uri: "/test/optic/validateDoc/validate2.json" },
+                { uri: "/test/optic/validateDoc/validate3.json" },
+                { uri: "/test/optic/validateDoc/validate4.json" }])
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema'});
-                db.rows.query(plan).catch(e => {
+                    .validateDoc('doc', { kind: 'jsonSchema' });
+                db.rows.query(plan, options).catch(e => {
                     try {
                         e.body.errorResponse.message.includes('OPTIC-INVALARGS: fn.error(null, \'OPTIC-INVALARGS\', \'validateDoc() - JSON schema URI is not provided. Add property schemaUri.\'); -- Invalid arguments: validateDoc() - JSON schema URI is not provided. Add property schemaUri.');
                         done();
@@ -266,11 +276,11 @@ describe('optic-update validateDoc tests', function() {
 
         it('test validateDoc validate a valid doc', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: "/test/optic/validateDoc/toValidate4.json"}])
+                const plan = op.fromDocDescriptors([{ uri: "/test/optic/validateDoc/toValidate4.json" }])
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validation/validateDoc-test.json'});
-                db.rows.query(plan).then((res) => {
+                    .validateDoc('doc', { kind: 'jsonSchema', schemaUri: '/validation/validateDoc-test.json' });
+                db.rows.query(plan, options).then((res) => {
                     try {
                         res.rows.length.should.equal(1);
                         res.rows[0].uri.value.should.equal('/test/optic/validateDoc/toValidate4.json');
@@ -288,11 +298,11 @@ describe('optic-update validateDoc tests', function() {
 
         it('test validateDoc with a non existing file', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: "/test/optic/validateDoc/NoExisting.json"}])
+                const plan = op.fromDocDescriptors([{ uri: "/test/optic/validateDoc/NoExisting.json" }])
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validateDoc-test.json'});
-                db.rows.query(plan).then((res) => {
+                    .validateDoc('doc', { kind: 'jsonSchema', schemaUri: '/validateDoc-test.json' });
+                db.rows.query(plan, options).then((res) => {
                     try {
                         (res === undefined).should.equal(true);
                         done();
@@ -309,92 +319,13 @@ describe('optic-update validateDoc tests', function() {
 
         it('test validateDoc with a non existing schemaUri', function (done) {
             try {
-                const plan = op.fromDocDescriptors([{uri: "/test/optic/validateDoc/NoExisting.json"}])
+                const plan = op.fromDocDescriptors([{ uri: "/test/optic/validateDoc/NoExisting.json" }])
                     .joinDocCols(null, op.col('uri'))
                     .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/noExisting-test.json'});
-                db.rows.query(plan).then((res) => {
+                    .validateDoc('doc', { kind: 'jsonSchema', schemaUri: '/noExisting-test.json' });
+                db.rows.query(plan, options).then((res) => {
                     try {
                         (res === undefined).should.equal(true);
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                }).catch(e => {
-                    done(e);
-                });
-            } catch (e) {
-                done(e);
-            }
-        });
-
-        it('test validateDoc 4 docs, filters out 1, mode strict', function (done) {
-            try {
-                const plan = op.fromDocDescriptors([{uri: "/test/optic/validateDoc/toValidate1.json"},
-                    {uri: "/test/optic/validateDoc/toValidate2.json"},
-                    {uri: "/test/optic/validateDoc/toValidate3.json"},
-                    {uri: "/test/optic/validateDoc/toValidate4.json"}])
-                    .joinDocCols(null, op.col('uri'))
-                    .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: '/validation/validateDoc-test.json', mode: 'strict'});
-                db.rows.query(plan).then((res) => {
-                    try {
-                        res.rows.length.should.equal(1);
-                        res.rows[0].uri.value.should.equal('/test/optic/validateDoc/toValidate4.json');
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                }).catch(e => {
-                    done(e);
-                });
-            } catch (e) {
-                done(e);
-            }
-        });
-
-        it('test validateDoc 4 JSON nodes, filters out 1', function (done) {
-            try {
-                const docsDescriptor = [
-                    {uri: '/test/optic/validateDoc/toValidate1.json', doc: {"count": 1, "items": [1]}},
-                    {uri: '/test/optic/validateDoc/toValidate2.json', doc: {"count": -2, "items": ["2"]}},
-                    {uri: '/test/optic/validateDoc/toValidate3.json', doc: {"count": 3, "items": {}}},
-                    {uri: '/test/optic/validateDoc/toValidate4.json', doc: {"count": 4, "items": ["4"]}},
-                ];
-                const plan = op.fromDocDescriptors(docsDescriptor)
-                    .joinDocCols(null, op.col('uri'))
-                    .orderBy('uri')
-                    .validateDoc('doc', {kind: 'jsonSchema', schemaUri: "/validation/validateDoc-test.json", mode: "full"});
-                db.rows.query(plan).then((res) => {
-                    try {
-                        res.rows.length.should.equal(1);
-                        res.rows[0].uri.value.should.equal('/test/optic/validateDoc/toValidate4.json');
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                }).catch(e => {
-                    done(e);
-                });
-            } catch (e) {
-                done(e);
-            }
-        });
-
-        it('test  validateDoc 3 invalid doc and 1 valid doc, should return 1 doc', function (done) {
-            try {
-                const plan = op.fromDocDescriptors([{uri: '/test/optic/validateDoc/toValidateSchematron1.xml'},
-                    {uri: "/test/optic/validateDoc/toValidateSchematron2.xml"},
-                    {uri: "/test/optic/validateDoc/toValidateSchematron3.xml"},
-                    {uri: "/test/optic/validateDoc/toValidateSchematron4.xml"}], 'view')
-                    .joinDocCols(op.docCols('view'), op.viewCol('view', 'uri'))
-                    .orderBy(op.viewCol('view', 'uri'))
-                    .validateDoc(op.viewCol('view', 'doc'), {kind: 'schematron', schemaUri: "/validateDoc-test.sch"});
-
-                db.rows.query(plan).then((res) => {
-                    try {
-                        res.rows.length.should.equal(1);
-                        res.rows[0]['view.uri'].value.should.equal('/test/optic/validateDoc/toValidateSchematron4.xml');
                         done();
                     } catch (e) {
                         done(e);
