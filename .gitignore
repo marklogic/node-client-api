@@ -5,6 +5,8 @@ tmp
 .idea
 .project
 .settings
+.vscode
+.DS_Store
 test-app/build
 test-app/.gradle
 test-app/gradle-local.properties
