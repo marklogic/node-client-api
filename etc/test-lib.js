@@ -16,7 +16,7 @@
 'use strict';
 var valcheck = require('core-util-is');
 
-var mlutil    = require('../lib/mlutil.js');
+var mlutil = require('../lib/mlutil.js');
 var Operation = require('../lib/operation.js');
 var requester = require('../lib/requester.js');
 const marklogic = require("../lib/marklogic");
@@ -30,8 +30,8 @@ function responseOutputTransform(headers, data) {
   var operation = this;
 
   var response = {
-      statusCode: operation.responseStatusCode,
-      headers:    headers
+    statusCode: operation.responseStatusCode,
+    headers: headers
   };
   if (!valcheck.isNullOrUndefined(data)) {
     response.data = data;
@@ -49,9 +49,9 @@ function Manager(adminClient) {
 
 // TODO: configure acceptable errors
 Manager.prototype.get = function manageGet(paramsObj) {
-  var endpoint    = paramsObj.endpoint;
-  var params      = paramsObj.params;
-  var headers     = paramsObj.headers;
+  var endpoint = paramsObj.endpoint;
+  var params = paramsObj.params;
+  var headers = paramsObj.headers;
   var hasResponse = paramsObj.hasResponse;
 
   var path = makePath(endpoint, params);
@@ -60,23 +60,23 @@ Manager.prototype.get = function manageGet(paramsObj) {
   requestOptions.method = 'GET';
   requestOptions.headers = valcheck.isNullOrUndefined(headers) ? {
     'Accept': 'application/json'
-    } : headers;
+  } : headers;
   requestOptions.path = path;
 
   var operation = new Operation(
-      'GET '+path, this.client, requestOptions, 'empty',
-      ((hasResponse === 'false') ? 'empty' : 'single')
-      );
+    'GET ' + path, this.client, requestOptions, 'empty',
+    ((hasResponse === 'false') ? 'empty' : 'single')
+  );
   operation.validStatusCodes = [200, 201, 204, 404];
-  operation.outputTransform  = responseOutputTransform;
+  operation.outputTransform = responseOutputTransform;
 
   return requester.startRequest(operation);
 };
 Manager.prototype.post = function managePost(paramsObj) {
-  var endpoint    = paramsObj.endpoint;
-  var params      = paramsObj.params;
-  var headers     = paramsObj.headers;
-  var body        = paramsObj.body;
+  var endpoint = paramsObj.endpoint;
+  var params = paramsObj.params;
+  var headers = paramsObj.headers;
+  var body = paramsObj.body;
   var hasResponse = paramsObj.hasResponse;
 
   var path = makePath(endpoint, params);
@@ -85,20 +85,20 @@ Manager.prototype.post = function managePost(paramsObj) {
   requestOptions.method = 'POST';
   requestOptions.headers = valcheck.isNullOrUndefined(headers) ? {
     'Content-Type': 'application/json',
-    'Accept':       'application/json'
-    } : headers;
+    'Accept': 'application/json'
+  } : headers;
   requestOptions.path = path;
 
   var hasBody = !valcheck.isNullOrUndefined(body);
 
   var operation = new Operation(
-      'POST '+path,
-      this.client,
-      requestOptions,
-      hasBody ? 'single' : 'empty',
-      ((hasResponse === 'false') ? 'empty' : 'single')
-      );
-  operation.outputTransform  = responseOutputTransform;
+    'POST ' + path,
+    this.client,
+    requestOptions,
+    hasBody ? 'single' : 'empty',
+    ((hasResponse === 'false') ? 'empty' : 'single')
+  );
+  operation.outputTransform = responseOutputTransform;
   if (hasBody) {
     operation.requestBody = body;
   }
@@ -106,10 +106,10 @@ Manager.prototype.post = function managePost(paramsObj) {
   return requester.startRequest(operation);
 };
 Manager.prototype.put = function managePut(paramsObj) {
-  var endpoint    = paramsObj.endpoint;
-  var params      = paramsObj.params;
-  var headers     = paramsObj.headers;
-  var body        = paramsObj.body;
+  var endpoint = paramsObj.endpoint;
+  var params = paramsObj.params;
+  var headers = paramsObj.headers;
+  var body = paramsObj.body;
   var hasResponse = paramsObj.hasResponse;
 
   var path = makePath(endpoint, params);
@@ -118,19 +118,19 @@ Manager.prototype.put = function managePut(paramsObj) {
   requestOptions.method = 'PUT';
   requestOptions.headers = valcheck.isNullOrUndefined(headers) ? {
     'Content-Type': 'application/json'
-    } : headers;
+  } : headers;
   requestOptions.path = path;
 
   var hasBody = !valcheck.isNullOrUndefined(body);
 
   var operation = new Operation(
-      'PUT '+path,
-      this.client,
-      requestOptions,
-      hasBody ? 'single' : 'empty',
-      ((hasResponse === 'true') ? 'single' : 'empty')
-      );
-  operation.outputTransform  = responseOutputTransform;
+    'PUT ' + path,
+    this.client,
+    requestOptions,
+    hasBody ? 'single' : 'empty',
+    ((hasResponse === 'true') ? 'single' : 'empty')
+  );
+  operation.outputTransform = responseOutputTransform;
   if (hasBody) {
     operation.requestBody = body;
   }
@@ -138,9 +138,9 @@ Manager.prototype.put = function managePut(paramsObj) {
   return requester.startRequest(operation);
 };
 Manager.prototype.remove = function manageRemove(paramsObj) {
-  var endpoint    = paramsObj.endpoint;
-  var params      = paramsObj.params;
-  var headers     = paramsObj.headers;
+  var endpoint = paramsObj.endpoint;
+  var params = paramsObj.params;
+  var headers = paramsObj.headers;
   var hasResponse = paramsObj.hasResponse;
 
   var path = makePath(endpoint, params);
@@ -149,17 +149,17 @@ Manager.prototype.remove = function manageRemove(paramsObj) {
   requestOptions.method = 'DELETE';
   requestOptions.headers = valcheck.isNullOrUndefined(headers) ? {
     'Accept': 'application/json'
-    } : headers;
+  } : headers;
   requestOptions.path = path;
 
   var operation = new Operation(
-      'DELETE '+path,
-      this.client,
-      requestOptions,
-      'empty',
-      ((hasResponse === 'true') ? 'single' : 'empty')
-      );
-  operation.outputTransform  = responseOutputTransform;
+    'DELETE ' + path,
+    this.client,
+    requestOptions,
+    'empty',
+    ((hasResponse === 'true') ? 'single' : 'empty')
+  );
+  operation.outputTransform = responseOutputTransform;
 
   return requester.startRequest(operation);
 };
@@ -169,18 +169,18 @@ function makePath(endpoint, params) {
   if (!valcheck.isNullOrUndefined(params)) {
     var paramKeys = Object.keys(params);
     var sep = '?';
-    for (var i=0; i < paramKeys.length; i++) {
+    for (var i = 0; i < paramKeys.length; i++) {
       var paramKey = paramKeys[i];
       var value = params[paramKey];
       if (valcheck.isArray(value)) {
-        for (var j=0; j < value.length; j++) {
-          path += sep+paramKey+'='+encodeURIComponent(value[j]);
+        for (var j = 0; j < value.length; j++) {
+          path += sep + paramKey + '=' + encodeURIComponent(value[j]);
           if (i === 0 && j === 0) {
             sep = '&';
           }
         }
       } else {
-        path += sep+paramKey+'='+encodeURIComponent(value);
+        path += sep + paramKey + '=' + encodeURIComponent(value);
         if (i === 0) {
           sep = '&';
         }
@@ -195,16 +195,26 @@ function createManager(adminClient) {
   return new Manager(adminClient);
 }
 
-function findServerConfiguration(serverConfiguration){
+function findServerConfiguration(serverConfiguration) {
   const manageClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
-    new Manager(manageClient).get({
+  new Manager(manageClient).get({
     endpoint: '/manage/v2?format=json',
-  }).result(function(response){
-      serverConfiguration.serverVersion =  parseFloat(response.data['local-cluster-default'].version).toFixed(2);
+  }).result(function (response) {
+    serverConfiguration.serverVersion = parseFloat(response.data['local-cluster-default'].version).toFixed(2);
+  });
+}
+
+function findServerConfigurationPromise(serverConfiguration) {
+  const manageClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
+  return new Manager(manageClient).get({
+    endpoint: '/manage/v2?format=json',
+  }).result(function (response) {
+    serverConfiguration.serverVersion = parseFloat(response.data['local-cluster-default'].version).toFixed(2);
   });
 }
 
 module.exports = {
-    createManager: createManager,
-    findServerConfiguration: findServerConfiguration
+  createManager: createManager,
+  findServerConfiguration: findServerConfiguration,
+  findServerConfigurationPromise: findServerConfigurationPromise
 };
