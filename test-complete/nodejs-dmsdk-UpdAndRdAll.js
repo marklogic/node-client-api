@@ -19,7 +19,7 @@ var marklogic = require('../');
 var testconfig = require('../etc/test-config-qa.js');
 
 const stream = require('stream');
-const {expect} = require("chai");
+const { expect } = require('chai');
 
 var memStore = { };
 
@@ -88,16 +88,16 @@ class MLQAWritableStream extends stream.Writable {
     }
 }
 
-describe('Update doc and readAll with Snapshot', function() {
+describe('Update doc and readAll with Snapshot', function () {
     before(function (done) {
         this.timeout(50000);
-        var jsonDocreadable = new stream.Readable({objectMode: true});
+        var jsonDocreadable = new stream.Readable({ objectMode: true });
 
-        for (let i=0; i<1000; i++) {
+        for (let i = 0; i < 1000; i++) {
             const tempJson = {
-                uri: '/data/dmsdk/Snap-update-then-readall/'+i+'.json',
+                uri: '/data/dmsdk/Snap-update-then-readall/' + i + '.json',
                 contentType: 'application/json',
-                content: {['key'+i]:'value '+i}
+                content: { ['key' + i]: 'value ' + i }
             };
             jsonDocreadable.push(tempJson);
             // To validate / use later in tests.
@@ -105,60 +105,68 @@ describe('Update doc and readAll with Snapshot', function() {
             inputContents.push(tempJson.content);
         }
         jsonDocreadable.push(null);
-        dbWriter.documents.writeAll(jsonDocreadable,{
+        dbWriter.documents.writeAll(jsonDocreadable, {
             onCompletion: ((summary) => {
-                setTimeout(()=>{var i = 0; i++;}, 1000);
+                setTimeout(() => {
+                    var i = 0; i++;
+                }, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(1000);
             })
         }); // End of pipe to writeAll
         // Use uriStream as the input to readAll()
-        uriStream = new stream.PassThrough({objectMode: true});
+        uriStream = new stream.PassThrough({ objectMode: true });
         inputJsonUris.forEach(uri => uriStream.push(uri));
         uriStream.push(null);
         // wait for DB to finish writing
-        setTimeout(()=>{done();}, 10000);
+        setTimeout(() => {
+            done();
+        }, 10000);
     });
 
-    after((function(done){
+    after((function (done) {
         this.timeout(10000);
 
         dbWriter.documents.remove(inputJsonUris)
-            .result(function(response){
+            .result(function (response) {
                 done();
             })
-            .catch(err=> done(err))
+            .catch(err => done(err))
             .catch(done);
     }));
 
-// This test updates an existing doc and then performs readAll
-    it('update a doc and readAll with snapshot', function(done){
+    // This test updates an existing doc and then performs readAll
+    it('update a doc and readAll with snapshot', function (done) {
         this.timeout(30000);
         // Used in test that updates doc and then does readAll
         const UpdBeforeReadAllUriName = '/data/dmsdk/Snap-update-then-readall/900.json';
 
-        const filteredSnapshot = new MLQASnapshotTransform(UpdBeforeReadAllUriName, { objectMode: true } );
+        const filteredSnapshot = new MLQASnapshotTransform(UpdBeforeReadAllUriName, { objectMode: true });
 
-        setTimeout(()=>{var i = 0; i++;}, 3000);
+        setTimeout(() => {
+            var i = 0; i++;
+        }, 3000);
         // Initiate a document change on doc id 900.
         dbWriter.documents.write({
             uri: UpdBeforeReadAllUriName,
             collections: ['coll5', 'coll6'],
             contentType: 'application/json',
             quality: 250,
-            properties: {prop1:'bar', prop2:1981},
-            content: {id:88, name:'David'}
+            properties: { prop1: 'bar', prop2: 1981 },
+            content: { id: 88, name: 'David' }
         });
         // Expected result
         var exptdResult = 'Matched ID:88, Matched Name:David';
         var mlqawstream = new MLQAWritableStream('before');
         // Have listeners before calling pipe.
-        setTimeout(()=>{var i = 0; i++;}, 3000);
+        setTimeout(() => {
+            var i = 0; i++;
+        }, 3000);
         mlqawstream.on('finish', function () {
             expect(memStore.before.toString()).to.equal(exptdResult);
         });
-        dbWriter.documents.readAll(uriStream,{
+        dbWriter.documents.readAll(uriStream, {
             inputkind: 'Array',
-            consistentSnapshot:true,
+            consistentSnapshot: true,
             batch: 50
         }).pipe(filteredSnapshot).pipe(mlqawstream);/* Add.pipe(process.stdout) to debug */
         done();

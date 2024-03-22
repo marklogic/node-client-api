@@ -28,16 +28,16 @@ const ctsqb = marklogic.ctsQueryBuilder;
 var testconfig = require('../etc/test-config-qa.js');
 
 const stream = require('stream');
-const {expect} = require("chai");
+const { expect } = require('chai');
 
 var dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.dmsdkrestAdminConnection);
-describe('queryAll-tests-1', function() {
+describe('queryAll-tests-1', function () {
     before(function (done) {
         this.timeout(10000);
         const selectFiles = [];
 
-        var multiDocreadable = new stream.Readable({objectMode: true});
+        var multiDocreadable = new stream.Readable({ objectMode: true });
         // Handle only .json, .xml and .txt files
         var allowedFiles = ['.json', '.xml', '.txt'];
 
@@ -51,17 +51,17 @@ describe('queryAll-tests-1', function() {
         var files = fs.readdirSync(dirPath).filter(includeFile);
         files.forEach(file => {
             let fileStat = fs.statSync(dirPath + '/' + file).isDirectory();
-            if(!fileStat) {
+            if (!fileStat) {
                 selectFiles.push(file);
             }
         });
         for (var file of selectFiles) {
             var fileTobeRead = dirPath + file;
-            var data = fs.readFileSync(fileTobeRead, {encoding:'utf8'});
+            var data = fs.readFileSync(fileTobeRead, { encoding: 'utf8' });
             var findCType = path.extname(fileTobeRead);
             var jsonFN1 = {
                 uri: file,
-                contentType: findCType === '.json' ? 'application/json': findCType === '.xml' ? 'application/xml' : 'application/text',
+                contentType: findCType === '.json' ? 'application/json' : findCType === '.xml' ? 'application/xml' : 'application/text',
                 collections: ['qatestsReadText'],
                 content: data
             };
@@ -73,7 +73,9 @@ describe('queryAll-tests-1', function() {
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
             })
         }); // End of pipe to writeAll - single byte
-        setTimeout(()=>{done();}, 1000);
+        setTimeout(() => {
+            done();
+        }, 1000);
     });
 
     after(function (done) {
@@ -97,7 +99,7 @@ describe('queryAll-tests-1', function() {
         this.timeout(10000);
         const fileNamequeryAllColl = path.join(__dirname, '/data/dmsdk/queryAllColl.txt');
         const query = q.where(ctsqb.cts.collectionQuery('qatestsReadText'));
-        var resqueryAllCollFile = fs.createWriteStream(fileNamequeryAllColl, {flag: 'a'});
+        var resqueryAllCollFile = fs.createWriteStream(fileNamequeryAllColl, { flag: 'a' });
         try {
             dbWriter.documents.queryAll(query, {
                 consistentSnapshot: false,
@@ -128,9 +130,9 @@ describe('queryAll-tests-1', function() {
         }
     });
 
-    it('verify queryAll summary report in collection',function (done) {
+    it('verify queryAll summary report in collection', function (done) {
         this.timeout(10000);
-        var arr = new Array('soFar : 5', 'failedToRead : 0', 'snapshot : ' );
+        var arr = new Array('soFar : 5', 'failedToRead : 0', 'snapshot : ');
         var lnCnt = 0;
         const fileName = path.join(__dirname, '/data/dmsdk/queryAllColl.txt');
 
@@ -155,7 +157,7 @@ describe('queryAll-tests-1', function() {
         this.timeout(10000);
         const query = q.where(ctsqb.cts.wordQuery('Vannevar'));
         const fileName = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
-        var resqueryAllCollFile = fs.createWriteStream(fileName, {flag: 'a'});
+        var resqueryAllCollFile = fs.createWriteStream(fileName, { flag: 'a' });
         //resqueryAllCollFile
         try {
             dbWriter.documents.queryAll(query, {
@@ -171,9 +173,9 @@ describe('queryAll-tests-1', function() {
         }
     });
 
-    it('verify queryAll one output',function (done) {
+    it('verify queryAll one output', function (done) {
         this.timeout(10000);
-        var arr = new Array('constraint1.json' );
+        var arr = new Array('constraint1.json');
         var lnCnt = 0;
         const fileName = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
 
@@ -196,12 +198,12 @@ describe('queryAll-tests-1', function() {
 
 }); // End of queryAll tests 1
 
-describe('queryAll-tests-2', function() {
+describe('queryAll-tests-2', function () {
     before(function (done) {
         this.timeout(10000);
         const selectFiles = [];
 
-        var multiDocreadable = new stream.Readable({objectMode: true});
+        var multiDocreadable = new stream.Readable({ objectMode: true });
         // Handle only .json, .xml and .txt files
         var allowedFiles = ['.json', '.xml', '.txt'];
 
@@ -221,7 +223,7 @@ describe('queryAll-tests-2', function() {
         });
         for (var file of selectFiles) {
             var fileTobeRead = dirPath + file;
-            var data = fs.readFileSync(fileTobeRead, {encoding: 'utf8'});
+            var data = fs.readFileSync(fileTobeRead, { encoding: 'utf8' });
             var findCType = path.extname(fileTobeRead);
             var jsonFN1 = {
                 uri: file,
@@ -232,7 +234,7 @@ describe('queryAll-tests-2', function() {
             multiDocreadable.push(jsonFN1);
         }
         multiDocreadable.push(null);
-        dbWriter.documents.writeAll(multiDocreadable,{
+        dbWriter.documents.writeAll(multiDocreadable, {
             onCompletion: ((summary) => {
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(6);
             })
@@ -252,12 +254,12 @@ describe('queryAll-tests-2', function() {
     it('Multibyte queryAll with one result', function (done) {
         this.timeout(10000);
         try {
-        const query = q.where(ctsqb.cts.collectionQuery('multibyte'));
-        const fileName = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
+            const query = q.where(ctsqb.cts.collectionQuery('multibyte'));
+            const fileName = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
 
-        var resFile = fs.createWriteStream(fileName, {flag: 'a'});
+            var resFile = fs.createWriteStream(fileName, { flag: 'a' });
 
-        dbWriter.documents.queryAll(query, {
+            dbWriter.documents.queryAll(query, {
                 consistentSnapshot: false,
                 batchSize: 1,
                 onCompletion: ((summary) => {
@@ -272,11 +274,11 @@ describe('queryAll-tests-2', function() {
         }
     });
 
-    it('verify queryAll output report for one doc',function (done) {
+    it('verify queryAll output report for one doc', function (done) {
         this.timeout(10000);
         const fileName = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
-        const data = fs.readFileSync(fileName, {encoding:'utf8', flag:'r'});
-        var uriName = data.replace(/\s/g, "");
+        const data = fs.readFileSync(fileName, { encoding: 'utf8', flag: 'r' });
+        var uriName = data.replace(/\s/g, '');
         expect(uriName).to.equal('multibyte1.xml');
         done();
     });

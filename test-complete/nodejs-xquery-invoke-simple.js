@@ -25,30 +25,34 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Xquery invoke test', function(){
+describe('Xquery invoke test', function () {
 
-  var fsPath = __dirname + '/data/sourceSimple.xqy';
-  var invokePath = '/ext/invokeTest/sourceSimple.xqy';
+    var fsPath = __dirname + '/data/sourceSimple.xqy';
+    var invokePath = '/ext/invokeTest/sourceSimple.xqy';
 
-  before(function(done) {
-    this.timeout(10000);
-    dbAdmin.config.extlibs.write({
-      path:invokePath, contentType:'application/xquery', source:fs.createReadStream(fsPath)
-    }).
-    result(function(response){done();}, done);
-  });
+    before(function (done) {
+        this.timeout(10000);
+        dbAdmin.config.extlibs.write({
+            path: invokePath, contentType: 'application/xquery', source: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  after(function(done) {
-    dbAdmin.config.extlibs.remove(invokePath).
-    result(function(response){done();}, done);
-  });
+    after(function (done) {
+        dbAdmin.config.extlibs.remove(invokePath).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  it('should do simple xquery invoke', function(done){
-    dbEval.invoke(invokePath).result(function(values) {
-      //console.log(values);
-      values[0].value.should.equal('hello world');
-      done();
-    }, done);
-  });
+    it('should do simple xquery invoke', function (done) {
+        dbEval.invoke(invokePath).result(function (values) {
+            //console.log(values);
+            values[0].value.should.equal('hello world');
+            done();
+        }, done);
+    });
 
 });

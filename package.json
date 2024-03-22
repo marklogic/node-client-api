@@ -32,6 +32,7 @@
     "concat-stream": "^2.0.0",
     "deepcopy": "^2.1.0",
     "duplexify": "^4.1.2",
+    "eslint": "^8.57.0",
     "form-data": "^4.0.0",
     "json-text-sequence": "^1.0.1",
     "multipart-stream": "^2.0.1",
@@ -47,6 +48,7 @@
     "node": ">=16.14.0"
   },
   "devDependencies": {
+    "@jsdoc/salty": "0.2.3",
     "ajv": "^8.11.0",
     "ast-types": "^0.14.2",
     "astring": "^1.8.3",
@@ -59,7 +61,6 @@
     "gulp-mocha": "^8.0.0",
     "intercept-stdout": "^0.1.2",
     "jshint": "^2.13.5",
-    "@jsdoc/salty": "0.2.3",
     "mocha": "^10.0.0",
     "mocha-junit-reporter": "2.2.0",
     "moment": "^2.29.4",
