@@ -30,74 +30,74 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Binary documents test', function(){
-  var binaryPath = __dirname + '/data/somePdfFile.pdf';
-  var uri = '/test/binary/somePdfFile.pdf';
-  var binaryValue = null;
-  before(function(done){
-    this.timeout(10000);
-    fs.createReadStream(binaryPath).
-      pipe(concatStream({encoding: 'buffer'}, function(value){
-        binaryValue = value;
-        done();
-      }));
-  });
+describe('Binary documents test', function () {
+    var binaryPath = __dirname + '/data/somePdfFile.pdf';
+    var uri = '/test/binary/somePdfFile.pdf';
+    var binaryValue = null;
+    before(function (done) {
+        this.timeout(10000);
+        fs.createReadStream(binaryPath).
+            pipe(concatStream({ encoding: 'buffer' }, function (value) {
+                binaryValue = value;
+                done();
+            }));
+    });
 
-  it('should write the binary with Readable stream', function(done){
-    this.timeout(10000);
-    var uri = '/test/write/somePdfFile.pdf';
-    var readableBinary = new ValueStream(binaryValue);
-    //readableBinary.pause();
-    dbWriter.documents.write({
-      uri: uri,
-      contentType: 'application/pdf',
-      quality: 25,
-      properties: {prop1: 'foo'},
-      content: readableBinary
-    }).
-    result(function(response){
-      response.should.have.property('documents');
-      done();
-    }, done);
-  });
+    it('should write the binary with Readable stream', function (done) {
+        this.timeout(10000);
+        var uri = '/test/write/somePdfFile.pdf';
+        var readableBinary = new ValueStream(binaryValue);
+        //readableBinary.pause();
+        dbWriter.documents.write({
+            uri: uri,
+            contentType: 'application/pdf',
+            quality: 25,
+            properties: { prop1: 'foo' },
+            content: readableBinary
+        }).
+            result(function (response) {
+                response.should.have.property('documents');
+                done();
+            }, done);
+    });
 
-  it('should wait for the document to be written', function(done) {
-    setTimeout(function() {
-      done();
-    }, 10000);
-  });
+    it('should wait for the document to be written', function (done) {
+        setTimeout(function () {
+            done();
+        }, 10000);
+    });
 
-  it('should read the binary in chunk', function(done){
-    this.timeout(10000);
-    var uri = '/test/write/somePdfFile.pdf';
-	setTimeout(function() {
-    dbReader.documents.read(uri).stream('chunked').
-    on('data', function(data) {
-      var strData = data.toString();
-      strData.should.containEql('CVISION Technologies');
-      }).
-    on('end', function() {
-      done();
-    }, done);
-	}, 3000);
-  });
-it('should delete all documents', function(done){
-    dbAdmin.documents.removeAll({
-      all: true
-    }).
-    result(function(response) {
-      done();
-    }, done);
-  });
+    it('should read the binary in chunk', function (done) {
+        this.timeout(10000);
+        var uri = '/test/write/somePdfFile.pdf';
+        setTimeout(function () {
+            dbReader.documents.read(uri).stream('chunked').
+                on('data', function (data) {
+                    var strData = data.toString();
+                    strData.should.containEql('CVISION Technologies');
+                }).
+                on('end', function () {
+                    done();
+                }, done);
+        }, 3000);
+    });
+    it('should delete all documents', function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
 });
 
 function ValueStream(value) {
-  stream.Readable.call(this);
-  this.value    = value;
+    stream.Readable.call(this);
+    this.value    = value;
 }
 util.inherits(ValueStream, stream.Readable);
-ValueStream.prototype._read = function() {
-  this.push(this.value);
-  this.push(null);
+ValueStream.prototype._read = function () {
+    this.push(this.value);
+    this.push(null);
 };

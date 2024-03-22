@@ -25,23 +25,23 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Xquery eval negaive test', function(){
+describe('Xquery eval negaive test', function () {
 
-  it('should fail with non-matching var name', function(done){
-    dbEval.xqueryEval(
-                'let $a := 2' +
+    it('should fail with non-matching var name', function (done) {
+        dbEval.xqueryEval(
+            'let $a := 2' +
                 'return $sum'
-               ).
-    result(function(values) {
-      values.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-         error.statusCode.should.equal(500);
-         //error.body.should.containEql('XDMP-UNEXPECTED');
-         //console.log(error);
-         done();
-       });
-  });
+        ).
+            result(function (values) {
+                values.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                error.statusCode.should.equal(500);
+                //error.body.should.containEql('XDMP-UNEXPECTED');
+                //console.log(error);
+                done();
+            });
+    });
 /*
   it('should fail with non-matching var number', function(done){
     dbEval.eval('var num1;' +

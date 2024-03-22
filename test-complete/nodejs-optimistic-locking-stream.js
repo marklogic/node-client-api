@@ -25,66 +25,69 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Optimistic locking stream test', function() {
+describe('Optimistic locking stream test', function () {
 
-  it('should read the original update policy', function(done) {
-    dbAdmin.config.serverprops.read().
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
-      (JSON.stringify(response)).should.containEql('merge-metadata');
-      done();
-    }, done);
-  });
-
-  it('should change the update policy', function(done) {
-    dbAdmin.config.serverprops.write({'update-policy': 'version-required'}).
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, done);
-  });
-
-  it('should write document for test', function(done) {
-    var ws = dbWriter.documents.createWriteStream({
-      uri: '/test/optlock/stream/streamLock1.json',
-      contentType: 'application/json'
-      });
-    ws.result(function(response) {
-      done(); },
-    done);
-    ws.write('{"title": "write stream with opt lock"}');
-    ws.end();
-  });
-
-  it('should write with version id in stream', function(done){
-    dbWriter.documents.probe('/test/optlock/stream/streamLock1.json').result().
-    then(function(response) {
-      var ws = dbWriter.documents.createWriteStream({
-        uri: '/test/optlock/stream/streamLock1.json',
-        contentType: 'application/json',
-        versionId: response.versionId
-      });
-      ws.result(function(response) { done(); }, done);
-      ws.write('{"hello": "world"}');
-      ws.end();
+    it('should read the original update policy', function (done) {
+        dbAdmin.config.serverprops.read().
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                (JSON.stringify(response)).should.containEql('merge-metadata');
+                done();
+            }, done);
     });
-  });
 
-  it('should read with version id in chunk stream', function(done){
-    this.timeout(10000);
-    var uri = '/test/optlock/stream/streamLock1.json';
-    dbReader.documents.read(uri).stream('chunked').
-    on('data', function(data) {
-      var strData = data.toString();
-      strData.should.containEql('world');
-      //console.log(strData);
-      }).
-    on('end', function() {
-      done();
-    }, done);
-  });
+    it('should change the update policy', function (done) {
+        dbAdmin.config.serverprops.write({ 'update-policy': 'version-required' }).
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, done);
+    });
 
-  /*it('should fail to write without version id', function(done){
+    it('should write document for test', function (done) {
+        var ws = dbWriter.documents.createWriteStream({
+            uri: '/test/optlock/stream/streamLock1.json',
+            contentType: 'application/json'
+        });
+        ws.result(function (response) {
+            done();
+        },
+        done);
+        ws.write('{"title": "write stream with opt lock"}');
+        ws.end();
+    });
+
+    it('should write with version id in stream', function (done) {
+        dbWriter.documents.probe('/test/optlock/stream/streamLock1.json').result().
+            then(function (response) {
+                var ws = dbWriter.documents.createWriteStream({
+                    uri: '/test/optlock/stream/streamLock1.json',
+                    contentType: 'application/json',
+                    versionId: response.versionId
+                });
+                ws.result(function (response) {
+                    done();
+                }, done);
+                ws.write('{"hello": "world"}');
+                ws.end();
+            });
+    });
+
+    it('should read with version id in chunk stream', function (done) {
+        this.timeout(10000);
+        var uri = '/test/optlock/stream/streamLock1.json';
+        dbReader.documents.read(uri).stream('chunked').
+            on('data', function (data) {
+                var strData = data.toString();
+                strData.should.containEql('world');
+                //console.log(strData);
+            }).
+            on('end', function () {
+                done();
+            }, done);
+    });
+
+    /*it('should fail to write without version id', function(done){
     dbWriter.documents.probe('/test/optlock/stream/streamLock1.json').result().
     then(function(response) {
       var ws = dbWriter.documents.createWriteStream({
@@ -103,7 +106,7 @@ describe('Optimistic locking stream test', function() {
     });
   });*/
 
-  /*it('should fail to remove doc without the version id', function(done) {
+    /*it('should fail to remove doc without the version id', function(done) {
     dbWriter.documents.remove('/test/optlock/doc6.json').
     result(function(response) {
       //console.log(JSON.stringify(response, null, 2));
@@ -300,7 +303,7 @@ describe('Optimistic locking stream test', function() {
     });
   });*/
 
-  /*it('should fail to read the overwritten the document without the version id', function(done){
+    /*it('should fail to read the overwritten the document without the version id', function(done){
     dbWriter.documents.probe('/test/optlock/doc7.json').result().
     then(function(response) {
       dbWriter.documents.read({
@@ -314,7 +317,7 @@ describe('Optimistic locking stream test', function() {
     });
   });*/
 
-  /*it('should read the overwritten the document with the version id', function(done){
+    /*it('should read the overwritten the document with the version id', function(done){
     dbWriter.documents.probe('/test/optlock/doc7.json').result().
     then(function(response) {
       dbWriter.documents.read({
@@ -329,20 +332,20 @@ describe('Optimistic locking stream test', function() {
     });
   });*/
 
-  it('should change back the update policy', function(done) {
-    dbAdmin.config.serverprops.write({'update-policy': 'merge-metadata'}).
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, done);
-  });
+    it('should change back the update policy', function (done) {
+        dbAdmin.config.serverprops.write({ 'update-policy': 'merge-metadata' }).
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, done);
+    });
 
-  it('should remove the documents', function(done) {
-    dbAdmin.documents.removeAll({directory: '/test/optlock/stream/'}).
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, done);
-  });
+    it('should remove the documents', function (done) {
+        dbAdmin.documents.removeAll({ directory: '/test/optlock/stream/' }).
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, done);
+    });
 
 });

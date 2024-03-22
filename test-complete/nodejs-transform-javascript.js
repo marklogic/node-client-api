@@ -27,94 +27,98 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Transform test with javascript', function(){
-  before(function(done){
-    this.timeout(10000);
-    dbWriter.documents.write({
-      uri: '/test/transform/jstransform.json',
-      contentType: 'application/json',
-      content: {title: 'transform test with javascript'}
-    },
-	{
-      uri: '/test/transform/jstransform2.json',
-      contentType: 'application/json',
-      content: {title: 'exapmle test with javascript'}
-    }).
-    result(function(response){done();}, done);
-  });
-
-  var transformName = 'timestamp';
-  var transformPath = __dirname + '/data/timestampTransform.js';
-
-  it('should write the transform', function(done){
-    this.timeout(10000);
-    fs.createReadStream(transformPath).
-    pipe(concatStream({encoding: 'string'}, function(source) {
-      dbAdmin.config.transforms.write(transformName, 'javascript', source).
-      result(function(response){done();}, done);
-    }));
-  });
-
-  it('should read the transform', function(done){
-    dbAdmin.config.transforms.read(transformName).
-    result(function(source){
-      (!valcheck.isNullOrUndefined(source)).should.equal(true);
-      done();
-    }, done);
-  });
-
-  it('should list the transform', function(done){
-    dbAdmin.config.transforms.list().
-    result(function(response){
-      response.should.have.property('transforms');
-      done();
-    }, done);
-  });
-
-  var uri = '/test/transform/jstransform.json';
-
-  it('should modify during read', function(done){
-    db.documents.read({
-      uris: uri,
-      transform: transformName
-    }).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
-      done();
-    }, done);
-  });
-
-   it('should  query', function(done){
-    db.documents.query(
-      q.where(
-        q.word('title', 'test')
-      )
-    ).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-	  response.length.should.equal(2);
-      done();
-    }, done);
-  });
-
-
-  it('should modify during query', function(){
-    this.timeout(10000);
-    db.documents.query(
-      q.where(
-        q.word('title', 'transform')
-      ).
-      slice(0, 10, q.transform(transformName))
-    ).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
+describe('Transform test with javascript', function () {
+    before(function (done) {
+        this.timeout(10000);
+        dbWriter.documents.write({
+            uri: '/test/transform/jstransform.json',
+            contentType: 'application/json',
+            content: { title: 'transform test with javascript' }
+        },
+        {
+            uri: '/test/transform/jstransform2.json',
+            contentType: 'application/json',
+            content: { title: 'exapmle test with javascript' }
+        }).
+            result(function (response) {
+                done();
+            }, done);
     });
-  });
-  /*it('should modify during query - synch', function(){
+
+    var transformName = 'timestamp';
+    var transformPath = __dirname + '/data/timestampTransform.js';
+
+    it('should write the transform', function (done) {
+        this.timeout(10000);
+        fs.createReadStream(transformPath).
+            pipe(concatStream({ encoding: 'string' }, function (source) {
+                dbAdmin.config.transforms.write(transformName, 'javascript', source).
+                    result(function (response) {
+                        done();
+                    }, done);
+            }));
+    });
+
+    it('should read the transform', function (done) {
+        dbAdmin.config.transforms.read(transformName).
+            result(function (source) {
+                (!valcheck.isNullOrUndefined(source)).should.equal(true);
+                done();
+            }, done);
+    });
+
+    it('should list the transform', function (done) {
+        dbAdmin.config.transforms.list().
+            result(function (response) {
+                response.should.have.property('transforms');
+                done();
+            }, done);
+    });
+
+    var uri = '/test/transform/jstransform.json';
+
+    it('should modify during read', function (done) {
+        db.documents.read({
+            uris: uri,
+            transform: transformName
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 4));
+                response[0].content.should.have.property('timestamp');
+                response[0].content.userName.should.equal('rest-reader');
+                done();
+            }, done);
+    });
+
+    it('should  query', function (done) {
+        db.documents.query(
+            q.where(
+                q.word('title', 'test')
+            )
+        ).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 4));
+	  response.length.should.equal(2);
+                done();
+            }, done);
+    });
+
+
+    it('should modify during query', function () {
+        this.timeout(10000);
+        db.documents.query(
+            q.where(
+                q.word('title', 'transform')
+            ).
+                slice(0, 10, q.transform(transformName))
+        ).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 4));
+                response[0].content.should.have.property('timestamp');
+                response[0].content.userName.should.equal('rest-reader');
+            });
+    });
+    /*it('should modify during query - synch', function(){
     this.timeout(10000);
     db.documents.query(
       q.where(
@@ -128,21 +132,21 @@ describe('Transform test with javascript', function(){
       response[0].content.userName.should.equal('rest-reader');
     });
   });*/
-  it('should modify during query , slice without paging parameters, Bug 111', function(done){
-    db.documents.query(
-      q.where(
-        q.word('title', 'transform')
-      ).
-      slice(q.transform(transformName))
-    ).
-    result(function(response) {
-      //console.log(JSON.stringify(response, null, 4));
-      response[0].content.should.have.property('timestamp');
-      response[0].content.userName.should.equal('rest-reader');
-      done();
-    }, done);
-  });
-  /*it('should modify during write', function(done){
+    it('should modify during query , slice without paging parameters, Bug 111', function (done) {
+        db.documents.query(
+            q.where(
+                q.word('title', 'transform')
+            ).
+                slice(q.transform(transformName))
+        ).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 4));
+                response[0].content.should.have.property('timestamp');
+                response[0].content.userName.should.equal('rest-reader');
+                done();
+            }, done);
+    });
+    /*it('should modify during write', function(done){
     dbWriter.documents.write({
       uri: '/test/transform/write/jstransform.json',
       contentType: 'application/json',
@@ -160,14 +164,14 @@ describe('Transform test with javascript', function(){
     }, done);
   });*/
 
-  it('should remove the documents', function(done){
-    dbAdmin.documents.removeAll({
-      directory: '/test/transform/'
-    }).
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, done);
-  });
+    it('should remove the documents', function (done) {
+        dbAdmin.documents.removeAll({
+            directory: '/test/transform/'
+        }).
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, done);
+    });
 
 });

@@ -23,8 +23,8 @@ const streamToArray = require('stream-to-array');
 
 const fs = require('fs');
 const path = require('path');
-const { Readable } = require("stream");
-const { expect } = require("chai");
+const { Readable } = require('stream');
+const { expect } = require('chai');
 
 var memStore = {};
 
@@ -117,7 +117,9 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
         jsonDocreadable.push(null);
         dbWriter.documents.writeAll(jsonDocreadable, {
             onCompletion: ((summary) => {
-                setTimeout(() => { var i = 0; i++; }, 1000);
+                setTimeout(() => {
+                    var i = 0; i++;
+                }, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(100);
             })
         }); // End of pipe to writeAll
@@ -127,7 +129,9 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
         uriStream.push(null);
 
         // wait for DB to finish writing
-        setTimeout(() => { done(); }, 10000);
+        setTimeout(() => {
+            done();
+        }, 10000);
     });
 
     after((function (done) {
@@ -165,7 +169,9 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
         var exptdResult = 'Modified Key In Transform:300, Modified Value In Transform:value 300';
         var mlqawstreamAft = new MLQAWritableStream('after');
         // Time to initalize results writestream
-        setTimeout(() => { var i = 0; i++; }, 3000);
+        setTimeout(() => {
+            var i = 0; i++;
+        }, 3000);
         // Have listeners before calling pipe.
         mlqawstreamAft.on('finish', function () {
             expect(memStore.after.toString()).to.equal(exptdResult);
@@ -237,17 +243,17 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
                             batchSize: 10,
                             consistentSnapshot: timestampValue,
                         }),
-                            function (err, arr) {
-                                if (err) {
-                                    done(err);
+                        function (err, arr) {
+                            if (err) {
+                                done(err);
+                            }
+                            arr.forEach(item => {
+                                for (let key in item.content) {
+                                    key.valueOf().should.be.equal('key1');
                                 }
-                                arr.forEach(item => {
-                                    for (let key in item.content) {
-                                        key.valueOf().should.be.equal('key1');
-                                    }
-                                });
-                                done();
                             });
+                            done();
+                        });
                     });
             })
         });
@@ -268,7 +274,7 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
                 onCompletion: ((summary) => {
                 })
             }));
-        readable.on("data", (chunk) => {
+        readable.on('data', (chunk) => {
             expect(chunk.content.key1.valueOf()).to.equal('value 1');
             expect(chunk.uri.valueOf()).to.equal('/data/dmsdk/upd-readall/1.json');
             expect(chunk.format.valueOf()).to.equal('json');
@@ -295,7 +301,9 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
             })
         });
 
-        queryToReadAllStream.on('error', function (err) { throw new Error(err); });
+        queryToReadAllStream.on('error', function (err) {
+            throw new Error(err);
+        });
         queryToReadAllStream.on('data', function (chunk) {
             expect(chunk.content.key1.valueOf()).to.equal('value 1');
             expect(chunk.uri.valueOf()).to.equal('/data/dmsdk/upd-readall/1.json');

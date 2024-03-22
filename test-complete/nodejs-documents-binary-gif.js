@@ -29,44 +29,44 @@ var q = marklogic.queryBuilder;
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
-describe('Binary documents test', function(){
-  var fsPath = __dirname + '/data/121-GIF-Image-GIF-gif_sample1.gif';
-  var uri = '/test/binary/stream/121-GIF-Image-GIF-gif_sample1.gif';
-  var binaryValue = null;
+describe('Binary documents test', function () {
+    var fsPath = __dirname + '/data/121-GIF-Image-GIF-gif_sample1.gif';
+    var uri = '/test/binary/stream/121-GIF-Image-GIF-gif_sample1.gif';
+    var binaryValue = null;
 
-  it('should write the binary with Readable stream', function(done){
-    this.timeout(10000);
-    dbWriter.documents.write({
-      uri: uri,
-      contentType: 'image/gif',
-      collections: ['imageColl'],
-      content: fs.createReadStream(fsPath)
-    }).
-    result(function(response){
-      //console.log(response);
-      response.documents[0].uri.should.equal(uri);
-      done();
-    }, done);
-  });
+    it('should write the binary with Readable stream', function (done) {
+        this.timeout(10000);
+        dbWriter.documents.write({
+            uri: uri,
+            contentType: 'image/gif',
+            collections: ['imageColl'],
+            content: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                //console.log(response);
+                response.documents[0].uri.should.equal(uri);
+                done();
+            }, done);
+    });
 
-  it('should read the binary with Readable stream', function(done){
-    this.timeout(10000);
-    dbReader.documents.read(uri).
-    result(function(documents) {
-      documents[0].content.should.not.equal(null);
-      //console.log(documents);
-      done();
-    }, done);
-  });
+    it('should read the binary with Readable stream', function (done) {
+        this.timeout(10000);
+        dbReader.documents.read(uri).
+            result(function (documents) {
+                documents[0].content.should.not.equal(null);
+                //console.log(documents);
+                done();
+            }, done);
+    });
 
-  it('should remove the document', function(done){
-    this.timeout(10000);
-    dbWriter.documents.remove(uri).
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, done);
-  });
+    it('should remove the document', function (done) {
+        this.timeout(10000);
+        dbWriter.documents.remove(uri).
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, done);
+    });
 
 
 });

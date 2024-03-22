@@ -25,21 +25,21 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
-describe('graph negative test', function(){
-  var graphUri   = 'marklogic.com/negative/people';
-  var graphPath  = __dirname + '/data/people.ttl';
-  var sparqlPath = __dirname + '/data/people.rq';
+describe('graph negative test', function () {
+    var graphUri   = 'marklogic.com/negative/people';
+    var graphPath  = __dirname + '/data/people.ttl';
+    var sparqlPath = __dirname + '/data/people.rq';
 
-  it('should write the graph', function(done){
-    this.timeout(10000);
-    db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath)).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      done();
-    }, done);
-  });
+    it('should write the graph', function (done) {
+        this.timeout(10000);
+        db.graphs.write(graphUri, 'text/turtle', fs.createReadStream(graphPath)).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                done();
+            }, done);
+    });
 
-  /*it('should read the default graph', function(done){
+    /*it('should read the default graph', function(done){
     this.timeout(10000);
     db.graphs.read('application/json').
     result(function(data){
@@ -49,46 +49,46 @@ describe('graph negative test', function(){
     }, done);
   });*/
 
-  it('should fail to read graph with invalid contentType', function(done){
-    this.timeout(10000);
-    db.graphs.read('foo/bar', graphUri).
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(404);
-      done();
+    it('should fail to read graph with invalid contentType', function (done) {
+        this.timeout(10000);
+        db.graphs.read('foo/bar', graphUri).
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(404);
+                done();
+            });
     });
-  });
 
-  it('should fail to read non-existent graph', function(done){
-    this.timeout(10000);
-    db.graphs.read('text/n3', 'nonexistent/graph/invalid').
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(404);
-      done();
+    it('should fail to read non-existent graph', function (done) {
+        this.timeout(10000);
+        db.graphs.read('text/n3', 'nonexistent/graph/invalid').
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(404);
+                done();
+            });
     });
-  });
 
-  it('should fail to check graph with invalid contentType', function(done){
-    this.timeout(10000);
-    db.graphs.list('foo/bar').
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(406);
-      done();
+    it('should fail to check graph with invalid contentType', function (done) {
+        this.timeout(10000);
+        db.graphs.list('foo/bar').
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(406);
+                done();
+            });
     });
-  });
 
-  /*it('should run a SPARQL query against the default graph', function(done){
+    /*it('should run a SPARQL query against the default graph', function(done){
     this.timeout(10000);
     db.graphs.sparql('application/sparql-results+json', fs.createReadStream(sparqlPath)).
     result(function(response){
@@ -103,18 +103,18 @@ describe('graph negative test', function(){
       //console.log(strResponse);
       strResponse.should.containEql('Person 1');
       strResponse.should.containEql('Person 2');*/
-      /*response.results.bindings[0].should.have.property('personName1');
+    /*response.results.bindings[0].should.have.property('personName1');
       response.results.bindings[0].personName1.should.have.property('value');
       response.results.bindings[0].personName1.value.should.equal('Person 1');
       response.results.bindings[0].should.have.property('personName2');
       response.results.bindings[0].personName2.should.have.property('value');
       response.results.bindings[0].personName2.value.should.equal('Person 2');*/
-      //console.log(JSON.stringify(response, null, 4))
-      /*done();
+    //console.log(JSON.stringify(response, null, 4))
+    /*done();
     }, done);
   });*/
 
-  /*it('should fail to remove non-existent graph', function(done){
+    /*it('should fail to remove non-existent graph', function(done){
     this.timeout(10000);
     db.graphs.remove('nonExistent/graph/invalid').
     result(function(response) {
@@ -127,31 +127,31 @@ describe('graph negative test', function(){
     });
   });*/
 
-  it('should fail to write graph with invalid permissions', function(done){
-    this.timeout(10000);
-    db.graphs.write({
-      uri: graphUri,
-      contentType: 'text/turtle',
-      data: fs.createReadStream(graphPath),
-      permissions: [{'role-name': 'invalid-role', capabilities:['read']}]
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error.body.errorResponse.message);
-      var eMsg = error.body.errorResponse.message;
-      eMsg.should.containEql('Role does not exist: sec:role-name = invalid-role');
-      done();
+    it('should fail to write graph with invalid permissions', function (done) {
+        this.timeout(10000);
+        db.graphs.write({
+            uri: graphUri,
+            contentType: 'text/turtle',
+            data: fs.createReadStream(graphPath),
+            permissions: [{ 'role-name': 'invalid-role', capabilities: ['read'] }]
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error.body.errorResponse.message);
+                var eMsg = error.body.errorResponse.message;
+                eMsg.should.containEql('Role does not exist: sec:role-name = invalid-role');
+                done();
+            });
     });
-  });
 
-  it('should delete the graph', function(done){
-    this.timeout(10000);
-    db.graphs.remove(graphUri).
-    result(function(response){
-      done();
-    }, done);
-  });
+    it('should delete the graph', function (done) {
+        this.timeout(10000);
+        db.graphs.remove(graphUri).
+            result(function (response) {
+                done();
+            }, done);
+    });
 });

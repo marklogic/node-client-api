@@ -25,35 +25,39 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Xquery invoke simple negative test', function(){
+describe('Xquery invoke simple negative test', function () {
 
-  var fsPath = __dirname + '/data/sourceSimpleNegative.xqy';
-  var invokePath = '/ext/invokeTest/sourceSimpleNegative.xqy';
+    var fsPath = __dirname + '/data/sourceSimpleNegative.xqy';
+    var invokePath = '/ext/invokeTest/sourceSimpleNegative.xqy';
 
-  before(function(done) {
-    this.timeout(10000);
-    dbAdmin.config.extlibs.write({
-      path:invokePath, contentType:'application/xquery', source:fs.createReadStream(fsPath)
-    }).
-    result(function(response){done();}, done);
-  });
-
-  after(function(done) {
-    dbAdmin.config.extlibs.remove(invokePath).
-    result(function(response){done();}, done);
-  });
-
-  it('should do simple xquery invoke', function(done){
-    dbEval.invoke(invokePath).result(function(values) {
-      //console.log(values);
-      values.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(500);
-      error.body.errorResponse.messageCode.should.equal('XDMP-UNDVAR');
-      done();
+    before(function (done) {
+        this.timeout(10000);
+        dbAdmin.config.extlibs.write({
+            path: invokePath, contentType: 'application/xquery', source: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                done();
+            }, done);
     });
-  });
+
+    after(function (done) {
+        dbAdmin.config.extlibs.remove(invokePath).
+            result(function (response) {
+                done();
+            }, done);
+    });
+
+    it('should do simple xquery invoke', function (done) {
+        dbEval.invoke(invokePath).result(function (values) {
+            //console.log(values);
+            values.should.equal('SHOULD HAVE FAILED');
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.statusCode.should.equal(500);
+            error.body.errorResponse.messageCode.should.equal('XDMP-UNDVAR');
+            done();
+        });
+    });
 
 });

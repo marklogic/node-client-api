@@ -24,111 +24,113 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('extract negative test', function(){
-  before(function(done){
-    this.timeout(10000);
-    dbWriter.documents.write({
-      uri: '/test/query/matchDir/doc1.json',
-      collections: ['matchCollection1'],
-      contentType: 'application/json',
-      content: {
-        title: 'Vannevar Bush',
-        popularity: 5,
-        id: '0011',
-        date: '2005-01-01',
-        price: {
-             amt: 0.1
-           },
-        p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
-        }
-      }, {
-      uri: '/test/query/matchDir/doc2.json',
-      collections: ['matchCollection1', 'matchCollection2'],
-      contentType: 'application/json',
-      content: {
-        title: 'The Bush article',
-        popularity: 4,
-        id: '0012',
-        date: '2006-02-02',
-        price: {
-             amt: 0.12
-           },
-        p: 'The Bush article described a device called a Memex'
-        }
-      }, {
-      uri: '/test/query/matchDir/doc3.json',
-      collections: ['matchCollection2'],
-      contentType: 'application/json',
-      content: {
-        title: 'For 1945',
-        popularity: 3,
-        id: '0013',
-        date: '2007-03-03',
-        price: {
-             amt: 1.23
-           },
-        p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
-        }
-      }, {
-      uri: '/test/query/matchDir/doc4.json',
-      collections: [],
-      contentType: 'application/json',
-      content: {
-        title: 'Vannevar served',
-        popularity: 5,
-        id: '0024',
-        date: '2008-04-04',
-        price: {
-             amt: 12.34
-           },
-        p: 'Vannevar served as a prominent policymaker and public intellectual'
-        }
-      }, {
-        uri: '/test/query/matchList/doc5.json',
-        collections: ['matchList'],
-        contentType: 'application/json',
-        content: {
-          title: 'The memex',
-          popularity: 5,
-          id: '0026',
-          date: '2009-05-05',
-          price: {
-               amt: 123.45
-             },
-          p: 'The Memex, unfortunately, had no automated search feature',
-          category: ['history', 'america', 'president']
-          }
+describe('extract negative test', function () {
+    before(function (done) {
+        this.timeout(10000);
+        dbWriter.documents.write({
+            uri: '/test/query/matchDir/doc1.json',
+            collections: ['matchCollection1'],
+            contentType: 'application/json',
+            content: {
+                title: 'Vannevar Bush',
+                popularity: 5,
+                id: '0011',
+                date: '2005-01-01',
+                price: {
+                    amt: 0.1
+                },
+                p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
+            }
+        }, {
+            uri: '/test/query/matchDir/doc2.json',
+            collections: ['matchCollection1', 'matchCollection2'],
+            contentType: 'application/json',
+            content: {
+                title: 'The Bush article',
+                popularity: 4,
+                id: '0012',
+                date: '2006-02-02',
+                price: {
+                    amt: 0.12
+                },
+                p: 'The Bush article described a device called a Memex'
+            }
+        }, {
+            uri: '/test/query/matchDir/doc3.json',
+            collections: ['matchCollection2'],
+            contentType: 'application/json',
+            content: {
+                title: 'For 1945',
+                popularity: 3,
+                id: '0013',
+                date: '2007-03-03',
+                price: {
+                    amt: 1.23
+                },
+                p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
+            }
+        }, {
+            uri: '/test/query/matchDir/doc4.json',
+            collections: [],
+            contentType: 'application/json',
+            content: {
+                title: 'Vannevar served',
+                popularity: 5,
+                id: '0024',
+                date: '2008-04-04',
+                price: {
+                    amt: 12.34
+                },
+                p: 'Vannevar served as a prominent policymaker and public intellectual'
+            }
+        }, {
+            uri: '/test/query/matchList/doc5.json',
+            collections: ['matchList'],
+            contentType: 'application/json',
+            content: {
+                title: 'The memex',
+                popularity: 5,
+                id: '0026',
+                date: '2009-05-05',
+                price: {
+                    amt: 123.45
+                },
+                p: 'The Memex, unfortunately, had no automated search feature',
+                category: ['history', 'america', 'president']
+            }
         }).
-    result(function(response){done();}, done);
-  });
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  it('should do extract with invalid path', function(done){
-    db.documents.query(
-      q.where(
-        q.word('title', 'bush')
-      ).
-      slice(0, 10,
-        q.extract({
-          selected:'include-with-ancestors',
-          paths:[
-            '/node("foo")'
-          ]
-        })
-      )
-    ).result(function(response) {
-      response.length.should.equal(2);
-      response[0].content.should.be.empty;
-      //console.log(JSON.stringify(response, null, 4));
-      done();
-    }, done);
-  });
-  it('should delete all documents', function(done){
-    dbAdmin.documents.removeAll({
-      all: true
-    }).
-    result(function(response) {
-      done();
-    }, done);
-  });
+    it('should do extract with invalid path', function (done) {
+        db.documents.query(
+            q.where(
+                q.word('title', 'bush')
+            ).
+                slice(0, 10,
+                    q.extract({
+                        selected: 'include-with-ancestors',
+                        paths: [
+                            '/node("foo")'
+                        ]
+                    })
+                )
+        ).result(function (response) {
+            response.length.should.equal(2);
+            response[0].content.should.be.empty;
+            //console.log(JSON.stringify(response, null, 4));
+            done();
+        }, done);
+    });
+    it('should delete all documents', function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
 });

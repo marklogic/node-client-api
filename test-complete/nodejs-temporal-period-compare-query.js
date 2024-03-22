@@ -20,8 +20,8 @@ var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
-testconfig.manageAdminConnection.user     = "admin";
-testconfig.manageAdminConnection.password = "admin";
+testconfig.manageAdminConnection.user     = 'admin';
+testconfig.manageAdminConnection.password = 'admin';
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
@@ -31,93 +31,99 @@ var q = marklogic.queryBuilder;
 
 var temporalCollectionName = 'temporalCollectionLsqt';
 
-describe('Temporal period compare query test', function() {
+describe('Temporal period compare query test', function () {
 
-  var docuri = 'temporalDoc.json';
+    var docuri = 'temporalDoc.json';
 
-  before(function(done) {
-    adminManager.put({
-      endpoint: '/manage/v2/databases/'+testconfig.testServerName+'/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
-      body: {
-        "lsqt-enabled": true,
-        "automation": {
-          "enabled": true
-        }
-      }
-    }).result(function(response){done();}, done);
-  });
+    before(function (done) {
+        adminManager.put({
+            endpoint: '/manage/v2/databases/' + testconfig.testServerName + '/temporal/collections/lsqt/properties?collection=temporalCollectionLsqt',
+            body: {
+                'lsqt-enabled': true,
+                'automation': {
+                    'enabled': true
+                }
+            }
+        }).result(function (response) {
+            done();
+        }, done);
+    });
 
-  it('should insert the document content', function(done) {
-    db.documents.write({
-      uri: docuri,
-      collections: ['coll0', 'coll1'],
-      temporalCollection: temporalCollectionName,
-      contentType: 'application/json',
-      quality: 10,
-      permissions: [
-        {'role-name':'app-user', capabilities:['read']},
-        {'role-name':'app-builder', capabilities:['read', 'update']}
-      ],
-      properties: {prop1:'foo', prop2:25},
-      content: {
-        'System': {
-          'systemStartTime' : "",
-          'systemEndTime' : "",
-        },
-        'Valid': {
-          'validStartTime': "2001-01-01T00:00:00",
-          'validEndTime': "2011-12-31T23:59:59"
-        },
-        'Address': "999 Skyway Park",
-        'uri': "javaSingleDoc1.json",
-        id: 12,
-        name: 'Jason'
-      },
-      systemTime: '2005-01-01T00:00:01'
-    }).result(function(response){done();}, done);
-  });
+    it('should insert the document content', function (done) {
+        db.documents.write({
+            uri: docuri,
+            collections: ['coll0', 'coll1'],
+            temporalCollection: temporalCollectionName,
+            contentType: 'application/json',
+            quality: 10,
+            permissions: [
+                { 'role-name': 'app-user', capabilities: ['read'] },
+                { 'role-name': 'app-builder', capabilities: ['read', 'update'] }
+            ],
+            properties: { prop1: 'foo', prop2: 25 },
+            content: {
+                'System': {
+                    'systemStartTime': '',
+                    'systemEndTime': '',
+                },
+                'Valid': {
+                    'validStartTime': '2001-01-01T00:00:00',
+                    'validEndTime': '2011-12-31T23:59:59'
+                },
+                'Address': '999 Skyway Park',
+                'uri': 'javaSingleDoc1.json',
+                id: 12,
+                name: 'Jason'
+            },
+            systemTime: '2005-01-01T00:00:01'
+        }).result(function (response) {
+            done();
+        }, done);
+    });
 
-  it('should update the document content', function(done) {
-    db.documents.write({
-      uri: docuri,
-      collections: ['coll0', 'coll1'],
-      temporalCollection: temporalCollectionName,
-      contentType: 'application/json',
-      quality: 10,
-      permissions: [
-        {'role-name':'app-user', capabilities:['read']},
-        {'role-name':'app-builder', capabilities:['read', 'update', 'execute']}
-      ],
-      properties: {prop1:'foo updated', prop2:50},
-      content: {
-        'System': {
-          'systemStartTime' : "",
-          'systemEndTime' : "",
-        },
-        'Valid': {
-          'validStartTime': "2003-01-01T00:00:00",
-          'validEndTime': "2008-12-31T23:59:59"
-        },
-        'Address': "888 Skyway Park",
-        'uri': "javaSingleDoc1.json",
-        id: 12,
-        name: 'Jason'
-      },
-      systemTime: '2010-01-01T00:00:01'
-    }).result(function(response){done();}, done);
-  });
+    it('should update the document content', function (done) {
+        db.documents.write({
+            uri: docuri,
+            collections: ['coll0', 'coll1'],
+            temporalCollection: temporalCollectionName,
+            contentType: 'application/json',
+            quality: 10,
+            permissions: [
+                { 'role-name': 'app-user', capabilities: ['read'] },
+                { 'role-name': 'app-builder', capabilities: ['read', 'update', 'execute'] }
+            ],
+            properties: { prop1: 'foo updated', prop2: 50 },
+            content: {
+                'System': {
+                    'systemStartTime': '',
+                    'systemEndTime': '',
+                },
+                'Valid': {
+                    'validStartTime': '2003-01-01T00:00:00',
+                    'validEndTime': '2008-12-31T23:59:59'
+                },
+                'Address': '888 Skyway Park',
+                'uri': 'javaSingleDoc1.json',
+                id: 12,
+                name: 'Jason'
+            },
+            systemTime: '2010-01-01T00:00:01'
+        }).result(function (response) {
+            done();
+        }, done);
+    });
 
-  it('should do period compare query using aln_contains', function(done) {
-    db.documents.query(q.where(
-      q.periodCompare('validTime', 'aln_contains', 'systemTime'),
-      q.collection(temporalCollectionName)
-      )).result(function(response) {
-        response.length.should.equal(1);
-        done();
-      }, done);
-  });
+    it('should do period compare query using aln_contains', function (done) {
+        db.documents.query(q.where(
+            q.periodCompare('validTime', 'aln_contains', 'systemTime'),
+            q.collection(temporalCollectionName)
+        )).result(function (response) {
+            response.length.should.equal(1);
+            done();
+        }, done);
+    });
 
-  /*after(function(done) {
+    /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -134,13 +140,13 @@ describe('Temporal period compare query test', function() {
     done);
   });*/
 
-  after(function(done) {
-    dbAdmin.documents.removeAll({
-      all: true
-    }).
-    result(function(response) {
-      done();
-    }, done);
-  });
+    after(function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
 });

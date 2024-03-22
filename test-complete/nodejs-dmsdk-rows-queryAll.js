@@ -46,13 +46,13 @@ describe('data movement rows-queryAll', function () {
                 contentType: 'application/xml',
                 content: fs.createReadStream('./test-basic/data/exportingRows.tdex'),
                 permissions: [
-                    {'role-name': 'rest-reader', capabilities: ['read']},
-                    {'role-name': 'rest-writer', capabilities: ['read', 'update', 'execute']}
+                    { 'role-name': 'rest-reader', capabilities: ['read'] },
+                    { 'role-name': 'rest-writer', capabilities: ['read', 'update', 'execute'] }
                 ]
             }];
         tdeWriter.documents.write(view)
             .result(function (response) {
-                let readable = new Stream.Readable({objectMode: true});
+                let readable = new Stream.Readable({ objectMode: true });
                 for (let i = 1; i <= 200; i++) {
                     let temp = {
                         uri: '/test/dataMovement/requests/exporting-rows/' + i + '.xml',
@@ -72,12 +72,12 @@ describe('data movement rows-queryAll', function () {
                     readable.push(temp);
                 }
                 readable.push(null);
-                dbWriter.documents.writeAll(readable,{
+                dbWriter.documents.writeAll(readable, {
                     defaultMetadata: {
                         collections: ['source1'],
                         permissions: [
-                            {'role-name': 'rest-reader', capabilities: ['read']},
-                            {'role-name': 'rest-writer', capabilities: ['read', 'update']}
+                            { 'role-name': 'rest-reader', capabilities: ['read'] },
+                            { 'role-name': 'rest-writer', capabilities: ['read', 'update'] }
                         ],
                     }, onCompletion: ((summary) => {
                         done();
@@ -108,7 +108,7 @@ describe('data movement rows-queryAll', function () {
         streamToArray(
             dbWriter.rows.queryAll(planFromBuilderTemplateInvalid, {
                 batchSize: 10,
-                concurrentRequests: {multipleOf: 'hosts', multiplier: 4},
+                concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
                 onCompletion: ((summary) => {
                     try {
                         summary.rowsReadSuccessfully.should.be.equal(200);
@@ -121,10 +121,10 @@ describe('data movement rows-queryAll', function () {
             }),
             function (err, arr) {
                 if (err) {
-                    try{
+                    try {
                         err.toString().includes('MarkLogicError: read viewInfo: cannot process response with 500 status');
                         done();
-                    } catch(err){
+                    } catch (err) {
                         done(err);
                     }
                 }
@@ -138,10 +138,10 @@ describe('data movement rows-queryAll', function () {
             dbWriter.rows.queryAll(),
             function (err, arr) {
                 if (err) {
-                    try{
+                    try {
                         err.toString().includes('Error: read viewInfo: cannot process response with 400 status');
                         done();
-                    } catch(err){
+                    } catch (err) {
                         done(err);
                     }
                 }
@@ -180,7 +180,7 @@ describe('data movement rows-queryAll', function () {
         streamToArray(
             dbWriter.rows.queryAll(planFromBuilderTemplate, {
                 batchSize: 10,
-                concurrentRequests: {multipleOf: 'forests', multiplier: 4},
+                concurrentRequests: { multipleOf: 'forests', multiplier: 4 },
                 onCompletion: ((summary) => {
                     try {
                         summary.rowsReadSuccessfully.should.be.equal(200);

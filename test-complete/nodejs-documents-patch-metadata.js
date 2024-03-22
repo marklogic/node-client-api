@@ -24,185 +24,187 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('document patch metadata test', function(){
-  before(function(done){
-    this.timeout(10000);
-// NOTE: must create a string range index on rangeKey1 and rangeKey2
-    dbWriter.documents.write({
-      uri: '/test/query/matchDir/doc1.json',
-      collections: ['matchCollection1'],
-      contentType: 'application/json',
-      content: {
-        title: 'Vannevar Bush',
-        popularity: 5,
-        id: '0011',
-        date: '2005-01-01',
-        price: {
-             amt: 0.1
-           },
-        p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
-        }
-      }, {
-      uri: '/test/query/matchDir/doc2.json',
-      collections: ['matchCollection1', 'matchCollection2'],
-      contentType: 'application/json',
-      content: {
-        title: 'The Bush article',
-        popularity: 4,
-        id: '0012',
-        date: '2006-02-02',
-        price: {
-             amt: 0.12
-           },
-        p: 'The Bush article described a device called a Memex'
-        }
-      }, {
-      uri: '/test/query/matchDir/doc3.json',
-      collections: ['matchCollection2'],
-      contentType: 'application/json',
-      content: {
-        title: 'For 1945',
-        popularity: 3,
-        id: '0013',
-        date: '2007-03-03',
-        price: {
-             amt: 1.23
-           },
-        p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
-        }
-      }, {
-      uri: '/test/query/matchDir/doc4.json',
-      collections: [],
-      contentType: 'application/json',
-      content: {
-        title: 'Vannevar served',
-        popularity: 5,
-        id: '0024',
-        date: '2008-04-04',
-        price: {
-             amt: 12.34
-           },
-        p: 'Vannevar served as a prominent policymaker and public intellectual'
-        }
-      }, {
-        uri: '/test/query/matchList/doc5.json',
-        collections: ['matchList'],
-        contentType: 'application/json',
-        quality: 10,
-        properties: {prop1: 'hello'},
-        content: {
-          title: 'The memex',
-          popularity: 5,
-          id: '0026',
-          date: '2009-05-05',
-          price: {
-               amt: 123.45
-             },
-          p: 'The Memex, unfortunately, had no automated search feature'
-          }
+describe('document patch metadata test', function () {
+    before(function (done) {
+        this.timeout(10000);
+        // NOTE: must create a string range index on rangeKey1 and rangeKey2
+        dbWriter.documents.write({
+            uri: '/test/query/matchDir/doc1.json',
+            collections: ['matchCollection1'],
+            contentType: 'application/json',
+            content: {
+                title: 'Vannevar Bush',
+                popularity: 5,
+                id: '0011',
+                date: '2005-01-01',
+                price: {
+                    amt: 0.1
+                },
+                p: 'Vannevar Bush wrote an article for The Atlantic Monthly'
+            }
+        }, {
+            uri: '/test/query/matchDir/doc2.json',
+            collections: ['matchCollection1', 'matchCollection2'],
+            contentType: 'application/json',
+            content: {
+                title: 'The Bush article',
+                popularity: 4,
+                id: '0012',
+                date: '2006-02-02',
+                price: {
+                    amt: 0.12
+                },
+                p: 'The Bush article described a device called a Memex'
+            }
+        }, {
+            uri: '/test/query/matchDir/doc3.json',
+            collections: ['matchCollection2'],
+            contentType: 'application/json',
+            content: {
+                title: 'For 1945',
+                popularity: 3,
+                id: '0013',
+                date: '2007-03-03',
+                price: {
+                    amt: 1.23
+                },
+                p: 'For 1945, the thoughts expressed in the Atlantic Monthly were groundbreaking'
+            }
+        }, {
+            uri: '/test/query/matchDir/doc4.json',
+            collections: [],
+            contentType: 'application/json',
+            content: {
+                title: 'Vannevar served',
+                popularity: 5,
+                id: '0024',
+                date: '2008-04-04',
+                price: {
+                    amt: 12.34
+                },
+                p: 'Vannevar served as a prominent policymaker and public intellectual'
+            }
+        }, {
+            uri: '/test/query/matchList/doc5.json',
+            collections: ['matchList'],
+            contentType: 'application/json',
+            quality: 10,
+            properties: { prop1: 'hello' },
+            content: {
+                title: 'The memex',
+                popularity: 5,
+                id: '0026',
+                date: '2009-05-05',
+                price: {
+                    amt: 123.45
+                },
+                p: 'The Memex, unfortunately, had no automated search feature'
+            }
         }).
-    result(function(response){done();}, done);
-  });
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  it('should appply patch on metadata', function(done){
-    this.timeout(10000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'],
-      operations: [
-        p.replace('node("quality")', 33)
-      ]
-    }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(33);
-        done();
-      }, done);
-    }, done);
-  });
+    it('should appply patch on metadata', function (done) {
+        this.timeout(10000);
+        var uri1 = '/test/query/matchList/doc5.json';
+        var p = marklogic.patchBuilder;
+        dbWriter.documents.patch({ uri: uri1,
+            categories: ['metadata'],
+            operations: [
+                p.replace('node("quality")', 33)
+            ]
+        }).
+            result(function (response) {
+                db.documents.read({ uris: uri1, categories: ['metadata'] }).
+                    result(function (documents) {
+                        //console.log(JSON.stringify(documents, null, 4));
+                        documents[0].quality.should.equal(33);
+                        done();
+                    }, done);
+            }, done);
+    });
 
-  it('should appply patch on metadata with jsonpath', function(done){
-    this.timeout(10000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'],
-      operations: [
-        p.pathLanguage('jsonpath'),
-        p.replace('$.quality', 45)
-      ]
-    }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].quality.should.equal(45);
-        done();
-      }, done);
-    }, done);
-  });
+    it('should appply patch on metadata with jsonpath', function (done) {
+        this.timeout(10000);
+        var uri1 = '/test/query/matchList/doc5.json';
+        var p = marklogic.patchBuilder;
+        dbWriter.documents.patch({ uri: uri1,
+            categories: ['metadata'],
+            operations: [
+                p.pathLanguage('jsonpath'),
+                p.replace('$.quality', 45)
+            ]
+        }).
+            result(function (response) {
+                db.documents.read({ uris: uri1, categories: ['metadata'] }).
+                    result(function (documents) {
+                        //console.log(JSON.stringify(documents, null, 4));
+                        documents[0].quality.should.equal(45);
+                        done();
+                    }, done);
+            }, done);
+    });
 
-  it('should appply patch on metadata properties', function(done){
-    this.timeout(10000);
-    var uri1 = '/test/query/matchList/doc5.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'],
-      operations: [
-        p.pathLanguage('jsonpath'),
-        p.insert('$.properties.prop1', 'after', {prop2: 'world'})
-      ]
-    }).
-    result(function(response){
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].properties.prop2.should.equal('world');
-        done();
-      }, done);
-    }, done);
-  });
-it('should appply patch on metadata properties', function(done){
-    this.timeout(10000);
-    var uri1 = '/test/query/matchDir/doc4.json';
-    var p = marklogic.patchBuilder;
-    dbWriter.documents.patch({uri: uri1,
-      categories: ['metadata'],
-      operations: [
-          p.collections.add('collection2/ADDED'),
-          p.collections.remove('collection2/0'),
-          p.permissions.add('app-user', 'read'),
-          p.permissions.replace('app-builder', ['read', 'update']),
-          p.permissions.remove('manage-user'),
-          p.properties.add('propertyADDED', 'property value ADDED'),
-          p.properties.replace('property1', 'property value MODIFIED'),
-          p.properties.remove('property0'),
-          p.quality.set(2)
-      ]
-    }).
-    result(function(response){
-		return db.documents.read({uris:uri1, categories:['metadata']}).result();
-		}).
-		then(function(documents) {
-      db.documents.read({uris: uri1, categories: ['metadata']}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-		documents.length.should.equal(1);
-        var document = documents[0];
-        documents[0].collections.length.should.equal(1);
-        documents[0].collections[0].should.equal('collection2/ADDED');
-        documents[0].should.have.property('permissions');
-        done();
-      }, done);
-    }, done);
-  });
-  it('should remove the document', function(done){
-    dbAdmin.documents.removeAll({all: true}).
-    result(function(response){
-      done();
-    }, done);
-  });
+    it('should appply patch on metadata properties', function (done) {
+        this.timeout(10000);
+        var uri1 = '/test/query/matchList/doc5.json';
+        var p = marklogic.patchBuilder;
+        dbWriter.documents.patch({ uri: uri1,
+            categories: ['metadata'],
+            operations: [
+                p.pathLanguage('jsonpath'),
+                p.insert('$.properties.prop1', 'after', { prop2: 'world' })
+            ]
+        }).
+            result(function (response) {
+                db.documents.read({ uris: uri1, categories: ['metadata'] }).
+                    result(function (documents) {
+                        //console.log(JSON.stringify(documents, null, 4));
+                        documents[0].properties.prop2.should.equal('world');
+                        done();
+                    }, done);
+            }, done);
+    });
+    it('should appply patch on metadata properties', function (done) {
+        this.timeout(10000);
+        var uri1 = '/test/query/matchDir/doc4.json';
+        var p = marklogic.patchBuilder;
+        dbWriter.documents.patch({ uri: uri1,
+            categories: ['metadata'],
+            operations: [
+                p.collections.add('collection2/ADDED'),
+                p.collections.remove('collection2/0'),
+                p.permissions.add('app-user', 'read'),
+                p.permissions.replace('app-builder', ['read', 'update']),
+                p.permissions.remove('manage-user'),
+                p.properties.add('propertyADDED', 'property value ADDED'),
+                p.properties.replace('property1', 'property value MODIFIED'),
+                p.properties.remove('property0'),
+                p.quality.set(2)
+            ]
+        }).
+            result(function (response) {
+                return db.documents.read({ uris: uri1, categories: ['metadata'] }).result();
+            }).
+            then(function (documents) {
+                db.documents.read({ uris: uri1, categories: ['metadata'] }).
+                    result(function (documents) {
+                        //console.log(JSON.stringify(documents, null, 4));
+                        documents.length.should.equal(1);
+                        var document = documents[0];
+                        documents[0].collections.length.should.equal(1);
+                        documents[0].collections[0].should.equal('collection2/ADDED');
+                        documents[0].should.have.property('permissions');
+                        done();
+                    }, done);
+            }, done);
+    });
+    it('should remove the document', function (done) {
+        dbAdmin.documents.removeAll({ all: true }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 });
