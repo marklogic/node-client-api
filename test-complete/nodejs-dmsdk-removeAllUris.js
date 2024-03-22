@@ -26,20 +26,20 @@ const ctsQb = marklogic.ctsQueryBuilder;
 const q = marklogic.queryBuilder;
 const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/removeAllUris/'));
 
-let removeStream = new Stream.PassThrough({objectMode: true});
+let removeStream = new Stream.PassThrough({ objectMode: true });
 let uris = [];
 
-describe('Functional tests - data movement removeAllUris', function() {
+describe('Functional tests - data movement removeAllUris', function () {
     this.timeout(15000);
     beforeEach(function (done) {
-        let readable = new Stream.Readable({objectMode: true});
-        removeStream = new Stream.PassThrough({objectMode: true});
+        let readable = new Stream.Readable({ objectMode: true });
+        removeStream = new Stream.PassThrough({ objectMode: true });
         uris = [];
         for (let i = 0; i < 100; i++) {
             const temp = {
                 uri: '/test/dataMovement/requests/removeAllUris/' + i + '.json',
                 contentType: 'application/json',
-                content: {['key']: 'initialValue'}
+                content: { ['key']: 'initialValue' }
             };
             readable.push(temp);
             removeStream.push(temp.uri);
@@ -48,7 +48,7 @@ describe('Functional tests - data movement removeAllUris', function() {
         readable.push(null);
         removeStream.push(null);
 
-        dbWriter.documents.writeAll(readable,{
+        dbWriter.documents.writeAll(readable, {
             onCompletion: ((summary) => {
                 done();
             })
@@ -56,14 +56,14 @@ describe('Functional tests - data movement removeAllUris', function() {
 
     });
 
-    it('delete Non Existent docs', function(done){
+    it('delete Non Existent docs', function (done) {
 
-        removeStream = new Stream.PassThrough({objectMode: true});
+        removeStream = new Stream.PassThrough({ objectMode: true });
         removeStream.push('nonExistent.json');
         removeStream.push('nonExistent2.json');
         removeStream.push(null);
-        dbWriter.documents.removeAllUris(removeStream,{
-            concurrentRequests : {multipleOf:'hosts', multiplier:4},
+        dbWriter.documents.removeAllUris(removeStream, {
+            concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
             onCompletion: ((summary) => {
                 summary.docsRemovedSuccessfully.should.be.equal(2);
                 summary.docsFailedToBeRemoved.should.be.equal(0);
@@ -73,10 +73,10 @@ describe('Functional tests - data movement removeAllUris', function() {
         });
     });
 
-    it('should not removeAllUris with onBatchError returning null', function(done){
+    it('should not removeAllUris with onBatchError returning null', function (done) {
 
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-        testUser.documents.removeAllUris(removeStream,{
+        testUser.documents.removeAllUris(removeStream, {
 
             onBatchError: ((progressSoFar, documents, error) => {
                 error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -89,31 +89,31 @@ describe('Functional tests - data movement removeAllUris', function() {
                 summary.docsFailedToBeRemoved.should.be.equal(100);
                 summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 dbWriter.documents.remove(uris)
-                    .result(function(response){
+                    .result(function (response) {
                         done();
                     })
                     .catch(done)
-                    .catch(err=> done(err));
+                    .catch(err => done(err));
             })
         });
     });
 
-    it('should throw error with invalid batchSize', function(done){
-        try{
-            dbWriter.documents.removeAllUris(removeStream,{
-                batchSize:-1
+    it('should throw error with invalid batchSize', function (done) {
+        try {
+            dbWriter.documents.removeAllUris(removeStream, {
+                batchSize: -1
             });
-        } catch(err){
+        } catch (err) {
             err.toString().should.equal('Error: Invalid batchSize. batchSize cannot be less than or equal to 0.');
             done();
         }
     });
 
-    it('should not removeAllUris with onBatchError returning error', function(done){
+    it('should not removeAllUris with onBatchError returning error', function (done) {
 
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-        const remove = testUser.documents.removeAllUris(removeStream,{
+        const remove = testUser.documents.removeAllUris(removeStream, {
 
             onBatchError: ((progressSoFar, documents, error) => {
                 error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -128,10 +128,10 @@ describe('Functional tests - data movement removeAllUris', function() {
                 summary.timeElapsed.should.be.greaterThanOrEqual(0);
                 summary.error.should.be.equal('Error: Stop Processing');
                 dbWriter.documents.remove(uris)
-                    .result(function(response){
+                    .result(function (response) {
                         done();
                     })
-                    .catch(err=> done(err));
+                    .catch(err => done(err));
             })
         });
         remove.on('error', (err) => {
@@ -139,10 +139,10 @@ describe('Functional tests - data movement removeAllUris', function() {
         });
     });
 
-    it('should throw error with invalid onBatchError option', function(done){
+    it('should throw error with invalid onBatchError option', function (done) {
 
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-        const remove = (testUser.documents.removeAllUris(removeStream,{
+        const remove = (testUser.documents.removeAllUris(removeStream, {
 
             onBatchError: ((progressSoFar, documents, error) => {
                 error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -162,17 +162,17 @@ describe('Functional tests - data movement removeAllUris', function() {
         remove.on('error', (err) => {
             err.message.should.be.equal('onBatchError should return null, empty array or a replacement array.');
             dbWriter.documents.remove(uris)
-                .result(function(response){
+                .result(function (response) {
                     done();
                 })
-                .catch(err=> done(err));
+                .catch(err => done(err));
         });
     });
 
     it('should queryToRemoveAll documents with onBatchError returning empty array',
         done => {
             const testUser = marklogic.createDatabaseClient(testconfig.dmsdkrestReaderConnection);
-            testUser.documents.queryToRemoveAll(query,{
+            testUser.documents.queryToRemoveAll(query, {
 
                 onBatchError: ((progressSoFar, documents, error) => {
                     error.body.errorResponse.status.should.be.equal('Forbidden');
@@ -185,11 +185,11 @@ describe('Functional tests - data movement removeAllUris', function() {
                     summary.docsFailedToBeRemoved.should.be.equal(100);
                     summary.timeElapsed.should.be.greaterThanOrEqual(0);
                     dbWriter.documents.remove(uris)
-                        .result(function(response){
+                        .result(function (response) {
                             done();
                         })
                         .catch(done)
-                        .catch(err=> done(err));
+                        .catch(err => done(err));
                 })
             });
         });

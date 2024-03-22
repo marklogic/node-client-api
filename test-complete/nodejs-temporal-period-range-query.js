@@ -20,8 +20,8 @@ var testconfig = require('../etc/test-config-qa.js');
 
 var marklogic = require('../');
 
-testconfig.manageAdminConnection.user     = "admin";
-testconfig.manageAdminConnection.password = "admin";
+testconfig.manageAdminConnection.user     = 'admin';
+testconfig.manageAdminConnection.password = 'admin';
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
@@ -29,81 +29,85 @@ var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var q = marklogic.queryBuilder;
 
-describe('Temporal period range query test', function() {
+describe('Temporal period range query test', function () {
 
-  var docuri = 'temporalDoc.json';
+    var docuri = 'temporalDoc.json';
 
-  before(function(done) {
-    db.documents.write({
-      uri: docuri,
-      collections: ['coll0', 'coll1'],
-      temporalCollection: 'temporalCollection',
-      contentType: 'application/json',
-      quality: 10,
-      permissions: [
-        {'role-name':'app-user', capabilities:['read']},
-        {'role-name':'app-builder', capabilities:['read', 'update']}
-      ],
-      properties: {prop1:'foo', prop2:25},
-      content: {
-        'System': {
-          'systemStartTime' : "",
-          'systemEndTime' : "",
-        },
-        'Valid': {
-          'validStartTime': "2001-01-01T00:00:00",
-          'validEndTime': "2011-12-31T23:59:59"
-        },
-        'Address': "999 Skyway Park",
-        'uri': "javaSingleDoc1.json",
-        id: 12,
-        name: 'Jason'
-      }
-    }
-    ).result(function(response){done();})
-    .catch(done);
-  });
+    before(function (done) {
+        db.documents.write({
+            uri: docuri,
+            collections: ['coll0', 'coll1'],
+            temporalCollection: 'temporalCollection',
+            contentType: 'application/json',
+            quality: 10,
+            permissions: [
+                { 'role-name': 'app-user', capabilities: ['read'] },
+                { 'role-name': 'app-builder', capabilities: ['read', 'update'] }
+            ],
+            properties: { prop1: 'foo', prop2: 25 },
+            content: {
+                'System': {
+                    'systemStartTime': '',
+                    'systemEndTime': '',
+                },
+                'Valid': {
+                    'validStartTime': '2001-01-01T00:00:00',
+                    'validEndTime': '2011-12-31T23:59:59'
+                },
+                'Address': '999 Skyway Park',
+                'uri': 'javaSingleDoc1.json',
+                id: 12,
+                name: 'Jason'
+            }
+        }
+        ).result(function (response) {
+            done();
+        })
+            .catch(done);
+    });
 
-  it('should update the document content', function(done) {
-    db.documents.write({
-      uri: docuri,
-      collections: ['coll0', 'coll1'],
-      temporalCollection: 'temporalCollection',
-      contentType: 'application/json',
-      quality: 10,
-      permissions: [
-        {'role-name':'app-user', capabilities:['read']},
-        {'role-name':'app-builder', capabilities:['read', 'update', 'execute']}
-      ],
-      properties: {prop1:'foo updated', prop2:50},
-      content: {
-        'System': {
-          'systemStartTime' : "",
-          'systemEndTime' : "",
-        },
-        'Valid': {
-          'validStartTime': "2003-01-01T00:00:00",
-          'validEndTime': "2008-12-31T23:59:59"
-        },
-        'Address': "888 Skyway Park",
-        'uri': "javaSingleDoc1.json",
-        id: 12,
-        name: 'Jason'
-      }
-    }).result(function(response){done();}, done);
-  });
+    it('should update the document content', function (done) {
+        db.documents.write({
+            uri: docuri,
+            collections: ['coll0', 'coll1'],
+            temporalCollection: 'temporalCollection',
+            contentType: 'application/json',
+            quality: 10,
+            permissions: [
+                { 'role-name': 'app-user', capabilities: ['read'] },
+                { 'role-name': 'app-builder', capabilities: ['read', 'update', 'execute'] }
+            ],
+            properties: { prop1: 'foo updated', prop2: 50 },
+            content: {
+                'System': {
+                    'systemStartTime': '',
+                    'systemEndTime': '',
+                },
+                'Valid': {
+                    'validStartTime': '2003-01-01T00:00:00',
+                    'validEndTime': '2008-12-31T23:59:59'
+                },
+                'Address': '888 Skyway Park',
+                'uri': 'javaSingleDoc1.json',
+                id: 12,
+                name: 'Jason'
+            }
+        }).result(function (response) {
+            done();
+        }, done);
+    });
 
-  it('should do period range query using aln_contains', function(done) {
-    db.documents.query(q.where(
-      q.periodRange('validTime', 'aln_contains', q.period('2001-01-01T00:00:01', '2011-12-31T23:59:58')),
-      q.collection('temporalCollection')
-      )).result(function(response) {
-        response.length.should.equal(1);
-        done();
-      }, done);
-  });
+    it('should do period range query using aln_contains', function (done) {
+        db.documents.query(q.where(
+            q.periodRange('validTime', 'aln_contains', q.period('2001-01-01T00:00:01', '2011-12-31T23:59:58')),
+            q.collection('temporalCollection')
+        )).result(function (response) {
+            response.length.should.equal(1);
+            done();
+        }, done);
+    });
 
-  /*after(function(done) {
+    /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -120,14 +124,14 @@ describe('Temporal period range query test', function() {
     done);
   });*/
 
-  after(function(done) {
-    dbAdmin.documents.removeAll({
-      all: true
-    }).
-    result(function(response) {
-      done();
-    })
-    .catch(done);
-  });
+    after(function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            })
+            .catch(done);
+    });
 
 });

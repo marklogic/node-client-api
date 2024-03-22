@@ -26,18 +26,18 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Winston logger test', function(){
+describe('Winston logger test', function () {
 
-  winston.level = 'debug';
-  dbAdmin.setLogger(winston);
+    winston.level = 'debug';
+    dbAdmin.setLogger(winston);
 
-  it('should read the bunyan logger', function(done){
-    dbAdmin.config.serverprops.read().result(function(response) {
-      //var log = JSON.stringify(response);
-      //console.log(log);
-      //log.should.containEql('testlog');
-      done();
-    }, done);
-  });
+    it('should read the bunyan logger', function (done) {
+        dbAdmin.config.serverprops.read().result(function (response) {
+            //var log = JSON.stringify(response);
+            //console.log(log);
+            //log.should.containEql('testlog');
+            done();
+        }, done);
+    });
 
 });

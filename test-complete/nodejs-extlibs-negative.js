@@ -24,55 +24,59 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Extlib negative test', function(){
-  var fsPath = __dirname + '/data/sourceParams.js';
-  var invokePath = '/ext/invokeTest/sourceParams.sjs';
-  var invalidFsPath = __dirname + '/data/someInvalidFile.js';
+describe('Extlib negative test', function () {
+    var fsPath = __dirname + '/data/sourceParams.js';
+    var invokePath = '/ext/invokeTest/sourceParams.sjs';
+    var invalidFsPath = __dirname + '/data/someInvalidFile.js';
 
-  before(function(done) {
-    this.timeout(10000);
-    dbAdmin.config.extlibs.write({
-      path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
-    }).
-    result(function(response){done();}, done);
-  });
+    before(function (done) {
+        this.timeout(10000);
+        dbAdmin.config.extlibs.write({
+            path: invokePath, contentType: 'application/javascript', source: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  after(function(done) {
-    dbAdmin.config.extlibs.remove(invokePath).
-    result(function(response){done();}, done);
-  });
+    after(function (done) {
+        dbAdmin.config.extlibs.remove(invokePath).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  it('should fail to write with reader user', function(done){
-    db.config.extlibs.write({
-      path:invokePath, contentType:'application/javascript', source:fs.createReadStream(fsPath)
-    }).
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error.body);
-      error.body.errorResponse.messageCode.should.equal('SEC-PRIV');
-      error.statusCode.should.equal(403);
-      done();
-      });
-  });
+    it('should fail to write with reader user', function (done) {
+        db.config.extlibs.write({
+            path: invokePath, contentType: 'application/javascript', source: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error.body);
+                error.body.errorResponse.messageCode.should.equal('SEC-PRIV');
+                error.statusCode.should.equal(403);
+                done();
+            });
+    });
 
-  it('should fail to write with invalid content type', function(done){
-    dbAdmin.config.extlibs.write({
-      path:invokePath, contentType:'application/xml', source:fs.createReadStream(fsPath)
-    }).
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('XDMP-DOCROOTTEXT');
-      error.statusCode.should.equal(400);
-      done();
-      });
-  });
+    it('should fail to write with invalid content type', function (done) {
+        dbAdmin.config.extlibs.write({
+            path: invokePath, contentType: 'application/xml', source: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.body.errorResponse.messageCode.should.equal('XDMP-DOCROOTTEXT');
+                error.statusCode.should.equal(400);
+                done();
+            });
+    });
 
-  /*it('should fail to write with invalid path', function(done){
+    /*it('should fail to write with invalid path', function(done){
     try {
       dbAdmin.config.extlibs.write({
         path:invokePath, contentType:'application/javascript', source:fs.createReadStream(invalidFsPath)
@@ -85,35 +89,35 @@ describe('Extlib negative test', function(){
     }
   });*/
 
-  it('should fail to remove with invalid path', function(done){
-    dbAdmin.config.extlibs.remove('/ext/invokeTest/invalid.sjs').
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, function(error) {
-      done();
-      });
-  });
+    it('should fail to remove with invalid path', function (done) {
+        dbAdmin.config.extlibs.remove('/ext/invokeTest/invalid.sjs').
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, function (error) {
+                done();
+            });
+    });
 
-  it('should fail to read with invalid path', function(done){
-    dbAdmin.config.extlibs.read('/some/invalid/path/invalid.js').
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(404);
-      done();
-      });
-  });
+    it('should fail to read with invalid path', function (done) {
+        dbAdmin.config.extlibs.read('/some/invalid/path/invalid.js').
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(404);
+                done();
+            });
+    });
 
-  it('should fail to list with invalid directory', function(done){
-    dbAdmin.config.extlibs.list('/some/invalid/directory/').
-    result(function(response) {
-      response.assets.should.be.empty;
-      done();
-    }, function(error) {
-      done();
-      });
-  });
+    it('should fail to list with invalid directory', function (done) {
+        dbAdmin.config.extlibs.list('/some/invalid/directory/').
+            result(function (response) {
+                response.assets.should.be.empty;
+                done();
+            }, function (error) {
+                done();
+            });
+    });
 });

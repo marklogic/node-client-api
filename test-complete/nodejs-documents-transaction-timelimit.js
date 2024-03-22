@@ -24,74 +24,74 @@ var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 var tid = null;
 
-describe('Document transaction test', function() {
+describe('Document transaction test', function () {
 
-  var tid = 0;
-it('should commit the write document', function(done) {
-    db.transactions.open({transactionName: "nodeTransaction", timeLimit: 3})
-     .result(function(response) {
-     tid = response.txid;
-      return db.documents.write({
-      txid: tid,
-        uri: '/test/transaction/doc1.json',
-        contentType: 'application/json',
-        content: {firstname: "John", lastname: "Doe", txKey: tid}
-        }).result();
-    })
-     .then(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
-      response.documents[0].uri.should.equal('/test/transaction/doc1.json');
-      return db.transactions.read(tid).result();
-    })
-      .then(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
-     response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
-      parseInt(response['transaction-status']['time-limit']).should.be.above(0);
-    done();
-    }).catch(error=> done(error));
+    var tid = 0;
+    it('should commit the write document', function (done) {
+        db.transactions.open({ transactionName: 'nodeTransaction', timeLimit: 3 })
+            .result(function (response) {
+                tid = response.txid;
+                return db.documents.write({
+                    txid: tid,
+                    uri: '/test/transaction/doc1.json',
+                    contentType: 'application/json',
+                    content: { firstname: 'John', lastname: 'Doe', txKey: tid }
+                }).result();
+            })
+            .then(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.documents[0].uri.should.equal('/test/transaction/doc1.json');
+                return db.transactions.read(tid).result();
+            })
+            .then(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response['transaction-status']['transaction-name'].should.equal('nodeTransaction');
+                parseInt(response['transaction-status']['time-limit']).should.be.above(0);
+                done();
+            }).catch(error => done(error));
 
-  });
+    });
 
- // Wait for 3 seconds so that transaction can time out
- it('should wait for 3 seconds', function(done) {
-     this.timeout(4000);
-    setTimeout(function() {
-      done();
+    // Wait for 3 seconds so that transaction can time out
+    it('should wait for 3 seconds', function (done) {
+        this.timeout(4000);
+        setTimeout(function () {
+            done();
 
-    }, 3000);
-  });
+        }, 3000);
+    });
 
-  it('should read the commited document and fail with 400/XDMP-NOTXN error (transaction timed out)', function(done) {
-      db.documents.read({uris:'/test/transaction/doc1.json', txid: tid,}).result(function(response) {
-        console.log("Response: " + JSON.stringify(response));
-        done(new Error("Response did not time out"));
-    },
-    function(err) {
-      err.statusCode.should.equal(400);
-      err.body.errorResponse.messageCode.should.equal("XDMP-NOTXN");
-      done();
-    }).catch(error=> done(error));
-  });
+    it('should read the commited document and fail with 400/XDMP-NOTXN error (transaction timed out)', function (done) {
+        db.documents.read({ uris: '/test/transaction/doc1.json', txid: tid, }).result(function (response) {
+            console.log('Response: ' + JSON.stringify(response));
+            done(new Error('Response did not time out'));
+        },
+        function (err) {
+            err.statusCode.should.equal(400);
+            err.body.errorResponse.messageCode.should.equal('XDMP-NOTXN');
+            done();
+        }).catch(error => done(error));
+    });
 
-  it('should commit the document', function(done) {
-    db.transactions.commit(tid).
-    result(
-      function(response) {
-        console.log("Response: " + JSON.stringify(response));
-        done(new Error("Response did not time out"));
-      },
-      function(err) {
-        err.statusCode.should.equal(400);
-        err.body.errorResponse.messageCode.should.equal("XDMP-NOTXN");
-        done();
-      })
-        .catch(error=> done(error));
-  });
+    it('should commit the document', function (done) {
+        db.transactions.commit(tid).
+            result(
+                function (response) {
+                    console.log('Response: ' + JSON.stringify(response));
+                    done(new Error('Response did not time out'));
+                },
+                function (err) {
+                    err.statusCode.should.equal(400);
+                    err.body.errorResponse.messageCode.should.equal('XDMP-NOTXN');
+                    done();
+                })
+            .catch(error => done(error));
+    });
 
-  it('should remove all documents', function(done) {
-      dbAdmin.documents.removeAll({all: true}).
-      result(function(response) {
-        done();
-      }).catch(error=> done(error));
-  });
+    it('should remove all documents', function (done) {
+        dbAdmin.documents.removeAll({ all: true }).
+            result(function (response) {
+                done();
+            }).catch(error => done(error));
+    });
 });

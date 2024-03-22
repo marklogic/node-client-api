@@ -25,89 +25,93 @@ var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbEval = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Xquery invoke test', function(){
+describe('Xquery invoke test', function () {
 
-  var fsPath = __dirname + '/data/sourceParams.xqy';
-  var invokePath = '/ext/invokeTest/sourceParams.xqy';
+    var fsPath = __dirname + '/data/sourceParams.xqy';
+    var invokePath = '/ext/invokeTest/sourceParams.xqy';
 
-  before(function(done) {
-    this.timeout(10000);
-    dbAdmin.config.extlibs.write({
-      path:invokePath, contentType:'application/xquery', source:fs.createReadStream(fsPath)
-    }).
-    result(function(response){done();}, done);
-  });
-
-  after(function(done) {
-    dbAdmin.config.extlibs.remove(invokePath).
-    result(function(response){done();}, done);
-  });
-
-  it('should do xquery invoke with params', function(done){
-    dbEval.invoke(invokePath, {num1:2, num2:3}).result(function(values) {
-      //console.log(values);
-      values[0].value.should.equal(5);
-      done();
-    }, done);
-  });
-
-  it('should do xquery invoke with params on stream', function(done){
-    dbEval.invoke(invokePath, {num1:2, num2:3}).
-    stream().
-    on('data', function(data) {
-      //console.log(data);
-      data.value.should.equal(5);
-    }).
-    on('end', function() {
-      done();
-    }, done);
-  });
-
-  it('should do xquery invoke with params and transaction', function(done){
-    var tid = 0;
-
-    dbEval.transactions.open({transactionName: 'invokeXqueryTransaction', timeLimit: 60})
-    .result(function(response) {
-      tid = response.txid;
-      return dbEval.invoke({
-        path: invokePath,
-        variables: {num1:2, num2:3},
-        txid: tid
-      }).result();
-    })
-    .then(function(response) {
-      //console.log(response);
-      response[0].value.should.equal(5);
-      return dbEval.transactions.commit(tid).result();
-    })
-    .then(function(response) {
-      //console.log(response);
-      done();
-    }, done);
-  });
-
-  it('should fail to do xquery invoke with wrong params value', function(done){
-    dbEval.invoke(invokePath, {num1:'a', num2:3}).result(function(values) {
-      //console.log(values);
-      values.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(500);
-      error.body.errorResponse.messageCode.should.equal('XDMP-EXPR');
-      done();
+    before(function (done) {
+        this.timeout(10000);
+        dbAdmin.config.extlibs.write({
+            path: invokePath, contentType: 'application/xquery', source: fs.createReadStream(fsPath)
+        }).
+            result(function (response) {
+                done();
+            }, done);
     });
-  });
 
-  it('should do xquery invoke with wrong number of params', function(done){
-    dbEval.invoke(invokePath, {num1:2, num2:3, num3:5}).result(function(values) {
-      //console.log(values);
-      values[0].value.should.equal(5);
-      done();
-    }, function(error) {
-      console.log(error);
-      done();
+    after(function (done) {
+        dbAdmin.config.extlibs.remove(invokePath).
+            result(function (response) {
+                done();
+            }, done);
     });
-  });
+
+    it('should do xquery invoke with params', function (done) {
+        dbEval.invoke(invokePath, { num1: 2, num2: 3 }).result(function (values) {
+            //console.log(values);
+            values[0].value.should.equal(5);
+            done();
+        }, done);
+    });
+
+    it('should do xquery invoke with params on stream', function (done) {
+        dbEval.invoke(invokePath, { num1: 2, num2: 3 }).
+            stream().
+            on('data', function (data) {
+                //console.log(data);
+                data.value.should.equal(5);
+            }).
+            on('end', function () {
+                done();
+            }, done);
+    });
+
+    it('should do xquery invoke with params and transaction', function (done) {
+        var tid = 0;
+
+        dbEval.transactions.open({ transactionName: 'invokeXqueryTransaction', timeLimit: 60 })
+            .result(function (response) {
+                tid = response.txid;
+                return dbEval.invoke({
+                    path: invokePath,
+                    variables: { num1: 2, num2: 3 },
+                    txid: tid
+                }).result();
+            })
+            .then(function (response) {
+                //console.log(response);
+                response[0].value.should.equal(5);
+                return dbEval.transactions.commit(tid).result();
+            })
+            .then(function (response) {
+                //console.log(response);
+                done();
+            }, done);
+    });
+
+    it('should fail to do xquery invoke with wrong params value', function (done) {
+        dbEval.invoke(invokePath, { num1: 'a', num2: 3 }).result(function (values) {
+            //console.log(values);
+            values.should.equal('SHOULD HAVE FAILED');
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.statusCode.should.equal(500);
+            error.body.errorResponse.messageCode.should.equal('XDMP-EXPR');
+            done();
+        });
+    });
+
+    it('should do xquery invoke with wrong number of params', function (done) {
+        dbEval.invoke(invokePath, { num1: 2, num2: 3, num3: 5 }).result(function (values) {
+            //console.log(values);
+            values[0].value.should.equal(5);
+            done();
+        }, function (error) {
+            console.log(error);
+            done();
+        });
+    });
 
 });

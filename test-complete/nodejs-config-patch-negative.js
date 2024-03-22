@@ -28,42 +28,42 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Config patch negative test', function(){
+describe('Config patch negative test', function () {
 
-  var replaceModule = 'objectify.xqy';
-  var replacePath = __dirname + '/data/objectify.xqy';
-  var replaceModuleInvalid = 'objectifyInvalid.xqy';
-  var replacePathInvalid = __dirname + '/data/objectifyInvalid.xqy';
+    var replaceModule = 'objectify.xqy';
+    var replacePath = __dirname + '/data/objectify.xqy';
+    var replaceModuleInvalid = 'objectifyInvalid.xqy';
+    var replacePathInvalid = __dirname + '/data/objectifyInvalid.xqy';
 
-  it('should fail to write replacement library with reader user', function(done){
-    this.timeout(10000);
-    db.config.patch.replace.write(
-      replaceModule,
-      [{'role-name':'app-user', capabilities:['execute']}],
-      fs.createReadStream(replacePath)).
-    result(function(response) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(403);
-      done();
+    it('should fail to write replacement library with reader user', function (done) {
+        this.timeout(10000);
+        db.config.patch.replace.write(
+            replaceModule,
+            [{ 'role-name': 'app-user', capabilities: ['execute'] }],
+            fs.createReadStream(replacePath)).
+            result(function (response) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(403);
+                done();
+            });
     });
-  });
 
-  it('should fail to read the invalid replacement library', function(done){
-    dbAdmin.config.patch.replace.read(replaceModuleInvalid).
-    result(function(source) {
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(404);
-      done();
+    it('should fail to read the invalid replacement library', function (done) {
+        dbAdmin.config.patch.replace.read(replaceModuleInvalid).
+            result(function (source) {
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(404);
+                done();
+            });
     });
-  });
 
-  /*it('should fail to remove the invalid custom query', function(done){
+    /*it('should fail to remove the invalid custom query', function(done){
     dbAdmin.config.patch.replace.remove(replacehModuleInvalid).
     result(function(response) {
       //response.should.equal('SHOULD HAVE FAILED');
@@ -74,42 +74,42 @@ describe('Config patch negative test', function(){
     });
   });*/
 
-  it('should write document for test', function(done){
-    dbWriter.documents.write({
-      uri: '/test/config/patch/replace/negative/patchReplaceNegative1.json',
-      collections: ['patchReplaceCollection'],
-      contentType: 'application/json',
-      content: {
-        title: 'this is patch replace'
-      }
-    }).
-    result(function(response) {
-      //console.log(response);
-      done();
-    }, done);
-  });
-
-  it('should fail to apply the invalid replacement patch', function(done){
-    dbWriter.documents.patch('/test/config/patch/replace/negative/patchReplaceNegative1.json',
-      p.library(replaceModuleInvalid),
-      p.replace('/title', p.apply('value', {patchKey: 'patch is modified'}))
-    ).
-    result(function(response) {
-      //console.log(response);
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.statusCode.should.equal(400);
-      done();
+    it('should write document for test', function (done) {
+        dbWriter.documents.write({
+            uri: '/test/config/patch/replace/negative/patchReplaceNegative1.json',
+            collections: ['patchReplaceCollection'],
+            contentType: 'application/json',
+            content: {
+                title: 'this is patch replace'
+            }
+        }).
+            result(function (response) {
+                //console.log(response);
+                done();
+            }, done);
     });
-  });
 
-  it('should remove the document', function(done){
-    dbAdmin.documents.removeAll({collection: 'patchReplaceCollection'}).
-    result(function(response){
-      done();
-    }, done);
-  });
+    it('should fail to apply the invalid replacement patch', function (done) {
+        dbWriter.documents.patch('/test/config/patch/replace/negative/patchReplaceNegative1.json',
+            p.library(replaceModuleInvalid),
+            p.replace('/title', p.apply('value', { patchKey: 'patch is modified' }))
+        ).
+            result(function (response) {
+                //console.log(response);
+                response.should.equal('SHOULD HAVE FAILED');
+                done();
+            }, function (error) {
+                //console.log(error);
+                error.statusCode.should.equal(400);
+                done();
+            });
+    });
+
+    it('should remove the document', function (done) {
+        dbAdmin.documents.removeAll({ collection: 'patchReplaceCollection' }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
 });

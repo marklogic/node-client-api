@@ -56,10 +56,10 @@ describe('sparql query tests', function () {
     it('should run SPARQL select query ', function (done) {
         this.timeout(10000);
 
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "SELECT ?o " +
-            "WHERE { ?s foaf:knows ?o }";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'SELECT ?o ' +
+            'WHERE { ?s foaf:knows ?o }';
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery
@@ -74,10 +74,10 @@ describe('sparql query tests', function () {
     it('should run SPARQL select query with begin and end', function (done) {
         this.timeout(10000);
 
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "SELECT ?o " +
-            "WHERE { ?s foaf:knows ?o }";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'SELECT ?o ' +
+            'WHERE { ?s foaf:knows ?o }';
         db.graphs.sparql({
             contentType: 'application/xml',
             query: myQuery,
@@ -95,10 +95,10 @@ describe('sparql query tests', function () {
     it('should run SPARQL select query without begin and only end ', function (done) {
         this.timeout(10000);
 
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "SELECT ?o " +
-            "WHERE { ?s foaf:knows ?o }";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'SELECT ?o ' +
+            'WHERE { ?s foaf:knows ?o }';
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery,
@@ -116,10 +116,10 @@ describe('sparql query tests', function () {
     it('should run SPARQL select query with begin and end -ve scenario', function (done) {
         this.timeout(50000);
 
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "SELECT ?o " +
-            "WHERE { ?s foaf:knows ?o }";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'SELECT ?o ' +
+            'WHERE { ?s foaf:knows ?o }';
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery,
@@ -127,20 +127,20 @@ describe('sparql query tests', function () {
             end: 3
         }).
             result(function (response) {
-              response.head.vars.should.be.empty;
-              response.results.bindings.should.be.empty;
-            done();
+                response.head.vars.should.be.empty;
+                response.results.bindings.should.be.empty;
+                done();
             }, done);
     });
 
 
-//TODO: Update after issue  #215 is fixed
+    //TODO: Update after issue  #215 is fixed
 
     it('should run SPARQL ASK query', function (done) {
         this.timeout(10000);
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "ASK WHERE { ?s foaf:knows ppl:person3 }";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'ASK WHERE { ?s foaf:knows ppl:person3 }';
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery,
@@ -155,9 +155,9 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL ASK query return false', function (done) {
         this.timeout(10000);
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "ASK WHERE { ?s foaf:knows ppl:person30010 }";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'ASK WHERE { ?s foaf:knows ppl:person30010 }';
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery
@@ -171,9 +171,9 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL DESCRIBE query  ', function (done) {
         this.timeout(10000);
-        var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-            "PREFIX ppl:  <http://people.org/>" +
-            "describe <http://people.org/person11>";
+        var myQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/>' +
+            'PREFIX ppl:  <http://people.org/>' +
+            'describe <http://people.org/person11>';
         db.graphs.sparql({
             contentType: 'application/rdf+json',
             query: myQuery
@@ -190,7 +190,7 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL DESCRIBE query return empty', function (done) {
         this.timeout(10000);
-        var myQuery = "describe <http://people.org/person1133423>";
+        var myQuery = 'describe <http://people.org/person1133423>';
         db.graphs.sparql({
             contentType: 'application/json',
             query: myQuery
@@ -218,8 +218,8 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL CONSTRUCT query  ', function (done) {
         this.timeout(10000);
-        var myQuery = "PREFIX  bb: <http://marklogic.com/baseball/players#> CONSTRUCT { ?ID ?p \"coach\" .}" +
-            " WHERE { ?ID ?p \"coach\" . ?ID bb:firstname ?firstname . Values ?firstname {\"Gene\"}}";
+        var myQuery = 'PREFIX  bb: <http://marklogic.com/baseball/players#> CONSTRUCT { ?ID ?p "coach" .}' +
+            ' WHERE { ?ID ?p "coach" . ?ID bb:firstname ?firstname . Values ?firstname {"Gene"}}';
         db.graphs.sparql({
             contentType: 'application/rdf+json',
             query: myQuery
@@ -238,13 +238,13 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL CONSTRUCT query with binding ', function (done) {
         this.timeout(10000);
-        var myQuery = "PREFIX  bb: <http://marklogic.com/baseball/players#> CONSTRUCT{ ?ID bb:position ?o .}  " +
-            " WHERE {GRAPH ?g { ?ID bb:position ?o .?ID bb:firstname ?firstname .}} order by $ID  ?o";
+        var myQuery = 'PREFIX  bb: <http://marklogic.com/baseball/players#> CONSTRUCT{ ?ID bb:position ?o .}  ' +
+            ' WHERE {GRAPH ?g { ?ID bb:position ?o .?ID bb:firstname ?firstname .}} order by $ID  ?o';
         db.graphs.sparql({
             namedGraphs: 'http://marklogic.com/Graph1',
             contentType: 'application/rdf+json',
             query: myQuery,
-            bindings: {firstname: {value: 'Bryan', type: 'string'}}
+            bindings: { firstname: { value: 'Bryan', type: 'string' } }
         }).
             result(function (response) {
                 //console.log(response);
@@ -261,7 +261,7 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL SELECT Query With BASE URI and OptimizeLevel ', function (done) {
         this.timeout(10000);
-        var myQuery = " SELECT ?o WHERE  { <#107> <#lastname> ?o }";
+        var myQuery = ' SELECT ?o WHERE  { <#107> <#lastname> ?o }';
         db.graphs.sparql({
             base: 'http://marklogic.com/baseball/players',
             contentType: 'application/rdf+json',
@@ -281,7 +281,7 @@ describe('sparql query tests', function () {
             }, done);
     });
 
-//TODO: need to catch exception and pass the test
+    //TODO: need to catch exception and pass the test
     /*
      it('should run SPARQL query with begin = -1', function(done) {
      var myQuery = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
@@ -316,7 +316,7 @@ describe('sparql query tests', function () {
 
     it('should write the graph', function (done) {
         this.timeout(10000);
-        var graphURI = "http://marklogic.com/dirgraph1";
+        var graphURI = 'http://marklogic.com/dirgraph1';
         db.graphs.write({
             uri: graphURI,
             repair: false,
@@ -333,7 +333,7 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL SELECT Query With Ruleset equivalentClass.rules ', function (done) {
         this.timeout(10000);
-        var myQuery = " SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}";
+        var myQuery = ' SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}';
         db.graphs.sparql({
             contentType: 'application/json',
             rulesets: 'equivalentClass.rules',
@@ -351,7 +351,7 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL SELECT Query With Ruleset equivalentProperty.rules ', function (done) {
         this.timeout(10000);
-        var myQuery = " SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}";
+        var myQuery = ' SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}';
         db.graphs.sparql({
             contentType: 'application/json',
             rulesets: 'equivalentProperty.rules',
@@ -391,7 +391,7 @@ describe('sparql query tests', function () {
      */
     it('should run SPARQL SELECT Query With DefaultRuleset include and null', function (done) {
         this.timeout(10000);
-        var myQuery = " SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}";
+        var myQuery = ' SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}';
         db.graphs.sparql({
             contentType: 'application/json',
             rulesets: null,
@@ -409,7 +409,7 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL SELECT Query With multiple rulesets', function (done) {
         this.timeout(10000);
-        var myQuery = " SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}";
+        var myQuery = ' SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}';
         db.graphs.sparql({
             contentType: 'application/json',
             rulesets: ['equivalentClass.rules', 'equivalentProperty.rules'],
@@ -428,7 +428,7 @@ describe('sparql query tests', function () {
 
     it('should run SPARQL SELECT Query With defaultrulesets set to null', function (done) {
         this.timeout(10000);
-        var myQuery = " SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}";
+        var myQuery = ' SELECT  (count (?s)  as ?totalcount) WHERE {GRAPH ?g { ?s ?p ?o .}}';
         db.graphs.sparql({
             contentType: 'application/json',
             rulesets: ['equivalentClass.rules', 'equivalentProperty.rules'],
@@ -457,17 +457,17 @@ describe('write document with embedded triple and run docQuery', function () {
         writeStream.result(function (response) {
             done();
         }, done);
-        writeStream.write("<xml>" +
-            "<test2>testValue</test2>" +
-            "<sem:triples xmlns:sem='http://marklogic.com/semantics'>" +
-            "<sem:triple>" +
-            "<sem:subject>http://example.org/s2</sem:subject>" +
-            "<sem:predicate>http://example.org/p2</sem:predicate>" +
-            "<sem:object datatype='http://www.w3.org/2001/XMLSchema#string'>" +
-            "test2</sem:object>" +
-            "</sem:triple>" +
-            "</sem:triples>" +
-            "</xml>", 'utf8');
+        writeStream.write('<xml>' +
+            '<test2>testValue</test2>' +
+            '<sem:triples xmlns:sem=\'http://marklogic.com/semantics\'>' +
+            '<sem:triple>' +
+            '<sem:subject>http://example.org/s2</sem:subject>' +
+            '<sem:predicate>http://example.org/p2</sem:predicate>' +
+            '<sem:object datatype=\'http://www.w3.org/2001/XMLSchema#string\'>' +
+            'test2</sem:object>' +
+            '</sem:triple>' +
+            '</sem:triples>' +
+            '</xml>', 'utf8');
         writeStream.end();
     });
 
@@ -482,7 +482,7 @@ describe('write document with embedded triple and run docQuery', function () {
 
     it('should run SPARQL query with docQuery', function (done) {
         this.timeout(10000);
-        var myQuery = "SELECT ?o WHERE {?s ?p ?o .}";
+        var myQuery = 'SELECT ?o WHERE {?s ?p ?o .}';
         var docQuery = q.where(q.term('testValue'));
         db.graphs.sparql({
             contentType: 'application/json',
@@ -499,7 +499,7 @@ describe('write document with embedded triple and run docQuery', function () {
 
     it('should run SPARQL query with docQuery', function (done) {
         this.timeout(10000);
-        var myQuery = "ASK WHERE {?s ?p ?o .}";
+        var myQuery = 'ASK WHERE {?s ?p ?o .}';
         var docQuery = q.where(q.term('testValue'));
         db.graphs.sparql({
             contentType: 'application/json',
@@ -513,24 +513,24 @@ describe('write document with embedded triple and run docQuery', function () {
             }, done);
     });
 
-  it('should delete all documents', function(done){
-    dbAdmin.documents.removeAll({
-      all: true
-    }).
-    result(function(response) {
-      done();
-    }, done);
-  });
+    it('should delete all documents', function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
-  it('should drop all graphs', function(done){
-    var myData = "DROP ALL ;";
-    db.graphs.sparqlUpdate({
-      data: myData
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      done();
-    }, done);
-  });
+    it('should drop all graphs', function (done) {
+        var myData = 'DROP ALL ;';
+        db.graphs.sparqlUpdate({
+            data: myData
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                done();
+            }, done);
+    });
 
 });
