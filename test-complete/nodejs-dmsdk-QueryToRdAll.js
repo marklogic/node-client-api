@@ -95,11 +95,14 @@ class MLQAWritableStream extends stream.Writable {
 }
 
 describe('ReadAll with Snapshot and Update doc during read', function () {
+    const uriCount = 500;
+    const targetFilePath = path.join(__dirname, '/data/dmsdk/queryToReadAll.txt');
+
     before(function (done) {
         this.timeout(50000);
         var jsonDocreadable = new stream.Readable({ objectMode: true });
 
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < uriCount; i++) {
             const tempJson = {
                 uri: '/data/dmsdk/upd-readall/' + i + '.json',
                 contentType: 'application/json',
@@ -133,8 +136,7 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
 
     after((function (done) {
         this.timeout(10000);
-        const fileName1 = path.join(__dirname, '/data/dmsdk/queryToReadAll.txt');
-        fs.unlink(fileName1, function (err) {
+        fs.unlink(targetFilePath, function (err) {
             if (err) {
                 // do nothing logging messes up test report file.
             }
@@ -143,8 +145,12 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
             .result(function (response) {
                 done();
             })
-            .catch(err => done(err))
-            .catch(done);
+            .catch((err) => {
+                done(err);
+            })
+            .catch((error) => {
+                done(error);
+            });
     }));
 
     /*This test performs readAll and then updates an existing doc.
@@ -214,7 +220,7 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
                 timestampValue = timestamp;
             }),
             onCompletion: ((summary) => {
-                expect(summary.urisReadSoFar).to.equal(500);
+                expect(summary.urisReadSoFar).to.equal(uriCount);
 
                 dbWriter.documents.write({
                     uri: '/data/dmsdk/upd-readall/1.json',
@@ -248,7 +254,6 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
                             });
                             done();
                         });
-                        done();
                     });
             })
         });
@@ -287,9 +292,7 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
         //it('verify queryToReadAll documents with word query', function(done) {
         this.timeout(20000);
         const query = q.where(ctsqb.cts.wordQuery('value 1'));
-        const fileName = path.join(__dirname, '/data/dmsdk/queryToReadAll.txt');
-
-        var writable = fs.createWriteStream(fileName, { flag: 'a' });
+        var writable = fs.createWriteStream(targetFilePath, { flag: 'a' });
 
         const queryToReadAllStream = dbWriter.documents.queryToReadAll(query, {
             onCompletion: ((summary) => {
@@ -312,6 +315,7 @@ describe('ReadAll with Snapshot and Update doc during read', function () {
             writable.write('category is ' + chunk.category[0] + '\n');
         });
         queryToReadAllStream.on('end', function (end) {
+            writable.close();
             done();
         });
     });
