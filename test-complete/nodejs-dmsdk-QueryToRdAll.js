@@ -21,12 +21,12 @@ const ctsqb = marklogic.ctsQueryBuilder;
 const stream = require('stream');
 const streamToArray = require('stream-to-array');
 
-const fs     = require('fs');
+const fs = require('fs');
 const path = require('path');
 const { Readable } = require("stream");
-const {expect} = require("chai");
+const { expect } = require("chai");
 
-var memStore = { };
+var memStore = {};
 
 var uriStream = new stream.Readable();
 var dbWriter = marklogic.createDatabaseClient(testconfig.dmsdkrestWriterConnection);
@@ -94,17 +94,20 @@ class MLQAWritableStream extends stream.Writable {
     }
 }
 
-describe('ReadAll with Snapshot and Update doc during read', function() {
+describe('ReadAll with Snapshot and Update doc during read', function () {
+    const uriCount = 500;
+    const targetFilePath = path.join(__dirname, '/data/dmsdk/queryToReadAll.txt');
+
     before(function (done) {
         this.timeout(50000);
-        var jsonDocreadable = new stream.Readable({objectMode: true});
+        var jsonDocreadable = new stream.Readable({ objectMode: true });
 
-        for (let i=0; i<100; i++) {
+        for (let i = 0; i < uriCount; i++) {
             const tempJson = {
-                uri: '/data/dmsdk/upd-readall/'+i+'.json',
+                uri: '/data/dmsdk/upd-readall/' + i + '.json',
                 contentType: 'application/json',
                 collections: ['during-read'],
-                content: {['key'+i]:'value '+i}
+                content: { ['key' + i]: 'value ' + i }
             };
             jsonDocreadable.push(tempJson);
             // To validate / use later in tests.
@@ -114,40 +117,43 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
         jsonDocreadable.push(null);
         dbWriter.documents.writeAll(jsonDocreadable, {
             onCompletion: ((summary) => {
-                setTimeout(()=>{var i = 0; i++;}, 1000);
+                setTimeout(() => { var i = 0; i++; }, 1000);
                 summary.docsWrittenSuccessfully.should.be.greaterThanOrEqual(100);
             })
         }); // End of pipe to writeAll
         // Use uriStream as the input to readAll()
-        uriStream = new stream.PassThrough({objectMode: true});
+        uriStream = new stream.PassThrough({ objectMode: true });
         inputJsonUris.forEach(uri => uriStream.push(uri));
         uriStream.push(null);
 
         // wait for DB to finish writing
-        setTimeout(()=>{done();}, 10000);
+        setTimeout(() => { done(); }, 10000);
     });
 
-   after((function(done){
+    after((function (done) {
         this.timeout(10000);
-        const fileName1 = path.join(__dirname, '/data/dmsdk/queryToReadAll.txt');
-        fs.unlink(fileName1, function (err) {
-        if (err) {
-            // do nothing logging messes up test report file.
+        fs.unlink(targetFilePath, function (err) {
+            if (err) {
+                // do nothing logging messes up test report file.
             }
         });
         dbWriter.documents.remove(inputJsonUris)
-            .result(function(response){
+            .result(function (response) {
                 done();
             })
-            .catch(err=> done(err))
-            .catch(done);
+            .catch((err) => {
+                done(err);
+            })
+            .catch((error) => {
+                done(error);
+            });
     }));
 
     /*This test performs readAll and then updates an existing doc.
     Perform a readAll and as soon as the Duplex stream of readAll to return first chunks
     do a doc update on duplex's readable stream's data event.
      */
-    it('Update a doc during ReadAll', function(done){
+    it('Update a doc during ReadAll', function (done) {
         this.timeout(30000);
         var isUpdateDone = false;
 
@@ -159,45 +165,45 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
         var exptdResult = 'Modified Key In Transform:300, Modified Value In Transform:value 300';
         var mlqawstreamAft = new MLQAWritableStream('after');
         // Time to initalize results writestream
-        setTimeout(()=>{var i = 0; i++;}, 3000);
+        setTimeout(() => { var i = 0; i++; }, 3000);
         // Have listeners before calling pipe.
         mlqawstreamAft.on('finish', function () {
             expect(memStore.after.toString()).to.equal(exptdResult);
         });
         var readFn = dbWriter.documents.readAll(uriStream, {
             inputkind: 'Array',
-            consistentSnapshot:true,
+            consistentSnapshot: true,
             batch: 10
         });
         readFn.on('data', (data) => {
             if (!isUpdateDone) {
-            // Initiate a document change on doc id 800 in this "data" event after readAll is called.
-            var tid = null;
-            dbWriterUpd.transactions.open().result().then(function (response) {
-                tid = response.txid;
-                return dbWriterUpd.documents.write({
-                    txid: tid,
-                    uri: UpdAfterReadAllUriName,
-                    collections: ['coll5', 'coll6'],
-                    contentType: 'application/json',
-                    quality: 250,
-                    properties: {prop1: 'bar', prop2: 1981},
-                    content: {id: 88, name: 'David'}
-                }).result();
-            }).then(function (response) {
-                return dbWriterUpd.transactions.commit(tid).result(function (response) {
-                    var i = 0;
-                    i++;
+                // Initiate a document change on doc id 800 in this "data" event after readAll is called.
+                var tid = null;
+                dbWriterUpd.transactions.open().result().then(function (response) {
+                    tid = response.txid;
+                    return dbWriterUpd.documents.write({
+                        txid: tid,
+                        uri: UpdAfterReadAllUriName,
+                        collections: ['coll5', 'coll6'],
+                        contentType: 'application/json',
+                        quality: 250,
+                        properties: { prop1: 'bar', prop2: 1981 },
+                        content: { id: 88, name: 'David' }
+                    }).result();
+                }).then(function (response) {
+                    return dbWriterUpd.transactions.commit(tid).result(function (response) {
+                        var i = 0;
+                        i++;
+                    });
                 });
-            });
-            isUpdateDone = true;
-        }
+                isUpdateDone = true;
+            }
         });
         readFn.pipe(filteredSnapshot).pipe(mlqawstreamAft); /*Add.pipe(process.stdout) to debug */
         done();
     });
 
-    it('readAll documents with queryAll onInitialTimestamp and readAll consistentSnapshot', function(done){
+    it('readAll documents with queryAll onInitialTimestamp and readAll consistentSnapshot', function (done) {
         const ctsQb = marklogic.ctsQueryBuilder;
         const q = marklogic.queryBuilder;
         const query = q.where(ctsQb.cts.directoryQuery('/data/dmsdk/upd-readall/'));
@@ -208,35 +214,35 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
                 timestampValue = timestamp;
             }),
             onCompletion: ((summary) => {
-                expect(summary.urisReadSoFar).to.equal(500);
+                expect(summary.urisReadSoFar).to.equal(uriCount);
 
                 dbWriter.documents.write({
                     uri: '/data/dmsdk/upd-readall/1.json',
                     contentType: 'application/json',
-                    content: {'a':'b'}
+                    content: { 'a': 'b' }
                 })
-                    .result(function(response) {
+                    .result(function (response) {
                         return dbWriterUpd.documents.read(response.documents[0].uri).result();
                     })
-                    .then(function (documents){
-                        for(let key in documents[0].content){
+                    .then(function (documents) {
+                        for (let key in documents[0].content) {
                             key.valueOf().should.be.equal('a');
                         }
                     })
-                    .then(function(documents){
-                        let inputStream = new stream.PassThrough({objectMode: true});
+                    .then(function (documents) {
+                        let inputStream = new stream.PassThrough({ objectMode: true });
                         inputStream.push('/data/dmsdk/upd-readall/1.json');
                         inputStream.push(null);
                         streamToArray(dbWriter.documents.readAll(inputStream, {
-                                batchSize:10,
-                                consistentSnapshot: timestampValue,
-                            }),
+                            batchSize: 10,
+                            consistentSnapshot: timestampValue,
+                        }),
                             function (err, arr) {
                                 if (err) {
                                     done(err);
                                 }
                                 arr.forEach(item => {
-                                    for(let key in item.content){
+                                    for (let key in item.content) {
                                         key.valueOf().should.be.equal('key1');
                                     }
                                 });
@@ -248,7 +254,7 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
     });
 
     // queryToReadAll tests
-    it('queryToReadAll using a readable', function(done) {
+    it('queryToReadAll using a readable', function (done) {
         //it('verify queryToReadAll documents with word query', function(done) {
         this.timeout(20000);
         const query = q.where(ctsqb.cts.wordQuery('value 1'));
@@ -256,12 +262,12 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
             var i = 0;
             i++;
         }, 5000);
-    // Use case where we wrap a Readable.
+        // Use case where we wrap a Readable.
         const readable = Readable.from(
-        dbWriter.documents.queryToReadAll(query, {
-            onCompletion: ((summary) => {
-            })
-        }));
+            dbWriter.documents.queryToReadAll(query, {
+                onCompletion: ((summary) => {
+                })
+            }));
         readable.on("data", (chunk) => {
             expect(chunk.content.key1.valueOf()).to.equal('value 1');
             expect(chunk.uri.valueOf()).to.equal('/data/dmsdk/upd-readall/1.json');
@@ -270,39 +276,38 @@ describe('ReadAll with Snapshot and Update doc during read', function() {
         });
 
         setTimeout(() => {
-                var i = 0;
-                i++;
-            }, 5000);
-            done();
+            var i = 0;
+            i++;
+        }, 5000);
+        done();
     });
 
-    it('queryToReadAll to writable and readable', function(done) {
+    it('queryToReadAll to writable and readable', function (done) {
         //it('verify queryToReadAll documents with word query', function(done) {
         this.timeout(20000);
         const query = q.where(ctsqb.cts.wordQuery('value 1'));
-        const fileName = path.join(__dirname, '/data/dmsdk/queryToReadAll.txt');
+        var writable = fs.createWriteStream(targetFilePath, { flag: 'a' });
 
-        var writable = fs.createWriteStream(fileName, {flag: 'a'});
-
-        const queryToReadAllStream = dbWriter.documents.queryToReadAll(query,{
-            onCompletion:((summary) => {
+        const queryToReadAllStream = dbWriter.documents.queryToReadAll(query, {
+            onCompletion: ((summary) => {
                 summary.docsReadSuccessfully.should.be.equal(100);
                 summary.docsFailedToBeRead.should.be.equal(0);
             })
         });
 
-        queryToReadAllStream.on('error', function (err) { throw new Error(err);});
-        queryToReadAllStream.on('data', function(chunk){
+        queryToReadAllStream.on('error', function (err) { throw new Error(err); });
+        queryToReadAllStream.on('data', function (chunk) {
             expect(chunk.content.key1.valueOf()).to.equal('value 1');
             expect(chunk.uri.valueOf()).to.equal('/data/dmsdk/upd-readall/1.json');
             expect(chunk.format.valueOf()).to.equal('json');
             expect(chunk.category[0]).to.equal('content');
 
-            writable.write('uri is '+ chunk.uri + '\n');
-            writable.write('content is '+ chunk.content.key1 + '\n');
-            writable.write('category is '+ chunk.category[0] + '\n');
+            writable.write('uri is ' + chunk.uri + '\n');
+            writable.write('content is ' + chunk.content.key1 + '\n');
+            writable.write('category is ' + chunk.category[0] + '\n');
         });
-        queryToReadAllStream.on('end', function(end){
+        queryToReadAllStream.on('end', function (end) {
+            writable.close();
             done();
         });
     });
