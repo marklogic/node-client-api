@@ -22,7 +22,7 @@ const restAdminDB = marklogic.createDatabaseClient(testconfig.dmsdkrestAdminConn
 const Stream = require('stream');
 const fs = require('fs');
 
-let transformStream = new Stream.PassThrough({objectMode: true});
+let transformStream = new Stream.PassThrough({ objectMode: true });
 let uris = [];
 let transformName = 'WriteBatcherTest_transform';
 let transformPath = './test-basic/data/transformAll_transform.js';
@@ -45,13 +45,13 @@ describe('data movement transformAll', function () {
     });
 
     beforeEach(function (done) {
-        let readable = new Stream.Readable({objectMode: true});
-        transformStream = new Stream.PassThrough({objectMode: true});
+        let readable = new Stream.Readable({ objectMode: true });
+        transformStream = new Stream.PassThrough({ objectMode: true });
         for (let i = 0; i < 100; i++) {
             const temp = {
                 uri: '/test/dataMovement/requests/transformAll/' + i + '.json',
                 contentType: 'application/json',
-                content: {['key']: 'initialValue'}
+                content: { ['key']: 'initialValue' }
             };
             readable.push(temp);
             transformStream.push(temp.uri);
@@ -80,8 +80,8 @@ describe('data movement transformAll', function () {
         function (done) {
 
             dbWriter.documents.queryToTransformAll(query, {
-                transform: [transformName, {newValue: 'transformedValue'}],
-                concurrentRequests: {multipleOf: 'hosts', multiplier: 4},
+                transform: [transformName, { newValue: 'transformedValue' }],
+                concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
                 transformStrategy: 'ignore',
                 onCompletion: ((summary) => {
                     try {
@@ -99,8 +99,8 @@ describe('data movement transformAll', function () {
     it('should transformAll documents with transformStrategy as ignore', function (done) {
 
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
-            concurrentRequests: {multipleOf: 'hosts', multiplier: 4},
+            transform: [transformName, { newValue: 'transformedValue' }],
+            concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
             transformStrategy: 'ignore',
             onCompletion: ((summary) => {
                 try {
@@ -117,7 +117,7 @@ describe('data movement transformAll', function () {
 
     it('should work with query and onCompletion function', function (done) {
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
+            transform: [transformName, { newValue: 'transformedValue' }],
             onCompletion: ((summary) => {
                 try {
                     summary.docsTransformedSuccessfully.should.be.equal(100);
@@ -133,7 +133,7 @@ describe('data movement transformAll', function () {
 
     it('should work with query and onCompletion function and batchSize', function (done) {
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
+            transform: [transformName, { newValue: 'transformedValue' }],
             batchSize: 10,
             onBatchSuccess: (function (progress, documents) {
                 try {
@@ -161,8 +161,8 @@ describe('data movement transformAll', function () {
     it('should transformAll documents with onCompletion, concurrentRequests and transform options', function (done) {
 
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
-            concurrentRequests: {multipleOf: 'hosts', multiplier: 4},
+            transform: [transformName, { newValue: 'transformedValue' }],
+            concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
             onCompletion: ((summary) => {
                 try {
                     summary.docsTransformedSuccessfully.should.be.equal(100);
@@ -178,14 +178,14 @@ describe('data movement transformAll', function () {
 
     it('should transformAll documents with inputKind as array', function (done) {
 
-        transformStream = new Stream.Readable({objectMode: true});
+        transformStream = new Stream.Readable({ objectMode: true });
         for (let i = 0; i + 10 <= uris.length; i = i + 10) {
             transformStream.push(uris.slice(i, i + 10));
         }
         transformStream.push(null);
 
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
+            transform: [transformName, { newValue: 'transformedValue' }],
             inputKind: 'aRRaY',
             onCompletion: ((summary) => {
                 try {
@@ -203,7 +203,7 @@ describe('data movement transformAll', function () {
     it('should queryToTransformAll documents with onCompletion option', function (done) {
 
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
+            transform: [transformName, { newValue: 'transformedValue' }],
             onCompletion: ((summary) => {
                 summary.docsTransformedSuccessfully.should.be.equal(100);
                 summary.docsFailedToBeTransformed.should.be.equal(0);
@@ -215,7 +215,7 @@ describe('data movement transformAll', function () {
 
     it('should work with batchSize less than 1', function (done) {
         dbWriter.documents.queryToTransformAll(query, {
-            transform: [transformName, {newValue: 'transformedValue'}],
+            transform: [transformName, { newValue: 'transformedValue' }],
             batchSize: 0,
             onCompletion: ((summary) => {
                 try {
@@ -228,11 +228,11 @@ describe('data movement transformAll', function () {
                 }
             })
         });
-    })
+    });
 
     it('should throw error with no query', function (done) {
         try {
-            dbWriter.documents.queryToTransformAll('invalid query', {})
+            dbWriter.documents.queryToTransformAll('invalid query', {});
         } catch (err) {
             err.toString().should.equal('Error: Query needs to be a cts query.');
             done();
@@ -242,8 +242,8 @@ describe('data movement transformAll', function () {
     it('should throw error with null query', function (done) {
         try {
             dbWriter.documents.queryToTransformAll(null, {
-                transform: [transformName, {newValue: 'transformedValue'}],
-            })
+                transform: [transformName, { newValue: 'transformedValue' }],
+            });
         } catch (err) {
             err.toString().should.equal('Error: Query cannot be null or undefined.');
             done();
@@ -253,7 +253,7 @@ describe('data movement transformAll', function () {
     it('should throw error with onInitialTimestamp and wrong consistentSnapshot', function (done) {
         try {
             dbWriter.documents.queryToTransformAll(query, {
-                transform: [transformName, {newValue: 'transformedValue'}],
+                transform: [transformName, { newValue: 'transformedValue' }],
                 onInitialTimestamp: '1667222674',
                 consistentSnapshot: false,
             });
@@ -266,7 +266,7 @@ describe('data movement transformAll', function () {
     it('should throw error with consistentSnapshot another type', function (done) {
         try {
             dbWriter.documents.queryToTransformAll(query, {
-                transform: [transformName, {newValue: 'transformedValue'}],
+                transform: [transformName, { newValue: 'transformedValue' }],
                 consistentSnapshot: 'true',
             });
         } catch (err) {
@@ -278,7 +278,7 @@ describe('data movement transformAll', function () {
     it('should throw error with batchSize greater than 100000', function (done) {
         try {
             dbWriter.documents.queryToTransformAll(query, {
-                transform: [transformName, {newValue: 'transformedValue'}],
+                transform: [transformName, { newValue: 'transformedValue' }],
                 batchSize: 1000000,
             });
         } catch (err) {

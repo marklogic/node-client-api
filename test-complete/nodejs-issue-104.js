@@ -26,49 +26,49 @@ var q = marklogic.queryBuilder;
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Issue 104', function() {
+describe('Issue 104', function () {
 
-  before('add triples to default graph', function(done) {
-    done();
-  });
-
-  it('should add triples to default graph', function(done) {
-    var triples = [
-      '@prefix foaf: <http://xmlns.com/foaf/0.1/> .',
-      '@prefix ppl: <http://people.org/> .',
-      'ppl:person1 foaf:knows ppl:person2 .',
-      'ppl:person1 foaf:knows ppl:person3 .',
-      'ppl:person2 foaf:knows ppl:person3 .',
-      'ppl:person1 a ppl:Person ;',
-      ' foaf:name "Person 1" .',
-      'ppl:person2 a ppl:Person ;',
-      ' foaf:name "Person 2" .',
-      'ppl:person3 a ppl:Person ;',
-      ' foaf:name "Person 3" .',
-    ];
-
-    db.graphs.write({contentType: 'text/turtle', data: triples.join('\n')}).result(
-      function(response) {
-        //console.log(response);
-        // response.length.should.equal(docCount);
-        response.should.have.properties('defaultGraph', 'graph');
-        response.defaultGraph.should.equal(true);
-
-       done();
-      },
-      function(error) {
-        console.log(JSON.stringify(error, null, 2));
-
-        done(error);
-      },
-      done);
-  });
-
-  it('should remove all triples', function(done) {
-      dbAdmin.documents.removeAll({all: true}).
-      result(function(response) {
+    before('add triples to default graph', function (done) {
         done();
-      }, done);
-  });
+    });
+
+    it('should add triples to default graph', function (done) {
+        var triples = [
+            '@prefix foaf: <http://xmlns.com/foaf/0.1/> .',
+            '@prefix ppl: <http://people.org/> .',
+            'ppl:person1 foaf:knows ppl:person2 .',
+            'ppl:person1 foaf:knows ppl:person3 .',
+            'ppl:person2 foaf:knows ppl:person3 .',
+            'ppl:person1 a ppl:Person ;',
+            ' foaf:name "Person 1" .',
+            'ppl:person2 a ppl:Person ;',
+            ' foaf:name "Person 2" .',
+            'ppl:person3 a ppl:Person ;',
+            ' foaf:name "Person 3" .',
+        ];
+
+        db.graphs.write({ contentType: 'text/turtle', data: triples.join('\n') }).result(
+            function (response) {
+                //console.log(response);
+                // response.length.should.equal(docCount);
+                response.should.have.properties('defaultGraph', 'graph');
+                response.defaultGraph.should.equal(true);
+
+                done();
+            },
+            function (error) {
+                console.log(JSON.stringify(error, null, 2));
+
+                done(error);
+            },
+            done);
+    });
+
+    it('should remove all triples', function (done) {
+        dbAdmin.documents.removeAll({ all: true }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
 });

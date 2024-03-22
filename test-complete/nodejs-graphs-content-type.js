@@ -25,80 +25,80 @@ var q = marklogic.queryBuilder;
 
 var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
-describe('content type graph test', function(){
-  var graphUri   = 'http://marklogic.com/graphs/content#type';
-  var graphPath  = __dirname + '/data/mlgraph.ttl';
+describe('content type graph test', function () {
+    var graphUri   = 'http://marklogic.com/graphs/content#type';
+    var graphPath  = __dirname + '/data/mlgraph.ttl';
 
-  before('should write the graph', function(done){
-    this.timeout(10000);
-    db.graphs.write({uri: graphUri, contentType: 'text/turtle', data: fs.createReadStream(graphPath)}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 4));
-      done();
-    }, done);
-  });
+    before('should write the graph', function (done) {
+        this.timeout(10000);
+        db.graphs.write({ uri: graphUri, contentType: 'text/turtle', data: fs.createReadStream(graphPath) }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 4));
+                done();
+            }, done);
+    });
 
-  it('should read the graph on application/rdf+json', function(done){
-    this.timeout(10000);
-    db.graphs.read({contentType: 'application/rdf+json', uri: graphUri}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response['http://marklogicsparql.com/id#1111']['http://marklogicsparql.com/addressbook#lastName'][0].value.should.equal('Snelson');
-      done();
-    }, done);
-  });
+    it('should read the graph on application/rdf+json', function (done) {
+        this.timeout(10000);
+        db.graphs.read({ contentType: 'application/rdf+json', uri: graphUri }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response['http://marklogicsparql.com/id#1111']['http://marklogicsparql.com/addressbook#lastName'][0].value.should.equal('Snelson');
+                done();
+            }, done);
+    });
 
-  it('should read the graph on text/turtle', function(done){
-    this.timeout(10000);
-    db.graphs.read({contentType: 'text/turtle', uri: graphUri}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('@prefix p0: <http://marklogicsparql.com/addressbook#>');
-      done();
-    }, done);
-  });
+    it('should read the graph on text/turtle', function (done) {
+        this.timeout(10000);
+        db.graphs.read({ contentType: 'text/turtle', uri: graphUri }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('@prefix p0: <http://marklogicsparql.com/addressbook#>');
+                done();
+            }, done);
+    });
 
-  it('should read the graph on application/rdf+xml', function(done){
-    this.timeout(10000);
-    db.graphs.read({contentType: 'application/rdf+xml', uri: graphUri}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<rdf:Description rdf:about=\"http://marklogicsparql.com/LeadEngineer\">');
-      done();
-    }, done);
-  });
+    it('should read the graph on application/rdf+xml', function (done) {
+        this.timeout(10000);
+        db.graphs.read({ contentType: 'application/rdf+xml', uri: graphUri }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<rdf:Description rdf:about=\"http://marklogicsparql.com/LeadEngineer\">');
+                done();
+            }, done);
+    });
 
-  it('should read the graph on text/n3', function(done){
-    this.timeout(10000);
-    db.graphs.read({contentType: 'text/n3', uri: graphUri}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2))
-      response.should.containEql('@prefix p0: <http://marklogicsparql.com/addressbook#>');
-      done();
-    }, done);
-  });
+    it('should read the graph on text/n3', function (done) {
+        this.timeout(10000);
+        db.graphs.read({ contentType: 'text/n3', uri: graphUri }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2))
+                response.should.containEql('@prefix p0: <http://marklogicsparql.com/addressbook#>');
+                done();
+            }, done);
+    });
 
-  it('should read the graph on application/n-quads', function(done){
-    this.timeout(10000);
-    db.graphs.read({contentType: 'application/n-quads', uri: graphUri}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" ');
-      done();
-    }, done);
-  });
+    it('should read the graph on application/n-quads', function (done) {
+        this.timeout(10000);
+        db.graphs.read({ contentType: 'application/n-quads', uri: graphUri }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" ');
+                done();
+            }, done);
+    });
 
-  it('should read the graph on application/n-triples', function(done){
-    this.timeout(10000);
-    db.graphs.read({contentType: 'application/n-triples', uri: graphUri}).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" .');
-      done();
-    }, done);
-  });
+    it('should read the graph on application/n-triples', function (done) {
+        this.timeout(10000);
+        db.graphs.read({ contentType: 'application/n-triples', uri: graphUri }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/addressbook#firstName> \"John\" .');
+                done();
+            }, done);
+    });
 
-  /*it('should read the graph on trig', function(done){
+    /*it('should read the graph on trig', function(done){
     this.timeout(10000);
     db.graphs.read({contentType: 'application/trig', uri: graphUri}).
     result(function(response){
@@ -108,122 +108,122 @@ describe('content type graph test', function(){
     }, done);
   });*/
 
-  it('should run SPARQL query with application/sparql-results+xml content type', function(done){
-    this.timeout(10000);
-    var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
-                  "SELECT *\n" +
-                  "FROM <http://marklogic.com/graphs/content#type>\n" +
-                  "WHERE {?s ad:firstName 'John'}";
-    db.graphs.sparql({
-      contentType: 'application/sparql-results+xml',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<binding name=\"s\"><uri>http://marklogicsparql.com/id#1111</uri></binding>');
-      done();
-    }, done);
-  });
+    it('should run SPARQL query with application/sparql-results+xml content type', function (done) {
+        this.timeout(10000);
+        var myQuery = 'PREFIX ad: <http://marklogicsparql.com/addressbook#>' +
+                  'SELECT *\n' +
+                  'FROM <http://marklogic.com/graphs/content#type>\n' +
+                  'WHERE {?s ad:firstName \'John\'}';
+        db.graphs.sparql({
+            contentType: 'application/sparql-results+xml',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<binding name=\"s\"><uri>http://marklogicsparql.com/id#1111</uri></binding>');
+                done();
+            }, done);
+    });
 
-  it('should run SPARQL query with text/csv content type', function(done){
-    this.timeout(10000);
-    var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
-                  "SELECT *\n" +
-                  "FROM <http://marklogic.com/graphs/content#type>\n" +
-                  "WHERE {?s ad:firstName 'John'}";
-    db.graphs.sparql({
-      contentType: 'text/csv',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('s\r\nhttp://marklogicsparql.com/id#1111');
-      done();
-    }, done);
-  });
+    it('should run SPARQL query with text/csv content type', function (done) {
+        this.timeout(10000);
+        var myQuery = 'PREFIX ad: <http://marklogicsparql.com/addressbook#>' +
+                  'SELECT *\n' +
+                  'FROM <http://marklogic.com/graphs/content#type>\n' +
+                  'WHERE {?s ad:firstName \'John\'}';
+        db.graphs.sparql({
+            contentType: 'text/csv',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('s\r\nhttp://marklogicsparql.com/id#1111');
+                done();
+            }, done);
+    });
 
-  it('should run SPARQL query with text/html content type', function(done){
-    this.timeout(10000);
-    var myQuery = "PREFIX ad: <http://marklogicsparql.com/addressbook#>" +
-                  "SELECT *\n" +
-                  "FROM <http://marklogic.com/graphs/content#type>\n" +
-                  "WHERE {?s ad:firstName 'John'}";
-    db.graphs.sparql({
-      contentType: 'text/html',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<title>SPARQL results</title>');
-      response.should.containEql('<a href=\"/v1/graphs/things?iri=http%3a//marklogicsparql.com/id%231111\">http://marklogicsparql.com/id#1111</a>');
-      done();
-    }, done);
-  });
+    it('should run SPARQL query with text/html content type', function (done) {
+        this.timeout(10000);
+        var myQuery = 'PREFIX ad: <http://marklogicsparql.com/addressbook#>' +
+                  'SELECT *\n' +
+                  'FROM <http://marklogic.com/graphs/content#type>\n' +
+                  'WHERE {?s ad:firstName \'John\'}';
+        db.graphs.sparql({
+            contentType: 'text/html',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<title>SPARQL results</title>');
+                response.should.containEql('<a href=\"/v1/graphs/things?iri=http%3a//marklogicsparql.com/id%231111\">http://marklogicsparql.com/id#1111</a>');
+                done();
+            }, done);
+    });
 
-  it('should run SPARQL query with n-triples content type', function(done){
-    this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
-    db.graphs.sparql({
-      contentType: 'application/n-triples',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/worksOn> <http://marklogicsparql.com/Inference> .');
-      done();
-    }, done);
-  });
+    it('should run SPARQL query with n-triples content type', function (done) {
+        this.timeout(10000);
+        var myQuery = 'DESCRIBE <http://marklogicsparql.com/id#1111>';
+        db.graphs.sparql({
+            contentType: 'application/n-triples',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/worksOn> <http://marklogicsparql.com/Inference> .');
+                done();
+            }, done);
+    });
 
-  it('should run SPARQL query with n-quads content type', function(done){
-    this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
-    db.graphs.sparql({
-      contentType: 'application/n-quads',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/worksOn> <http://marklogicsparql.com/Inference> ');
-      done();
-    }, done);
-  });
+    it('should run SPARQL query with n-quads content type', function (done) {
+        this.timeout(10000);
+        var myQuery = 'DESCRIBE <http://marklogicsparql.com/id#1111>';
+        db.graphs.sparql({
+            contentType: 'application/n-quads',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<http://marklogicsparql.com/id#1111> <http://marklogicsparql.com/worksOn> <http://marklogicsparql.com/Inference> ');
+                done();
+            }, done);
+    });
 
-  it('should run SPARQL query with sparql-results+json content type -ve', function(done){
-    this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
-    db.graphs.sparql({
-      contentType: 'application/sparql-results+json',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      done();
-    },function(err){
-    //console.log(JSON.stringify(err, null, 2));
-	err.statusCode.should.equal(406);
-    done();
-    }, done);
-  });
+    it('should run SPARQL query with sparql-results+json content type -ve', function (done) {
+        this.timeout(10000);
+        var myQuery = 'DESCRIBE <http://marklogicsparql.com/id#1111>';
+        db.graphs.sparql({
+            contentType: 'application/sparql-results+json',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                done();
+            }, function (err) {
+                //console.log(JSON.stringify(err, null, 2));
+                err.statusCode.should.equal(406);
+                done();
+            }, done);
+    });
 
-  it('should run SPARQL query with rdf+xml content type', function(done){
-    this.timeout(10000);
-    var myQuery = "DESCRIBE <http://marklogicsparql.com/id#1111>";
-    db.graphs.sparql({
-      contentType: 'application/rdf+xml',
-      query: myQuery
-    }).
-    result(function(response){
-      //console.log(JSON.stringify(response, null, 2));
-      response.should.containEql('<LeadEngineer rdf:about=\"http://marklogicsparql.com/id#1111\" xmlns=\"http://marklogicsparql.com/\"><worksOn rdf:resource=\"http://marklogicsparql.com/Inference\"/>');
-      done();
-    }, done);
-  });
+    it('should run SPARQL query with rdf+xml content type', function (done) {
+        this.timeout(10000);
+        var myQuery = 'DESCRIBE <http://marklogicsparql.com/id#1111>';
+        db.graphs.sparql({
+            contentType: 'application/rdf+xml',
+            query: myQuery
+        }).
+            result(function (response) {
+                //console.log(JSON.stringify(response, null, 2));
+                response.should.containEql('<LeadEngineer rdf:about=\"http://marklogicsparql.com/id#1111\" xmlns=\"http://marklogicsparql.com/\"><worksOn rdf:resource=\"http://marklogicsparql.com/Inference\"/>');
+                done();
+            }, done);
+    });
 
-  it('should delete the graph', function(done){
-    this.timeout(10000);
-    db.graphs.remove(graphUri).
-    result(function(response){
-      done();
-    }, done);
-  });
+    it('should delete the graph', function (done) {
+        this.timeout(10000);
+        db.graphs.remove(graphUri).
+            result(function (response) {
+                done();
+            }, done);
+    });
 });

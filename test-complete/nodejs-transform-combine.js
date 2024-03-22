@@ -27,8 +27,8 @@ var db = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Transform test with combination', function(){
-  /*before(function(done){
+describe('Transform test with combination', function () {
+    /*before(function(done){
     this.timeout(10000);
     dbWriter.documents.write({
       uri: '/test/transform/comboTransform.json',
@@ -38,58 +38,62 @@ describe('Transform test with combination', function(){
     result(function(response){done();}, done);
   });*/
 
-  var transformName1 = 'flagParam';
-  var transformPath1 = __dirname + '/data/flagTransform.xqy';
-  var transformName2 = 'timestamp';
-  var transformPath2 = __dirname + '/data/timestampTransform.js';
+    var transformName1 = 'flagParam';
+    var transformPath1 = __dirname + '/data/flagTransform.xqy';
+    var transformName2 = 'timestamp';
+    var transformPath2 = __dirname + '/data/timestampTransform.js';
 
-  it('should write the transform', function(done){
-    this.timeout(10000);
-    fs.createReadStream(transformPath1).
-    pipe(concatStream({encoding: 'string'}, function(source) {
-      dbAdmin.config.transforms.write(transformName1, 'xquery', source).
-      result(function(response){done();}, done);
-    }));
-  });
+    it('should write the transform', function (done) {
+        this.timeout(10000);
+        fs.createReadStream(transformPath1).
+            pipe(concatStream({ encoding: 'string' }, function (source) {
+                dbAdmin.config.transforms.write(transformName1, 'xquery', source).
+                    result(function (response) {
+                        done();
+                    }, done);
+            }));
+    });
 
-  it('should write the transform', function(done){
-    this.timeout(10000);
-    fs.createReadStream(transformPath2).
-    pipe(concatStream({encoding: 'string'}, function(source) {
-      dbAdmin.config.transforms.write(transformName2, 'javascript', source).
-      result(function(response){done();}, done);
-    }));
-  });
+    it('should write the transform', function (done) {
+        this.timeout(10000);
+        fs.createReadStream(transformPath2).
+            pipe(concatStream({ encoding: 'string' }, function (source) {
+                dbAdmin.config.transforms.write(transformName2, 'javascript', source).
+                    result(function (response) {
+                        done();
+                    }, done);
+            }));
+    });
 
-  var uri = '/test/transform/comboTransform.json';
+    var uri = '/test/transform/comboTransform.json';
 
-  it('should modify during write and read', function(done){
-  this.timeout(10000);
-    dbWriter.documents.write({
-      uri: '/test/transform/comboTransform.json',
-      contentType: 'application/json',
-      content: {title: 'combo transform'},
-      transform: [transformName1, {flag: 'mountain'}]
-    }).
-    result(function(response) {
-      db.documents.read({uris: '/test/transform/comboTransform.json', transform: transformName2}).
-      result(function(documents) {
-        //console.log(JSON.stringify(documents, null, 4));
-        documents[0].content.flagParam.should.equal('mountain');
-        documents[0].content.should.have.property('timestamp');
-        done();
-      }, done);
-    }, done);
-  });
+    it('should modify during write and read', function (done) {
+        this.timeout(10000);
+        dbWriter.documents.write({
+            uri: '/test/transform/comboTransform.json',
+            contentType: 'application/json',
+            content: { title: 'combo transform' },
+            transform: [transformName1, { flag: 'mountain' }]
+        }).
+            result(function (response) {
+                db.documents.read({ uris: '/test/transform/comboTransform.json', transform: transformName2 }).
+                    result(function (documents) {
+                        //console.log(JSON.stringify(documents, null, 4));
+                        documents[0].content.flagParam.should.equal('mountain');
+                        documents[0].content.should.have.property('timestamp');
+                        done();
+                    }, done);
+            }, done);
+    });
 
-  it('should remove the documents', function(done){
-    dbAdmin.documents.removeAll({
-      directory: '/test/transform/'
-    }).
-    result(function(response) {
-      response.should.be.ok;
-      done();
-    }, done);
-  });
+    it('should remove the documents', function (done) {
+        dbAdmin.documents.removeAll({
+            directory: '/test/transform/'
+        }).
+            result(function (response) {
+                response.should.be.ok;
+                done();
+            }, done);
+    });
 
 });

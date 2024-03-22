@@ -23,45 +23,47 @@ var db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Document transaction test', function() {
+describe('Document transaction test', function () {
 
-  it('should commit the write document', function(done) {
-    this.timeout(10000);
-    var tid = null;
-    db.transactions.open().result().
-    then(function(response) {
-      tid = response.txid;
-      return db.documents.write({
-        txid: tid,
-        uri: '/test/transaction/doc1.json',
-        contentType: 'application/json',
-        content: {firstname: "John", lastname: "Doe", txKey: tid}
-      }).result();
-    }).
-    then(function(response) {
-      return db.transactions.commit(tid).
-      result(function(response) {done();}, done);
+    it('should commit the write document', function (done) {
+        this.timeout(10000);
+        var tid = null;
+        db.transactions.open().result().
+            then(function (response) {
+                tid = response.txid;
+                return db.documents.write({
+                    txid: tid,
+                    uri: '/test/transaction/doc1.json',
+                    contentType: 'application/json',
+                    content: { firstname: 'John', lastname: 'Doe', txKey: tid }
+                }).result();
+            }).
+            then(function (response) {
+                return db.transactions.commit(tid).
+                    result(function (response) {
+                        done();
+                    }, done);
+            });
     });
-  });
 
-  it('should read the commited document', function(done) {
-      this.timeout(10000);
-      db.documents.read({uris:'/test/transaction/doc1.json'}).result().
-      then(function(documents) {
-        var document = documents[0];
-        //console.log(document.content.txKey);
-        var tid = document.content.txKey;
-        return db.documents.read({uris:'/test/transaction/doc1.json'}).result();
-      }).
-      then(function(documents) {
-        var document = documents[0];
-        document.uri.should.equal('/test/transaction/doc1.json');
-        //console.log(document.content.txKey);
-        done();
-      }, done);
-  });
+    it('should read the commited document', function (done) {
+        this.timeout(10000);
+        db.documents.read({ uris: '/test/transaction/doc1.json' }).result().
+            then(function (documents) {
+                var document = documents[0];
+                //console.log(document.content.txKey);
+                var tid = document.content.txKey;
+                return db.documents.read({ uris: '/test/transaction/doc1.json' }).result();
+            }).
+            then(function (documents) {
+                var document = documents[0];
+                document.uri.should.equal('/test/transaction/doc1.json');
+                //console.log(document.content.txKey);
+                done();
+            }, done);
+    });
 
-  /*it('should rollback the write document', function(done) {
+    /*it('should rollback the write document', function(done) {
     this.timeout(10000);
     var tid = null;
     db.transactions.open().result().
@@ -84,29 +86,30 @@ describe('Document transaction test', function() {
     });
   });*/
 
-  it('should rollback the write document', function(done) {
-    this.timeout(10000);
-    var tid = null;
-    db.transactions.open().result().
-    then(function(response) {
-      tid = response.txid;
-      return db.documents.write({
-        txid: tid,
-        uri: '/test/transaction/doc2.json',
-        contentType: 'application/json',
-        content: {firstname: "Peter", lastname: "Pan", txKey: tid}
-      }).result();
-    }).
+    it('should rollback the write document', function (done) {
+        this.timeout(10000);
+        var tid = null;
+        db.transactions.open().result().
+            then(function (response) {
+                tid = response.txid;
+                return db.documents.write({
+                    txid: tid,
+                    uri: '/test/transaction/doc2.json',
+                    contentType: 'application/json',
+                    content: { firstname: 'Peter', lastname: 'Pan', txKey: tid }
+                }).result();
+            }).
 
-    then(function(response) {
-      //console.log(response);
+            then(function (response) {
+                //console.log(response);
 	  return db.transactions.rollback(tid)
-   .result(function(response) {
-   //console.log(response);
-   done();}, done);
+                    .result(function (response) {
+                        //console.log(response);
+                        done();
+                    }, done);
+            });
     });
-  });
-  /*it('should be able to read the rolled back document', function(done) {
+    /*it('should be able to read the rolled back document', function(done) {
       this.timeout(10000);
       console.log(tid);
       db.documents.read({uris:'/test/transaction/doc2.json'}).
@@ -118,57 +121,59 @@ describe('Document transaction test', function() {
       }, done);
   });*/
 
-  it('should rollback the overwritten document', function(done) {
-    this.timeout(10000);
-    var tid = null;
-    db.transactions.open().result().
-    then(function(response) {
-      tid = response.txid;
-      return db.documents.write({
-        txid: tid,
-        uri: '/test/transaction/doc3.json',
-        contentType: 'application/json',
-        content: {firstname: "Bob", lastname: "Sang", txKey: tid}
-      }).result();
-    }).
-    then(function(response) {
-      return db.documents.write({
-        txid: tid,
-        uri: '/test/transaction/doc3.json',
-        contentType: 'application/json',
-        content: {firstname: "Chuck", lastname: "Sang", txKey: tid}
-      }).result();
-    }).
-    then(function(response) {
-      return db.transactions.rollback(tid).
-      result(function(response) {
+    it('should rollback the overwritten document', function (done) {
+        this.timeout(10000);
+        var tid = null;
+        db.transactions.open().result().
+            then(function (response) {
+                tid = response.txid;
+                return db.documents.write({
+                    txid: tid,
+                    uri: '/test/transaction/doc3.json',
+                    contentType: 'application/json',
+                    content: { firstname: 'Bob', lastname: 'Sang', txKey: tid }
+                }).result();
+            }).
+            then(function (response) {
+                return db.documents.write({
+                    txid: tid,
+                    uri: '/test/transaction/doc3.json',
+                    contentType: 'application/json',
+                    content: { firstname: 'Chuck', lastname: 'Sang', txKey: tid }
+                }).result();
+            }).
+            then(function (response) {
+                return db.transactions.rollback(tid).
+                    result(function (response) {
 	  //console.log(response);
-	  done();}, done);
+	  done();
+                    }, done);
+            });
     });
-  });
 
-   it('should be able to read the original document', function(done) {
-      this.timeout(10000);
-      db.documents.read({uris:'/test/transaction/doc3.json'}).
-      result(function(response) {
-        //console.log(response);
-        var document = response[0];
-        //document.content.firstname.should.equal('Bob');
-        done();}
-     , function(error) {
-         //console.log(error);
-         //error.should.have.property('errorResponse');
+    it('should be able to read the original document', function (done) {
+        this.timeout(10000);
+        db.documents.read({ uris: '/test/transaction/doc3.json' }).
+            result(function (response) {
+                //console.log(response);
+                var document = response[0];
+                //document.content.firstname.should.equal('Bob');
+                done();
+            }
+            , function (error) {
+                //console.log(error);
+                //error.should.have.property('errorResponse');
 		 done();
-       });
-  });
+            });
+    });
 
 
-  it('should remove all documents', function(done) {
-      this.timeout(10000);
-      dbAdmin.documents.removeAll({all: true}).
-      result(function(response) {
-        done();
-      }, done);
-  });
+    it('should remove all documents', function (done) {
+        this.timeout(10000);
+        dbAdmin.documents.removeAll({ all: true }).
+            result(function (response) {
+                done();
+            }, done);
+    });
 
 });

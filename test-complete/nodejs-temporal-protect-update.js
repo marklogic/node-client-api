@@ -23,269 +23,273 @@ var marklogic = require('../');
 var concatStream = require('concat-stream');
 var fs = require('fs');
 
-testconfig.manageAdminConnection.user     = "admin";
-testconfig.manageAdminConnection.password = "admin";
+testconfig.manageAdminConnection.user     = 'admin';
+testconfig.manageAdminConnection.password = 'admin';
 var adminClient = marklogic.createDatabaseClient(testconfig.manageAdminConnection);
 var adminManager = testlib.createManager(adminClient);
 var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Temporal protect update test', function() {
-  this.timeout(10000);
-  var docuri = 'temporalUpdateDoc1.json';
-  var expTime = '2026-11-03T19:56:17.681154-07:00';
-  let serverConfiguration = {};
+describe('Temporal protect update test', function () {
+    this.timeout(10000);
+    var docuri = 'temporalUpdateDoc1.json';
+    var expTime = '2026-11-03T19:56:17.681154-07:00';
+    let serverConfiguration = {};
 
-  before(function(done) {
+    before(function (done) {
 
-    testlib.findServerConfiguration(serverConfiguration);
-    setTimeout(()=>{
-      db.documents.write({
+        testlib.findServerConfiguration(serverConfiguration);
+        setTimeout(() => {
+            db.documents.write({
+                uri: docuri,
+                collections: ['coll0', 'coll1'],
+                temporalCollection: 'temporalCollection',
+                contentType: 'application/json',
+                quality: 10,
+                permissions: [
+                    { 'role-name': 'app-user', capabilities: ['read'] },
+                    { 'role-name': 'app-builder', capabilities: ['read', 'update'] }
+                ],
+                properties: { prop1: 'foo', prop2: 25 },
+                content: {
+                    'System': {
+                        'systemStartTime': '',
+                        'systemEndTime': '',
+                    },
+                    'Valid': {
+                        'validStartTime': '2001-01-01T00:00:00',
+                        'validEndTime': '2011-12-31T23:59:59'
+                    },
+                    'Address': '999 Skyway Park',
+                    'uri': 'javaSingleDoc1.json',
+                    id: 12,
+                    name: 'Jason'
+                }
+            }
+            ).result(function (response) {
+                done();
+            }, done)
+                .catch(error => done(error));
+        }, 3000);
+    });
+
+    it('should read the document content name', function (done) {
+        db.documents.read({ uris: docuri }).result(function (response) {
+            response[0].content.Address.should.equal('999 Skyway Park');
+            done();
+        }, done);
+    });
+
+    it('should protect the document', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noUpdate',
+            duration: 'P1D'
+        }).result(function (response) {
+            //console.log(response);
+            response.level.should.equal('noUpdate');
+            done();
+        }, done);
+    });
+
+    it('should not be able to update the document', function (done) {
+        db.documents.write({
             uri: docuri,
             collections: ['coll0', 'coll1'],
             temporalCollection: 'temporalCollection',
             contentType: 'application/json',
             quality: 10,
             permissions: [
-              {'role-name':'app-user', capabilities:['read']},
-              {'role-name':'app-builder', capabilities:['read', 'update']}
+                { 'role-name': 'app-user', capabilities: ['read'] },
+                { 'role-name': 'app-builder', capabilities: ['read', 'update'] }
             ],
-            properties: {prop1:'foo', prop2:25},
+            properties: { prop1: 'foo', prop2: 25 },
             content: {
-              'System': {
-                'systemStartTime' : "",
-                'systemEndTime' : "",
-              },
-              'Valid': {
-                'validStartTime': "2001-01-01T00:00:00",
-                'validEndTime': "2011-12-31T23:59:59"
-              },
-              'Address': "999 Skyway Park",
-              'uri': "javaSingleDoc1.json",
-              id: 12,
-              name: 'Jason'
+                'System': {
+                    'systemStartTime': '',
+                    'systemEndTime': '',
+                },
+                'Valid': {
+                    'validStartTime': '2001-01-01T00:00:00',
+                    'validEndTime': '2011-12-31T23:59:59'
+                },
+                'Address': '888 Skyway Park',
+                'uri': 'javaSingleDoc1.json',
+                id: 12,
+                name: 'Jason'
             }
-          }
-      ).result(function(response){done();}, done)
-          .catch(error=> done(error));
-    }, 3000);
-  });
-
-  it('should read the document content name', function(done) {
-    db.documents.read({uris: docuri}).result(function(response) {
-      response[0].content.Address.should.equal('999 Skyway Park');
-      done();
-    }, done);
-  });
-
-  it('should protect the document', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      duration: 'P1D'
-    }).result(function(response) {
-      //console.log(response);
-      response.level.should.equal('noUpdate');
-      done();
-    }, done);
-  });
-
-  it('should not be able to update the document', function(done) {
-    db.documents.write({
-      uri: docuri,
-      collections: ['coll0', 'coll1'],
-      temporalCollection: 'temporalCollection',
-      contentType: 'application/json',
-      quality: 10,
-      permissions: [
-        {'role-name':'app-user', capabilities:['read']},
-        {'role-name':'app-builder', capabilities:['read', 'update']}
-      ],
-      properties: {prop1:'foo', prop2:25},
-      content: {
-        'System': {
-          'systemStartTime' : "",
-          'systemEndTime' : "",
-        },
-        'Valid': {
-          'validStartTime': "2001-01-01T00:00:00",
-          'validEndTime': "2011-12-31T23:59:59"
-        },
-        'Address': "888 Skyway Park",
-        'uri': "javaSingleDoc1.json",
-        id: 12,
-        name: 'Jason'
-      }
-    }).result(function(response) {
-      //console.log(response);
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalUpdateDoc1.json is protected noUpdate');
-      done();
+        }).result(function (response) {
+            //console.log(response);
+            response.should.equal('SHOULD HAVE FAILED');
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.body.errorResponse.message.should.equal('TEMPORAL-PROTECTED: The document temporalUpdateDoc1.json is protected noUpdate');
+            done();
+        });
     });
-  });
 
-  it('should verify the document', function(done) {
-    db.documents.read({
-      uris: docuri,
-      categories: ['metadata', 'content']
-    }).result(function(response) {
-      //console.log(response);
-      response[0].content.Address.should.equal('999 Skyway Park');
-      response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
-      response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
-      response[0].metadataValues.temporalDocURI.should.equal(docuri);
-      done();
-    }, done);
-  });
-
-  it('should protect the document with longer duration', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      duration: 'P1DT10H3M5S'
-    }).result(function(response) {
-      //console.log(response);
-      response.level.should.equal('noUpdate');
-      done();
-    }, function(error) { console.log(error); done(); });
-  });
-
-  it('should protect the document with archive path', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      duration: 'P1DT11H3M5S',
-      archivePath: '/tmp/archiveDoc_'+serverConfiguration.serverVersion+'.json'
-    }).result(function(response) {
-      //console.log(response);
-      response.level.should.equal('noUpdate');
-      done();
-    }, done);
-  });
-
-  it('should verify the document metadata with archive path', function(done) {
-    db.documents.read({
-      uris: docuri,
-      categories: ['metadata']
-    }).result(function(response) {
-      //console.log(response);
-      response[0].metadataValues.temporalArchivePaths.should.equal('/tmp/archiveDoc_'+serverConfiguration.serverVersion+'.json');
-      response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
-      response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
-      response[0].metadataValues.temporalDocURI.should.equal(docuri);
-      done();
-    }, done);
-  });
-
-  it('should protect the document with expire time and different path', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      duration: 'P2Y5M',
-      archivePath: '/tmp/archiveDoc1_'+serverConfiguration.serverVersion+'.json',
-      expireTime: expTime
-    }).result(function(response) {
-      //console.log(response);
-      response.level.should.equal('noUpdate');
-      done();
-    }, done);
-  });
-
-  it('should verify the document metadata with expire time and different path', function(done) {
-    db.documents.read({
-      uris: docuri,
-      categories: ['metadata']
-    }).result(function(response) {
-      //console.log(JSON.stringify(response, null, 2));
-      const path1 = '/tmp/archiveDoc_'+serverConfiguration.serverVersion+'.json';
-      const path2 = '/tmp/archiveDoc1_'+serverConfiguration.serverVersion+'.json';
-      response[0].metadataValues.temporalArchivePaths.should.containEql(path1);
-      response[0].metadataValues.temporalArchivePaths.should.containEql(path2);
-      response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
-      response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
-      response[0].metadataValues.temporalDocURI.should.equal(docuri);
-      response[0].metadataValues.temporalArchiveStatus.should.equal('succeeded,succeeded');
-      response[0].metadataValues.temporalProtectExTime.should.equal(expTime);
-      done();
-    }).catch(error=>done(error));
-  });
-
-  it('negative - protect document with invalid duration', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      duration: '12H'
-    }).result(function(response) {
-      //console.log(response);
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
-      done();
+    it('should verify the document', function (done) {
+        db.documents.read({
+            uris: docuri,
+            categories: ['metadata', 'content']
+        }).result(function (response) {
+            //console.log(response);
+            response[0].content.Address.should.equal('999 Skyway Park');
+            response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
+            response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
+            response[0].metadataValues.temporalDocURI.should.equal(docuri);
+            done();
+        }, done);
     });
-  });
 
-  it('negative - protect the document with invalid expire time', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noUpdate',
-      expireTime: '1890-06-03'
-    }).result(function(response) {
-      //console.log(response);
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDEXPTIME');
-      done();
+    it('should protect the document with longer duration', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noUpdate',
+            duration: 'P1DT10H3M5S'
+        }).result(function (response) {
+            //console.log(response);
+            response.level.should.equal('noUpdate');
+            done();
+        }, function (error) {
+            console.log(error); done();
+        });
     });
-  });
 
-  it('negative - change level on protected document', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'temporalCollection',
-      level: 'noWipe',
-      duration: 'P2D'
-    }).result(function(response) {
-      //console.log(response);
-      response.should.equal('SHOULD HAVE FAILED');
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
-      done();
+    it('should protect the document with archive path', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noUpdate',
+            duration: 'P1DT11H3M5S',
+            archivePath: '/tmp/archiveDoc_' + serverConfiguration.serverVersion + '.json'
+        }).result(function (response) {
+            //console.log(response);
+            response.level.should.equal('noUpdate');
+            done();
+        }, done);
     });
-  });
 
-  it('negative - protect document with invalid temporal collection', function(done) {
-    db.documents.protect({
-      uri: docuri,
-      temporalCollection: 'invalidTemporalCollection',
-      level: 'noUpdate',
-      duration: 'P12Y'
-    }).result(function(response) {
-      //console.log(response);
-      done();
-    }, function(error) {
-      //console.log(error);
-      error.body.errorResponse.messageCode.should.equal('TEMPORAL-COLLECTIONNOTFOUND');
-      done();
+    it('should verify the document metadata with archive path', function (done) {
+        db.documents.read({
+            uris: docuri,
+            categories: ['metadata']
+        }).result(function (response) {
+            //console.log(response);
+            response[0].metadataValues.temporalArchivePaths.should.equal('/tmp/archiveDoc_' + serverConfiguration.serverVersion + '.json');
+            response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
+            response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
+            response[0].metadataValues.temporalDocURI.should.equal(docuri);
+            done();
+        }, done);
     });
-  });
+
+    it('should protect the document with expire time and different path', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noUpdate',
+            duration: 'P2Y5M',
+            archivePath: '/tmp/archiveDoc1_' + serverConfiguration.serverVersion + '.json',
+            expireTime: expTime
+        }).result(function (response) {
+            //console.log(response);
+            response.level.should.equal('noUpdate');
+            done();
+        }, done);
+    });
+
+    it('should verify the document metadata with expire time and different path', function (done) {
+        db.documents.read({
+            uris: docuri,
+            categories: ['metadata']
+        }).result(function (response) {
+            //console.log(JSON.stringify(response, null, 2));
+            const path1 = '/tmp/archiveDoc_' + serverConfiguration.serverVersion + '.json';
+            const path2 = '/tmp/archiveDoc1_' + serverConfiguration.serverVersion + '.json';
+            response[0].metadataValues.temporalArchivePaths.should.containEql(path1);
+            response[0].metadataValues.temporalArchivePaths.should.containEql(path2);
+            response[0].metadataValues.temporalProtectExTime.should.not.be.empty;
+            response[0].metadataValues.temporalProtectLevel.should.equal('noUpdate');
+            response[0].metadataValues.temporalDocURI.should.equal(docuri);
+            response[0].metadataValues.temporalArchiveStatus.should.equal('succeeded,succeeded');
+            response[0].metadataValues.temporalProtectExTime.should.equal(expTime);
+            done();
+        }).catch(error => done(error));
+    });
+
+    it('negative - protect document with invalid duration', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noUpdate',
+            duration: '12H'
+        }).result(function (response) {
+            //console.log(response);
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDDURATION');
+            done();
+        });
+    });
+
+    it('negative - protect the document with invalid expire time', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noUpdate',
+            expireTime: '1890-06-03'
+        }).result(function (response) {
+            //console.log(response);
+            response.should.equal('SHOULD HAVE FAILED');
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.body.errorResponse.messageCode.should.equal('TEMPORAL-INVALIDEXPTIME');
+            done();
+        });
+    });
+
+    it('negative - change level on protected document', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'temporalCollection',
+            level: 'noWipe',
+            duration: 'P2D'
+        }).result(function (response) {
+            //console.log(response);
+            response.should.equal('SHOULD HAVE FAILED');
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.body.errorResponse.messageCode.should.equal('TEMPORAL-PROTECTED');
+            done();
+        });
+    });
+
+    it('negative - protect document with invalid temporal collection', function (done) {
+        db.documents.protect({
+            uri: docuri,
+            temporalCollection: 'invalidTemporalCollection',
+            level: 'noUpdate',
+            duration: 'P12Y'
+        }).result(function (response) {
+            //console.log(response);
+            done();
+        }, function (error) {
+            //console.log(error);
+            error.body.errorResponse.messageCode.should.equal('TEMPORAL-COLLECTIONNOTFOUND');
+            done();
+        });
+    });
 
 
-  /*after(function(done) {
+    /*after(function(done) {
    return adminManager.post({
       endpoint: '/manage/v2/databases/' + testconfig.testServerName,
       contentType: 'application/json',
@@ -302,19 +306,19 @@ describe('Temporal protect update test', function() {
     done);
   });*/
 
-  after(function(done) {
-    dbAdmin.documents.removeAll({
-      all: true
-    }).
-    result(function(response) {
-      try{
-        fs.unlinkSync('/tmp/archiveDoc_'+serverConfiguration.serverVersion+'.json');
-        fs.unlinkSync('/tmp/archiveDoc1_'+serverConfiguration.serverVersion+'.json');
-        done();
-      } catch(error){
-        done(error);
-      }
-    }).catch(error=>done(error));
-  });
+    after(function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                try {
+                    fs.unlinkSync('/tmp/archiveDoc_' + serverConfiguration.serverVersion + '.json');
+                    fs.unlinkSync('/tmp/archiveDoc1_' + serverConfiguration.serverVersion + '.json');
+                    done();
+                } catch (error) {
+                    done(error);
+                }
+            }).catch(error => done(error));
+    });
 
 });
