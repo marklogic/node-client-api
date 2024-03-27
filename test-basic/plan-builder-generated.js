@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 MarkLogic Corporation
+ * Copyright (c) 2024 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ const getResult = pbb.getResult;
 let serverConfiguration = {};
 
 describe('plan builder', function() {
-  describe('expression functions', function() {
+  describe('expression functions', function() { 
       before(function (done) {
           this.timeout(6000);
           try {
@@ -976,7 +976,7 @@ describe('plan builder', function() {
     }); 
     it('geo.parseWkt#1', function(done) {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
-          .then(function(response) {
+          .then(function(response) { 
               const responseValue = (serverConfiguration.serverVersion >= 11)?"LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)":
                   "LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)";
             should(getResult(response).value).eql(responseValue);
