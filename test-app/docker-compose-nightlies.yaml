@@ -1,18 +1,18 @@
 version: '3.8'
 # name: node-client-10-nightly
 # name: node-client-10_0-10
-name: node-client-11-1-jenkins
-#name: node-client-11-nightly-jenkins
+# name: node-client-11-1
+name: node-client-11-2-nightly
 # name: node-client-12-nightly
 
 services:
 
   marklogic:
-    #image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-centos:10.0-nightly-centos-1.1.1"
-    #image: "marklogicdb/marklogic-db:latest-10.0-10"
-    image: "marklogicdb/marklogic-db:11.1.0-centos-1.1.0"
-    # image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-centos:11.2.nightly-centos-1.1.2"
-    #image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-centos:12.0.nightly-centos-1.1.1"
+    # image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-centos:10.0-nightly-centos-1.1.1"
+    # image: "marklogicdb/marklogic-db:latest-10.0-10"
+    # image: "marklogicdb/marklogic-db:11.1.0-centos-1.1.0"
+    image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-centos:11.2.nightly-centos-1.1.2"
+    # image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-centos:12.0.nightly-centos-1.1.2"
     platform: linux/amd64
     environment:
       - INSTALL_CONVERTERS=true
@@ -20,7 +20,8 @@ services:
       - MARKLOGIC_ADMIN_USERNAME=admin
       - MARKLOGIC_ADMIN_PASSWORD=admin
     volumes:
-      - ./containerLogs:/var/opt/MarkLogic/Logs
+      - ./MarkLogic/logs:/var/opt/MarkLogic/Logs
+      - ../..:/var/workspace
     ports:
       - 8000-8016:8000-8016
       - 8024-8029:8024-8029

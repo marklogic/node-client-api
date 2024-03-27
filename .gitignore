@@ -12,6 +12,7 @@ test-app/.gradle
 test-app/gradle-local.properties
 test-app/docker
 test-app/containerLogs
+test-app/MarkLogic
 
 test-complete-app/build
 test-complete-app/.gradle
