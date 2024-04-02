@@ -31,7 +31,11 @@ var db = marklogic.createDatabaseClient(testconfig.restTemporalConnection);
 var dbReader = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 var dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 
-describe('Temporal protect update test', function () {
+/*
+* Skipping ALL of these tests
+* The way they are written, the tests must run sequentially. That can't be assumed with Mocha.
+*/
+describe.skip('Temporal protect update test', function () {
     this.timeout(10000);
     var docuri = 'temporalUpdateDoc1.json';
     var expTime = '2026-11-03T19:56:17.681154-07:00';
@@ -41,36 +45,36 @@ describe('Temporal protect update test', function () {
 
         testlib.findServerConfiguration(serverConfiguration);
         setTimeout(() => {
-            db.documents.write({
-                uri: docuri,
-                collections: ['coll0', 'coll1'],
-                temporalCollection: 'temporalCollection',
-                contentType: 'application/json',
-                quality: 10,
-                permissions: [
-                    { 'role-name': 'app-user', capabilities: ['read'] },
-                    { 'role-name': 'app-builder', capabilities: ['read', 'update'] }
-                ],
-                properties: { prop1: 'foo', prop2: 25 },
-                content: {
-                    'System': {
-                        'systemStartTime': '',
-                        'systemEndTime': '',
-                    },
-                    'Valid': {
-                        'validStartTime': '2001-01-01T00:00:00',
-                        'validEndTime': '2011-12-31T23:59:59'
-                    },
-                    'Address': '999 Skyway Park',
-                    'uri': 'javaSingleDoc1.json',
-                    id: 12,
-                    name: 'Jason'
-                }
+        db.documents.write({
+            uri: docuri,
+            collections: ['coll0', 'coll1'],
+            temporalCollection: 'temporalCollection',
+            contentType: 'application/json',
+            quality: 10,
+            permissions: [
+                { 'role-name': 'app-user', capabilities: ['read'] },
+                { 'role-name': 'app-builder', capabilities: ['read', 'update'] }
+            ],
+            properties: { prop1: 'foo', prop2: 25 },
+            content: {
+                'System': {
+                    'systemStartTime': '',
+                    'systemEndTime': '',
+                },
+                'Valid': {
+                    'validStartTime': '2001-01-01T00:00:00',
+                    'validEndTime': '2011-12-31T23:59:59'
+                },
+                'Address': '999 Skyway Park',
+                'uri': 'javaSingleDoc1.json',
+                id: 12,
+                name: 'Jason'
             }
-            ).result(function (response) {
-                done();
-            }, done)
-                .catch(error => done(error));
+        }
+        ).result(function (response) {
+            done();
+        }, done)
+            .catch(error => done(error));
         }, 3000);
     });
 
@@ -208,7 +212,6 @@ describe('Temporal protect update test', function () {
             uris: docuri,
             categories: ['metadata']
         }).result(function (response) {
-            //console.log(JSON.stringify(response, null, 2));
             const path1 = '/tmp/archiveDoc_' + serverConfiguration.serverVersion + '.json';
             const path2 = '/tmp/archiveDoc1_' + serverConfiguration.serverVersion + '.json';
             response[0].metadataValues.temporalArchivePaths.should.containEql(path1);
