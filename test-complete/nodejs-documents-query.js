@@ -105,6 +105,15 @@ describe('Document query test', function () {
             }, done);
     });
 
+    after('should delete all documents', function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
+
     it('should do word query', function (done) {
         db.documents.query(
             q.where(
@@ -117,36 +126,17 @@ describe('Document query test', function () {
         }, done);
     });
 
-    it('should set database stemmed searches to basic', function (done) {
-        this.timeout(20000);
-        var src = 'var admin = require(\'/MarkLogic/admin.xqy\');' +
-              'var c = admin.getConfiguration();' +
-              'c = admin.databaseSetStemmedSearches(c, xdmp.database(\'node-client-api-rest-server\'), \'basic\');' +
-              'admin.saveConfiguration(c);';
-        dbConfigAdmin.eval(src)
-            .result(function (output) {
-                //console.log(JSON.stringify(output, null, 2));
-                done();
-            }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
-            });
-    });
-
-    it('should wait for set stemmed searches on database', function (done) {
-        setTimeout(function () {
-            done();
-        }, 10000);
-    });
-
     it('should do term query with stemmed', function (done) {
         db.documents.query(
             q.where(
                 q.term('describe', q.termOptions('stemmed'))
-            )).result(function (response) {
+            )
+        ).result(function (response) {
             response.length.should.equal(1);
             response[0].content.id.should.equal('0012');
-            //console.log(JSON.stringify(response, null, 4));
+            done();
+        }, function (error) {
+            console.log(JSON.stringify(error, null, 2));
             done();
         });
     });
@@ -161,10 +151,8 @@ describe('Document query test', function () {
                 withOptions({ categories: 'none' })
         ).
 	  result(function (response) {
-                //console.log(JSON.stringify(response, null, 4));
                 response.length.should.equal(1);
                 response[0].results[0].matches[0]['match-text'].length.should.equal(2);
-                //response[0].results[0].matches[0]['match-text'][1].should.containEql('{ highlight: \'Bush\' }');
                 done();
             }, done);
     });
@@ -177,7 +165,6 @@ describe('Document query test', function () {
                 withOptions({ search: ['unfiltered'] }, { categories: ['content'] })
         ).
 	  result(function (response) {
-                //console.log(JSON.stringify(response, null, 4));
                 response.length.should.equal(3);
                 done();
             }, done);
@@ -190,7 +177,6 @@ describe('Document query test', function () {
                 withOptions({ categories: ['content'] })
         ).
 	  result(function (response) {
-                //console.log(JSON.stringify(response, null, 4));
                 response.length.should.equal(3);
                 done();
             }, done);
@@ -203,7 +189,6 @@ describe('Document query test', function () {
                 withOptions({ search: ['filtered'] }, { categories: ['content'] })
         ).
 	  result(function (response) {
-	  //console.log(JSON.stringify(response, null, 4));
                 response.length.should.equal(3);
                 done();
             }, done);
@@ -218,7 +203,6 @@ describe('Document query test', function () {
                 )
             )).result(function (response) {
             response.length.should.equal(2);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0026');
             response[1].content.id.should.equal('0012');
             done();
@@ -234,7 +218,6 @@ describe('Document query test', function () {
                 )
             ).withOptions({ search: ['filtered'] }, { categories: ['content'] })
         ).result(function (response) {
-            // console.log(JSON.stringify(response, null, 4));
             response.length.should.equal(2);
             response[0].content.id.should.equal('0026');
             response[1].content.id.should.equal('0012');
@@ -253,9 +236,7 @@ describe('Document query test', function () {
                     )
                 )
             )).result(function (response) {
-            var document = response[0];
             response.length.should.equal(2);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0013');
             response[1].content.id.should.equal('0026');
             done();
@@ -274,7 +255,6 @@ describe('Document query test', function () {
         ).result(function (response) {
             var document = response[0];
             response.length.should.equal(1);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0011');
             done();
         }, done);
@@ -292,7 +272,6 @@ describe('Document query test', function () {
             )).result(function (response) {
             var document = response[0];
             response.length.should.equal(1);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0011');
             done();
         }, done);
@@ -308,7 +287,6 @@ describe('Document query test', function () {
             )).result(function (response) {
             var document = response[0];
             response.length.should.equal(2);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0011');
             response[1].content.id.should.equal('0012');
             done();
@@ -324,7 +302,6 @@ describe('Document query test', function () {
                 )
             ).withOptions({ search: ['filtered'] }, { categories: ['content'] })
         ).result(function (response) {
-            //console.log(JSON.stringify(response, null, 4));
             var document = response[0];
             response.length.should.equal(1);
             response[0].content.id.should.equal('0012');
@@ -341,7 +318,6 @@ describe('Document query test', function () {
             )).result(function (response) {
             var document = response[0];
             response.length.should.equal(1);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0026');
             done();
         }, done);
@@ -358,7 +334,6 @@ describe('Document query test', function () {
                 )
             ).slice(0, 100, q.snippet())
         ).result(function (response) {
-        //console.log(JSON.stringify(response, null, 2));
             response[0].results[0].matches[0]['match-text'][1].highlight.should.equal('Bush');
             response[0].results[0].matches[1]['match-text'][1].highlight.should.equal('Bush');
             response[0].results[0].matches[1]['match-text'][3].highlight.should.equal('Atlantic');
@@ -380,7 +355,6 @@ describe('Document query test', function () {
             ).should.equal('SHOULD HAVE FAILED');
             done();
 	 } catch (error) {
-            //console.log(error);
             error.should.be.ok;
             done();
         }
@@ -393,7 +367,6 @@ describe('Document query test', function () {
         ).result(function (response) {
             var document = response[0];
             response.length.should.equal(5);
-            //console.log(JSON.stringify(response, null, 4));
             done();
         }, done);
     });
@@ -404,7 +377,6 @@ describe('Document query test', function () {
                 q.term('memex', q.termOptions('lang=de-DE-1901'))
             )).result(function (response) {
             response.length.should.equal(0);
-            //console.log(JSON.stringify(response, null, 4));
             done();
         }, done);
     });
@@ -415,7 +387,6 @@ describe('Document query test', function () {
                 q.term('memex', q.termOptions('lang=en-EN'))
             )).result(function (response) {
             response.length.should.equal(2);
-            //console.log(JSON.stringify(response, null, 4));
             done();
         }, done);
     });
@@ -435,7 +406,6 @@ describe('Document query test', function () {
             q.where(
                 ctsQueryBldr.cts.andQuery(ctsQueryBldr.cts.wordQuery('groundbreaking'))
             )).result(function (response) {
-            //console.log(JSON.stringify(response, null, 4));
             response.length.should.equal(1);
             response[0].content.id.should.equal('0013');
             response[0].uri.should.equal('/test/query/matchDir/doc3.json');
@@ -451,35 +421,5 @@ describe('Document query test', function () {
             response.length.should.equal(0);
             done();
         }, done);
-    });
-
-    it('should delete all documents', function (done) {
-        dbAdmin.documents.removeAll({
-            all: true
-        }).
-            result(function (response) {
-                done();
-            }, done);
-    });
-
-    it('should set database stemmed searches back to off', function (done) {
-        var src = 'var admin = require(\'/MarkLogic/admin.xqy\');' +
-              'var c = admin.getConfiguration();' +
-              'c = admin.databaseSetStemmedSearches(c, xdmp.database(\'node-client-api-rest-server\'), \'off\');' +
-              'admin.saveConfiguration(c);';
-        dbConfigAdmin.eval(src)
-            .result(function (output) {
-                //console.log(JSON.stringify(output, null, 2));
-                done();
-            }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
-            });
-    });
-
-    it('should wait for set stemmed searches on database', function (done) {
-        setTimeout(function () {
-            done();
-        }, 10000);
     });
 });

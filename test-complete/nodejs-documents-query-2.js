@@ -116,6 +116,15 @@ describe('Document query test 2', function () {
             }, done);
     });
 
+    after('should delete all documents', function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
+                done();
+            }, done);
+    });
+
     it('should do word query', function (done) {
         db.documents.query(
             q.where(
@@ -139,7 +148,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(1);
                 done();
             }, done);
@@ -154,7 +162,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(1);
                 response[0].content.id.should.equal('0026');
                 done();
@@ -169,7 +176,6 @@ describe('Document query test 2', function () {
                 withOptions({ search: ['filtered'], debug: true })
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(2);
                 response[1].uri.should.equal('/test/query/matchList/doc6.xml');
                 done();
@@ -183,7 +189,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(2);
                 done();
             }, done);
@@ -196,7 +201,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(2);
                 done();
             }, done);
@@ -209,7 +213,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(1);
                 done();
             }, done);
@@ -218,7 +221,6 @@ describe('Document query test 2', function () {
     it('should set validate-queries to true', function (done) {
         dbAdmin.config.serverprops.write({ 'validate-queries': true }).
             result(function (response) {
-                //console.log(response);
                 done();
             }, done);
     });
@@ -230,7 +232,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(2);
                 done();
             }, done);
@@ -246,7 +247,6 @@ describe('Document query test 2', function () {
     it('should verify validate-queries to false', function (done) {
         dbAdmin.config.serverprops.read().
             result(function (response) {
-                //console.log(response);
                 done();
             }, done);
     });
@@ -258,7 +258,6 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(2);
                 done();
             }, done);
@@ -271,17 +270,7 @@ describe('Document query test 2', function () {
             )
         ).
             result(function (response) {
-                //console.log(JSON.stringify(response, null, 2));
                 response.length.should.equal(0);
-                done();
-            }, done);
-    });
-
-    it('should delete all documents', function (done) {
-        dbAdmin.documents.removeAll({
-            all: true
-        }).
-            result(function (response) {
                 done();
             }, done);
     });

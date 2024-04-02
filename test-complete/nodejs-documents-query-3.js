@@ -104,26 +104,13 @@ describe('Document query test', function () {
             }, done);
     });
 
-    it('should set database stemmed searches to basic', function (done) {
-        this.timeout(20000);
-        var src = 'var admin = require(\'/MarkLogic/admin.xqy\');' +
-              'var c = admin.getConfiguration();' +
-              'c = admin.databaseSetStemmedSearches(c, xdmp.database(\'node-client-api-rest-server\'), \'basic\');' +
-              'admin.saveConfiguration(c);';
-        dbConfigAdmin.eval(src)
-            .result(function (output) {
-                //console.log(JSON.stringify(output, null, 2));
+    after('should delete all documents', function (done) {
+        dbAdmin.documents.removeAll({
+            all: true
+        }).
+            result(function (response) {
                 done();
-            }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
-            });
-    });
-
-    it('should wait for set stemmed searches on database', function (done) {
-        setTimeout(function () {
-            done();
-        }, 10000);
+            }, done);
     });
 
     it('should do near query', function (done) {
@@ -139,7 +126,6 @@ describe('Document query test', function () {
         ).result(function (response) {
             var document = response[0];
             response.length.should.equal(1);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0012');
             done();
         }, done);
@@ -160,41 +146,8 @@ describe('Document query test', function () {
         ).result(function (response) {
             var document = response[0];
             response.length.should.equal(1);
-            //console.log(JSON.stringify(response, null, 4));
             response[0].content.id.should.equal('0013');
             done();
         }, done);
-    });
-
-
-
-    it('should delete all documents', function (done) {
-        dbAdmin.documents.removeAll({
-            all: true
-        }).
-            result(function (response) {
-                done();
-            }, done);
-    });
-
-    it('should set database stemmed searches back to off', function (done) {
-        var src = 'var admin = require(\'/MarkLogic/admin.xqy\');' +
-              'var c = admin.getConfiguration();' +
-              'c = admin.databaseSetStemmedSearches(c, xdmp.database(\'node-client-api-rest-server\'), \'off\');' +
-              'admin.saveConfiguration(c);';
-        dbConfigAdmin.eval(src)
-            .result(function (output) {
-                //console.log(JSON.stringify(output, null, 2));
-                done();
-            }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
-            });
-    });
-
-    it('should wait for set stemmed searches on database', function (done) {
-        setTimeout(function () {
-            done();
-        }, 10000);
     });
 });
