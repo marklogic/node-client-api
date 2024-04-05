@@ -27,7 +27,6 @@ const db = marklogic.createDatabaseClient(connectdef.plan);
 const op = marklogic.planBuilder;
 let serverConfiguration = {};
 describe('Nodejs Optic from views test', function () {
-    var oldTimestamp = db.createTimestamp('123');
     this.timeout(6000);
     before(function (done) {
         try {
@@ -1165,24 +1164,20 @@ describe('Nodejs Optic from views test', function () {
     });
 
     it('TEST 38 - with old timestamp', function (done) {
-        const timestamp = db.createTimestamp();
-        const plan1 =
-      op.fromView('opticFunctionalTest', 'detail', 'myDetail');
-        const plan2 =
-      op.fromView('opticFunctionalTest', 'master', 'myMaster');
+        var oldTimestamp = db.createTimestamp('123');
+        const plan1 = op.fromView('opticFunctionalTest', 'detail', 'myDetail');
+        const plan2 = op.fromView('opticFunctionalTest', 'master', 'myMaster');
         const masterIdCol1 = plan1.col({ column: 'masterId' });
         const masterIdCol2 = plan2.col('id');
         const idCol1 = plan2.col('id');
         const idCol2 = plan1.col({ column: 'id' });
         const detailNameCol = plan1.col({ column: 'name' });
-        const masterNameCol = plan2.col('name');
-        const output =
-      plan1.joinInner({
-          right: plan2,
-          keys: [op.on(masterIdCol1, masterIdCol2), op.on(idCol1, idCol2)]
-      })
-          .orderBy({ keys: [op.desc({ column: detailNameCol })] })
-          .offsetLimit({ start: 1, length: 100 });
+        const output = plan1.joinInner({
+            right: plan2,
+            keys: [op.on(masterIdCol1, masterIdCol2), op.on(idCol1, idCol2)]
+        })
+            .orderBy({ keys: [op.desc({ column: detailNameCol })] })
+            .offsetLimit({ start: 1, length: 100 });
         db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header', timestamp: oldTimestamp })
             .then(function (output) {
                 expect(output).to.be.undefined;
