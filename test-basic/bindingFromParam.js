@@ -443,6 +443,32 @@ describe('optic-update fromParam tests', function(){
         });
     });
 
+        it('test with bindingParam as Json string', function (done) {
+            const outputCols = [
+                {"column": "rowId"},
+                {"column": "colorId", "nullable": true},
+            ];
+            const planBuilderTemplate = op.fromParam('bindingParam', null, outputCols);
+            const temp = {bindingParam: "[\n" +
+                    "  {\"rowId\": 1, \"colorId\": 1},\n" +
+                    "  {\"rowId\": 2, \"colorId\": 2}\n" +
+                    "]"};
+            db.rows.query(planBuilderTemplate, null, temp).then(res => {
+                try {
+                    const rows = res.rows;
+                    rows[0].rowId.value.should.equal(1);
+                    rows[0].colorId.value.should.equal(1);
+                    rows[1].rowId.value.should.equal(2);
+                    rows[1].colorId.value.should.equal(2);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            }).catch(e => {
+                done(e);
+            });
+        });
+
     it('test fromParam binding binary files', function (done) {
         const bindingParam = "bindingParam";
 
