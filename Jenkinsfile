@@ -51,7 +51,7 @@ def runE2ETests(String type,String version){
         cd test-complete-app
         ./gradlew -i mlDeploy
         cd ..
-        ./node_modules/.bin/mocha -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
+        ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
         cd test-complete-proxy
         npm install --global gulp-cli
         gulp loadToModulesDB
