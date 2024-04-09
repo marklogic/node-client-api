@@ -82,16 +82,10 @@ describe('queryAll-tests-1', function () {
         this.timeout(10000);
         const fileName1 = path.join(__dirname, '/data/dmsdk/queryAllColl.txt');
         const fileName2 = path.join(__dirname, '/data/dmsdk/queryAllOneResult.txt');
-        fs.unlink(fileName1, function (err) {
-            if (err) {
-                done(err);
-            }
-        });
-        fs.unlink(fileName2, function (err) {
-            if (err) {
-                done(err);
-            }
-        });
+        try {
+            fs.unlink(fileName1, function (err) {});
+            fs.unlink(fileName2, function (err) {});
+        } catch (err) {}
         done();
     });
 
@@ -247,7 +241,9 @@ describe('queryAll-tests-2', function () {
     after(function (done) {
         this.timeout(10000);
         const fileNameMB = path.join(__dirname, '/data/dmsdk/queryAllMBResult.txt');
-        fs.unlinkSync(fileNameMB);
+        try {
+            fs.unlinkSync(fileNameMB);
+        } catch (err) {}
         done();
     });
 
