@@ -248,6 +248,25 @@ describe('optic patchBuilder tests', function() {
                 done(error);
             }
         });
+
+        it('should continue with onError as continue during CONFLICTINGUPDATES', function (done) {
+            const plan = p.fromDocUris(p.cts.documentQuery(uris[1]))
+                .joinDocCols(null, p.fragmentIdCol('fragmentId'))
+                .patch(p.col('doc'),
+                    p.patchBuilder('/')
+                        .replaceValue( 'person/lastName', 'newLastName')
+                        .replaceValue( 'person/lastName', 'newLastName-2')
+                )
+                .onError("continue", p.col("Error"));
+            dbWriter.rows.query(plan)
+                .then(function (response) {
+                    assert(response.rows[0].doc.value.person.lastName === 'lastname-1' , "lastName was updated.");
+                    assert(response.rows[0].Error.value.name === 'XDMP-CONFLICTINGUPDATES' ,
+                        "should receive error column with value as XDMP-CONFLICTINGUPDATES");
+                    done();
+                })
+                .catch(err => done(err));
+        });
     });
 });
 
