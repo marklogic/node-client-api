@@ -55,7 +55,7 @@
     "bunyan": "^1.8.15",
     "chai": "^4.3.10",
     "core-util-is": "^1.0.3",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-jsdoc3": "^3.0.0",
     "gulp-jshint": "^2.1.0",
     "gulp-mocha": "^8.0.0",
@@ -65,7 +65,7 @@
     "mocha-junit-reporter": "2.2.0",
     "moment": "^2.29.4",
     "read": "^1.0.7",
-    "sanitize-html": "2.11.0",
+    "sanitize-html": "^2.13.0",
     "should": "^13.2.3",
     "stream-to-array": "^2.3.0",
     "winston": "^3.8.2"
@@ -83,6 +83,6 @@
   },
   "overrides": {
     "jsdoc": "4.0.0",
-    "sanitize-html": "2.11.0"
+    "sanitize-html": "^2.13.0"
   }
 }

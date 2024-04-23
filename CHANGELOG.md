@@ -1,4 +1,16 @@
 # CHANGELOG
+## 3.4.0
+#### New Functionality
+
+- Can now connect to MarkLogic using OAuth token (MarkLogic Server version 11.2.0 or higher needed).
+- Optic Update plans, including DSL queries that perform updates, now require `update: true` to be included in the options sent to the `rows.execute()` function. (MarkLogic Server version 11.2.0 or higher needed).
+- Can now perform partial updates on documents via Optic using the new `patchBuilder` operator. (MarkLogic Server version 11.2.0 or higher needed).
+- Can now capture errors from executing an Optic plan by including the new `onError` operator. (MarkLogic Server version 11.2.0 or higher needed).
+
+#### Bug Fix
+
+- Can now send bindings to Optic Server functions in the form of text.
+- Fix for security vulnerability - https://github.com/advisories/GHSA-4gmj-3p3h-gm8h
 
 ## 3.3.1
 #### Bug Fix
