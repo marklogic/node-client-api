@@ -10,7 +10,7 @@
 #### Bug Fix
 
 - Can now send bindings to Optic Server functions in the form of text.
-- Fix for security vulnerability - https://github.com/advisories/GHSA-4gmj-3p3h-gm8h
+- Fix for security vulnerabilities - https://github.com/advisories/GHSA-4gmj-3p3h-gm8h and https://github.com/advisories/GHSA-cgfm-xwp7-2cvr
 
 ## 3.3.1
 #### Bug Fix
