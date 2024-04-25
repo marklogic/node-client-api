@@ -1,9 +1,14 @@
 config-optic/
 examples/
 etc/
+test-app/
 test-basic/
 test-basic-proxy/
 test-complete/
+test-complete-proxy/
+wiki_images/
+CONTRIBUTING.md
 gulpfile.js
+Jenkinsfile
 .jshintrc
 jsdoc.json
