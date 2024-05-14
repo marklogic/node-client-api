@@ -13,6 +13,7 @@ def runTests(String type,String version){
         npm install
         cd test-app
         ./gradlew -i mlDeploy
+        sh "echo systemProp.gradle.user.home=./gradleHome >> gradle.properties"
         cd ..
         rm -rf $WORKSPACE/*.xml || true
         ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
@@ -50,6 +51,7 @@ def runE2ETests(String type,String version){
         sleep 30
         cd test-complete-app
         ./gradlew -i mlDeploy
+        sh "echo systemProp.gradle.user.home=./gradleHome >> gradle.properties"
         cd ..
         ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
         cd test-complete-proxy
