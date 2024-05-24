@@ -10,8 +10,7 @@
     "doc": "gulp doc",
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
-    "test": "gulp test",
-    "preinstall": "(npm install --package-lock-only --ignore-scripts) && npx npm-force-resolutions"
+    "test": "gulp test"
   },
   "keywords": [
     "marklogic",
@@ -53,7 +52,7 @@
     "ast-types": "^0.14.2",
     "astring": "^1.8.3",
     "bunyan": "^1.8.15",
-    "chai": "^4.3.10",
+    "chai": "^4.4.1",
     "core-util-is": "^1.0.3",
     "gulp": "^5.0.0",
     "gulp-jsdoc3": "^3.0.0",
@@ -74,16 +73,14 @@
     "kerberos": "^2.0.1",
     "vinyl": "^3.0.0"
   },
-  "resolutions": {
-    "glob-parent": "6.0.2",
-    "nanoid": "3.1.31",
-    "simple-get": "4.0.1",
-    "minimatch": "5.1.0",
-    "sanitize-html": "2.13.0",
-    "semver": "7.5.3"
-  },
   "overrides": {
+    "braces": "3.0.3",
     "jsdoc": "4.0.0",
-    "sanitize-html": "^2.13.0"
+    "sanitize-html": "^2.13.0",
+    "minimatch": "5.1.0",
+    "nanoid": "3.1.31",
+    "glob-parent": "6.0.2",
+    "simple-get": "4.0.1",
+    "semver": "7.5.3"
   }
 }
