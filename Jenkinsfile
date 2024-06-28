@@ -92,12 +92,12 @@ pipeline{
           JAVA_HOME_DIR="/home/builder/java/openjdk-1.8.0-262"
     }
     stages{
-        stage('runtests-11.2.0'){
+        stage('runtests-11.3.0'){
             agent {label 'nodeclientpool'}
             steps{
                 runAuditReport()
-                runTests('Release','11.2.0')
-                runE2ETests('Release','11.2.0')
+                runTests('Release','11.3.0')
+                runE2ETests('Release','11.3.0')
             }
         }
         stage('regressions'){
