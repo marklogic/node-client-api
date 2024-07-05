@@ -3,7 +3,7 @@
   "name": "marklogic",
   "description": "The official MarkLogic Node.js client API.",
   "homepage": "https://github.com/marklogic/node-client-api",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "scripts": {
@@ -81,6 +81,11 @@
     "nanoid": "3.1.31",
     "glob-parent": "6.0.2",
     "simple-get": "4.0.1",
-    "semver": "7.5.3"
+    "semver": "7.5.3",
+    "homedir-polyfill": "../_EXCLUDED_",
+    "inflight": "../_EXCLUDED_",
+    "rimraf": "5.0.7",
+    "@humanwhocodes/config-array": "../_EXCLUDED_",
+    "glob": "10.4.2"
   }
 }
