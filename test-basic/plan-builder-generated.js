@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 MarkLogic Corporation
+ * Copyright (c) 2024 MarkLogic Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,22 +23,11 @@ const marklogic = require('../');
 const p = marklogic.planBuilder;
 
 const pbb = require('./plan-builder-base');
-const testlib = require("../etc/test-lib");
 const testPlan = pbb.testPlan;
 const getResult = pbb.getResult;
-let serverConfiguration = {};
 
 describe('plan builder', function() {
-  describe('expression functions', function() {
-      before(function (done) {
-          this.timeout(6000);
-          try {
-              testlib.findServerConfiguration(serverConfiguration);
-              setTimeout(()=>{done();}, 3000);
-          } catch(error){
-              done(error);
-          }
-      });
+  describe('expression functions', function() { 
     it('cts.box#4', function(done) {
         testPlan([p.xs.double(1), p.xs.double(2), p.xs.double(3), p.xs.double(4)], p.cts.box(p.col("1"), p.col("2"), p.col("3"), p.col("4")))
           .then(function(response) { 
@@ -399,7 +388,7 @@ describe('plan builder', function() {
     it('fn.head#1', function(done) {
         testPlan([[p.xs.string("a"), p.xs.string("b"), p.xs.string("c")]], p.fn.head(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('a');
+            should(getResult(response).value).eql(null);
             done();
         }).catch(done);
     }); 
@@ -595,7 +584,7 @@ describe('plan builder', function() {
     it('fn.prefixFromQName#1', function(done) {
         testPlan([p.xs.QName("abc")], p.fn.prefixFromQName(p.col("1")))
           .then(function(response) { 
-            should(getResult(response).value).eql(null);
+            should(String(getResult(response).value).replace(/^ /, '')).equal('');
             done();
         }).catch(done);
     }); 
@@ -945,7 +934,7 @@ describe('plan builder', function() {
     it('geo.geohashNeighbors#1', function(done) {
         testPlan([p.xs.string("s01mtw")], p.geo.geohashNeighbors(p.col("1")))
           .then(function(response) { 
-            should(getResult(response).value).eql({"NE":"s01mtz", "S":"s01mtt", "E":"s01mty", "W":"s01mtq", "N":"s01mtx", "SW":"s01mtm", "SE":"s01mtv", "NW":"s01mtr"});
+            should(getResult(response).value).eql({"NE":"s01mtz", "S":"s01mtt", "E":"s01mty", "W":"s01mtq", "SW":"s01mtm", "N":"s01mtx", "SE":"s01mtv", "NW":"s01mtr"});
             done();
         }).catch(done);
     }); 
@@ -957,15 +946,11 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('geo.geohashSubhashes#1', function(done) {
-        if(serverConfiguration.serverVersion < 11){
-            this.skip();
-        }
         testPlan([p.xs.string("s01mtw")], p.geo.geohashSubhashes(p.col("1")))
           .then(function(response) { 
             should(getResult(response).value).eql(["s01mtw0", "s01mtw1", "s01mtw2", "s01mtw3", "s01mtw4", "s01mtw5", "s01mtw6", "s01mtw7", "s01mtw8", "s01mtw9", "s01mtwb", "s01mtwc", "s01mtwd", "s01mtwe", "s01mtwf", "s01mtwg", "s01mtwh", "s01mtwj", "s01mtwk", "s01mtwm", "s01mtwn", "s01mtwp", "s01mtwq", "s01mtwr", "s01mtws", "s01mtwt", "s01mtwu", "s01mtwv", "s01mtww", "s01mtwx", "s01mtwy", "s01mtwz"]);
             done();
-        }).catch(done)
-            .catch(error => done(error));
+        }).catch(done);
     }); 
     it('geo.geohashSubhashes#2', function(done) {
         testPlan([p.xs.string("s01mtw"), p.xs.string("S")], p.geo.geohashSubhashes(p.col("1"), p.col("2")))
@@ -976,10 +961,8 @@ describe('plan builder', function() {
     }); 
     it('geo.parseWkt#1', function(done) {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
-          .then(function(response) {
-              const responseValue = (serverConfiguration.serverVersion >= 11)?"LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)":
-                  "LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)";
-            should(getResult(response).value).eql(responseValue);
+          .then(function(response) { 
+            should(getResult(response).value).eql("LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)");
             done();
         }).catch(done);
     }); 
@@ -1732,6 +1715,27 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+    it('vec.base64Decode#1', function(done) {
+        testPlan([p.xs.string("abc")], p.vec.base64Decode(p.col("1")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
+            done();
+        }).catch(done);
+    }); 
+    it('vec.vectorScore#2', function(done) {
+        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('8');
+            done();
+        }).catch(done);
+    }); 
+    it('vec.vectorScore#3', function(done) {
+        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2"), p.col("3")))
+          .then(function(response) { 
+            should(String(getResult(response).value).replace(/^ /, '')).equal('10');
+            done();
+        }).catch(done);
+    }); 
     it('xdmp.add64#2', function(done) {
         testPlan([p.xs.unsignedLong(123), p.xs.unsignedLong(456)], p.xdmp.add64(p.col("1"), p.col("2")))
           .then(function(response) { 
@@ -2132,9 +2136,6 @@ describe('plan builder', function() {
         }).catch(done);
     }); 
     it('xdmp.unquote#1', function(done) {
-        if(serverConfiguration.serverVersion < 11){
-            this.skip();
-        }
         testPlan([p.xs.string("[123]")], p.xdmp.unquote(p.col("1")))
           .then(function(response) { 
             should(getResult(response).value).eql([123]);
@@ -2354,7 +2355,7 @@ describe('plan builder', function() {
     it('xs.negativeInteger#1', function(done) {
         testPlan([p.xs.double(-1)], p.xs.negativeInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('-1');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
@@ -2368,14 +2369,14 @@ describe('plan builder', function() {
     it('xs.nonNegativeInteger#1', function(done) {
         testPlan([p.xs.string("0")], p.xs.nonNegativeInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('0');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
     it('xs.nonPositiveInteger#1', function(done) {
         testPlan([p.xs.string("0")], p.xs.nonPositiveInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('0');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
@@ -2396,7 +2397,7 @@ describe('plan builder', function() {
     it('xs.positiveInteger#1', function(done) {
         testPlan([p.xs.double(1)], p.xs.positiveInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('1');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
