@@ -82,10 +82,10 @@
     "glob-parent": "6.0.2",
     "simple-get": "4.0.1",
     "semver": "7.5.3",
-    "homedir-polyfill": "../_EXCLUDED_",
-    "inflight": "../_EXCLUDED_",
+    "homedir-polyfill": "npm:dry-uninstall",
+    "inflight": "npm:dry-uninstall",
     "rimraf": "5.0.7",
-    "@humanwhocodes/config-array": "../_EXCLUDED_",
+    "@humanwhocodes/config-array": "npm:dry-uninstall",
     "glob": "10.4.2"
   }
 }
