@@ -10,6 +10,8 @@ def runTests(String type,String version){
         cd node-client-api
         node --version
         npm --version
+        rm -rf node_modules
+        rm package-lock.json
         npm install
         cd test-app
         ./gradlew -i mlDeploy -g $PWD
