@@ -8,6 +8,8 @@
   "main": "./lib/marklogic.js",
   "scripts": {
     "doc": "gulp doc",
+    "preinstall": "node checkNodeVersion",
+    "prestart": "node checkNodeVersion",
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
     "test": "gulp test"

@@ -20,6 +20,8 @@ from Node.js applications.
 
 ## Getting Started
 
+Node.js version - MarkLogic Node Client Api requires Nodejs 16.14 or higher, but we recommend to use the latest version.
+
 You can install the marklogic package as a dependency for your Node.js project
 using [npm](https://www.npmjs.com/package/marklogic):
 
@@ -31,6 +33,10 @@ For Windows OS please use the below for Node Client 2.9.1:
 ```
 npm install marklogic --save --ignore-scripts
 ```
+
+You can also clone from GitHub - https://github.com/marklogic/node-client-api.git
+NOTE: Please remove the package-lock.json file before "npm install"
+
 
 With the marklogic package installed, the following inserts two documents in a
 collection into the Documents database using MarkLogic's built-in REST server

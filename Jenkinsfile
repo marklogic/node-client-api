@@ -28,6 +28,8 @@ def runAuditReport(){
     sh '''
         export PATH=${NODE_HOME_DIR}/bin:$PATH
         cd node-client-api
+        rm -rf node_modules
+        rm package-lock.json
         npm install
         rm -rf $WORKSPACE/npm-audit-report.json || true
         npm audit -json || true > $WORKSPACE/npm-audit-report.json
@@ -42,6 +44,8 @@ def runE2ETests(String type,String version){
         cd node-client-api
         node --version
         npm --version
+        rm -rf node_modules
+        rm package-lock.json
         npm install
         node etc/test-setup-qa.js
         # Adding sleep for the setups to complete before running test-complete
@@ -87,7 +91,7 @@ pipeline{
         buildDiscarder logRotator(artifactDaysToKeepStr: '7', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '10')
       }
     environment{
-          NODE_HOME_DIR= "/home/builder/nodeJs/node-v18.14.0-linux-x64"
+          NODE_HOME_DIR= "/home/builder/nodeJs/node-v22.4.1-linux-x64"
           DMC_USER     = credentials('MLBUILD_USER')
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
           GRADLE_DIR=".gradle"
