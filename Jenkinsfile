@@ -10,7 +10,7 @@ def runTests(String type,String version){
         cd node-client-api
         node --version
         npm --version
-        npm install
+        npm ci
         cd test-app
         ./gradlew -i mlDeploy -g $PWD
         cd ..
@@ -26,7 +26,7 @@ def runAuditReport(){
     sh '''
         export PATH=${NODE_HOME_DIR}/bin:$PATH
         cd node-client-api
-        npm install
+        npm ci
         rm -rf $WORKSPACE/npm-audit-report.json || true
         npm audit -json || true > $WORKSPACE/npm-audit-report.json
     '''
@@ -40,7 +40,7 @@ def runE2ETests(String type,String version){
         cd node-client-api
         node --version
         npm --version
-        npm install
+        npm ci
         node etc/test-setup-qa.js
         # Adding sleep for the setups to complete before running test-complete
         sleep 10
