@@ -183,7 +183,7 @@ describe('search', function() {
 // console.log(JSON.stringify(output, null, 2));
   });
 
-  describe('tests for new scoring methods -  bm25, random and zero.', function() {
+  describe('tests for new scoring methods -  bm25, random and zero using fromSearch.', function() {
     before(function (done) {
       if(serverConfiguration.serverVersion < 12) {
         this.skip();
@@ -246,6 +246,72 @@ describe('search', function() {
       execPlan(
           p.fromSearch(p.cts.jsonPropertyValueQuery('instrument', 'trumpet'),
               ['score', 'quality'], null, { scoreMethod: 'random'})
+      ).then(function(response) {
+        assert(response.columns != null)
+        assert(response.rows != null)
+        done();
+      }).catch(error => done(error));
+    });
+  });
+
+  describe('tests for new scoring methods -  bm25, random and zero using fromSearchDocs.', function() {
+    before(function (done) {
+      if(serverConfiguration.serverVersion < 12) {
+        this.skip();
+      }
+      done();
+    });
+
+    it('should search documents with bm25', function(done) {
+      execPlan(
+          p.fromSearchDocs('Armstrong', null, {scoreMethod:'bm25', bm25LengthWeight:0.75})
+      ).then(function(response) {
+        assert(response.columns != null)
+        assert(response.rows != null)
+        done();
+      }).catch(error => done(error));
+    });
+
+    it('should throw error with invalid bm25LengthWeight', function(done) {
+      execPlan(
+          p.fromSearchDocs('Armstrong', null, {scoreMethod:'bm25', bm25LengthWeight:87})
+      ).catch(error => {
+        try{
+          assert(error.body.errorResponse.message.toString().includes('Invalid option "bm25-length-weight=87'));
+          done();
+        } catch(error){
+          done(error);
+        }
+      });
+    });
+
+    it('should throw error with string values for bm25LengthWeight', function(done) {
+      try {
+        execPlan(
+            p.fromSearchDocs('Armstrong', null, {scoreMethod:'bm25', bm25LengthWeight: 'abc'})
+        );
+      } catch(error){
+        assert(error.message.toString().includes('bm25LengthWeight must be a number'));
+        done();
+      }
+    });
+
+    it('should search documents with zero scoring method', function(done) {
+      execPlan(
+          p.fromSearchDocs('Armstrong', null, { scoreMethod: 'zero'})
+      ).then(function(response) {
+        assert(response.columns != null)
+        assert(response.rows != null)
+        for(let i=0; i<response.rows.length; i++){
+          assert(response.rows[i].score.value == 0)
+        }
+        done();
+      }).catch(error => done(error));
+    });
+
+    it('should search documents with random scoring method', function(done) {
+      execPlan(
+          p.fromSearchDocs('Armstrong', null, { scoreMethod: 'random'})
       ).then(function(response) {
         assert(response.columns != null)
         assert(response.rows != null)
