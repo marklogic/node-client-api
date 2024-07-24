@@ -953,7 +953,7 @@ describe('plan builder', function() {
     it('geo.geohashNeighbors#1', function(done) {
         testPlan([p.xs.string("s01mtw")], p.geo.geohashNeighbors(p.col("1")))
           .then(function(response) { 
-            should(getResult(response).value).eql({"NE":"s01mtz", "S":"s01mtt", "E":"s01mty", "W":"s01mtq", "N":"s01mtx", "SW":"s01mtm", "SE":"s01mtv", "NW":"s01mtr"});
+            should(getResult(response).value).eql({"NE":"s01mtz", "S":"s01mtt", "E":"s01mty", "W":"s01mtq", "SW":"s01mtm", "N":"s01mtx", "SE":"s01mtv", "NW":"s01mtr"});
             done();
         }).catch(done);
     }); 
@@ -1756,7 +1756,7 @@ describe('plan builder', function() {
         }
         testPlan([p.xs.unsignedInt(1), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('8');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
@@ -1766,7 +1766,7 @@ describe('plan builder', function() {
         }
         testPlan([p.xs.unsignedInt(1), p.xs.double(1.2), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2"), p.col("3")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('10');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
@@ -2392,7 +2392,7 @@ describe('plan builder', function() {
     it('xs.negativeInteger#1', function(done) {
         testPlan([p.xs.double(-1)], p.xs.negativeInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('-1');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
@@ -2406,14 +2406,14 @@ describe('plan builder', function() {
     it('xs.nonNegativeInteger#1', function(done) {
         testPlan([p.xs.string("0")], p.xs.nonNegativeInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('0');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
     it('xs.nonPositiveInteger#1', function(done) {
         testPlan([p.xs.string("0")], p.xs.nonPositiveInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('0');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
@@ -2434,7 +2434,7 @@ describe('plan builder', function() {
     it('xs.positiveInteger#1', function(done) {
         testPlan([p.xs.double(1)], p.xs.positiveInteger(p.col("1")))
           .then(function(response) { 
-            should(String(getResult(response).value).replace(/^ /, '')).equal('1');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     }); 
