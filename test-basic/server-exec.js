@@ -75,7 +75,7 @@ describe('server-side call', function() {
         })
       .catch(done);
     });
-    it('should generate a boolean value', function(done) {
+    it('should generate a boolean value true', function(done) {
       db.eval('true;').result(function(values) {
         values.length.should.equal(1);
         checkValue(values[0], 'text', 'boolean');
@@ -83,6 +83,15 @@ describe('server-side call', function() {
         done();
         })
       .catch(done);
+    });
+    it('should generate a boolean value false', function(done) {
+      db.eval('false;').result(function(values) {
+        values.length.should.equal(1);
+        checkValue(values[0], 'text', 'boolean');
+          values[0].value.should.equal(false);
+        done();
+      })
+      .catch(error => done(error));
     });
     it('should generate an integer value', function(done) {
       db.eval('3;').result(function(values) {
