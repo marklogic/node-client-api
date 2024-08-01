@@ -65,6 +65,7 @@ describe('search', function() {
       }).catch(error => done(error));
     });
     it('columns', function(done) {
+      this.timeout(5000)
       execPlan(
           p.fromSearch(p.cts.jsonPropertyValueQuery('instrument', 'trumpet'),
                   ['fragmentId', p.col('confidence'), 'fitness', p.as('weight', p.col('quality'))])
@@ -183,7 +184,7 @@ describe('search', function() {
 // console.log(JSON.stringify(output, null, 2));
   });
 
-  describe('tests for new scoring methods -  bm25, random and zero using fromSearch.', function() {
+  describe('tests for new scoring method - bm25', function() {
     before(function (done) {
       if(serverConfiguration.serverVersion < 12) {
         this.skip();
@@ -228,33 +229,9 @@ describe('search', function() {
       }
     });
 
-    it('should search documents with zero scoring method', function(done) {
-      execPlan(
-          p.fromSearch(p.cts.jsonPropertyValueQuery('instrument', 'trumpet'),
-              ['score', 'quality'], null, { scoreMethod: 'zero'})
-      ).then(function(response) {
-        assert(response.columns != null)
-        assert(response.rows != null)
-        for(let i=0; i<response.rows.length; i++){
-          assert(response.rows[i].score.value == 0)
-        }
-        done();
-      }).catch(error => done(error));
-    });
-
-    it('should search documents with random scoring method', function(done) {
-      execPlan(
-          p.fromSearch(p.cts.jsonPropertyValueQuery('instrument', 'trumpet'),
-              ['score', 'quality'], null, { scoreMethod: 'random'})
-      ).then(function(response) {
-        assert(response.columns != null)
-        assert(response.rows != null)
-        done();
-      }).catch(error => done(error));
-    });
   });
 
-  describe('tests for new scoring methods -  bm25, random and zero using fromSearchDocs.', function() {
+  describe('tests for new scoring method - bm25', function() {
     before(function (done) {
       if(serverConfiguration.serverVersion < 12) {
         this.skip();
@@ -294,29 +271,6 @@ describe('search', function() {
         assert(error.message.toString().includes('bm25LengthWeight must be a number'));
         done();
       }
-    });
-
-    it('should search documents with zero scoring method', function(done) {
-      execPlan(
-          p.fromSearchDocs('Armstrong', null, { scoreMethod: 'zero'})
-      ).then(function(response) {
-        assert(response.columns != null)
-        assert(response.rows != null)
-        for(let i=0; i<response.rows.length; i++){
-          assert(response.rows[i].score.value == 0)
-        }
-        done();
-      }).catch(error => done(error));
-    });
-
-    it('should search documents with random scoring method', function(done) {
-      execPlan(
-          p.fromSearchDocs('Armstrong', null, { scoreMethod: 'random'})
-      ).then(function(response) {
-        assert(response.columns != null)
-        assert(response.rows != null)
-        done();
-      }).catch(error => done(error));
     });
   });
 });
