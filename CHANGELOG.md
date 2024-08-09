@@ -1,4 +1,15 @@
 # CHANGELOG
+## 3.5.0
+#### New Functionality
+
+- Can now use BM25 scoring method for searches. (MarkLogic Server version 12.0.0-EA or higher needed).
+- Can now use vector functionality including Cosine Similarity and others. (MarkLogic Server version 12.0.0-EA or higher needed).
+
+#### Bug Fix
+
+- Fix for security vulnerabilities - https://nvd.nist.gov/vuln/detail/CVE-2024-4068 and https://github.com/advisories/GHSA-7fh5-64p2-3v2j
+- [#669](https://github.com/marklogic/node-client-api/issues/669) - DatabaseClient.eval() always return true when the result is a boolean
+
 ## 3.4.0
 #### New Functionality
 
