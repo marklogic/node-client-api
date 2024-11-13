@@ -53,7 +53,7 @@ def runE2ETests(String type,String version){
         cd ..
         ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
         cd test-complete-proxy
-        npm install --global gulp-cli
+        npm install gulp-cli
         gulp loadToModulesDB
         gulp generateFnClasses
         gulp copyFnClasses
