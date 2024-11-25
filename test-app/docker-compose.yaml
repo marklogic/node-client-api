@@ -1,10 +1,10 @@
-version: '1.0'
 name: node-client
 
 services:
 
   marklogic:
-    image: "marklogicdb/marklogic-db:11.1.0-centos-1.1.0"
+    image: "progressofficial/marklogic-db:latest"
+    # image: "ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12"
     platform: linux/amd64
     environment:
       - INSTALL_CONVERTERS=true
