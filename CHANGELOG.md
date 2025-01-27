@@ -1,4 +1,16 @@
 # CHANGELOG
+## 3.6.0
+#### New Functionality
+
+- MarkLogic 12 users can now use the `shortestPath` and `annTopK` methods in the Optic plan builder.
+- MarkLogic 12 users can now use the `bm25`, `zero`, and `random` score methods in the Optic plan builder.
+
+#### Bug Fix
+- Fix for security vulnerabilities -
+  https://github.com/advisories/GHSA-3xgq-45jj-v275
+  https://github.com/advisories/GHSA-952p-6rrq-rcjv
+  https://github.com/advisories/GHSA-mwcw-c2x4-8c55
+
 ## 3.5.0
 #### New Functionality
 
