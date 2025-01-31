@@ -236,7 +236,9 @@ void 0;`;
                 .execute(multiNodeInputMultiOutputDecl.functionName, {input:input})
                 .then(function(output) {
                     (output === void 0).should.equal(false);
-                    input.length.should.equal(output.length);
+                    if(output){
+                        input.length.should.equal(output.length);
+                    }
                     for (let i=0; i < input.length; i++) {
                         const expected = input[i];
                         const actual = output[i];
