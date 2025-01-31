@@ -70,6 +70,7 @@ function waitForViewCreate(wTime) {
 }
 
 describe('Nodejs Optic generate views test', function () {
+    this.timeout(20000);
     it('TEST 1 - join left outer with array of on', function (done) {
 
         const plan1 =
@@ -101,9 +102,9 @@ describe('Nodejs Optic generate views test', function () {
                 }).
                     result(function (response) {
                         //	console.log(JSON.stringify(response, null, 4));
+                    done();
                     });
-                done();
-            }, done);
+            }).catch(error=>done(error));
     });
 
     waitForViewCreate(10000);
@@ -126,8 +127,7 @@ describe('Nodejs Optic generate views test', function () {
                 expect(row5['InnerJoin.keymatch.amount'].value).to.equal(10.01);
                 done();
             }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
+                done(error);
             });
     });
 
@@ -158,9 +158,9 @@ describe('Nodejs Optic generate views test', function () {
                 }).
                     result(function (response) {
                         //	console.log(JSON.stringify(response, null, 4));
+                    done();
                     });
-                done();
-            }, done);
+            }).catch(error=>done(error));
     });
 
     waitForViewCreate(10000);
@@ -181,8 +181,7 @@ describe('Nodejs Optic generate views test', function () {
                 expect(row7['sparql.groupmin.min_sales'].value).to.equal(10000000);
                 done();
             }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
+                done(error);
             });
     });
 
@@ -218,9 +217,9 @@ describe('Nodejs Optic generate views test', function () {
                 }).
                     result(function (response) {
                         //	console.log(JSON.stringify(response, null, 4));
+                    done();
                     });
-                done();
-            }, done);
+            }).catch(error=>done(error));
     });
 
     waitForViewCreate(10000);
@@ -241,8 +240,7 @@ describe('Nodejs Optic generate views test', function () {
                 expect(row3['lexicons.orderbyselect.date'].value).to.equal('2007-01-01');
                 done();
             }, function (error) {
-                console.log(JSON.stringify(error, null, 2));
-                done();
+                done(error);
             });
     });
 });

@@ -288,9 +288,9 @@ describe('Document tuples test', function () {
             var strData = JSON.stringify(response);
             //console.log(strData);
             strData.should.containEql('"name":"correlation","_value":"0.263822426505543"');
-            strData.should.containEql[('"name":"covariance","_value":"0.35"') || ('"name":"covariance","_value":"0.349999999999998"')];
+            strData.should.containEql(('"name":"covariance","_value":"0.35"') || ('"name":"covariance","_value":"0.349999999999998"'));
             done();
-        }, done);
+        }).catch(error=> done(error));
     });
 
     it('should do max, min, sum, average aggregates', function (done) {
