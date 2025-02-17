@@ -59,7 +59,7 @@
     "gulp": "^5.0.0",
     "gulp-jsdoc3": "^3.0.0",
     "gulp-jshint": "^2.1.0",
-    "gulp-mocha": "^8.0.0",
+    "gulp-mocha": "^10.0.1",
     "intercept-stdout": "^0.1.2",
     "jshint": "^2.13.5",
     "mocha": "^10.0.0",
