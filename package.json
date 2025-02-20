@@ -36,6 +36,7 @@
     "eslint": "^8.57.0",
     "form-data": "^4.0.0",
     "json-text-sequence": "^1.0.1",
+    "marklogic": "^3.6.0",
     "multipart-stream": "^2.0.1",
     "qs": "^6.11.0",
     "through2": "^4.0.2",
@@ -77,7 +78,7 @@
   },
   "overrides": {
     "braces": "3.0.3",
-    "cross-spawn":"7.0.6",
+    "cross-spawn": "7.0.6",
     "jsdoc": "4.0.0",
     "sanitize-html": "^2.13.0",
     "minimatch": "5.1.0",
