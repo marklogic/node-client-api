@@ -80,10 +80,12 @@
     "cross-spawn":"7.0.6",
     "jsdoc": "4.0.0",
     "sanitize-html": "^2.13.0",
+    "markdown-it": "14.1.0",
     "minimatch": "5.1.0",
     "nanoid": "3.3.8",
     "glob-parent": "6.0.2",
     "simple-get": "4.0.1",
-    "semver": "7.5.3"
+    "semver": "7.5.3",
+    "serialize-javascript": "6.0.2"
   }
 }
