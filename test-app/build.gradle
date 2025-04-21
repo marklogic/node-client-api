@@ -15,3 +15,15 @@ tasks.register("addMarkLogic12SchemasIfNecessary", com.marklogic.gradle.task.Mar
 }
 mlDeploy.dependsOn addMarkLogic12SchemasIfNecessary
 mlLoadSchemas.dependsOn addMarkLogic12SchemasIfNecessary
+
+/*
+ * Required for forcing MarkLogic to generate a temporary certificate for the app server
+ * that requires SSL.
+ */
+ext {
+    def command = new com.marklogic.appdeployer.command.security.GenerateTemporaryCertificateCommand()
+    command.setTemplateIdOrName("node-client-ssl-template")
+    command.setCommonName("localhost")
+    command.setValidFor(365)
+    mlAppDeployer.commands.add(command)
+}
