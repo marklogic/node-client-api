@@ -1,0 +1,15 @@
+{
+    "server-name": "unittest-nodeapi-ssl",
+    "server-type": "http",
+    "root": "/",
+    "group-name": "Default",
+    "port": 8016,
+    "modules-database": "%%MODULES_DATABASE%%",
+    "content-database": "%%DATABASE%%",
+    "ssl-certificate-template": "node-client-ssl-template",
+    "url-rewriter": "/MarkLogic/rest-api/rewriter.xml",
+    "rewrite-resolves-globally": true,
+    "error-handler": "/MarkLogic/rest-api/error-handler.xqy",
+    "default-error-format": "json"
+  }
+  
