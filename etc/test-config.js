@@ -16,6 +16,7 @@
 let testHost = 'localhost';
 
 let restPort     = '8015';
+let restSslPort     = '8016';
 let restAuthType = 'DIGEST';
 
 let managePort     = '8002';
@@ -148,5 +149,14 @@ module.exports = {
         host:     testHost,
         port:     restPort,
         authType: 'oauth'
+    },
+    restConnectionForTls: {
+        host:     testHost,
+        port:     restSslPort,
+        user:     restWriterUser,
+        password: restWriterPassword,
+        authType: restAuthType,
+        ssl: true,
+        rejectUnauthorized: false
     }
 };
