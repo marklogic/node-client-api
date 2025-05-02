@@ -16,7 +16,7 @@
 let testHost = 'localhost';
 
 let restPort     = '8015';
-let restSslPort     = '8016';
+let restSslPort     = '8017';
 let restAuthType = 'DIGEST';
 
 let managePort     = '8002';
