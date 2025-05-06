@@ -47,11 +47,10 @@ describe('stream graph test', function () {
         this.timeout(10000);
         db.graphs.read(graphUri, 'text/n3').stream('chunked').
             on('data', function (data) {
-                //console.log(data.toString());
+                (!valcheck.isNullOrUndefined(data)).should.equal(true);
                 var strData = data.toString();
                 strData.should.containEql('p0:person1      a               p0:Person ;');
                 strData.should.containEql('                foaf:knows      p0:person2 ;');
-                (!valcheck.isNullOrUndefined(data)).should.equal(true);
             }).
             on('end', function () {
                 done();
