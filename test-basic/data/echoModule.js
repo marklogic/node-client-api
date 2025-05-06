@@ -48,6 +48,5 @@ case  10:
   xdmp.arrayValues([1, 'two', {i:3}, [4,'four'], xdmp.unquote('<i>5</i>')]);
   break;
 default:
-  extra;
   break;
 }
