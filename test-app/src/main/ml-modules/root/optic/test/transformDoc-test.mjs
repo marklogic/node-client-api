@@ -2,5 +2,6 @@ const result = {
     "hello": "world",
     "yourParam": external.myParam,
     "theDoc": external.doc
-}
-result
+};
+
+export default result;
