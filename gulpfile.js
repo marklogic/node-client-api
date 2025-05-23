@@ -26,6 +26,7 @@ const proxy = require('./lib/proxy-generator.js');
 const testproxy = require('./test-basic-proxy/testGenerator.js');
 const testconfig = require('./etc/test-config.js');
 const basicloader = require('./lib/basic-loader.js');
+const streamToArray = require("stream-to-array");
 
 function lint() {
   return gulp.src('lib/*')
@@ -88,6 +89,48 @@ function loadProxyTestInspector(callback) {
     databaseClient:     databaseClient,
     documentDescriptor: documentDescriptor
   });
+}
+
+function updateMjsFiles(callback){
+  const testlib = require("./etc/test-lib");
+  let serverConfiguration = {};
+  testlib.findServerConfigurationPromise(serverConfiguration)
+      .then(() => {
+        if(serverConfiguration.serverVersion<12){
+          callback();
+        } else {
+            const query = marklogic.queryBuilder.where(
+                marklogic.ctsQueryBuilder.cts.directoryQuery('/dbf/test/', 'infinity'));
+            streamToArray(getTestModulesClient().documents.queryAll(query),
+                function(err, arr ) {
+                    if(err){
+                        throw new Error(err);
+                    }
+                    arr.forEach(uri=> {
+                        if(uri && uri.toString().endsWith(".mjs")){
+                            getTestModulesClient().documents.read(uri.toString())
+                                .result(function(documents){
+                                    const lines = documents[0].content.split('\n');
+                                    let i=lines.length-1;
+                                    while(lines[i]===""){
+                                        i--;
+                                    }
+                                    lines[i] = 'export default ' + lines[i];
+                                    getTestModulesClient().documents.write({
+                                        uri: uri.toString(),
+                                        content: lines.join('\n')
+                                    })
+                                        .result(function(response){callback();})
+                                })
+
+                        } else {
+                            callback();
+                        }
+                    });
+
+                });
+        }
+      }).catch((error) => {throw new Error(error);});
 }
 
 function loadProxyTestData(callback) {
@@ -158,11 +201,11 @@ exports.loadProxyTests     = parallel(loadProxyTestInspector, loadProxyTestData,
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
 exports.runProxyTests = runProxyTests;
 exports.setupProxyTests = series(
-    parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
-    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests));
+    parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases,),
+    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), updateMjsFiles);
 exports.proxyTests = series(
     parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases),
-    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests),
+    parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests), updateMjsFiles,
     runProxyTests);
 exports.test = test;
 exports.default = lint;
