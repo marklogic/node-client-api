@@ -23,6 +23,8 @@ const testlib = require("../etc/test-lib");
 const op = marklogic.planBuilder;
 let removeStream = new Stream.PassThrough({objectMode: true});
 let serverConfiguration = {};
+let transformDoc;
+let transformDocWithTwoParams;
 
 describe('optic-update transformDoc tests', function() {
     this.timeout(6000);
@@ -40,6 +42,10 @@ describe('optic-update transformDoc tests', function() {
             if(serverConfiguration.serverVersion < 11){
                 this.skip();
             }
+            transformDoc = serverConfiguration.serverVersion < 12?'/optic/test/transformDoc-test.mjs':
+                '/optic/test/transformDoc-test-forServerVersion12.mjs';
+            transformDocWithTwoParams = serverConfiguration.serverVersion < 12?'/optic/test/transformDoc-test-two-params.mjs':
+                '/optic/test/transformDoc-test-two-params-forServerVersion12.mjs';
             let readable = new Stream.Readable({objectMode: true});
             removeStream = new Stream.PassThrough({objectMode: true});
             const musician = {
@@ -78,7 +84,7 @@ describe('optic-update transformDoc tests', function() {
             try {
                 const plan = op.fromDocUris('/test/optic/transformDoc/data1.json')
                     .joinDoc(op.col("doc"), op.col("uri"))
-                    .transformDoc('doc', {"path": "/optic/test/transformDoc-test.mjs"})
+                    .transformDoc('doc', {"path": transformDoc})
                     .orderBy(op.col('uri'));
 
                 db.rows.query(plan).then(res => {
@@ -96,7 +102,7 @@ describe('optic-update transformDoc tests', function() {
             try {
                 const plan = op.fromDocUris('/test/optic/transformDoc/data1.json')
                     .joinDoc(op.col("doc"), op.col("uri"))
-                    .transformDoc('doc', {"path": "/optic/test/transformDoc-test.mjs", kind: "mjs"})
+                    .transformDoc('doc', {"path": transformDoc, kind: "mjs"})
                     .orderBy(op.col('uri'));
 
                 db.rows.query(plan).then(res => {
@@ -115,7 +121,7 @@ describe('optic-update transformDoc tests', function() {
                 const plan = op.fromDocUris('/test/optic/transformDoc/data1.json')
                     .joinDoc(op.col("doc"), op.col("uri"))
                     .transformDoc('doc', {
-                        "path": "/optic/test/transformDoc-test.mjs",
+                        "path": transformDoc,
                         kind: "mjs",
                         params: {myParam: 'my new content'}
                     })
@@ -141,7 +147,7 @@ describe('optic-update transformDoc tests', function() {
                 const plan = op.fromDocUris('/test/optic/transformDoc/data1.json')
                     .joinDoc(op.col("doc"), op.col("uri"))
                     .transformDoc('doc', {
-                        "path": "/optic/test/transformDoc-test.mjs",
+                        "path": transformDoc,
                         kind: "mjs",
                         params: {wrongParamName: 'my new content'}
                     })
@@ -188,7 +194,7 @@ describe('optic-update transformDoc tests', function() {
                 ];
                 const plan = op.fromDocDescriptors(docsDescriptor)
                     .transformDoc('doc', {
-                        "path": "/optic/test/transformDoc-test.mjs",
+                        "path": transformDoc,
                         kind: "mjs",
                         params: {myParam: 'my new content'}
                     })
@@ -296,7 +302,7 @@ describe('optic-update transformDoc tests', function() {
                     .joinInner(fromLiteral)
                     .orderBy('id')
                     .transformDoc('doc', {
-                        "path": "/optic/test/transformDoc-test-two-params.mjs", kind: "mjs",
+                        "path": transformDocWithTwoParams, kind: "mjs",
                         params: {patch1: op.col('id'), patch2: op.col('val')}
                     })
                     .write({uri: 'uri', doc: 'doc'});
