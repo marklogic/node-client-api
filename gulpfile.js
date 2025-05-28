@@ -197,7 +197,7 @@ function runProxyTests() {
 
 exports.doc = doc;
 exports.lint = lint;
-exports.loadProxyTests     = parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases);
+exports.loadProxyTests     = series(parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases), updateMjsFiles);
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
 exports.runProxyTests = runProxyTests;
 exports.setupProxyTests = series(
