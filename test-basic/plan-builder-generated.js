@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 MarkLogic Corporation
+ * Copyright (c) 2003-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1741,7 +1741,7 @@ describe('plan builder', function() {
         }
         testPlan([p.xs.string("abc")], p.vec.base64Decode(p.col("1")))
           .then(function(response) {
-            should(String(getResult(response).value).replace(/^ /, '')).equal("abc");
+            should(String(getResult(response).value).replace(/^ /, '')).equal('abc');
             done();
         }).catch(done);
     });
@@ -1749,11 +1749,9 @@ describe('plan builder', function() {
         if(serverConfiguration.serverVersion < 12) {
             this.skip();
         }
-        // Updating below test since server throws Error : VEC-VECTORSCORE: vec:vector-score(1, 2) --
-        // Invalid argument passed to vector scoring function: arg2 invalid: Similarity must be between -1.0 and 1.0
-        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), 0.75))
+        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2")))
           .then(function(response) {
-            should(String(getResult(response).value).replace(/^ /, '')).equal('1');
+            should(String(getResult(response).value).replace(/^ /, '')).equal('227273');
             done();
         }).catch(done);
     });
@@ -1761,11 +1759,16 @@ describe('plan builder', function() {
         if(serverConfiguration.serverVersion < 12) {
             this.skip();
         }
-        // Updating below test since server throws Error :arg2 invalid:Similarity must be between -1.0 and 1.0
-        //arg3 invalid: Similarity weight must be between 0.0 and 1.0
-        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), 0.75, 0.75))
+        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2"), p.col("3")))
           .then(function(response) {
-            should(String(getResult(response).value).replace(/^ /, '')).equal('2');
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
+            done();
+        }).catch(done);
+    });
+    it('vec.vectorScore#4', function(done) {
+        testPlan([p.xs.unsignedInt(1), p.xs.double(1.2), p.xs.double(1.2), p.xs.double(1.2)], p.vec.vectorScore(p.col("1"), p.col("2"), p.col("3"), p.col("4")))
+          .then(function(response) {
+            should(String(getResult(response).value).replace(/^ /, '')).equal(null);
             done();
         }).catch(done);
     });
