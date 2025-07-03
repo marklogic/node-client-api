@@ -28,7 +28,7 @@ const testlib = require("../etc/test-lib");
 let serverConfiguration = {};
 const testPlan = pbb.testPlan;
 
-describe('tests for new vector fucntions.', function() {
+describe('tests for new vector functions.', function() {
     before(function (done) {
         this.timeout(6000);
         try {
@@ -81,16 +81,16 @@ describe('tests for new vector fucntions.', function() {
         const vec1 = p.vec.vector([0.002]);
         testPlan([""],p.vec.base64Encode(p.vec.subvector(vec1,0)))
             .then(function(response) {
-                assert(response.rows[0].t.value =='FYT6NiFJhGw=AQAAAA==AAAAAA==bxIDOw==')
+                assert(response.rows[0].t.value =='AAAAAAEAAABvEgM7')
                 done();
             }).catch(error => done(error));
     });
 
-    it('vec.cosineSimilarity', function(done) {
+    it('vec.cosine', function(done) {
         const vec1 = p.vec.vector([1, 2, 3])
         const vec2 = p.vec.vector([4, 5, 6,7])
 
-        testPlan([""],p.vec.cosineSimilarity(p.vec.subvector(vec1,0),p.vec.subvector(vec2,1)))
+        testPlan([""],p.vec.cosine(p.vec.subvector(vec1,0),p.vec.subvector(vec2,1)))
             .then(function(response) {
                 assert(response.rows[0].t.value != null);
                 done();
@@ -110,7 +110,7 @@ describe('tests for new vector fucntions.', function() {
         const vec1 = p.vec.vector([1, 2, 3])
         const vec2 = p.vec.vector([4, 5, 6,7])
 
-        testPlan([""],p.vec.cosineSimilarity(p.vec.subvector(vec1,0),p.vec.subvector(vec2,1)))
+        testPlan([""],p.vec.cosine(p.vec.subvector(vec1,0),p.vec.subvector(vec2,1)))
             .then(function(response) {
                 assert(response.rows[0].t.value == '0.968329608440399');
                 done();
@@ -159,7 +159,16 @@ describe('tests for new vector fucntions.', function() {
         const vec1 = p.vec.vector([1, 2, 3])
         testPlan([""],(p.vec.vectorScore(24684,0.1,0.1)))
             .then(function(response) {
-                assert(response.rows[0].t.value == 24687);
+                assert(response.rows[0].t.value == 113124);
+                done();
+            }).catch(error => done(error));
+    });
+
+    it('vec.cosineDistance', function(done) {
+        testPlan([""],(p.vec.cosineDistance(p.vec.subvector(p.vec.vector([1, 2, 3]),0),
+            p.vec.subvector(p.vec.vector([4, 5, 6,7]),1))))
+            .then(function(response) {
+                assert(response.rows[0].t.value == 0.0316703915596008);
                 done();
             }).catch(error => done(error));
     });
