@@ -1,9 +1,9 @@
 "use strict";
 
-/**
- * @module template/publish
- * @type {*}
- */
+/*
+* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+*/
+
 /*global env: true */
 
 var template = require('jsdoc/template'),

@@ -1,12 +1,7 @@
-/**
- * Sunlight
- *    Intelligent syntax highlighting
- *
- * http://sunlightjs.com/
- *
- * by Tommy Montgomery <http://tmont.com>
- * Licensed under WTFPL <http://sam.zoy.org/wtfpl/>
- */
+/*
+* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+*/
+
 (function(window, document, undefined){
 
 	var 
