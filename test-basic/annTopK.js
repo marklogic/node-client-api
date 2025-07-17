@@ -1,6 +1,6 @@
 /*
- * Copyright © 2024 MarkLogic Corporation. All Rights Reserved.
- */
+* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+*/
 'use strict';
 
 const marklogic = require('../');
