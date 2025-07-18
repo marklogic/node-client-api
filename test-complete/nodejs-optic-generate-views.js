@@ -50,12 +50,6 @@ const dbClient = marklogic.createDatabaseClient(
 
 const pb = marklogic.planBuilder;
 
-function waitForViewCreate(wTime) {
-    return it('View creation delay', done => {
-        setTimeout(() => done(), wTime);
-
-    }).timeout(wTime + 120);
-}
 
 describe('Nodejs Optic generate views test', function () {
     this.timeout(20000);
@@ -89,13 +83,11 @@ describe('Nodejs Optic generate views test', function () {
                     content: res
                 }).
                     result(function (response) {
-                        //	console.log(JSON.stringify(response, null, 4));
-                    done();
+                    setTimeout(()=> done(), 10120);
                     });
             }).catch(error=>done(error));
     });
 
-    waitForViewCreate(10000);
 
     it('TEST 1a - Verify InnerJoin keymatch view', function (done) {
         const qv = pb.fromView('InnerJoin', 'keymatch');
@@ -145,13 +137,11 @@ describe('Nodejs Optic generate views test', function () {
                     content: res
                 }).
                     result(function (response) {
-                        //	console.log(JSON.stringify(response, null, 4));
-                    done();
+                    setTimeout(()=> done(), 10120);
                     });
             }).catch(error=>done(error));
     });
 
-    waitForViewCreate(10000);
 
     it('TEST 2a - Verify sparql groupmin view', function (done) {
         const qv = pb.fromView('sparql', 'groupmin');
@@ -204,13 +194,10 @@ describe('Nodejs Optic generate views test', function () {
                     content: res
                 }).
                     result(function (response) {
-                        //	console.log(JSON.stringify(response, null, 4));
-                    done();
+                    setTimeout(()=> done(), 10120);
                     });
             }).catch(error=>done(error));
     });
-
-    waitForViewCreate(10000);
 
     it('TEST 3a - Verify sparql groupmin view', function (done) {
         const qv = pb.fromView('lexicons', 'orderbyselect');

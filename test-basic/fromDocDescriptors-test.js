@@ -9,6 +9,7 @@ const testlib = require("../etc/test-lib");
 const db = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 const op = marklogic.planBuilder;
 let serverConfiguration = {};
+const assert = require('assert');
 describe('optic-update fromDocDescriptors tests', function() {
     this.timeout(10000);
     before(function (done) {
@@ -128,12 +129,16 @@ describe('optic-update fromDocDescriptors tests', function() {
         });
 
         it('test with wrong type of argument', function (done) {
-            try {
-                db.rows.query(op.fromDocDescriptors('asd'))
-            } catch (e) {
-                e.toString().includes('Error: doc-descriptor argument at 0 of PlanBuilder.fromDocDescriptors() must be a PlanDocDescriptor value');
-                done();
-            }
+            db.rows.query(op.fromDocDescriptors('asd'))
+                .catch(error => {
+                    try{
+                        assert(error.body.errorResponse.message.toString()
+                            .includes('Invalid arguments: fromDocDescriptors - expects an array/sequence or object as input.'))
+                        done();
+                    } catch(error){
+                        done(error);
+                    }
+                })
         });
 
         it('test with one doc descriptor', function (done) {
