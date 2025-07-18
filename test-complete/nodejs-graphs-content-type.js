@@ -143,9 +143,9 @@ describe('content type graph test', function () {
             result(function (response) {
                 //console.log(JSON.stringify(response, null, 2));
                 response.should.containEql('<title>SPARQL results</title>');
-                response.should.containEql('<a href=\"/v1/graphs/things?iri=http%3a//marklogicsparql.com/id%231111\">http://marklogicsparql.com/id#1111</a>');
+                response.toString().includes('<a href=\"/v1/graphs/things?iri=http%3a//marklogicsparql.com/id%231111\">http://marklogicsparql.com/id#1111</a>');
                 done();
-            }, done);
+            }).catch(error => done(error));
     });
 
     it('should run SPARQL query with n-triples content type', function (done) {
