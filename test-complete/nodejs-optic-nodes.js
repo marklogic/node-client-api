@@ -90,7 +90,7 @@ describe('Nodejs Optic nodes json constructor test', function () {
                 expect(output.rows[3]['myItem.rowId']).to.equal(4);
                 expect(output.rows[3].xml).to.equal('<root attrA="4"><elemA>red</elemA><!--this is a comment for hoop--><elemB>hoop</elemB></root>');
                 done();
-            }, done);
+            }).catch(error => done(error));
     });
 
     it('TEST 2 - construct json from views', function (done) {
