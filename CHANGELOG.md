@@ -1,4 +1,22 @@
 # CHANGELOG
+
+## 3.7.0
+#### New Functionality
+
+- Can now encode and decode vectors through the `base64Encode` and `base64Decode` functions in the new lib/vector-util.js library. 
+   Encoding vectors before writing them to documents in MarkLogic 12 helps reduce the amount of disk space and memory consumed by vectors.
+- MarkLogic 12 users can now use `minVersion` and `maxVersion` to change default TLS version from 1.3 to a different version.
+
+#### Bug Fix
+- https://github.com/marklogic/node-client-api/issues/917
+
+- Fix for security vulnerabilities -
+  https://github.com/advisories/GHSA-fjxv-7rqg-78g4
+  https://github.com/advisories/GHSA-8cj5-5rvv-wf4v
+  https://github.com/advisories/GHSA-c2qf-rxjj-qqgw
+  https://github.com/advisories/GHSA-3XGQ-45JJ-V275
+  
+
 ## 3.6.0
 #### New Functionality
 
@@ -10,6 +28,7 @@
   https://github.com/advisories/GHSA-3xgq-45jj-v275
   https://github.com/advisories/GHSA-952p-6rrq-rcjv
   https://github.com/advisories/GHSA-mwcw-c2x4-8c55
+  https://github.com/advisories/GHSA-76p7-773f-r4q5
 
 ## 3.5.0
 #### New Functionality
