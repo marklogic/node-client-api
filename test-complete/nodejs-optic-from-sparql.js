@@ -314,13 +314,11 @@ describe('Nodejs Optic from sparql test', function () {
         db.rows.explain(output, 'json')
             .then(function (output) {
                 expect(output.node).to.equal('plan');
-                if (serverConfiguration.serverVersion >= 11) {
-                    expect(output.expr.expr.from['default-graph'][0].value).to.equal('/optic/sparql/test/companies.ttl');
-                } else {
-                    expect(output.expr.from['default-graph'][0].value).to.equal('/optic/sparql/test/companies.ttl');
-                }
+                const defaultGraph = (serverConfiguration.serverVersion >= 12)?output.expr.expr.from['default-graph'][0]:
+                    ((serverConfiguration.serverVersion >= 11)?output.expr.expr.from['default-graph'][0].value:output.expr.from['default-graph'][0].value);
+                expect(defaultGraph).to.equal('/optic/sparql/test/companies.ttl');
                 done();
-            }, done).catch(error => done(error));
+            }).catch(error => done(error));
     });
 
     it('TEST 16 - negative case', function (done) {
