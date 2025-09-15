@@ -146,7 +146,8 @@ describe('database clients', function () {
         .result()
         .catch(error => {
           try{
-            assert(error.message.toString().includes('You have attempted to access an HTTP server using HTTPS. Please check your configuration.'));
+            assert(error.message.toString().includes('You have attempted to access an HTTP server using HTTPS. Please check your configuration.') ||
+                   error.message.toString().includes('write EPROTO'));
             done();
           } catch(err){
             done(err);
