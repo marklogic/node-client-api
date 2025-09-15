@@ -22,6 +22,6 @@ services:
     volumes:
       - ./containerLogs:/var/opt/MarkLogic/Logs
     ports:
-      - 8000-8016:8000-8016
+      - 8000-8017:8000-8017
       - 8024-8029:8024-8029
       - 8079:8079
