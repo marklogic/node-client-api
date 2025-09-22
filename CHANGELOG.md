@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.7.1
+#### Bug Fix
+- https://github.com/marklogic/node-client-api/issues/961
+
 ## 3.7.0
 #### New Functionality
 
