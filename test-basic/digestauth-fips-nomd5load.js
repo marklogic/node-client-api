@@ -22,8 +22,8 @@ describe('FIPS test - ensure MD5 hash digester object is not loaded by default o
      * To simulate the require/load, we first delete the module from Node's require cache
      * and then require it again, which forces a reload of the module.
      */
-    delete require.cache[require.resolve('../lib/www-authenticate/www-authenticate')];
-    delete require.cache[require.resolve('../lib/www-authenticate/md5')];
+    delete require.cache[require.resolve('../lib/www-authenticate-patched/www-authenticate')];
+    delete require.cache[require.resolve('../lib/www-authenticate-patched/md5')];
     const crypto = require('crypto');
     const originalCreateHash = crypto.createHash;
 
@@ -40,8 +40,8 @@ describe('FIPS test - ensure MD5 hash digester object is not loaded by default o
       (() => crypto.createHash('md5')).should.throw('FIPS emulation: MD5 digest algorithm is not allowed on this system!');
 
       // Require the module - should not call to get MD5 digester so should not throw
-      (() => require('../lib/www-authenticate/md5')).should.not.throw();
-      (() => require('../lib/www-authenticate/www-authenticate')).should.not.throw();
+      (() => require('../lib/www-authenticate-patched/md5')).should.not.throw();
+      (() => require('../lib/www-authenticate-patched/www-authenticate')).should.not.throw();
 
     } finally {
       // Restore the original createHash function to avoid side effects
