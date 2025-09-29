@@ -84,7 +84,7 @@ pipeline{
         buildDiscarder logRotator(artifactDaysToKeepStr: '7', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '10')
       }
     environment{
-          NODE_HOME_DIR= "/home/builder/nodeJs/node-v18.14.0-linux-x64"
+          NODE_HOME_DIR= "/users/ml/builder/nodeJs/node-v22.20.0-linux-x64"
           DMC_USER     = credentials('MLBUILD_USER')
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
           GRADLE_DIR=".gradle"
