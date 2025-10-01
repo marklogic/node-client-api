@@ -8,7 +8,7 @@ please see the README file.
 
 To run any of the steps below, first verify that you have the following available;
 [sdkman](https://sdkman.io/) is recommended for installing and maintaining versions of Java:
-* Java 8.x
+* Java 17.x
 
 You will also need to clone this repository locally and open a CLI in the root directory of the cloned project.
 

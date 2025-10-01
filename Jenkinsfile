@@ -88,7 +88,7 @@ pipeline{
           DMC_USER     = credentials('MLBUILD_USER')
           DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
           GRADLE_DIR=".gradle"
-          JAVA_HOME_DIR="/home/builder/java/openjdk-1.8.0-262"
+          JAVA_HOME_DIR="/home/builder/java/jdk-17.0.2"
     }
     stages{
         stage('runtests-11.3.1'){

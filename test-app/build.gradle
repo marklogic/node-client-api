@@ -1,6 +1,7 @@
 // Only used for setting up the test AppServer in MarkLogic
 plugins {
   id 'net.saliman.properties' version '1.5.2'
+  // Sticking with 5.0.0 until a bug in 6.0.x is fixed where LSQT config isn't deployed correctly.
   id "com.marklogic.ml-gradle" version "5.0.0"
 }
 
