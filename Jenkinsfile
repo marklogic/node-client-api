@@ -1,26 +1,49 @@
 @Library('shared-libraries') _
 
-def runTests(String type,String version){
-    copyRPM type,version
-    setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
-    sh '''
-        export JAVA_HOME=$JAVA_HOME_DIR
-        export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
-        export PATH=$JAVA_HOME/bin:$GRADLE_USER_HOME:${NODE_HOME_DIR}/bin:$PATH
-        cd node-client-api
-        node --version
-        npm --version
-        npm ci
-        cd test-app
-        ./gradlew -i mlDeploy -g $PWD
-        cd ..
-        rm -rf $WORKSPACE/*.xml || true
-        ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
-        ./node_modules/.bin/gulp setupProxyTests || true
-        ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
+def runDockerCompose(String markLogicDockerImage) {
+    cleanupDocker()
+    sh label:'mlsetup', script: '''#!/bin/bash
+    echo "Removing any running MarkLogic server and clean up MarkLogic data directory"
+    sudo /usr/local/sbin/mladmin remove
+    docker-compose down -v || true
+    sudo /usr/local/sbin/mladmin cleandata
+    cd node-client-api/test-app
+    MARKLOGIC_LOGS_VOLUME=/tmp MARKLOGIC_IMAGE='''+markLogicDockerImage+''' docker-compose up -d --build
+    sleep 30s;
     '''
-
 }
+
+def runTests() {
+  sh label:'deploy ml-gradle test application', script: '''#!/bin/bash
+    export JAVA_HOME=$JAVA17_HOME_DIR
+    export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
+    export PATH=$GRADLE_USER_HOME:$JAVA_HOME/bin:$PATH:${NODE_HOME_DIR}/bin:$PATH
+    cd node-client-api/test-app
+    ./gradlew -i mlTestConnections
+    ./gradlew -i mlDeploy
+  '''
+
+  sh label:'test', script: '''#!/bin/bash
+    cd node-client-api
+    node --version
+    npm --version
+    npm ci
+    rm -rf $WORKSPACE/*.xml || true
+    ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
+    ./node_modules/.bin/gulp setupProxyTests || true
+    ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
+  '''
+}
+
+def teardownAfterTests() {
+    updateWorkspacePermissions()
+    sh label:'mlcleanup', script: '''#!/bin/bash
+    cd node-client-api/test-app
+    docker-compose down -v || true
+    '''
+    cleanupDocker()
+}
+
 def runAuditReport(){
     sh '''
         export PATH=${NODE_HOME_DIR}/bin:$PATH
@@ -31,9 +54,7 @@ def runAuditReport(){
     '''
 }
 
-def runE2ETests(String type,String version){
-    copyRPM type,version
-    setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
+def runE2ETests(){
     sh '''
         export PATH=${NODE_HOME_DIR}/bin:$PATH
         cd node-client-api
@@ -71,18 +92,23 @@ def runE2ETests(String type,String version){
      junit '**/*.xml'
 
 }
+
 pipeline{
     agent none
+
     triggers{
         parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
     }
+
     parameters{
           booleanParam(name: 'regressions', defaultValue: false, description: 'indicator if build is for regressions')
     }
+
     options {
         checkoutToSubdirectory 'node-client-api'
         buildDiscarder logRotator(artifactDaysToKeepStr: '7', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '10')
       }
+
     environment{
           NODE_HOME_DIR= "/users/ml/builder/nodeJs/node-v22.20.0-linux-x64"
           DMC_USER     = credentials('MLBUILD_USER')
@@ -90,15 +116,26 @@ pipeline{
           GRADLE_DIR=".gradle"
           JAVA_HOME_DIR="/home/builder/java/jdk-17.0.2"
     }
-    stages{
-        stage('runtests-11.3.1'){
+
+    stages {
+
+        stage('runtests-12-nightly'){
             agent {label 'nodeclientpool'}
             steps{
                 runAuditReport()
-                runTests('Release','11.3.1')
-                runE2ETests('Release','11.3.1')
+                // Temporarily using latest-11 to match what this stage previously did with rpm's. 
+                // runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
+                runDockerCompose('progressofficial/marklogic-db:latest-11.3')
+                runTests()
+                runE2ETests()
+            }
+            post{
+                always{
+                    teardownAfterTests()
+                }
             }
         }
+
         stage('regressions'){
             parallel{
                 stage('runtests-11-nightly'){
@@ -110,10 +147,17 @@ pipeline{
                         }
                     agent {label 'nodeclientpool'}
                     steps{
-                        runTests('Latest','11')
-                        runE2ETests('Latest','11')
+                        runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
+                        runTests()
+                        runE2ETests()
+                    }
+                    post{
+                        always{
+                            teardownAfterTests()
+                        }
                     }
                 }
+
                 stage('runtests-12-nightly'){
                     when{
                         allOf{
@@ -123,10 +167,17 @@ pipeline{
                         }
                     agent {label 'nodeclientpool'}
                     steps{
-                        runTests('Latest','12.0')
-                        runE2ETests('Latest','12.0')
+                        runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
+                        runTests()
+                        runE2ETests()
+                    }
+                    post{
+                        always{
+                            teardownAfterTests()
+                        }
                     }
                 }
+
                 stage('runtests-10-nightly'){
                     when{
                         allOf{
@@ -136,21 +187,14 @@ pipeline{
                         }
                     agent {label 'nodeclientpool'}
                     steps{
-                        runTests('Latest','10.0')
-                        runE2ETests('Latest','10.0')
+                        runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
+                        runTests()
+                        runE2ETests()
                     }
-                }
-                stage('runtests-10.0-10.2'){
-                    when{
-                        allOf{
-                            branch 'develop'
-                                expression {return params.regressions}
-                            }
+                    post{
+                        always{
+                            teardownAfterTests()
                         }
-                    agent {label 'nodeclientpool'}
-                    steps{
-                        runTests('Release','10.0-10.2')
-                        runE2ETests('Release','10.0-10.2')
                     }
                 }
             }
