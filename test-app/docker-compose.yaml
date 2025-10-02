@@ -1,4 +1,4 @@
-name: node-client
+name: docker-tests-node-client
 
 services:
 
@@ -13,5 +13,6 @@ services:
     volumes:
       - ${MARKLOGIC_LOGS_VOLUME}:/var/opt/MarkLogic/Logs
     ports:
-      - 8000-8002:8000-8002
-      - 8015-8017:8015-8017
+      - 8000-8017:8000-8017
+      - 8024-8029:8024-8029
+      - 8079:8079
