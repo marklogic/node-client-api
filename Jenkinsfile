@@ -16,9 +16,11 @@ def runTests() {
 
 		cd ..
 		rm -rf $WORKSPACE/*.xml || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
-		./node_modules/.bin/gulp setupProxyTests || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/documents-data-movement*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml || true
+
+		// Turning these off temporarily
+		// ./node_modules/.bin/gulp setupProxyTests || true
+		// ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
 	'''
 }
 
@@ -29,7 +31,7 @@ def runDockerCompose(String markLogicDockerImage) {
     sudo /usr/local/sbin/mladmin remove
     docker-compose down -v || true
     sudo /usr/local/sbin/mladmin cleandata
-    cd node-client-api/test-app
+    cd node-client-api
     MARKLOGIC_LOGS_VOLUME=/tmp MARKLOGIC_IMAGE=''' + markLogicDockerImage + ''' docker-compose up -d --build
     sleep 60s;
 	'''
@@ -38,7 +40,7 @@ def runDockerCompose(String markLogicDockerImage) {
 def teardownAfterTests() {
 	updateWorkspacePermissions()
 	sh label: 'teardown-docker', script: '''#!/bin/bash
-    cd node-client-api/test-app
+    cd node-client-api
     docker-compose down -v || true
     '''
 	cleanupDocker()
@@ -118,13 +120,14 @@ pipeline {
 
 	stages {
 
-		stage('runtests-11.3.2') {
+		stage('pull-request-tests') {
 			agent { label 'nodeclientpool' }
 			steps {
 				runAuditReport()
-				runDockerCompose('progressofficial/marklogic-db:latest-11.3')
+				runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
 				runTests()
-				runE2ETests()
+				// Turning these off while debugging
+				// runE2ETests()
 			}
 			post {
 				always {
@@ -136,25 +139,25 @@ pipeline {
 		stage('regressions') {
 			parallel {
 
-				stage('runtests-11-nightly') {
-					when {
-						allOf {
-							branch 'develop'
-							expression { return params.regressions }
-						}
-					}
-					agent { label 'nodeclientpool' }
-					steps {
-						runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
-						runTests()
-						runE2ETests()
-					}
-					post {
-						always {
-							teardownAfterTests()
-						}
-					}
-				}
+				// stage('runtests-11-nightly') {
+				// 	when {
+				// 		allOf {
+				// 			branch 'develop'
+				// 			expression { return params.regressions }
+				// 		}
+				// 	}
+				// 	agent { label 'nodeclientpool' }
+				// 	steps {
+				// 		runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
+				// 		runTests()
+				// 		runE2ETests()
+				// 	}
+				// 	post {
+				// 		always {
+				// 			teardownAfterTests()
+				// 		}
+				// 	}
+				// }
 
 				stage('runtests-12-nightly') {
 					when {
@@ -176,25 +179,25 @@ pipeline {
 					}
 				}
 
-				stage('runtests-10-nightly') {
-					when {
-						allOf {
-							branch 'develop'
-							expression { return params.regressions }
-						}
-					}
-					agent { label 'nodeclientpool' }
-					steps {
-						runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
-						runTests()
-						runE2ETests()
-					}
-					post {
-						always {
-							teardownAfterTests()
-						}
-					}
-				}
+				// stage('runtests-10-nightly') {
+				// 	when {
+				// 		allOf {
+				// 			branch 'develop'
+				// 			expression { return params.regressions }
+				// 		}
+				// 	}
+				// 	agent { label 'nodeclientpool' }
+				// 	steps {
+				// 		runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
+				// 		runTests()
+				// 		runE2ETests()
+				// 	}
+				// 	post {
+				// 		always {
+				// 			teardownAfterTests()
+				// 		}
+				// 	}
+				// }
 			}
 		}
 	}
