@@ -16,7 +16,7 @@ def runTests() {
 
 		cd ..
 		rm -rf $WORKSPACE/*.xml || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|documents-data-movement\' --invert || true
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging\' --invert || true
 
 		# Turning these off temporarily
 		# ./node_modules/.bin/gulp setupProxyTests || true
