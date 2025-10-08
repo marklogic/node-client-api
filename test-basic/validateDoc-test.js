@@ -15,7 +15,6 @@ let options = {};
 
 describe('optic-update validateDoc tests', function () {
 
-    this.timeout(6000);
     before(function (done) {
         try {
             testlib.findServerConfigurationPromise(serverConfiguration)

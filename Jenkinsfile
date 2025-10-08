@@ -123,7 +123,7 @@ pipeline {
 			agent { label 'nodeclientpool' }
 			steps {
 				runAuditReport()
-				runDockerCompose('progressofficial/marklogic-db:latest-11')
+				runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
 				runTests()
 				// Turning these off while debugging
 				// runE2ETests()
