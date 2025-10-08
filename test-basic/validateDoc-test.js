@@ -192,7 +192,7 @@ describe('optic-update validateDoc tests', function () {
                     done(new Error('Expected query to fail but it succeeded'));
                 }).catch(e => {
                     try {
-                        e.message.should.equal('query rows: response with invalid 500 status with path: /v1/rows/update');
+                        e.message.should.equal('query rows: response with invalid 500 status with path: /v1/rows');
                         done();
                     } catch (assertionError) {
                         done(assertionError);
