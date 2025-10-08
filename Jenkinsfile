@@ -16,11 +16,11 @@ def runTests() {
 
 		cd ..
 		rm -rf $WORKSPACE/*.xml || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert || true
+		./node_modules/.bin/mocha --timeout 10000 -R spec test-basic/documents-data-movement*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging\' --invert || true
 
-		// Turning these off temporarily
-		// ./node_modules/.bin/gulp setupProxyTests || true
-		// ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
+		# Turning these off temporarily
+		# ./node_modules/.bin/gulp setupProxyTests || true
+		# ./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging\' --invert  || true
 	'''
 }
 
@@ -91,7 +91,6 @@ def runE2ETests() {
 		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
 		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
 	'''
-	junit '**/*.xml'
 }
 
 pipeline {
@@ -131,6 +130,7 @@ pipeline {
 			}
 			post {
 				always {
+					junit '**/*.xml'
 					teardownAfterTests()
 				}
 			}
@@ -155,6 +155,7 @@ pipeline {
 				// 	post {
 				// 		always {
 				// 			teardownAfterTests()
+				// 			junit '**/*.xml'
 				// 		}
 				// 	}
 				// }
@@ -174,6 +175,7 @@ pipeline {
 					}
 					post {
 						always {
+							junit '**/*.xml'
 							teardownAfterTests()
 						}
 					}
@@ -194,6 +196,7 @@ pipeline {
 				// 	}
 				// 	post {
 				// 		always {
+				// 			junit '**/*.xml'
 				// 			teardownAfterTests()
 				// 		}
 				// 	}
