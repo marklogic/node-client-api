@@ -29,7 +29,7 @@ def runDockerCompose(String markLogicDockerImage) {
     sudo /usr/local/sbin/mladmin remove
     docker-compose down -v || true
     sudo /usr/local/sbin/mladmin cleandata
-    cd node-client-api/test-app
+    cd node-client-api
     MARKLOGIC_LOGS_VOLUME=/tmp MARKLOGIC_IMAGE=''' + markLogicDockerImage + ''' docker-compose up -d --build
     sleep 60s;
 	'''
@@ -38,7 +38,7 @@ def runDockerCompose(String markLogicDockerImage) {
 def teardownAfterTests() {
 	updateWorkspacePermissions()
 	sh label: 'teardown-docker', script: '''#!/bin/bash
-    cd node-client-api/test-app
+    cd node-client-api
     docker-compose down -v || true
     '''
 	cleanupDocker()
@@ -89,7 +89,7 @@ def runE2ETests() {
 		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
 		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
 	'''
-	junit '**/*.xml'
+    junit '**/*.xml'
 }
 
 pipeline {
@@ -118,13 +118,13 @@ pipeline {
 
 	stages {
 
-		stage('runtests-11.3.2') {
+		stage('pull-request-tests') {
 			agent { label 'nodeclientpool' }
 			steps {
 				runAuditReport()
-				runDockerCompose('progressofficial/marklogic-db:latest-11.3')
+				runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
 				runTests()
-				runE2ETests()
+                runE2ETests()
 			}
 			post {
 				always {

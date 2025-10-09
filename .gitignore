@@ -7,11 +7,12 @@ tmp
 .settings
 .vscode
 .DS_Store
+
+docker
 test-app/build
 test-app/.gradle
 test-app/gradle-local.properties
 test-app/docker
 test-app/containerLogs
-
 test-complete-app/build
 test-complete-app/.gradle

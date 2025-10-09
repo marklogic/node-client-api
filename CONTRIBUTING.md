@@ -21,7 +21,6 @@ instance available for testing.
 
 If you are able to use Docker, run the following:
 
-    cd test-app
     docker-compose up -d --build
 
 This will create a container with the MarkLogic service. The MarkLogic service will take a minute or two to initialize.
@@ -31,6 +30,7 @@ username and password are in the docker-compose.yaml file in the /test-app direc
 Once the container is finished initializing, you need to deploy the test application to the MarkLogic service.
 While still in the test-app directory run the following gradle command.
 
+    cd test-app
     ./gradlew -i mlDeploy
 
 Once the deploy has completed successfully, use "cd .." to return to the root directory of the project.
