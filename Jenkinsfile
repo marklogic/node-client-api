@@ -30,7 +30,9 @@ def runDockerCompose(String markLogicDockerImage) {
     docker-compose down -v || true
     sudo /usr/local/sbin/mladmin cleandata
     cd node-client-api
+    echo "Running docker compose with MarkLogic image: ''' + markLogicDockerImage + '''"
     MARKLOGIC_LOGS_VOLUME=/tmp MARKLOGIC_IMAGE=''' + markLogicDockerImage + ''' docker-compose up -d --build
+    echo "Waiting 60s for MarkLogic to be ready to accept connections"
     sleep 60s;
 	'''
 }
