@@ -965,12 +965,12 @@ describe('plan builder', function() {
             done();
         }).catch(done);
     }); 
+
     it('geo.parseWkt#1', function(done) {
         testPlan([p.xs.string("LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)")], p.geo.parseWkt(p.col("1")))
           .then(function(response) {
-              const responseValue = (serverConfiguration.serverVersion >= 11)?"LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)":
-                  "LINESTRING(-112.25 47.1,-112.3 47.1,-112.4 47.2)";
-            should(getResult(response).value).eql(responseValue);
+            const expectedValue = "LINESTRING(-112.25 47.100002,-112.3 47.100002,-112.39999 47.199997)";
+            should(getResult(response).value).eql(expectedValue);
             done();
         }).catch(done);
     }); 
