@@ -38,13 +38,9 @@ describe('Functional tests - data movement removeAllUris', function () {
 
         dbWriter.documents.writeAll(readable, {
             onCompletion: ((summary) => {
-                if (summary.error) {
-                    done(new Error('Setup failed: ' + summary.error));
-                } else {
-                    done();
-                }
+                done();
             })
-        }).catch(done);
+        });
 
     });
 

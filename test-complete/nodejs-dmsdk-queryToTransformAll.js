@@ -124,11 +124,14 @@ describe('data movement transformAll', function () {
             transform: [transformName, { newValue: 'transformedValue' }],
             batchSize: 10,
             onBatchSuccess: (function (progress, documents) {
-                // Don't call done() here - onBatchSuccess is called multiple times
-                // Let onCompletion handle calling done()
-                progress.docsTransformedSuccessfully.should.be.greaterThanOrEqual(10);
-                progress.docsFailedToBeTransformed.should.be.equal(0);
-                progress.timeElapsed.should.be.greaterThanOrEqual(0);
+                try {
+                    progress.docsTransformedSuccessfully.should.be.greaterThanOrEqual(10);
+                    progress.docsFailedToBeTransformed.should.be.equal(0);
+                    progress.timeElapsed.should.be.greaterThanOrEqual(0);
+                } catch (err) {
+                    done(err);
+                }
+
             }),
             onCompletion: ((summary) => {
                 try {
