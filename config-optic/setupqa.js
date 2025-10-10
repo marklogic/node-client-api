@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
@@ -16,7 +16,7 @@ var testName         = clientConnectdef.name;
 var planServerdef    = clientConnectdef.plan;
 
 var testLoad = require('./loaddata.js');
-var testUser = require('./userconfig.js'); 
+var testUser = require('./userconfig.js');
 
 var db = marklogic.createDatabaseClient({
   host:     planServerdef.host,
@@ -64,7 +64,7 @@ check.then(function(response) {
       }
     }).result();
   })
-.then(function(response){  
+.then(function(response){
   console.log('setting up rest eval role');
   return testUser.addRestEvalRole(manager).result();
 })
