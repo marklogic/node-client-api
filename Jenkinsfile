@@ -1,7 +1,7 @@
 @Library('shared-libraries') _
 
 def runTests() {
-	sh label: 'deploy-test-app-and-run-tests', script: '''
+  sh label: 'deploy-test-app-and-run-tests', script: '''
 		export JAVA_HOME=$JAVA_HOME_DIR
 		export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
 		export PATH=$JAVA_HOME/bin:$GRADLE_USER_HOME:${NODE_HOME_DIR}/bin:$PATH
@@ -23,8 +23,8 @@ def runTests() {
 }
 
 def runDockerCompose(String markLogicDockerImage) {
-	cleanupDocker()
-	sh label: 'run-docker-compose', script: '''#!/bin/bash
+  cleanupDocker()
+  sh label: 'run-docker-compose', script: '''#!/bin/bash
     echo "Removing any running MarkLogic server and clean up MarkLogic data directory"
     sudo /usr/local/sbin/mladmin remove
     docker-compose down -v || true
@@ -38,16 +38,16 @@ def runDockerCompose(String markLogicDockerImage) {
 }
 
 def teardownAfterTests() {
-	updateWorkspacePermissions()
-	sh label: 'teardown-docker', script: '''#!/bin/bash
+  updateWorkspacePermissions()
+  sh label: 'teardown-docker', script: '''#!/bin/bash
     cd node-client-api
     docker-compose down -v || true
     '''
-	cleanupDocker()
+  cleanupDocker()
 }
 
 def runAuditReport() {
-	sh label: 'run-audit-report', script: '''
+  sh label: 'run-audit-report', script: '''
 		export PATH=${NODE_HOME_DIR}/bin:$PATH
 		cd node-client-api
 		npm ci
@@ -57,7 +57,7 @@ def runAuditReport() {
 }
 
 def runE2ETests() {
-	sh label: 'run-e2e-tests', script: '''
+  sh label: 'run-e2e-tests', script: '''
 		export PATH=${NODE_HOME_DIR}/bin:$PATH
 		cd node-client-api
 		node --version
@@ -91,113 +91,113 @@ def runE2ETests() {
 		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
 		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
 	'''
-    junit '**/*.xml'
+  junit '**/*.xml'
 }
 
 pipeline {
-	agent none
+  agent none
 
-	triggers {
-		parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
-	}
+  triggers {
+    parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
+  }
 
-	parameters {
-		booleanParam(name: 'regressions', defaultValue: false, description: 'indicator if build is for regressions')
-	}
+  parameters {
+    booleanParam(name: 'regressions', defaultValue: false, description: 'indicator if build is for regressions')
+  }
 
-	options {
-		checkoutToSubdirectory 'node-client-api'
-		buildDiscarder logRotator(artifactDaysToKeepStr: '7', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '10')
-	}
+  options {
+    checkoutToSubdirectory 'node-client-api'
+    buildDiscarder logRotator(artifactDaysToKeepStr: '7', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '10')
+  }
 
-	environment {
-		NODE_HOME_DIR = "/users/ml/builder/nodeJs/node-v22.20.0-linux-x64"
-		DMC_USER = credentials('MLBUILD_USER')
-		DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
-		GRADLE_DIR = ".gradle"
-		JAVA_HOME_DIR = "/home/builder/java/jdk-17.0.2"
-	}
+  environment {
+    NODE_HOME_DIR = "/users/ml/builder/nodeJs/node-v22.20.0-linux-x64"
+    DMC_USER = credentials('MLBUILD_USER')
+    DMC_PASSWORD = credentials('MLBUILD_PASSWORD')
+    GRADLE_DIR = ".gradle"
+    JAVA_HOME_DIR = "/home/builder/java/jdk-17.0.2"
+  }
 
-	stages {
+  stages {
 
-		stage('pull-request-tests') {
-			agent { label 'nodeclientpool' }
-			steps {
-				runAuditReport()
-				runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-				runTests()
-                runE2ETests()
-			}
-			post {
-				always {
-					teardownAfterTests()
-				}
-			}
-		}
+    stage('pull-request-tests') {
+      agent { label 'nodeclientpool' }
+      steps {
+        runAuditReport()
+        runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
+        runTests()
+        runE2ETests()
+      }
+      post {
+        always {
+          teardownAfterTests()
+        }
+      }
+    }
 
-		stage('regressions') {
-			parallel {
+    stage('regressions') {
+      parallel {
 
-				stage('runtests-11-nightly') {
-					when {
-						allOf {
-							branch 'develop'
-							expression { return params.regressions }
-						}
-					}
-					agent { label 'nodeclientpool' }
-					steps {
-						runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
-						runTests()
-						runE2ETests()
-					}
-					post {
-						always {
-							teardownAfterTests()
-						}
-					}
-				}
+        stage('runtests-11-nightly') {
+          when {
+            allOf {
+              branch 'develop'
+              expression { return params.regressions }
+            }
+          }
+          agent { label 'nodeclientpool' }
+          steps {
+            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
+            runTests()
+            runE2ETests()
+          }
+          post {
+            always {
+              teardownAfterTests()
+            }
+          }
+        }
 
-				stage('runtests-12-nightly') {
-					when {
-						allOf {
-							branch 'develop'
-							expression { return params.regressions }
-						}
-					}
-					agent { label 'nodeclientpool' }
-					steps {
-						runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-						runTests()
-						runE2ETests()
-					}
-					post {
-						always {
-							teardownAfterTests()
-						}
-					}
-				}
+        stage('runtests-12-nightly') {
+          when {
+            allOf {
+              branch 'develop'
+              expression { return params.regressions }
+            }
+          }
+          agent { label 'nodeclientpool' }
+          steps {
+            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
+            runTests()
+            runE2ETests()
+          }
+          post {
+            always {
+              teardownAfterTests()
+            }
+          }
+        }
 
-				stage('runtests-10-nightly') {
-					when {
-						allOf {
-							branch 'develop'
-							expression { return params.regressions }
-						}
-					}
-					agent { label 'nodeclientpool' }
-					steps {
-						runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
-						runTests()
-						runE2ETests()
-					}
-					post {
-						always {
-							teardownAfterTests()
-						}
-					}
-				}
-			}
-		}
-	}
+        stage('runtests-10-nightly') {
+          when {
+            allOf {
+              branch 'develop'
+              expression { return params.regressions }
+            }
+          }
+          agent { label 'nodeclientpool' }
+          steps {
+            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
+            runTests()
+            runE2ETests()
+          }
+          post {
+            always {
+              teardownAfterTests()
+            }
+          }
+        }
+      }
+    }
+  }
 }
