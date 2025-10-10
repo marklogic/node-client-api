@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var should = require('should');
 
@@ -167,7 +167,7 @@ describe('check connection', function(){
      }).catch(done);
    });
     it('should give 403 when user is not authorized', function(done){
-    var config = {host:testconfig.testConnection.host, user:testconfig.testConnection.user, password: testconfig.testConnection.password, port:testconfig.testConnection.port, 
+    var config = {host:testconfig.testConnection.host, user:testconfig.testConnection.user, password: testconfig.testConnection.password, port:testconfig.testConnection.port,
         authType:testconfig.testConnection.authType};
     var db1 = marklogic.createDatabaseClient(config);
     var assert = require('assert');
@@ -183,7 +183,7 @@ describe('check connection', function(){
    });
 
    it('should give 401 when does not exist', function(done){
-    var config = {host:testconfig.restReaderConnection.host, user:testconfig.testConnection.user, password: 'invalid', port:testconfig.testConnection.port, 
+    var config = {host:testconfig.restReaderConnection.host, user:testconfig.testConnection.user, password: 'invalid', port:testconfig.testConnection.port,
         authType:testconfig.restReaderConnection.authType};
     var db1 = marklogic.createDatabaseClient(config);
     var assert = require('assert');

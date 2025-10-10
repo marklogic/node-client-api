@@ -1,7 +1,7 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
- 
+
 const fs = require('fs');
 const util = require('util')
 
@@ -18,7 +18,7 @@ var db1 = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 var db2 = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 
 describe('Transactions-Tests', function(){
-	
+
 	it('same transaction', function(done) {
 		// Insert and read back on same database client.
     this.timeout(10000);
@@ -54,7 +54,7 @@ describe('Transactions-Tests', function(){
 	}
 	);
   });
-  
+
   it('different transaction', function(done) {
     this.timeout(10000);
     var tid = null;
@@ -87,7 +87,7 @@ describe('Transactions-Tests', function(){
 	}
 	);
   });
-  
+
   });
-  
- 
+
+
