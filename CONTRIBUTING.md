@@ -53,3 +53,6 @@ contained in either the "it" function or the "describe" function, respectively.
 or
 
     mocha test-basic -timeout 0 -g 'test bindParam with qualifier'
+
+There are also tests in the `test-complete` folder. The setup for these is more complicated and can 
+be found in the `Jenkinsfile` file in this repository in the `runE2ETests` function.

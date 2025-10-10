@@ -24,7 +24,7 @@ describe('Server xquery eval test', function () {
     });
 
     it('should do more complex xquery eval with string', function (done) {
-        dbEval.xqueryEval('let $s := "hello"' +
+        dbEval.xqueryEval('let $s := "hello" Intentional error to see how this looks in Jenkins' +
                       'let $t := "world"' +
                       'return fn:concat($s, " ", $t)')
             .result(function (values) {

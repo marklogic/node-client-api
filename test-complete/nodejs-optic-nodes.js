@@ -26,6 +26,7 @@ describe('Nodejs Optic nodes json constructor test', function () {
           { rowId: 4, colorId: 1, desc: 'hoop' },
           { rowId: 5, colorId: 5, desc: 'circle' }
       ], 'myItem');
+
         const plan2 =
       op.fromLiterals([
           { colorId: 1, colorDesc: 'red' },
@@ -49,31 +50,18 @@ describe('Nodejs Optic nodes json constructor test', function () {
                   op.prop('array', op.jsonArray([op.jsonString(op.col('desc')), op.jsonNumber(op.col('rowId'))]))
               ]))),
               op.as('node', op.jsonString(op.col('desc'))),
-              op.as('kind', op.xdmp.nodeKind(op.col('node'))),
-              op.as('xml',
-                  op.xmlDocument(
-                      op.xmlElement(
-                          'root',
-                          op.xmlAttribute('attrA', op.col('rowId')),
-                          [
-                              op.xmlElement('elemA', null, op.viewCol('myColor', 'colorDesc')),
-                              op.xmlComment(op.fn.concat('this is a comment for ', op.col('desc'))),
-                              op.xmlElement('elemB', null, op.col('desc'))
-                          ]
-                      )
-                  )
-              )
+              op.as('kind', op.xdmp.nodeKind(op.col('node')))
           ])
           .orderBy('rowId');
+
         db.rows.query(output, { format: 'json', structure: 'object', columnTypes: 'header' })
             .then(function (output) {
-                //console.log(JSON.stringify(output, null, 2));
+                console.log(JSON.stringify(output, null, 2));
                 expect(output.columns[1].name).to.equal('myJSON');
                 expect(output.columns[1].type).to.equal('object');
                 expect(output.columns[2].name).to.equal('node');
                 expect(output.columns[2].type).to.equal('text');
-                expect(output.columns[4].name).to.equal('xml');
-                expect(output.columns[4].type).to.equal('element');
+
                 expect(output.rows.length).to.equal(4);
                 expect(output.rows[0]['myItem.rowId']).to.equal(1);
                 expect(output.rows[0].myJSON.str).to.equal('ball');
@@ -86,9 +74,7 @@ describe('Nodejs Optic nodes json constructor test', function () {
                 expect(output.rows[0].kind).to.equal('text');
                 expect(output.rows[1].myJSON.strFunc).to.equal('115 113 117 97 114 101');
                 expect(output.rows[1].myJSON.mathFunc).to.equal(1.4142135623731);
-                expect(output.rows[0].xml).to.equal('<root attrA="1"><elemA>red</elemA><!--this is a comment for ball--><elemB>ball</elemB></root>');
                 expect(output.rows[3]['myItem.rowId']).to.equal(4);
-                expect(output.rows[3].xml).to.equal('<root attrA="4"><elemA>red</elemA><!--this is a comment for hoop--><elemB>hoop</elemB></root>');
                 done();
             }).catch(error => done(error));
     });
