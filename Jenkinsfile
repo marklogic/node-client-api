@@ -1,8 +1,6 @@
 @Library('shared-libraries') _
 
-def runTests(String type,String version) {
-  copyRPM type,version
-  setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
+def runTests() {
   sh label: 'deploy-test-app-and-run-tests', script: '''
 		export JAVA_HOME=$JAVA_HOME_DIR
 		export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
@@ -40,12 +38,12 @@ def runDockerCompose(String markLogicDockerImage) {
 }
 
 def teardownAfterTests() {
-//  updateWorkspacePermissions()
-//  sh label: 'teardown-docker', script: '''#!/bin/bash
-//    cd node-client-api
-//    docker-compose down -v || true
-//    '''
-//  cleanupDocker()
+  updateWorkspacePermissions()
+  sh label: 'teardown-docker', script: '''#!/bin/bash
+    cd node-client-api
+    docker-compose down -v || true
+    '''
+  cleanupDocker()
 }
 
 def runAuditReport() {
@@ -58,9 +56,7 @@ def runAuditReport() {
 	'''
 }
 
-def runE2ETests(String type,String version) {
-  copyRPM type,version
-  setUpML '$WORKSPACE/xdmp/src/Mark*.rpm'
+def runE2ETests() {
   sh label: 'run-e2e-tests', script: '''
 		export PATH=${NODE_HOME_DIR}/bin:$PATH
 		cd node-client-api
@@ -128,8 +124,14 @@ pipeline {
       agent { label 'nodeclientpool' }
       steps {
         runAuditReport()
-        runTests('Latest','12.1')
-        runE2ETests('Latest','12.1')
+        runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
+        runTests()
+        runE2ETests()
+      }
+      post {
+        always {
+          teardownAfterTests()
+        }
       }
     }
 
@@ -145,8 +147,9 @@ pipeline {
           }
           agent { label 'nodeclientpool' }
           steps {
-            runTests('Latest','11')
-            runE2ETests('Latest','11')
+            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
+            runTests()
+            runE2ETests()
           }
           post {
             always {
@@ -164,8 +167,9 @@ pipeline {
           }
           agent { label 'nodeclientpool' }
           steps {
-            runTests('Latest','12')
-            runE2ETests('Latest','12')
+            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
+            runTests()
+            runE2ETests()
           }
           post {
             always {
@@ -183,8 +187,9 @@ pipeline {
           }
           agent { label 'nodeclientpool' }
           steps {
-            runTests('Latest','10')
-            runE2ETests('Latest','10')
+            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
+            runTests()
+            runE2ETests()
           }
           post {
             always {
