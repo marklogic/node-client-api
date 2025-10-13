@@ -4,7 +4,7 @@ def runTests() {
   sh label: 'deploy-test-app-and-run-tests', script: '''
 		export JAVA_HOME=$JAVA_HOME_DIR
 		export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
-		export PATH=$JAVA_HOME/bin:$GRADLE_USER_HOME:${NODE_HOME_DIR}/bin:$PATH
+		export PATH=$JAVA_HOME/bin:${NODE_HOME_DIR}/bin:$PATH
 		cd node-client-api
 		node --version
 		npm --version
@@ -58,7 +58,9 @@ def runAuditReport() {
 
 def runE2ETests() {
   sh label: 'run-e2e-tests', script: '''
-		export PATH=${NODE_HOME_DIR}/bin:$PATH
+    export JAVA_HOME=$JAVA_HOME_DIR
+    export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
+    export PATH=$JAVA_HOME/bin:${NODE_HOME_DIR}/bin:$PATH
 		cd node-client-api
 		node --version
 		npm --version
