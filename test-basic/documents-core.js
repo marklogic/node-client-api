@@ -58,7 +58,7 @@ describe('document content', function(){
                     document.content.key1.should.equal('value 1');
                     done();
                 })
-                .catch(error=> done(error));
+                .catch(done);
         });
 
         it('should read back normal contents with enableGzippedResponses as false', function(done){
@@ -379,18 +379,21 @@ describe('document content', function(){
             '/test/write/arrayObject2.json'
             )
         .result(function(documents) {
-          valcheck.isUndefined(documents).should.equal(false);
-          documents.length.should.equal(2);
-          for (var i=0; i < 2; i++) {
-            var document = documents[i];
-            valcheck.isUndefined(document).should.equal(false);
-            document.should.have.property('content');
-            document.content.should.have.property('key1');
-            document.content.key1.should.equal('value 1');
+          try {
+            valcheck.isUndefined(documents).should.equal(false);
+            documents.length.should.equal(2);
+            for (var i=0; i < 2; i++) {
+              var document = documents[i];
+              valcheck.isUndefined(document).should.equal(false);
+              document.should.have.property('content');
+              document.content.should.have.property('key1');
+              document.content.key1.should.equal('value 1');
+            }
+            done();
+          } catch (e) {
+            done(e);
           }
-          done();
-          })
-        .catch(done);
+        })
       });
       it('should read as an object stream with content and metadata', function(done){
         var count = 0;
@@ -399,15 +402,24 @@ describe('document content', function(){
             categories: ['content', 'quality']
         }).stream('object').on('error', done).
           on('data', function (data) {
-            count++;
-            valcheck.isObject(data).should.equal(true);
-            data.should.have.property('content');
-            data.should.have.property('quality');
+            try {
+              count++;
+              valcheck.isObject(data).should.equal(true);
+              data.should.have.property('content');
+              data.should.have.property('quality');
+            } catch (e) {
+              done(e);
+              return;
+            }
           }).
           on('end', function () {
-            count.should.equal(2);
-            done();
-          });
+            try {
+              count.should.equal(2);
+              done();
+            } catch (e) {
+              done(e);
+            }
+          })
       });
       it('should read as an object stream with content only', function(done){
         var count = 0;
@@ -416,14 +428,23 @@ describe('document content', function(){
             categories: ['content']
         }).stream('object').on('error', done).
           on('data', function (data) {
-            count++;
-            valcheck.isObject(data).should.equal(true);
-            data.should.have.property('content');
-            data.should.not.have.property('quality');
+            try {
+              count++;
+              valcheck.isObject(data).should.equal(true);
+              data.should.have.property('content');
+              data.should.not.have.property('quality');
+            } catch (e) {
+              done(e);
+              return;
+            }
           }).
           on('end', function () {
-            count.should.equal(2);
-            done();
+            try {
+              count.should.equal(2);
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
       });
       it('should read as an object stream with metadata only', function(done){
@@ -433,14 +454,23 @@ describe('document content', function(){
             categories: ['quality']
         }).stream('object').on('error', done).
           on('data', function (data) {
-            count++;
-            valcheck.isObject(data).should.equal(true);
-            data.should.not.have.property('content');
-            data.should.have.property('quality');
+            try {
+              count++;
+              valcheck.isObject(data).should.equal(true);
+              data.should.not.have.property('content');
+              data.should.have.property('quality');
+            } catch (e) {
+              done(e);
+              return;
+            }
           }).
           on('end', function () {
-            count.should.equal(2);
-            done();
+            try {
+              count.should.equal(2);
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
       });
     });
@@ -459,13 +489,17 @@ describe('document content', function(){
       it('should read back the value', function(done){
         db.documents.read('/test/write/writable1.json').stream('chunked').
           on('data', function(chunk) {
-            valcheck.isUndefined(chunk).should.equal(false);
-            var content = JSON.parse(chunk.toString());
-            valcheck.isUndefined(content).should.equal(false);
-            content.should.have.property('key1');
-            content.key1.should.equal('value 1');
-            done();
-            }, done);
+            try {
+              valcheck.isUndefined(chunk).should.equal(false);
+              var content = JSON.parse(chunk.toString());
+              valcheck.isUndefined(content).should.equal(false);
+              content.should.have.property('key1');
+              content.key1.should.equal('value 1');
+              done();
+            } catch (e) {
+              done(e);
+            }
+          })
       });
     });
 

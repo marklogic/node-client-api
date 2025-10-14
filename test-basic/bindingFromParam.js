@@ -111,6 +111,7 @@ describe('optic-update fromParam tests', function(){
             const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
             const temp = {myDocs: rows};
             db.rows.query(planBuilderTemplate,null, temp);
+            done(new Error('Expecting an error to be thrown due to invalid row-col-types argument'));
         } catch (e) {
             e.toString().should.equal('Error: row-col-types argument at 2 of PlanBuilder.fromParam() has invalid argument for PlanRowColTypes value: [object Object]');
             done();
@@ -157,6 +158,7 @@ describe('optic-update fromParam tests', function(){
             const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
             const temp = {myDocs: rows};
             db.rows.query(planBuilderTemplate, null, temp);
+            done(new Error('Expecting an error to be thrown due to invalid row-col-types argument'));
         } catch (e) {
             e.toString().should.equal('Error: row-col-types argument at 2 of PlanBuilder.fromParam() has another type than string');
             done();
@@ -205,7 +207,11 @@ describe('optic-update fromParam tests', function(){
         }, {"column": "lastName", "type": "string"}];
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, null, temp).catch(e => {
+        db.rows.query(planBuilderTemplate, null, temp)
+        .then(function(response){
+            done(new Error('Expecting an error to be thrown due to null value for non-nullable column'));
+        })
+        .catch(e => {
             e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
@@ -221,7 +227,11 @@ describe('optic-update fromParam tests', function(){
         }, {"column": "lastName", "type": "string", "nullable": true}];
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate, null,temp).catch(e => {
+        db.rows.query(planBuilderTemplate, null,temp)
+        .then(function(response){
+            done(new Error('Expecting an error to be thrown due to invalid row-col-types argument'));
+        }) 
+        .catch(e => {
             e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
@@ -237,7 +247,11 @@ describe('optic-update fromParam tests', function(){
         }, {"column": "lastName", "type": "string", "nullable": true}];
         const planBuilderTemplate = op.fromParam('myDocs', 'qualifier', outputCols);
         const temp = {myDocs: rows};
-        db.rows.query(planBuilderTemplate,null, temp).catch(e => {
+        db.rows.query(planBuilderTemplate,null, temp)
+        .then(function(response){
+            done(new Error('Expecting an error to be thrown due to invalid row-col-types argument'));
+        })
+        .catch(e => {
             e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
             done();
         });
@@ -255,10 +269,13 @@ describe('optic-update fromParam tests', function(){
             const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
             const temp = {myDocs: rows};
             db.rows.query(planBuilderTemplate,null, temp)
-                .catch(e => {
-                    e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
-                    done();
-                });
+            .then(function(response){
+                done(new Error('Expecting an error to be thrown due to null value for non-nullable column'));
+            })  
+            .catch(e => {
+                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
+                done();
+            });
         } catch (e) {
             done();
         }
@@ -274,10 +291,13 @@ describe('optic-update fromParam tests', function(){
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
         db.rows.query(planBuilderTemplate, null,temp)
-            .catch(e => {
-                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
-                done();
-            });
+        .then(function(response){
+            done(new Error('Expecting an error to be thrown due to extra non-defined column types'));
+        })
+        .catch(e => {
+            e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
+            done();
+        });
 
     });
 
@@ -290,10 +310,13 @@ describe('optic-update fromParam tests', function(){
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {bindingParam: rows};
         db.rows.query(planBuilderTemplate, null, temp)
-            .catch(e => {
-                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
-                done();
-            });
+        .then(function(response){
+            done(new Error('Expecting an error to be thrown due to non-consistent binding argument name'));
+        })
+        .catch(e => {
+            e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
+            done();
+        });
 
     });
 
@@ -311,10 +334,13 @@ describe('optic-update fromParam tests', function(){
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
         db.rows.query(planBuilderTemplate, null, temp)
-            .catch(e => {
-                e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
-                done();
-            });
+        .then(function(response){
+            done(new Error('Expecting an error to be thrown due to mismatch type'));
+        })
+        .catch(e => {
+            e.toString().includes('Error: binding arguments /v1/rows: cannot process response with 500 status');
+            done();
+        });
 
     });
 
@@ -333,6 +359,7 @@ describe('optic-update fromParam tests', function(){
             const planBuilderTemplate = op.fromParam('myDocs', 1234, outputCols);
             const temp = {myDocs: rows};
             db.rows.query(planBuilderTemplate, null, temp);
+            done(new Error('Expecting an error to be thrown due to invalid qualifier argument'));
         } catch (e) {
             e.toString().includes('Error: qualifier argument at 1 of PlanBuilder.fromParam() must be a XsString value');
             done();
@@ -353,11 +380,17 @@ describe('optic-update fromParam tests', function(){
         const planBuilderTemplate = op.fromParam('myDocs', null, outputCols);
         const temp = {myDocs: rows};
         db.rows.query(planBuilderTemplate, null, temp).then(res => {
-            const rows = res.rows;
-            rows[0].id.value.should.equal(1);
-            rows[0].firstName.value.should.equal("firstName_1");
-            rows[0].lastName.value.should.equal("lastName_1");
-            done();
+            try {
+                const rows = res.rows;
+                rows[0].id.value.should.equal(1);
+                rows[0].firstName.value.should.equal("firstName_1");
+                rows[0].lastName.value.should.equal("lastName_1");
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }).catch(e => {
+            done(e);
         });
 
     });

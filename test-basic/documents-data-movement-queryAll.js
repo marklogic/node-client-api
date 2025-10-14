@@ -21,9 +21,9 @@ describe('data movement queryAll', function() {
     before(function (done) {
         // This "before" and the "after" frequently fail to finish before the timeout triggers
         // TODO:
-        //      short-term -> run with "timeout 0" and/or change/add "this.timeout(0)" to both methods
-        //      long-term -> Do we need 10000 records for these tests?
-        this.timeout(0);
+        //      short-term -> add "this.timeout(120000)" to both methods
+        //      long-term -> Do we need 10000 records for these tests? If 120 seconds is not enough, we change the test.
+        this.timeout(120000);
         readable = new Stream.Readable({objectMode: true});
         uris = [];
         for(let i=0; i<10000; i++) {
@@ -44,7 +44,7 @@ describe('data movement queryAll', function() {
     });
 
     after((function(done){
-        this.timeout(0);
+        this.timeout(120000);
         dbWriter.documents.remove(uris)
             .result(function(response){
                 done();

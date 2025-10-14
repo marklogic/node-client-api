@@ -116,6 +116,7 @@ describe('optic-update docColTypes tests', function() {
 
             try {
                 db.rows.query(op.fromDocDescriptors(docsDescriptor).write(op.docColTypes()));
+                done(new Error('Expecting an error to be thrown due to invalid document descriptor'));
             } catch (e) {
                 e.toString().includes('Error: doc-cols argument at 0 of PlanModifyPlan.write() must have type PlanDocColsIdentifier');
                 done();

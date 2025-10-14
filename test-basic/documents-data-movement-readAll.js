@@ -23,10 +23,10 @@ let xqyTransformPath = './test-basic/data/flagTransform.xqy';
 describe('data movement readAll', function() {
     // This "before" frequently fails to finish before the timeout triggers
     // TODO:
-    //      short-term -> run with "timeout 0" and/or change/add "this.timeout(0)" to both methods
-    //      long-term -> Do we need 10000 records for these tests?
-    this.timeout(120000);
+    //      short-term -> add "this.timeout(120000)" to both methods
+    //      long-term -> Do we need 10000 records for these tests? If 120 seconds is not enough, we change the test.
     before(function (done) {
+        this.timeout(120000);
         let readable = new Stream.Readable({objectMode: true});
         for(let i=0; i<10000; i++) {
             const temp = {
@@ -82,6 +82,7 @@ describe('data movement readAll', function() {
     });
 
     after((function(done){
+        this.timeout(120000);
         categoriesUrisList.forEach(uri=>urisList.push(uri));
         dbWriter.documents.remove(urisList)
         .result(function(){

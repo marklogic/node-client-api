@@ -15,6 +15,7 @@ describe('cloud-authentication tests', function() {
                 host:     'invalid',
                 authType: 'cloud'
             });
+            done(new Error('Expecting an error to be thrown due to missing apiKey'));
         } catch(error) {
             assert(error.toString().includes('apiKey needed for MarkLogic cloud authentication.'));
             done();

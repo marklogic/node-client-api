@@ -89,6 +89,7 @@ describe('tests for annTopK', function () {
                     planAnnTopKOptionsMap)
                 .orderBy(p.col('name'))
             );
+            done(new Error('Expecting an error to be thrown due to invalid key in options argument'));
         } catch(error){
             assert(error.message.toString().includes('options argument at 4 of PlanModifyPlan.annTopK() has invalid key- invalid'))
             done();
