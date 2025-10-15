@@ -20,6 +20,7 @@ def runTests() {
 		./node_modules/.bin/gulp setupProxyTests || true
 		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
 	'''
+	junit '**/*.xml'
 }
 
 def runDockerCompose(String markLogicDockerImage) {
