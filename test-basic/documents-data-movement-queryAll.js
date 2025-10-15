@@ -49,7 +49,6 @@ describe('data movement queryAll', function() {
             .result(function(response){
                 done();
             })
-            .catch(err=> done(err))
             .catch(done);
     }));
 
@@ -57,6 +56,7 @@ describe('data movement queryAll', function() {
         try{
             const query = q.directory('/test/dataMovement/requests/queryAll/');
             dbWriter.documents.queryAll(query);
+            done(new Error('Expected an error to be thrown because query is not a cts query.'));
         } catch(err){
             err.toString().should.equal('Error: Query needs to be a cts query.');
             done();
@@ -94,12 +94,12 @@ describe('data movement queryAll', function() {
     });
 
     it('queryAll should throw error if no query is provided',  function (done){
-
         try{
             dbWriter.documents.queryAll();
+            return done(new Error('Expected an error to be thrown because no query was provided'));
         } catch(err){
             err.toString().should.equal('Error: Query cannot be null or undefined.');
-            done();
+            return done();
         }
     });
 
@@ -118,14 +118,14 @@ describe('data movement queryAll', function() {
     });
 
     it('queryAll should throw error with batchSize=100001',  function (done){
-
         try{
             dbWriter.documents.queryAll(query, {
                 batchSize:100001
             });
+            return done(new Error('Expected an error to be thrown because batchSize greater than 100000'));
         } catch(err){
             err.toString().should.equal('Error: batchSize cannot be greater than 100000');
-            done();
+            return done();
         }
     });
 
@@ -259,14 +259,14 @@ describe('data movement queryAll', function() {
     });
 
     it('queryAll should throw error with consistentSnapshot as Integer',  function (done){
-
         try{
             dbWriter.documents.queryAll(query, {
                 consistentSnapshot: 1
             });
+            return done(new Error('Expected an error to be thrown because consistentSnapshot is invalid'));
         } catch(err){
             err.toString().should.equal('Error: consistentSnapshot needs to be a boolean or DatabaseClient.Timestamp object.');
-            done();
+            return done();
         }
     });
 });

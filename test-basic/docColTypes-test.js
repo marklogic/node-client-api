@@ -46,6 +46,7 @@ describe('optic-update docColTypes tests', function() {
                 const plan = op.fromParam('bindingParam', null, op.docColTypes(op.col('uri')));
                 const temp = {bindingParam: rows};
                 db.rows.query(plan, null, temp);
+                done(new Error("Expected an error to be thrown due to only 1 argument to fromParam"));
             } catch (e) {
                 e.toString().includes('Error: PlanBuilder.docColTypes takes a maximum of 0 arguments but received: 1');
                 done();
