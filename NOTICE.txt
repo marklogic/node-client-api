@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 To the extent required by the applicable open-source license, a complete machine-readable copy of the source code corresponding to such code is available upon request. This offer is valid to anyone in receipt of this information and shall expire three years following the date of the final distribution of this product version by Progress Software Corporation. To obtain such source code, send an email to Legal-thirdpartyreview@progress.com. Please specify the product and version for which you are requesting source code.
 
-The following software may be included in this project (last updated January 28, 2025):
+The following software may be included in this project (last updated TBD January 28, 2025):
 
 -------------------------------------------------------------------------
 MarkLogic® Node Client API
