@@ -56,3 +56,9 @@ or
 
 There are also tests in the `test-complete` folder. The setup for these is more complicated and can 
 be found in the `Jenkinsfile` file in this repository in the `runE2ETests` function.
+
+## Notes on dependencies in package.json 
+
+We are using @fastify/busboy because it has a forked copy of dicer that apparently does not 
+have the same high security vulnerability that the 0.3.1 release of dicer has. 
+

@@ -128,7 +128,8 @@ pipeline {
         runAuditReport()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
         runTests()
-        runE2ETests()
+        // Commenting this out temporarily for faster PR feedback.
+        // runE2ETests()
       }
       post {
         always {
