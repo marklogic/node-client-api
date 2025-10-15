@@ -12,6 +12,7 @@ let gulpConfig = require('../gulpfile.js');
 describe('Service caller', function() {
 
     before(function(done){
+        this.timeout(30000); // set timeout to 30 seconds, because some of the tests take a while
         gulpConfig.loadProxyTests();
         setTimeout(()=>{done();}, 5000);
     });
