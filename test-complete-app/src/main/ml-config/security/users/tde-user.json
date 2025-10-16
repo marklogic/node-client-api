@@ -1,0 +1,8 @@
+{
+    "user-name": "tde-user",
+    "description": "test user to write tde to modules database",
+    "password": "x",
+    "role": [
+        "tde-User"
+    ]
+}
