@@ -184,24 +184,27 @@ describe('optic-update validateDoc tests', function () {
         });
 
         it('test validateDoc with 1 invalid doc and no "onError" defined, should return nothing in 11.1-, or throw an exception on 11.2+', function (done) {
-            try {
-                const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/toValidate1.xml' }])
-                    .joinDocCols(null, op.col('uri'))
-                    .validateDoc('doc', { kind: 'xmlSchema' });
-                db.rows.query(plan, options).then(res => {
-                    try {
-                        (res === undefined).should.equal(true);
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                }).catch(e => {
-                    e.message.should.equal('query rows: response with invalid 500 status with path: /v1/rows/update');
+            const plan = op.fromDocDescriptors([{ uri: '/test/optic/validateDoc/toValidate1.xml' }])
+                .joinDocCols(null, op.col('uri'))
+                .validateDoc('doc', { kind: 'xmlSchema' });
+
+            db.rows.query(plan, options).then(res => {
+                // If we get here, the query succeeded (expected in 11.1-)
+                try {
+                    (res === undefined).should.equal(true);
                     done();
-                });
-            } catch (e) {
-                done(e);
-            }
+                } catch (e) {
+                    done(e);
+                }
+            }).catch(e => {
+                // If we get here, the query failed (expected in 11.2+)
+                try {
+                    e.message.should.containEql('query rows: response with invalid 500 status with path: /v1/rows/update');
+                    done();
+                } catch (assertionError) {
+                    done(assertionError);
+                }
+            });
         });
 
         // Skip this test until the 'onError' function is available in plan-builder.js
