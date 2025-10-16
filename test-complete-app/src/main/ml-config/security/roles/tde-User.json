@@ -1,0 +1,16 @@
+{
+    "role-name": "tde-User",
+    "description": "test user to write tde to modules database",
+    "role": [
+        "tde-view",
+        "tde-admin",
+        "rest-writer"
+    ],
+    "privilege": [
+        {
+            "privilege-name": "xdmp-eval-in",
+            "action": "http://marklogic.com/xdmp/privileges/xdmp-eval-in",
+            "kind": "execute"
+        }
+    ]
+}

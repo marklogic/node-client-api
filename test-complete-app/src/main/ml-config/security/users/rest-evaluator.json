@@ -1,0 +1,8 @@
+{
+  "user-name": "rest-evaluator",
+  "description": "rest-writer user with evaluate privileges",
+  "password": "x",
+  "role": [
+    "rest-evaluator"
+  ]
+}

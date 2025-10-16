@@ -1,0 +1,37 @@
+{
+  "role-name": "eval",
+  "description": "eval role",
+  "role": [],
+  "privilege": [
+    {
+      "privilege-name": "xdbc-eval",
+      "action": "http://marklogic.com/xdmp/privileges/xdbc-eval",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-eval-in",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-eval-in",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-invoke",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-invoke",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-invoke-in",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-invoke-in",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-spawn",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-spawn",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-spawn-in",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-spawn-in",
+      "kind": "execute"
+    }
+  ]
+}
