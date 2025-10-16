@@ -3,7 +3,7 @@
 */
 const path   = require('path');
 const gulp   = require('gulp');
-const jshint = require('gulp-jshint');
+const eslint = require('gulp-eslint-new');
 const mocha  = require('gulp-mocha');
 const jsdoc  = require('gulp-jsdoc3');
 
@@ -17,9 +17,10 @@ const basicloader = require('./lib/basic-loader.js');
 const streamToArray = require("stream-to-array");
 
 function lint() {
-  return gulp.src('lib/*')
-      .pipe(jshint({lookup:true}))
-      .pipe(jshint.reporter('default'));
+  return gulp.src('lib/*.js')
+      .pipe(eslint({ overrideConfigFile: 'eslint.config.js' }))
+      .pipe(eslint.format())
+      .pipe(eslint.failAfterError());
 }
 
 function test() {
