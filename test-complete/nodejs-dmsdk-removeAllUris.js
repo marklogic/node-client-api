@@ -17,7 +17,7 @@ const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/remo
 let removeStream = new Stream.PassThrough({ objectMode: true });
 let uris = [];
 
-describe('Functional tests - data movement removeAllUris', function () {
+describe('Functional tests - data movement - nodejs-dmsdk-removeAllUris', function () {
     this.timeout(15000);
     beforeEach(function (done) {
         let readable = new Stream.Readable({ objectMode: true });

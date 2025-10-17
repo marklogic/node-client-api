@@ -18,7 +18,7 @@ const ctsQb = marklogic.ctsQueryBuilder;
 const q = marklogic.queryBuilder;
 const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/transformAll/'));
 
-describe('data movement transformAll', function () {
+describe('data movement transformAll - nodejs-dmsdk-queryToTransformAll', function () {
     this.timeout(20000);
     before(function (done) {
 
