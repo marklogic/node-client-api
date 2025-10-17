@@ -1,108 +1,13 @@
 /*
 * Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
-var read   = require("read");
-var mlutil = require('../lib/mlutil.js');
-
-function adminUserPrompt() {
-  var self = this;
-  if (self.user === null) {
-    read({
-      prompt: 'admin user (default=admin): '
-      },
-      mlutil.callbackOn(self, adminUserCallback)
-      );
-  } else {
-    self.passwordPrompt();
-  }
-}
-function adminUserCallback(error, result) {
-  if (error) {
-    console.log(error);
-    process.exit(1);
-  }
-  this.user = (result === '') ? 'admin' : result;
-  this.passwordPrompt();
-}
-function adminPasswordPrompt() {
-  var self = this;
-  if (self.password === null) {
-    read({
-      prompt:    (self.user === 'admin') ?
-          'admin password (default=admin): ' : 'admin password: ',
-      silent:    true,
-      replace:   '*',
-      edit:      false
-      },
-      mlutil.callbackOn(self, adminPasswordCallback)
-      );
-  } else {
-    self.finish();
-  }
-}
-function adminPasswordCallback(error, result) {
-  if (error) {
-    console.log(error);
-    process.exit(1);
-  }
-  if (result === '') {
-    if (this.user === 'admin') {
-      this.password = 'admin';
-    } else {
-      console.log('no admin password specified, so cannot setup');
-      process.exit(1);
-    }
-  } else {
-    this.password = result;
-  }
-  this.finish();
-}
-function adminFinish() {
-  this.done(this.user, this.password);
-}
-
-function AdminPrompter(done) {
-  this.done     = done;
-  this.user     = null;
-  this.password = null;
-}
-AdminPrompter.prototype.userPrompt       = adminUserPrompt;
-AdminPrompter.prototype.userCallback     = adminUserCallback;
-AdminPrompter.prototype.passwordPrompt   = adminPasswordPrompt;
-AdminPrompter.prototype.passwordCallback = adminPasswordCallback;
-AdminPrompter.prototype.finish           = adminFinish;
+// Simplified version - no more prompting, just returns admin/admin
+// TODO: Remove this file when ml-gradle migration is complete
 
 function promptForAdmin(done) {
-  var prompter = new AdminPrompter(done);
-
-  var argvLen = process.argv.length;
-  if (argvLen >= 4) {
-    var argvMax = argvLen - 1;
-    for (var argvI=2; argvI < argvMax; argvI++) {
-      var argvVal = process.argv[argvI];
-      if (argvVal === '-u') {
-        argvVal = process.argv[argvI + 1];
-        var argvSep = argvVal.indexOf(':');
-        if (argvSep < 0) {
-          prompter.user = argvVal;
-          break;
-        }
-        if (argvSep > 0) {
-          prompter.user = argvVal.substring(0, argvSep);
-        }
-        if (argvSep < (argvVal.length - 1)) {
-          prompter.password = argvVal.substring(argvSep + 1);
-        }
-        break;
-      } else if (argvVal === '-h') {
-        console.log('usage: '+process.argv[1]+' [-u adminUser:adminPassword]');
-        console.log('without -u, prompts for admin user and/or admin password');
-        process.exit();
-      }
-    };
-  }
-
-  prompter.userPrompt();
+  // Always use admin/admin - no prompting needed
+  console.log('Using default admin credentials (admin/admin)');
+  done('admin', 'admin');
 }
 
 module.exports = promptForAdmin;

@@ -63,7 +63,6 @@
     "mocha": "^11.7.3",
     "mocha-junit-reporter": "2.2.0",
     "moment": "^2.29.4",
-    "read": "^1.0.7",
     "sanitize-html": "^2.13.0",
     "should": "^13.2.3",
     "stream-to-array": "^2.3.0"
