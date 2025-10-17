@@ -5,12 +5,10 @@ var should = require('should'),
     testconfig = require('../etc/test-config.js'),
     marklogic = require('../'),
     bunyan = require('bunyan'),
-    winston = require('winston'),
     intercept = require("intercept-stdout");
 
 var dbDefault = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 var dbBunyan  = marklogic.createDatabaseClient(testconfig.restWriterConnection);
-var dbWinston = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 
 describe('logging', function(){
 
@@ -47,31 +45,7 @@ describe('logging', function(){
     });
   });
 
-  describe('with Winston', function(){
-    var winstonLogger = winston.createLogger({
-      level: 'debug',
-      format: winston.format.combine(
-          winston.format((info) => {
-            info.level = info.level.toUpperCase();
-            return info;
-            })(),
-          winston.format.json()
-      ),
-      transports: [new winston.transports.Console()]
-    });
-    dbWinston.setLogger(winstonLogger);
-    it('should write Winston string entries', function(done){
-      var captured = [];
-      var unhook = intercept(function(txt) {
-          captured.push(txt);
-      });
-      dbWinston.config.serverprops.read().result(function(response) {
-        unhook();
-        JSON.parse(captured[0]).level.should.eql('DEBUG');
-        done();
-      }, done);
-    });
-  });
-
 });
+
+
 

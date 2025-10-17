@@ -10,6 +10,7 @@
     "doc": "gulp doc",
     "preinstall": "node checkNodeVersion",
     "prestart": "node checkNodeVersion",
+    "pretest": "node checkNodeVersion",
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
     "test": "gulp test"
@@ -65,8 +66,7 @@
     "read": "^1.0.7",
     "sanitize-html": "^2.13.0",
     "should": "^13.2.3",
-    "stream-to-array": "^2.3.0",
-    "winston": "^3.8.2"
+    "stream-to-array": "^2.3.0"
   },
   "optionalDependencies": {
     "kerberos": "^2.0.1",
@@ -78,10 +78,8 @@
     "chalk": "4.1.2",
     "braces": "3.0.3",
     "brace-expansion": "2.0.2",
-    "color": "5.0.0",
     "color-convert": "3.1.0",
     "color-name": "2.0.0",
-    "color-string": "2.1.0",
     "cross-spawn": "7.0.6",
     "debug": "4.3.6",
     "is-arrayish": "0.3.2",
