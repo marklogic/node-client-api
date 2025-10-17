@@ -35,6 +35,10 @@ module.exports = [
       "no-unused-vars": "error",
       "no-undef": "error",
 
+      // ES6+ modernization - GO TIME! 🚀
+      "prefer-const": "error", // Use const for variables never reassigned
+      "no-var": "error", // Disallow var, use let/const instead
+
       // Spacing rules (disabled for initial setup - TODO: Fix in separate PR)
       "arrow-spacing": "off",
       "space-before-blocks": "off",
