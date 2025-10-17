@@ -3,7 +3,6 @@
 */
 const path   = require('path');
 const gulp   = require('gulp');
-const jshint = require('gulp-jshint');
 const mocha  = require('gulp-mocha');
 const jsdoc  = require('gulp-jsdoc3');
 
@@ -13,12 +12,6 @@ const marklogic = require('../');
 const proxy = require('../lib/proxy-generator.js');
 const testconfig = require('../etc/test-config-qa.js');
 const basicloader = require('../lib/basic-loader.js');
-
-function lint() {
-  return gulp.src('lib/*')
-      .pipe(jshint({lookup:true}))
-      .pipe(jshint.reporter('default'));
-}
 
 function test() {
   return gulp.src(['test-basic/*.js'])
@@ -86,10 +79,9 @@ function copyClassesTotestComplete() {
     .pipe(gulp.dest('./'));
 }
 
-exports.lint = lint;
 exports.loadToModulesDB = loadQAModules;
 exports.generateFnClasses = generateTestFnClasses;
 exports.copyFnClasses = copyClassesTotestComplete;
 
 exports.test = test;
-exports.default = lint;
+exports.default = test;

@@ -16,9 +16,9 @@ def runTests() {
 
 		cd ..
 		rm -rf $WORKSPACE/*.xml || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml -g \'logging|archivePath\' --invert  || true
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml || true
 		./node_modules/.bin/gulp setupProxyTests || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml -g \'logging|archivePath\' --invert  || true
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml || true
 	'''
 	junit '**/*.xml'
 }
@@ -33,8 +33,8 @@ def runDockerCompose(String markLogicDockerImage) {
     cd node-client-api
     echo "Running docker compose with MarkLogic image: ''' + markLogicDockerImage + '''"
     MARKLOGIC_LOGS_VOLUME=/tmp MARKLOGIC_IMAGE=''' + markLogicDockerImage + ''' docker-compose up -d --build
-    echo "Waiting 60s for MarkLogic to be ready to accept connections"
-    sleep 60s;
+    echo "Waiting 90s for MarkLogic to be ready to accept connections"
+    sleep 90s;
 	'''
 }
 
@@ -129,8 +129,7 @@ pipeline {
         runAuditReport()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
         runTests()
-        // Commenting this out temporarily for faster PR feedback.
-        // runE2ETests()
+        runE2ETests()
       }
       post {
         always {
