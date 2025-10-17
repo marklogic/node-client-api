@@ -3,14 +3,11 @@
   "name": "marklogic",
   "description": "The official MarkLogic Node.js client API.",
   "homepage": "https://github.com/marklogic/node-client-api",
-  "version": "3.7.1",
+  "version": "4.0.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
   "scripts": {
     "doc": "gulp doc",
-    "preinstall": "node checkNodeVersion",
-    "prestart": "node checkNodeVersion",
-    "pretest": "node checkNodeVersion",
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
     "test": "gulp test"
@@ -44,7 +41,7 @@
     "url": "https://github.com/marklogic/node-client-api.git"
   },
   "engines": {
-    "node": ">=16.14.0"
+    "node": ">=22.0.0"
   },
   "devDependencies": {
     "@jsdoc/salty": "0.2.3",
