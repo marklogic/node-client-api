@@ -67,12 +67,8 @@ def runE2ETests() {
 		npm --version
 		npm ci
 		node etc/test-setup-qa.js
-		# Adding sleep for the setups to complete before running test-complete
-		sleep 10
 		node etc/test-setup-dmsdk-qa.js
-		sleep 10
 		node config-optic/setupqa.js
-		sleep 30
 		cd test-complete-app
 		./gradlew -i mlDeploy -g $PWD
 		cd ..
