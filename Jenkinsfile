@@ -53,7 +53,7 @@ def runAuditReport() {
 		cd node-client-api
 		npm ci
 		rm -rf $WORKSPACE/npm-audit-report.json || true
-		npm audit -json || true > $WORKSPACE/npm-audit-report.json
+		npm audit --audit-level=low --json > $WORKSPACE/npm-audit-report.json
 	'''
 }
 
