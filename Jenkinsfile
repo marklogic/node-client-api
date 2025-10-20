@@ -10,9 +10,10 @@ def runTests() {
 		npm --version
 		npm ci
 
-		cd test-app
-		./gradlew -i mlTestConnections
-		./gradlew -i mlDeploy
+    cd test-app
+    ./gradlew -i mlWaitTillReady
+    ./gradlew -i mlTestConnections
+    ./gradlew -i mlDeploy
 
 		cd ..
 		rm -rf $WORKSPACE/*.xml || true
@@ -33,8 +34,6 @@ def runDockerCompose(String markLogicDockerImage) {
     cd node-client-api
     echo "Running docker compose with MarkLogic image: ''' + markLogicDockerImage + '''"
     MARKLOGIC_LOGS_VOLUME=/tmp MARKLOGIC_IMAGE=''' + markLogicDockerImage + ''' docker-compose up -d --build
-    echo "Waiting 90s for MarkLogic to be ready to accept connections"
-    sleep 90s;
 	'''
 }
 
