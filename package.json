@@ -8,6 +8,7 @@
   "main": "./lib/marklogic.js",
   "scripts": {
     "doc": "gulp doc",
+    "lint": "gulp lint",
     "test:setup": "node etc/test-setup.js",
     "test:teardown": "node etc/test-teardown.js",
     "test": "gulp test"
