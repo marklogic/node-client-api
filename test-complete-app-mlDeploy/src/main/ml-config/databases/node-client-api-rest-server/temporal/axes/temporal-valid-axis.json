@@ -1,0 +1,17 @@
+{
+    "axis-name": "validTime",
+    "axis-start": {
+        "element-reference": {
+            "namespace-uri": "",
+            "localname": "validStartTime",
+            "scalar-type": "dateTime"
+        }
+    },
+    "axis-end": {
+        "element-reference": {
+            "namespace-uri": "",
+            "localname": "validEndTime",
+            "scalar-type": "dateTime"
+        }
+    }
+}

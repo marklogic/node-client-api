@@ -16,3 +16,5 @@ test-app/docker
 test-app/containerLogs
 test-complete-app/build
 test-complete-app/.gradle
+test-complete-app-mlDeploy/build
+test-complete-app-mlDeploy/.gradle

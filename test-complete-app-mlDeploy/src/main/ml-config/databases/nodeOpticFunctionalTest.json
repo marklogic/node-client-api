@@ -4,7 +4,9 @@
   "fast-element-trailing-wildcard-searches": true,
   "two-character-searches": true,
   "one-character-searches": true,
+  "triple-index": true,
   "uri-lexicon": true,
+  "collection-lexicon": true,
   "range-element-index": [
     {
       "scalar-type": "string",
