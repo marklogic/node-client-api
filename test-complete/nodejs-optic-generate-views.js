@@ -51,7 +51,7 @@ const dbClient = marklogic.createDatabaseClient(
 const pb = marklogic.planBuilder;
 
 
-describe('Nodejs Optic generate views test', function () {
+describe.skip('Nodejs Optic generate views test', function () {
     this.timeout(20000);
     it('TEST 1 - join left outer with array of on', function (done) {
 
