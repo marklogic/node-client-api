@@ -1,7 +1,15 @@
 {
   "database-name": "node-client-api-rest-server",
   "schema-database": "Schemas",
+  "stemmed-searches": "basic",
   "range-element-index": [
+    {
+      "scalar-type": "double",
+      "namespace-uri": "",
+      "localname": "amt",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
     {
       "scalar-type": "double",
       "namespace-uri": "",
@@ -27,6 +35,34 @@
       "scalar-type": "dateTime",
       "namespace-uri": "",
       "localname": "datetime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "systemStartTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "systemEndTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "validStartTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "validEndTime",
       "range-value-positions": false,
       "invalid-values": "ignore"
     }

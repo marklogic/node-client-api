@@ -1,0 +1,6 @@
+{
+    "collection-name": "temporalCollectionLsqt",
+    "system-axis": "systemTime",
+    "valid-axis": "validTime",
+    "option": [ "updates-safe" ]
+}
