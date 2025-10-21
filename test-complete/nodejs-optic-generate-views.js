@@ -27,8 +27,8 @@ const db = marklogic.createDatabaseClient(
 
 // Client to query schema database to verify view is stored
 // Make sure you have qbvuser user created. See XQuery script nodejs-optic-setup.xml of internal repo (SVN).
-var dbSchemasClient = marklogic.createDatabaseClient({
-    database: 'Schemas',
+var dbModClient = marklogic.createDatabaseClient({
+    database: dbName + 'Modules',
     host: connectdef.host,
     port: connectdef.port,
     user: 'qbvuser',
@@ -76,14 +76,14 @@ describe('Nodejs Optic generate views test', function () {
         dbClient.rows.generateView(plan, 'InnerJoin', 'keymatch')
             .then(function (res) {
                 //console.log(JSON.stringify(res, null, 2));
-                dbSchemasClient.documents.write({
+                dbModClient.documents.write({
                     uri: '/qbv-InnerJoin-keymatch.xml',
                     collections: 'http://marklogic.com/xdmp/qbv',
                     contentType: 'application/xml',
                     content: res
                 }).
                     result(function (response) {
-                        setTimeout(()=> done(), 10120);
+                    setTimeout(()=> done(), 10120);
                     });
             }).catch(error=>done(error));
     });
@@ -96,9 +96,9 @@ describe('Nodejs Optic generate views test', function () {
             .then(function (output) {
                 //console.log(JSON.stringify(output, null, 2));
                 expect(output.rows.length).to.equal(6);
-	            var row0 = output.rows[0];
-	            var row3 = output.rows[3];
-	            var row5 = output.rows[5];
+	  var row0 = output.rows[0];
+	  var row3 = output.rows[3];
+	  var row5 = output.rows[5];
 
                 expect(row0['InnerJoin.keymatch.amount'].value).to.equal(60.06);
                 expect(row0['InnerJoin.keymatch.color'].value).to.equal('green');
@@ -130,7 +130,7 @@ describe('Nodejs Optic generate views test', function () {
         dbClient.rows.generateView(plan, 'sparql', 'groupmin')
             .then(function (res) {
                 //console.log(JSON.stringify(res, null, 2));
-                dbSchemasClient.documents.write({
+                dbModClient.documents.write({
                     uri: '/qbv-sparql-groupmin.xml',
                     collections: 'http://marklogic.com/xdmp/qbv',
                     contentType: 'application/xml',
@@ -187,7 +187,7 @@ describe('Nodejs Optic generate views test', function () {
         dbClient.rows.generateView(plan, 'lexicons', 'orderbyselect')
             .then(function (res) {
                 //console.log(JSON.stringify(res, null, 2));
-                dbSchemasClient.documents.write({
+                dbModClient.documents.write({
                     uri: '/qbv-lexicons-orderby-select.xml',
                     collections: 'http://marklogic.com/xdmp/qbv',
                     contentType: 'application/xml',

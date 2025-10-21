@@ -1,0 +1,49 @@
+/**
+ * This Gradle file is used to add a certificate template to the app that is created via the bespoke
+ * deployer in test-setup-qa.js and test-setup-dmsdk-qa.js.
+ */
+plugins {
+	id "net.saliman.properties" version "1.5.1"
+  id "com.marklogic.ml-gradle" version "6.1.0"
+}
+
+/*
+ * Since our REST API server uses a certificate template, we need to execute an extra command to generate a temporary
+ * certificate for this template - without that, the REST API server won't be able to receive HTTP or HTTPS requests.
+ */
+ext {
+    def command = new com.marklogic.appdeployer.command.security.GenerateTemporaryCertificateCommand()
+    command.setTemplateIdOrName("ssl-project-template")
+    command.setCommonName("localhost")
+    command.setValidFor(365)
+    mlAppDeployer.commands.add(command)
+}
+
+tasks.register("curlPeople", Exec) {
+  commandLine = [
+    'curl',
+    '--fail',
+    '--anyauth', '--user', 'admin:admin',
+    '-i',
+    '-X', 'POST',
+    '--data-binary', '@./src/main/turtle/people/people.ttl',
+    '-H', 'Content-type: text/turtle',
+    'http://localhost:8079/v1/graphs?graph=/people'
+  ]
+}
+
+tasks.register("curlCompanies", Exec) {
+  commandLine = [
+    'curl',
+    '--fail',
+    '--anyauth', '--user', 'admin:admin',
+    '-i',
+    '-X', 'POST',
+    '--data-binary', '@./src/main/turtle/companies/companies_100.ttl',
+    '-H', 'Content-type: text/turtle',
+    'http://localhost:8079/v1/graphs?graph=/optic/sparql/test/companies.ttl'
+  ]
+}
+
+mlDeploy.finalizedBy curlPeople
+mlDeploy.finalizedBy curlCompanies
