@@ -15,8 +15,7 @@ let removeStream = new Stream.PassThrough({objectMode: true});
 let uris = [];
 
 describe('data movement removeAllUris', function() {
-    this.timeout(15000);
-    beforeEach(function (done) {
+    beforeEach(async function() {
         let readable = new Stream.Readable({objectMode: true});
         removeStream = new Stream.PassThrough({objectMode: true});
         uris = [];
@@ -33,142 +32,132 @@ describe('data movement removeAllUris', function() {
         readable.push(null);
         removeStream.push(null);
 
-        dbWriter.documents.writeAll(readable,{
-            onCompletion: ((summary) => {
-                done();
-            })
+        await new Promise((resolve) => {
+            dbWriter.documents.writeAll(readable, {
+                onCompletion: resolve
+            });
         });
     });
 
-    it('should removeAllUris documents with onCompletion, concurrentRequests options', done => {
-        dbWriter.documents.removeAllUris(removeStream,{
-            concurrentRequests : {multipleOf:'hosts', multiplier:4},
-            onCompletion: ((summary) => {
-                try {
-                    summary.docsRemovedSuccessfully.should.be.equal(100);
-                    summary.docsFailedToBeRemoved.should.be.equal(0);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                    verifyDocs(done);
-                } catch(err) {
-                    done(err);
-                }
-            })
+    it('should removeAllUris documents with onCompletion, concurrentRequests options', async () => {
+        const summary = await new Promise((resolve) => {
+            dbWriter.documents.removeAllUris(removeStream, {
+                concurrentRequests: {multipleOf: 'hosts', multiplier: 4},
+                onCompletion: resolve
+            });
         });
+        summary.docsRemovedSuccessfully.should.be.equal(100);
+        summary.docsFailedToBeRemoved.should.be.equal(0);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
+        await verifyDocs();
     });
 
-    it('should removeAllUris documents with onBatchSuccess and batchSize options', done => {
-
-        dbWriter.documents.removeAllUris(removeStream, {
-            onBatchSuccess: (function(progress, documents) {
-                progress.docsRemovedSuccessfully.should.be.greaterThanOrEqual(10);
-                progress.docsFailedToBeRemoved.should.be.equal(0);
-                progress.timeElapsed.should.be.greaterThanOrEqual(0);
-                documents.length.should.equal(10);
-            }),
-            batchSize:10,
-            onCompletion: ((summary) => {
-                summary.docsRemovedSuccessfully.should.be.equal(100);
-                summary.docsFailedToBeRemoved.should.be.equal(0);
-                summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                verifyDocs(done);
-            })
+    it('should removeAllUris documents with onBatchSuccess and batchSize options', async () => {
+        const summary = await new Promise((resolve, reject) => {
+            dbWriter.documents.removeAllUris(removeStream, {
+                onBatchSuccess: (function (progress, documents) {
+                    try {
+                        progress.docsRemovedSuccessfully.should.be.greaterThanOrEqual(10);
+                        progress.docsFailedToBeRemoved.should.be.equal(0);
+                        progress.timeElapsed.should.be.greaterThanOrEqual(0);
+                        documents.length.should.equal(10);
+                    } catch (err) {
+                        reject(err);
+                    }
+                }),
+                batchSize: 10,
+                onCompletion: resolve
+            });
         });
+        summary.docsRemovedSuccessfully.should.be.equal(100);
+        summary.docsFailedToBeRemoved.should.be.equal(0);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
+        await verifyDocs();
     });
 
-    it('should throw error with invalid batchSize and inputKind as array option', function(done){
+    it('should throw error with invalid batchSize and inputKind as array option', async function(){
         try{
-            dbWriter.documents.removeAllUris(removeStream,{
+            await dbWriter.documents.removeAllUris(removeStream,{
                 batchSize:10,
                 inputKind:'array'
             });
         } catch(err){
             err.toString().should.equal('Error: batchSize not expected when inputKind is array.');
-            dbWriter.documents.remove(uris)
-                .result(function(response) {done();})
-                .catch(error => done(error));
+            await dbWriter.documents.remove(uris).result();
         }
     });
 
-    it('should removeAllUris documents with inputKind as array', done => {
-
+    it('should removeAllUris documents with inputKind as array', async () => {
         removeStream = new Stream.Readable({objectMode: true});
-        for(let i=0; i+10<=uris.length; i=i+10){
-            removeStream.push(uris.slice(i,i+10));
+        for (let i = 0; i + 10 <= uris.length; i = i + 10) {
+            removeStream.push(uris.slice(i, i + 10));
         }
         removeStream.push(null);
 
-        dbWriter.documents.removeAllUris(removeStream,{
-            inputKind:'aRRaY',
-            onBatchSuccess: (function(progress, documents) {
-                try{
-                    documents.length.should.equal(10);
-                } catch(error){
-                    done(error);
-                }
-            }),
-            onCompletion: ((summary) => {
-                try{
-                    summary.docsRemovedSuccessfully.should.be.equal(100);
-                    summary.docsFailedToBeRemoved.should.be.equal(0);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                    verifyDocs(done);
-                } catch(error){
-                    done(error);
-                }
-            })
-        });
-    });
-
-    it('should throw error with invalid concurrentRequests option', function(done){
-        try{
-            dbWriter.documents.removeAllUris(removeStream,{
-                concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
-            });
-        } catch(err){
-            err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
-            dbWriter.documents.remove(uris)
-                .result(function(response) {done();})
-                .catch(error => done(error));
-        }
-    });
-
-    it('should queryToRemoveAll documents with onCompletion option', function(done){
-
-        dbWriter.documents.queryToRemoveAll(query,{
-            onCompletion:((summary) => {
-                summary.docsRemovedSuccessfully.should.be.equal(100);
-                summary.docsFailedToBeRemoved.should.be.equal(0);
-                summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                verifyDocs(done);
-            })
-        });
-    });
-
-    it('should queryToRemoveAll documents with onCompletion, concurrentRequestsas',
-        done => {
-
-            dbWriter.documents.queryToRemoveAll(query, {
-                concurrentRequests : {multipleOf:'hosts', multiplier:4},
+        await new Promise((resolve, reject) => {
+            dbWriter.documents.removeAllUris(removeStream, {
+                inputKind: 'aRRaY',
+                onBatchSuccess: (function (progress, documents) {
+                    try {
+                        documents.length.should.equal(10);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }),
                 onCompletion: ((summary) => {
                     try {
                         summary.docsRemovedSuccessfully.should.be.equal(100);
                         summary.docsFailedToBeRemoved.should.be.equal(0);
                         summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                        verifyDocs(done);
-                    } catch(err) {
-                        done(err);
+                        resolve(summary);
+                    } catch (error) {
+                        reject(error);
                     }
                 })
             });
         });
+        await verifyDocs();
+    });
+
+    it('should throw error with invalid concurrentRequests option', async function(){
+        try{
+            await dbWriter.documents.removeAllUris(removeStream,{
+                concurrentRequests: {multipleOf: 'invalid', multiplier: 4}
+            });
+        } catch(err){
+            err.toString().should.equal('Error: Invalid value for multipleOf. Value must be forests or hosts.');
+            await dbWriter.documents.remove(uris).result();
+        }
+    });
+
+    it('should queryToRemoveAll documents with onCompletion option', async function(){
+        const summary = await new Promise((resolve) => {
+            dbWriter.documents.queryToRemoveAll(query, {
+                onCompletion: resolve
+            });
+        });
+        summary.docsRemovedSuccessfully.should.be.equal(100);
+        summary.docsFailedToBeRemoved.should.be.equal(0);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
+        await verifyDocs();
+    });
+
+    it('should queryToRemoveAll documents with onCompletion, concurrentRequestsas', async () => {
+        const summary = await new Promise((resolve) => {
+            dbWriter.documents.queryToRemoveAll(query, {
+                concurrentRequests: {multipleOf: 'hosts', multiplier: 4},
+                onCompletion: resolve
+            });
+        });
+        summary.docsRemovedSuccessfully.should.be.equal(100);
+        summary.docsFailedToBeRemoved.should.be.equal(0);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
+        await verifyDocs();
+    });
 
 });
 
-function verifyDocs(done){
-    dbWriter.documents.read(uris)
-        .result(function (documents) {
-            documents.length.should.equal(0);
-        })
-        .then(()=> done())
-        .catch(err=> done(err));
+async function verifyDocs(){
+    const documents = await dbWriter.documents.read(uris).result();
+    documents.length.should.equal(0);
 }

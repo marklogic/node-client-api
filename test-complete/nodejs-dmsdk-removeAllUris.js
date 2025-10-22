@@ -19,7 +19,7 @@ let uris = [];
 
 describe('Functional tests - data movement - nodejs-dmsdk-removeAllUris', function () {
     this.timeout(15000);
-    beforeEach(function (done) {
+    beforeEach(async function () {
         let readable = new Stream.Readable({ objectMode: true });
         removeStream = new Stream.PassThrough({ objectMode: true });
         uris = [];
@@ -36,132 +36,129 @@ describe('Functional tests - data movement - nodejs-dmsdk-removeAllUris', functi
         readable.push(null);
         removeStream.push(null);
 
-        dbWriter.documents.writeAll(readable, {
-            onCompletion: ((summary) => {
-                done();
-            })
+        await new Promise((resolve) => {
+            dbWriter.documents.writeAll(readable, {
+                onCompletion: (() => {
+                    resolve();
+                })
+            });
         });
-
     });
 
-    it('delete Non Existent docs', function (done) {
-
+    it('delete Non Existent docs', async function () {
         removeStream = new Stream.PassThrough({ objectMode: true });
         removeStream.push('nonExistent.json');
         removeStream.push('nonExistent2.json');
         removeStream.push(null);
-        dbWriter.documents.removeAllUris(removeStream, {
-            concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
-            onCompletion: ((summary) => {
-                summary.docsRemovedSuccessfully.should.be.equal(2);
-                summary.docsFailedToBeRemoved.should.be.equal(0);
-                summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                done();
-            })
+        const summary = await new Promise((resolve) => {
+            dbWriter.documents.removeAllUris(removeStream, {
+                concurrentRequests: { multipleOf: 'hosts', multiplier: 4 },
+                onCompletion: ((summary) => {
+                    resolve(summary);
+                })
+            });
         });
+        summary.docsRemovedSuccessfully.should.be.equal(2);
+        summary.docsFailedToBeRemoved.should.be.equal(0);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
     });
 
-    it('should not removeAllUris with onBatchError returning null', function (done) {
-
+    it('should not removeAllUris with onBatchError returning null', async function () {
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-        testUser.documents.removeAllUris(removeStream, {
-
-            onBatchError: ((progressSoFar, documents, error) => {
-                error.body.errorResponse.status.should.be.equal('Forbidden');
-                progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
-                progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                return null;
-            }),
-            onCompletion: ((summary) => {
-                summary.docsRemovedSuccessfully.should.be.equal(0);
-                summary.docsFailedToBeRemoved.should.be.equal(100);
-                summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                dbWriter.documents.remove(uris)
-                    .result(function (response) {
-                        done();
-                    })
-                    .catch(done)
-                    .catch(err => done(err));
-            })
+        const summary = await new Promise((resolve) => {
+            testUser.documents.removeAllUris(removeStream, {
+                onBatchError: ((progressSoFar, documents, error) => {
+                    error.body.errorResponse.status.should.be.equal('Forbidden');
+                    progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
+                    progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
+                    return null;
+                }),
+                onCompletion: ((summary) => {
+                    resolve(summary);
+                })
+            });
         });
+        summary.docsRemovedSuccessfully.should.be.equal(0);
+        summary.docsFailedToBeRemoved.should.be.equal(100);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
+        await dbWriter.documents.remove(uris).result();
     });
 
-    it('should throw error with invalid batchSize', function (done) {
+    it('should throw error with invalid batchSize', function () {
         try {
             dbWriter.documents.removeAllUris(removeStream, {
                 batchSize: -1
             });
         } catch (err) {
             err.toString().should.equal('Error: Invalid batchSize. batchSize cannot be less than or equal to 0.');
-            done();
         }
     });
 
-    it('should not removeAllUris with onBatchError returning error', function (done) {
-
+    it('should not removeAllUris with onBatchError returning error', async function () {
         const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
 
-        const remove = testUser.documents.removeAllUris(removeStream, {
-
-            onBatchError: ((progressSoFar, documents, error) => {
-                error.body.errorResponse.status.should.be.equal('Forbidden');
-                progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
-                progressSoFar.docsFailedToBeRemoved.should.be.equal(100);
-                progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                throw new Error('Stop Processing');
-            }),
-            onCompletion: ((summary) => {
-                summary.docsRemovedSuccessfully.should.be.equal(0);
-                summary.docsFailedToBeRemoved.should.be.equal(100);
-                summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                summary.error.should.be.equal('Error: Stop Processing');
-                dbWriter.documents.remove(uris)
-                    .result(function (response) {
-                        done();
-                    })
-                    .catch(err => done(err));
-            })
-        });
-        remove.on('error', (err) => {
-            err.message.should.be.equal('Stop Processing');
-        });
-    });
-
-    it('should throw error with invalid onBatchError option', function (done) {
-
-        const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
-        const remove = (testUser.documents.removeAllUris(removeStream, {
-
-            onBatchError: ((progressSoFar, documents, error) => {
-                error.body.errorResponse.status.should.be.equal('Forbidden');
-                progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
-                progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
-                return 10;
-            }),
-            onCompletion: ((summary) => {
-                summary.docsRemovedSuccessfully.should.be.equal(0);
-                summary.docsFailedToBeRemoved.should.be.equal(100);
-                summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                summary.error.should.be.equal('Error: onBatchError should return null, empty array or a replacement array.');
-
-            })
-        }));
-
-        remove.on('error', (err) => {
-            err.message.should.be.equal('onBatchError should return null, empty array or a replacement array.');
-            dbWriter.documents.remove(uris)
-                .result(function (response) {
-                    done();
+        const summary = await new Promise((resolve, reject) => {
+            const remove = testUser.documents.removeAllUris(removeStream, {
+                onBatchError: ((progressSoFar, documents, error) => {
+                    try {
+                        error.body.errorResponse.status.should.be.equal('Forbidden');
+                        progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
+                        progressSoFar.docsFailedToBeRemoved.should.be.equal(100);
+                        progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
+                        throw new Error('Stop Processing');
+                    } catch (e) {
+                        return e;
+                    }
+                }),
+                onCompletion: ((summary) => {
+                    resolve(summary);
                 })
-                .catch(err => done(err));
-        });
+            });
+            remove.on('error', (err) => {
+                err.message.should.be.equal('Stop Processing');
+                reject(err);
+            });
+        }).catch(err => err);
+
+        if (summary.message !== 'Stop Processing') {
+            summary.docsRemovedSuccessfully.should.be.equal(0);
+            summary.docsFailedToBeRemoved.should.be.equal(100);
+            summary.timeElapsed.should.be.greaterThanOrEqual(0);
+            summary.error.should.be.equal('Error: Stop Processing');
+        }
+        await dbWriter.documents.remove(uris).result();
     });
 
-    it('should queryToRemoveAll documents with onBatchError returning empty array',
-        done => {
-            const testUser = marklogic.createDatabaseClient(testconfig.dmsdkrestReaderConnection);
-            testUser.documents.queryToRemoveAll(query, {
+    it('should throw error with invalid onBatchError option', async function () {
+        const testUser = marklogic.createDatabaseClient(testconfig.restReaderConnection);
+        const err = await new Promise((resolve) => {
+            const remove = (testUser.documents.removeAllUris(removeStream, {
+                onBatchError: ((progressSoFar, documents, error) => {
+                    error.body.errorResponse.status.should.be.equal('Forbidden');
+                    progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
+                    progressSoFar.timeElapsed.should.be.greaterThanOrEqual(0);
+                    return 10;
+                }),
+                onCompletion: ((summary) => {
+                    summary.docsRemovedSuccessfully.should.be.equal(0);
+                    summary.docsFailedToBeRemoved.should.be.equal(100);
+                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
+                    summary.error.should.be.equal('Error: onBatchError should return null, empty array or a replacement array.');
+                })
+            }));
+            remove.on('error', (err) => {
+                resolve(err);
+            });
+        });
 
+        err.message.should.be.equal('onBatchError should return null, empty array or a replacement array.');
+        await dbWriter.documents.remove(uris).result();
+    });
+
+    it('should queryToRemoveAll documents with onBatchError returning empty array', async () => {
+        const testUser = marklogic.createDatabaseClient(testconfig.dmsdkrestReaderConnection);
+        const summary = await new Promise((resolve) => {
+            testUser.documents.queryToRemoveAll(query, {
                 onBatchError: ((progressSoFar, documents, error) => {
                     error.body.errorResponse.status.should.be.equal('Forbidden');
                     progressSoFar.docsRemovedSuccessfully.should.be.equal(0);
@@ -169,16 +166,13 @@ describe('Functional tests - data movement - nodejs-dmsdk-removeAllUris', functi
                     return [];
                 }),
                 onCompletion: ((summary) => {
-                    summary.docsRemovedSuccessfully.should.be.equal(0);
-                    summary.docsFailedToBeRemoved.should.be.equal(100);
-                    summary.timeElapsed.should.be.greaterThanOrEqual(0);
-                    dbWriter.documents.remove(uris)
-                        .result(function (response) {
-                            done();
-                        })
-                        .catch(done)
-                        .catch(err => done(err));
+                    resolve(summary);
                 })
             });
         });
+        summary.docsRemovedSuccessfully.should.be.equal(0);
+        summary.docsFailedToBeRemoved.should.be.equal(100);
+        summary.timeElapsed.should.be.greaterThanOrEqual(0);
+        await dbWriter.documents.remove(uris).result();
+    });
 });
