@@ -25,29 +25,6 @@ const db = marklogic.createDatabaseClient(
     }
 );
 
-// Client to query schema database to verify view is stored
-// Make sure you have qbvuser user created. See XQuery script nodejs-optic-setup.xml of internal repo (SVN).
-var dbModClient = marklogic.createDatabaseClient({
-    database: dbName + 'Modules',
-    host: connectdef.host,
-    port: connectdef.port,
-    user: 'qbvuser',
-    password: 'qbvuser',
-    authType: connectdef.authType
-});
-
-// Client to generate views
-const dbClient = marklogic.createDatabaseClient(
-    {
-        database: dbName,
-        host: connectdef.host,
-        port: connectdef.port,
-        user: 'qbvuser',
-        password: 'qbvuser',
-        authType: connectdef.authType
-    }
-);
-
 const op = marklogic.planBuilder;
 
 function waitForViewCreate(wTime) {
