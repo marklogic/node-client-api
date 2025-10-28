@@ -92,20 +92,15 @@ def runE2ETests() {
 		gulp loadToModulesDB
 		gulp generateFnClasses
 		gulp copyFnClasses
-		# Adding sleep for the gulp commands to complete.
-		sleep 30
 		cp *.js ../test-complete/
 		cp -R ml-modules/ ../test-complete
 		cd ../test-complete
-		../node_modules/.bin/mocha -R xunit --timeout 60000 nodejs-ds-setup-docs.js
-		../node_modules/.bin/mocha -R xunit --timeout 60000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-required-params-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 60000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
-
-    # Disabling this for now, failing with the new all-mlDeploy setup for unknown reasons.
-		# ../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
-
-		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 60000 -R xunit "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 nodejs-ds-setup-docs.js
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-required-params-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
 	'''
   junit '**/*.xml'
 }

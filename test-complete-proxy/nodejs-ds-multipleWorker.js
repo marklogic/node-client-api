@@ -32,162 +32,274 @@ var db = marklogic.createDatabaseClient(testconfig.restEvaluatorConnection);
 	var uris2 = ['Test1stream21', 'Test1stream22'];
 
 	if (isMainThread) {
+		let workersCompleted = 0;
+		const totalWorkers = 2;
+		let hasError = false;
+
+		const handleWorkerComplete = (err) => {
+			if (hasError) return;
+
+			if (err) {
+				hasError = true;
+				done(err);
+				return;
+			}
+
+			workersCompleted++;
+			if (workersCompleted === totalWorkers) {
+				done();
+			}
+		};
+
 		const workerOneInsert = new Worker('./insertFromMultipleStreams.js', {workerData: {files: inputFiles1, uris:uris1}});
 		workerOneInsert.on('done', (result) => {
 			//console.log('workerOneInsert message is ' + result );
-	});
+		});
 
-	workerOneInsert.on('exit', (code) => {
-        if (code !== 0)
-          reject(new Error('Worker workerOneInsert stopped with exit code ${code}'));
-		//else console.debug('workerOneInsert exits normally');
-      });
+		workerOneInsert.on('exit', (code) => {
+			if (code !== 0) {
+				handleWorkerComplete(new Error(`Worker workerOneInsert stopped with exit code ${code}`));
+			} else {
+				//console.debug('workerOneInsert exits normally');
+				handleWorkerComplete();
+			}
+		});
 
-	const workerTwoInsert = new Worker('./insertFromMultipleStreams.js', {workerData: {files: inputFiles2, uris:uris2}});
-	workerTwoInsert.on('message', (result) => {
-		//console.log('workerTwoInsert message is ' + result );
-	});
+		const workerTwoInsert = new Worker('./insertFromMultipleStreams.js', {workerData: {files: inputFiles2, uris:uris2}});
+		workerTwoInsert.on('message', (result) => {
+			//console.log('workerTwoInsert message is ' + result );
+		});
 
-	workerTwoInsert.on('exit', (code) => {
-        if (code !== 0)
-          reject(new Error('Worker workerTwoInsert stopped with exit code ${code}'));
-	   //else console.debug('workerTwoInsert exits normally');
-    });
-
+		workerTwoInsert.on('exit', (code) => {
+			if (code !== 0) {
+				handleWorkerComplete(new Error(`Worker workerTwoInsert stopped with exit code ${code}`));
+			} else {
+				//console.debug('workerTwoInsert exits normally');
+				handleWorkerComplete();
+			}
+		});
+	} else {
+		done();
 	}
-
-	done();
   });
 
   it('Verify inserts using client API query', function(done){
+    Promise.all([
+      db.documents.query(q.where(q.parsedFrom('Bush'))).result(),
+      db.documents.query(q.where(q.parsedFrom('Lisa'))).result()
+    ])
+    .then(([bushResults, lisaResults]) => {
+      const res1 = JSON.stringify(bushResults);
+      console.log(res1);
+      expect(res1).to.include('Monthly 1');
+      expect(res1).to.include('Monthly 2');
 
-	  var res1;
-	  db.documents.query(q.where(q.parsedFrom('Bush'))).result( function(results) {
-		res1 = JSON.stringify(results);
-		//console.log(res1);
-		expect(res1).to.include('Monthly 1');
-		expect(res1).to.include('Monthly 2');
-	  });
+      const res2 = JSON.stringify(lisaResults);
+      console.log(res2);
+      expect(res2).to.include('Times 1');
+      expect(res2).to.include('Times 2');
 
-	  var res2;
-	  db.documents.query(q.where(q.parsedFrom('Lisa'))).result( function(results) {
-		res2 = JSON.stringify(results);
-		//console.log(res2);
-		expect(res2).to.include('Times 1');
-		expect(res2).to.include('Times 2');
-
-	  done();
-
-	});
+      done();
+    })
+    .catch(err => {
+      done(err);
+    });
   });
 
 	it('One worker', function(done){
-		try {
-			// Get results from all workers
-			var searchResults1 = [];
-			var searchResults2 = [];
+		// Get results from all workers
+		var searchResults1 = [];
 
-			if (isMainThread) {
-				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
-				workerOneSearch.on('done', (result) => {
+		if (isMainThread) {
+			const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
+			workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
 				expect(searchResults1[0]).to.have.members(["/Test1stream11.json", "/Test1stream21.json"]);
-				});
-				workerOneSearch.on('exit', (code) => {
-				if (code !== 0)
-					reject(new Error('Worker workerOneSearch stopped with exit code ${code}'));
-				//else console.debug('workerOneSearch exits normally');
-				});
+			});
+			workerOneSearch.on('exit', (code) => {
+				if (code !== 0) {
+					done(new Error(`Worker workerOneSearch stopped with exit code ${code}`));
+				} else {
+					//console.debug('workerOneSearch exits normally');
+					done();
+				}
+			});
+		} else {
 			done();
 		}
-		}
-	catch(err) {
-	   //console.debug(err);
-	   done();
-	}
 	});
 
 	it('Multiple workers', function(done){
-		try {
-			// Get results from all workers
-			var searchResults1 = [];
-			var searchResults2 = [];
+		// Get results from all workers
+		var searchResults1 = [];
+		var searchResults2 = [];
 
-			if (isMainThread) {
-				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
-				workerOneSearch.on('done', (result) => {
+		if (isMainThread) {
+			let workersCompleted = 0;
+			const totalWorkers = 2;
+			let hasError = false;
+
+			const handleWorkerComplete = (err) => {
+				if (hasError) return;
+
+				if (err) {
+					hasError = true;
+					done(err);
+					return;
+				}
+
+				workersCompleted++;
+				if (workersCompleted === totalWorkers) {
+					done();
+				}
+			};
+
+			const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
+			workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
 				expect(searchResults1[0]).to.have.members(["/Test1stream11.json", "/Test1stream21.json"]);
-				});
+			});
+			workerOneSearch.on('exit', (code) => {
+				if (code !== 0) {
+					handleWorkerComplete(new Error(`Worker workerOneSearch stopped with exit code ${code}`));
+				} else {
+					handleWorkerComplete();
+				}
+			});
 
-				const workerTwoSearch = new Worker('./searchMultiple.js', {workerData: {search:'Lisa'}});
-				workerTwoSearch.on('done', (result) => {
+			const workerTwoSearch = new Worker('./searchMultiple.js', {workerData: {search:'Lisa'}});
+			workerTwoSearch.on('done', (result) => {
 				searchResults2.push(result);
 				//console.log('Results 2 from search is :', searchResults2);
 				expect(searchResults2[0]).to.have.members(["/Test1stream12.json", "/Test1stream22.json"]);
 			});
+			workerTwoSearch.on('exit', (code) => {
+				if (code !== 0) {
+					handleWorkerComplete(new Error(`Worker workerTwoSearch stopped with exit code ${code}`));
+				} else {
+					handleWorkerComplete();
+				}
+			});
+		} else {
 			done();
 		}
-		}
-	catch(err) {
-	   //console.debug(err);
-	   done();
-	}
 	});
 
 	it('Multiple workers-One result back', function(done){
-		try {
-			// Get results from all workers
-			var searchResults1 = [];
-			var searchResults2 = [];
+		// Get results from all workers
+		var searchResults1 = [];
+		var searchResults2 = [];
 
-			if (isMainThread) {
-				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
-				workerOneSearch.on('done', (result) => {
+		if (isMainThread) {
+			let workersCompleted = 0;
+			const totalWorkers = 2;
+			let hasError = false;
+
+			const handleWorkerComplete = (err) => {
+				if (hasError) return;
+
+				if (err) {
+					hasError = true;
+					done(err);
+					return;
+				}
+
+				workersCompleted++;
+				if (workersCompleted === totalWorkers) {
+					done();
+				}
+			};
+
+			const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
+			workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
 				expect(searchResults1[0]).to.have.members(["/Test1stream11.json", "/Test1stream21.json"]);
-				});
+			});
+			workerOneSearch.on('exit', (code) => {
+				if (code !== 0) {
+					handleWorkerComplete(new Error(`Worker workerOneSearch stopped with exit code ${code}`));
+				} else {
+					handleWorkerComplete();
+				}
+			});
 
-				const workerTwoSearch = new Worker('./searchMultiple.js', {workerData: {search:'100'}});
-				workerTwoSearch.on('done', (result) => {
+			const workerTwoSearch = new Worker('./searchMultiple.js', {workerData: {search:'100'}});
+			workerTwoSearch.on('done', (result) => {
 				searchResults2.push(result);
 				//console.log('Results 2 from search is :', searchResults2);
 				expect(searchResults2[0]).to.eql([]);
 			});
+			workerTwoSearch.on('exit', (code) => {
+				if (code !== 0) {
+					handleWorkerComplete(new Error(`Worker workerTwoSearch stopped with exit code ${code}`));
+				} else {
+					handleWorkerComplete();
+				}
+			});
+		} else {
 			done();
 		}
-		}
-	catch(err) {
-	   //console.debug(err);
-	   done();
-	}
 	});
 
 	it('Multiple workers- incorrect data', function(done){
-		try {
-			// Get results from all workers
-			var searchResults1 = [];
-			var searchResults2 = [];
+		// Get results from all workers
+		var searchResults1 = [];
 
-			if (isMainThread) {
-				const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
-				workerOneSearch.on('done', (result) => {
+		if (isMainThread) {
+			let workersCompleted = 0;
+			const totalWorkers = 2;
+			let hasError = false;
+
+			const handleWorkerComplete = (err) => {
+				if (hasError) return;
+
+				if (err) {
+					hasError = true;
+					done(err);
+					return;
+				}
+
+				workersCompleted++;
+				if (workersCompleted === totalWorkers) {
+					done();
+				}
+			};
+
+			const workerOneSearch = new Worker('./searchMultiple.js', {workerData: {search:'Bush'}});
+			workerOneSearch.on('done', (result) => {
 				searchResults1.push(result);
 				//console.log('Results 1 from search is :', searchResults1);
 				expect(searchResults1[0]).to.have.members(["/Test1stream11.json", "/Test1stream21.json"]);
-				});
+			});
+			workerOneSearch.on('exit', (code) => {
+				if (code !== 0) {
+					handleWorkerComplete(new Error(`Worker workerOneSearch stopped with exit code ${code}`));
+				} else {
+					handleWorkerComplete();
+				}
+			});
 
-				expect(
-				() => new Worker('./searchMultiple.js', {workerData: {find:100}}).to.throw('null value not allowed for parameter'));
+			// Test worker with incorrect data - should fail/exit with error
+			const workerBadData = new Worker('./searchMultiple.js', {workerData: {find:100}});
+			workerBadData.on('error', (err) => {
+				// Expected error path - worker received bad data
+				//console.log('Expected error from workerBadData:', err.message);
+				handleWorkerComplete();
+			});
+			workerBadData.on('exit', (code) => {
+				if (code !== 0) {
+					// This is also acceptable - worker exited with error code
+					handleWorkerComplete();
+				} else {
+					// Worker shouldn't succeed with bad data
+					handleWorkerComplete(new Error('Worker with incorrect data should have failed'));
+				}
+			});
+		} else {
 			done();
 		}
-		}
-	catch(err) {
-	   //console.debug(err);
-	   done();
-	}
 	});
 });
