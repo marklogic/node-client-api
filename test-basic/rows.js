@@ -236,7 +236,6 @@ describe('rows', function(){
   });
 
   describe('from a TDE view', function(){
-    // View defined in etc/data/employees.tdej
     const planFromBuilderTemplate = p.fromView('company', 'employees', '')
         .select(['EmployeeID', 'FirstName', 'LastName'])
         .orderBy('LastName');
