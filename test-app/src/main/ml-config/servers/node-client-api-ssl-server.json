@@ -10,5 +10,5 @@
     "url-rewriter": "/MarkLogic/rest-api/rewriter.xml",
     "rewrite-resolves-globally": true,
     "authentication": "digestbasic",
-    "ssl-certificate-template": "ssl-project-template"
+    "ssl-certificate-template": "node-client-ssl-template"
 }

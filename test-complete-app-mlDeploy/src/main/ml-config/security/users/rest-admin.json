@@ -1,8 +1,0 @@
-{
-  "user-name": "rest-admin",
-  "description": "rest-admin user",
-  "password": "x",
-  "role": [
-    "rest-admin"
-  ]
-}
