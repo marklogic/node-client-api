@@ -32,6 +32,7 @@ While still in the test-app directory run the following gradle command.
 
     cd test-app
     ./gradlew -i mlDeploy
+    ./gradlew -i -Penv=e2e mlLoadData mlLoadModules
 
 Once the deploy has completed successfully, use "cd .." to return to the root directory of the project.
 

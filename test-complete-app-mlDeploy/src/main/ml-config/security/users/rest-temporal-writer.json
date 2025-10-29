@@ -1,8 +1,0 @@
-{
-  "user-name": "rest-temporal-writer",
-  "description": "rest-writer user with temporal privileges",
-  "password": "x",
-  "role": [
-    "rest-temporal-writer"
-  ]
-}
