@@ -98,17 +98,6 @@ in the online resources. To run the examples, follow the instructions here:
 
     examples/1readme.txt
 
-### Generating Documentation Locally
-
-After installing the project dependencies (including the [gulp](http://gulpjs.com/)
-build system), you can build the reference documentation locally from the root
-directory of the marklogic package:
-
-    npm run doc
-
-The documentation is generated in a doc subdirectory. The documentation can also be
-accessed online [here](https://docs.marklogic.com/jsdoc/index.html).
-
 ## Support
 
 The MarkLogic Node.js Client API is maintained by MarkLogic Engineering.

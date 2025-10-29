@@ -57,6 +57,16 @@ or
 There are also tests in the `test-complete` folder. The setup for these is more complicated and can 
 be found in the `Jenkinsfile` file in this repository in the `runE2ETests` function.
 
+## Generating documentation
+
+After installing the project dependencies, you can build the reference documentation locally from the root
+directory of the marklogic package:
+
+    npm run doc
+
+The documentation is generated in the `./doc` gitignored directory. The documentation can also be
+accessed online at <https://docs.marklogic.com/jsdoc/index.html>.
+
 ## Explanation of overrides in package.json
 
 Each override is being documented here so we have some ability in the future to remove an override as needed. 
@@ -86,29 +96,11 @@ glob-parent: "6.0.2"
 - Why needed: Older versions vulnerable to regex attacks
 - CVE/Issue: CVE-2020-28469 - ReDoS vulnerability
 
-jsdoc: "4.0.0"
-- Purpose: Fixes high-severity data access vulnerability in older jsdoc versions
-- Affects: gulp-jsdoc3 → jsdoc
-- Why needed: gulp-jsdoc3@3.0.0 uses older jsdoc with known vulnerabilities
-- CVE/Issue: High severity vulnerability in taffydb (jsdoc dependency)
-
-markdown-it: "14.1.0"
-- Purpose: Use latest markdown parser for JSDoc
-- Affects: gulp-jsdoc3 → jsdoc → markdown-it
-- Why needed: Latest version (no vulnerabilities), handles RFC 7464 parsing
-- Note: No newer version available, ensures consistency
-
 minimatch: "5.1.0"
 - Purpose: Fixes ReDoS (Regular Expression Denial of Service) vulnerability
 - Affects: mocha, gulp-mocha, and other build tools
 - Why needed: Older minimatch versions have catastrophic backtracking vulnerability
 - CVE/Issue: CVE-2022-3517 - ReDoS vulnerability
-
-sanitize-html: "2.17.0"
-- Purpose: Ensure JSDoc template uses non-vulnerable HTML sanitizer
-- Affects: gulp-jsdoc3 → ink-docstrap → sanitize-html
-- Why needed: Older versions have XSS vulnerabilities
-- Note: Also in devDependencies, override ensures transitive deps use safe version
 
 semver: "7.5.3"
 - Purpose: Fixes ReDoS in version parsing
@@ -121,12 +113,6 @@ tar-fs: "2.1.4"
 - Affects: kerberos → prebuild-install → tar-fs
 - Why needed: Older tar-fs allows extracting files outside intended directory
 - CVE/Issue: CVE-2024-28861 - Path traversal
-
-tmp: "0.2.4"
-- Purpose: Fixes arbitrary file write vulnerability
-- Affects: gulp-jsdoc3 → jsdoc → tmp
-- Why needed: Older tmp versions have file system security issues
-- CVE/Issue: CVE-2024-28858 - Arbitrary file write
 
 The following are related to this npm supply chain attack - https://orca.security/resources/blog/qix-npm-attack/ . 
 

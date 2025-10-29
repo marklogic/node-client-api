@@ -4,7 +4,6 @@
 const path   = require('path');
 const gulp   = require('gulp');
 const mocha  = require('gulp-mocha');
-const jsdoc  = require('gulp-jsdoc3');
 
 const { parallel, series } = gulp;
 
