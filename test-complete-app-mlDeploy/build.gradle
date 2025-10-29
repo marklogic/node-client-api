@@ -1,7 +1,3 @@
-/**
- * This Gradle file is used to add a certificate template to the app that is created via the bespoke
- * deployer in test-setup-qa.js and test-setup-dmsdk-qa.js.
- */
 plugins {
 	id "net.saliman.properties" version "1.5.1"
   id "com.marklogic.ml-gradle" version "6.1.0"
