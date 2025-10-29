@@ -6,7 +6,7 @@
   "templates": {
     "theme":                "marklogic",
     "systemName":           "MarkLogic Node.js Client API",
-    "copyright":            "Copyright (c) 2020 MarkLogic Corporation",
+    "copyright":            "Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.",
     "navType":              "vertical",
     "inverseNav":           true,
     "includeDate":          false,

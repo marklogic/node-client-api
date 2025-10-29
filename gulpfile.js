@@ -5,7 +5,6 @@ const path   = require('path');
 const gulp   = require('gulp');
 const eslint = require('gulp-eslint-new');
 const mocha  = require('gulp-mocha');
-const jsdoc  = require('gulp-jsdoc3');
 
 const { parallel, series } = gulp;
 
@@ -31,14 +30,6 @@ function test() {
             should: require('should')
         }
       }));
-}
-
-function doc() {
-  // TODO: clear the directory first - maybe by following this recipe:
-  // https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md
-  const config = require('./jsdoc.json');
-  return gulp.src(['./lib/*.js', 'README.md'])
-    .pipe(jsdoc(config));
 }
 
 let testModulesClient = null;
@@ -184,7 +175,6 @@ function runProxyTests() {
       }));
 }
 
-exports.doc = doc;
 exports.lint = lint;
 exports.loadProxyTests     = series(parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases), updateMjsFiles);
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);
