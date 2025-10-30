@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 4.0.0
+
+This major release does not impact any client functionality, but rather raises the minimum required version of Node.js
+to 22 or higher. It also updates all dependencies to their latest version and removes unnecessary dependencies that
+were included in previous releases. 
+
 ## 3.7.1
 #### Bug Fix
 - https://github.com/marklogic/node-client-api/issues/961
