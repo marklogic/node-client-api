@@ -1,7 +1,26 @@
-// Only used for setting up the test AppServer in MarkLogic
+buildscript {
+  repositories {
+    mavenCentral()
+    // Needed for ml-gradle 6.2-SNAPSHOT
+    maven {
+      url = "https://bed-artifactory.bedford.progress.com:443/artifactory/ml-maven-snapshots/"
+    }
+  }
+  dependencies {
+    classpath "com.marklogic:ml-gradle:6.2-SNAPSHOT"
+  }
+}
+
 plugins {
-  id 'net.saliman.properties' version '1.5.2'
-  id "com.marklogic.ml-gradle" version "5.0.0"
+  id "net.saliman.properties" version "1.6.0"
+}
+
+apply plugin: "com.marklogic.ml-gradle"
+
+// Using longer values as MarkLogic seems to take much longer to initialize with the Jenkins nodeclientpool.
+mlWaitTillReady {
+  waitInterval = 3000
+  maxAttempts = 40
 }
 
 tasks.register("addMarkLogic12SchemasIfNecessary", com.marklogic.gradle.task.MarkLogicTask) {
@@ -21,9 +40,38 @@ mlLoadSchemas.dependsOn addMarkLogic12SchemasIfNecessary
  * that requires SSL.
  */
 ext {
-    def command = new com.marklogic.appdeployer.command.security.GenerateTemporaryCertificateCommand()
-    command.setTemplateIdOrName("node-client-ssl-template")
-    command.setCommonName("localhost")
-    command.setValidFor(365)
-    mlAppDeployer.commands.add(command)
+  def command = new com.marklogic.appdeployer.command.security.GenerateTemporaryCertificateCommand()
+  command.setTemplateIdOrName("node-client-ssl-template")
+  command.setCommonName("localhost")
+  command.setValidFor(365)
+  mlAppDeployer.commands.add(command)
 }
+
+tasks.register("curlPeople", Exec) {
+  commandLine = [
+    'curl',
+    '--fail',
+    '--anyauth', '--user', 'admin:admin',
+    '-i',
+    '-X', 'POST',
+    '--data-binary', '@./src/main/turtle/people/people.ttl',
+    '-H', 'Content-type: text/turtle',
+    'http://localhost:8079/v1/graphs?graph=/people'
+  ]
+}
+
+tasks.register("curlCompanies", Exec) {
+  commandLine = [
+    'curl',
+    '--fail',
+    '--anyauth', '--user', 'admin:admin',
+    '-i',
+    '-X', 'POST',
+    '--data-binary', '@./src/main/turtle/companies/companies_100.ttl',
+    '-H', 'Content-type: text/turtle',
+    'http://localhost:8079/v1/graphs?graph=/optic/sparql/test/companies.ttl'
+  ]
+}
+
+mlDeploy.finalizedBy curlPeople
+mlDeploy.finalizedBy curlCompanies

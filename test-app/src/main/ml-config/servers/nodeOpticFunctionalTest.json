@@ -1,0 +1,13 @@
+{
+    "server-name": "nodeOpticFunctionalTest",
+    "port": 8079,
+    "server-type": "http",
+    "root": "/",
+    "content-database": "nodeOpticFunctionalTest",
+    "modules-database": "nodeOpticFunctionalTestModules",
+    "default-error-format": "json",
+    "error-handler": "/MarkLogic/rest-api/error-handler.xqy",
+    "url-rewriter": "/MarkLogic/rest-api/rewriter.xml",
+    "rewrite-resolves-globally": true,
+    "authentication": "digestbasic"
+}

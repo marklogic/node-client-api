@@ -1,12 +1,12 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
 const should = require('should');
 
 describe('FIPS test - ensure MD5 hash digester object is not loaded by default on require of www-authenticate module', function () {
-  it('should not automatically load MD5 digest algorithm function when requiring www-authenticate module', function () {
+  it('should not automatically load MD5 digest algorithm function when requiring www-authenticate module', function (done) {
     /** 
      * Attempt to load/require the www-authenticate module after applying a monkey-patch
      * to the crypto.createHash function to intercept any attempts to create an MD5 hash
@@ -42,7 +42,9 @@ describe('FIPS test - ensure MD5 hash digester object is not loaded by default o
       // Require the module - should not call to get MD5 digester so should not throw
       (() => require('../lib/www-authenticate-patched/md5')).should.not.throw();
       (() => require('../lib/www-authenticate-patched/www-authenticate')).should.not.throw();
-
+      done();
+    } catch (e) {
+      done(e);
     } finally {
       // Restore the original createHash function to avoid side effects
       // This MUST execute to avoid breaking other tests!

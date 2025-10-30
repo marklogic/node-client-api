@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 const should = require('should');
@@ -46,6 +46,7 @@ describe('optic-update docColTypes tests', function() {
                 const plan = op.fromParam('bindingParam', null, op.docColTypes(op.col('uri')));
                 const temp = {bindingParam: rows};
                 db.rows.query(plan, null, temp);
+                done(new Error("Expected an error to be thrown due to only 1 argument to fromParam"));
             } catch (e) {
                 e.toString().includes('Error: PlanBuilder.docColTypes takes a maximum of 0 arguments but received: 1');
                 done();
@@ -116,6 +117,7 @@ describe('optic-update docColTypes tests', function() {
 
             try {
                 db.rows.query(op.fromDocDescriptors(docsDescriptor).write(op.docColTypes()));
+                done(new Error('Expecting an error to be thrown due to invalid document descriptor'));
             } catch (e) {
                 e.toString().includes('Error: doc-cols argument at 0 of PlanModifyPlan.write() must have type PlanDocColsIdentifier');
                 done();

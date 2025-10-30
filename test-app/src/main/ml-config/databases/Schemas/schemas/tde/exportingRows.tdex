@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xmlns="http://marklogic.com/xdmp/tde">
+    <context>/match</context>
+    <collections>
+        <collection>source1</collection>
+    </collections>
+    <rows>
+        <row>
+            <schema-name>soccer</schema-name>
+            <view-name>matches</view-name>
+            <columns>
+                <column>
+                    <name>id</name>
+                    <scalar-type>long</scalar-type>
+                    <val>id</val>
+                </column>
+                <column>
+                    <name>document</name>
+                    <scalar-type>string</scalar-type>
+                    <val>docUri</val>
+                </column>
+                <column>
+                    <name>date</name>
+                    <scalar-type>date</scalar-type>
+                    <val>match-date</val>
+                </column>
+                <column>
+                    <name>league</name>
+                    <scalar-type>string</scalar-type>
+                    <val>league</val>
+                </column>
+            </columns>
+        </row>
+    </rows>
+</template>

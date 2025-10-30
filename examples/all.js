@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var fs = require('fs');
 
@@ -29,6 +29,7 @@ fs.readdir('./examples', function(err, filenames) {
       'all.js':          true,
       'before-load.js':  true,
       'example-util.js': true,
+      'progress-cloud-connection.js': true,
       'setup.js':        true
   };
 

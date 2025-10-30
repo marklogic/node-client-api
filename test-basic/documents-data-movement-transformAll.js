@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 const should = require('should');
@@ -18,7 +18,7 @@ const ctsQb = marklogic.ctsQueryBuilder;
 const q = marklogic.queryBuilder;
 const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/transformAll/'));
 
-describe('data movement transformAll', function() {
+describe('data movement transformAll (documents-data-movement-transformAll)', function() {
 
     before(function(done) {
 

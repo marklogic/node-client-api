@@ -1,0 +1,15 @@
+<doc>
+    <hello>world</hello>
+    <tripleSets xmlns:sem="http://marklogic.com/semantics">
+        <sem:triple>
+            <sem:subject>http://marklogicsparql.com/id#5555</sem:subject>
+            <sem:predicate>http://marklogicsparql.com/addressbook#firstName</sem:predicate>
+            <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">Jim</sem:object>
+        </sem:triple>
+        <sem:triple>
+            <sem:subject>http://marklogicsparql.com/id#5555</sem:subject>
+            <sem:predicate>http://marklogicsparql.com/addressbook#firstName</sem:predicate>
+            <sem:object datatype="http://www.w3.org/2001/XMLSchema#string">Jim</sem:object>
+        </sem:triple>
+    </tripleSets>
+</doc>

@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 var marklogic = require('../');
@@ -12,6 +12,7 @@ let gulpConfig = require('../gulpfile.js');
 describe('Endpoint caller', function() {
 
     before(function(done){
+        this.timeout(30000); // set timeout to 30 seconds, because some of the tests take a while
         gulpConfig.loadProxyTests();
         setTimeout(()=>{done();}, 5000);
     });
