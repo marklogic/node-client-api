@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
@@ -25,10 +25,9 @@ const db = marklogic.createDatabaseClient(
     }
 );
 
-// Client to query schema database to verify view is stored
-// Make sure you have qbvuser user created. See XQuery script nodejs-optic-setup.xml of internal repo (SVN).
-var dbModClient = marklogic.createDatabaseClient({
-    database: dbName + 'Modules',
+// Client for writing new schemas.
+const schemasClient = marklogic.createDatabaseClient({
+    database: 'Schemas',
     host: connectdef.host,
     port: connectdef.port,
     user: 'qbvuser',
@@ -76,7 +75,7 @@ describe('Nodejs Optic generate views test', function () {
         dbClient.rows.generateView(plan, 'InnerJoin', 'keymatch')
             .then(function (res) {
                 //console.log(JSON.stringify(res, null, 2));
-                dbModClient.documents.write({
+                schemasClient.documents.write({
                     uri: '/qbv-InnerJoin-keymatch.xml',
                     collections: 'http://marklogic.com/xdmp/qbv',
                     contentType: 'application/xml',
@@ -130,7 +129,7 @@ describe('Nodejs Optic generate views test', function () {
         dbClient.rows.generateView(plan, 'sparql', 'groupmin')
             .then(function (res) {
                 //console.log(JSON.stringify(res, null, 2));
-                dbModClient.documents.write({
+                schemasClient.documents.write({
                     uri: '/qbv-sparql-groupmin.xml',
                     collections: 'http://marklogic.com/xdmp/qbv',
                     contentType: 'application/xml',
@@ -187,7 +186,7 @@ describe('Nodejs Optic generate views test', function () {
         dbClient.rows.generateView(plan, 'lexicons', 'orderbyselect')
             .then(function (res) {
                 //console.log(JSON.stringify(res, null, 2));
-                dbModClient.documents.write({
+                schemasClient.documents.write({
                     uri: '/qbv-lexicons-orderby-select.xml',
                     collections: 'http://marklogic.com/xdmp/qbv',
                     contentType: 'application/xml',

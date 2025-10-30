@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
@@ -21,29 +21,6 @@ const db = marklogic.createDatabaseClient(
         port: connectdef.port,
         user: 'admin',
         password: 'admin',
-        authType: connectdef.authType
-    }
-);
-
-// Client to query schema database to verify view is stored
-// Make sure you have qbvuser user created. See XQuery script nodejs-optic-setup.xml of internal repo (SVN).
-var dbModClient = marklogic.createDatabaseClient({
-    database: dbName + 'Modules',
-    host: connectdef.host,
-    port: connectdef.port,
-    user: 'qbvuser',
-    password: 'qbvuser',
-    authType: connectdef.authType
-});
-
-// Client to generate views
-const dbClient = marklogic.createDatabaseClient(
-    {
-        database: dbName,
-        host: connectdef.host,
-        port: connectdef.port,
-        user: 'qbvuser',
-        password: 'qbvuser',
         authType: connectdef.authType
     }
 );

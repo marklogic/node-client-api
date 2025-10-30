@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 const should = require('should');
@@ -21,9 +21,9 @@ describe('data movement queryAll', function() {
     before(function (done) {
         // This "before" and the "after" frequently fail to finish before the timeout triggers
         // TODO:
-        //      short-term -> run with "timeout 0" and/or change/add "this.timeout(0)" to both methods
-        //      long-term -> Do we need 10000 records for these tests?
-        this.timeout(0);
+        //      short-term -> add "this.timeout(120000)" to both methods
+        //      long-term -> Do we need 10000 records for these tests? If 120 seconds is not enough, we change the test.
+        this.timeout(120000);
         readable = new Stream.Readable({objectMode: true});
         uris = [];
         for(let i=0; i<10000; i++) {
@@ -44,12 +44,11 @@ describe('data movement queryAll', function() {
     });
 
     after((function(done){
-        this.timeout(0);
+        this.timeout(120000);
         dbWriter.documents.remove(uris)
             .result(function(response){
                 done();
             })
-            .catch(err=> done(err))
             .catch(done);
     }));
 
@@ -57,6 +56,7 @@ describe('data movement queryAll', function() {
         try{
             const query = q.directory('/test/dataMovement/requests/queryAll/');
             dbWriter.documents.queryAll(query);
+            done(new Error('Expected an error to be thrown because query is not a cts query.'));
         } catch(err){
             err.toString().should.equal('Error: Query needs to be a cts query.');
             done();
@@ -94,12 +94,12 @@ describe('data movement queryAll', function() {
     });
 
     it('queryAll should throw error if no query is provided',  function (done){
-
         try{
             dbWriter.documents.queryAll();
+            return done(new Error('Expected an error to be thrown because no query was provided'));
         } catch(err){
             err.toString().should.equal('Error: Query cannot be null or undefined.');
-            done();
+            return done();
         }
     });
 
@@ -118,14 +118,14 @@ describe('data movement queryAll', function() {
     });
 
     it('queryAll should throw error with batchSize=100001',  function (done){
-
         try{
             dbWriter.documents.queryAll(query, {
                 batchSize:100001
             });
+            return done(new Error('Expected an error to be thrown because batchSize greater than 100000'));
         } catch(err){
             err.toString().should.equal('Error: batchSize cannot be greater than 100000');
-            done();
+            return done();
         }
     });
 
@@ -259,14 +259,14 @@ describe('data movement queryAll', function() {
     });
 
     it('queryAll should throw error with consistentSnapshot as Integer',  function (done){
-
         try{
             dbWriter.documents.queryAll(query, {
                 consistentSnapshot: 1
             });
+            return done(new Error('Expected an error to be thrown because consistentSnapshot is invalid'));
         } catch(err){
             err.toString().should.equal('Error: consistentSnapshot needs to be a boolean or DatabaseClient.Timestamp object.');
-            done();
+            return done();
         }
     });
 });

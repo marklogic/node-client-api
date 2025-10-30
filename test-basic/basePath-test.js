@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 const testconfig = require('../etc/test-config.js');
@@ -17,7 +17,9 @@ describe('basePath tests', function() {
         testconfig.restWriterConnectionWithBasePath.basePath = 'invalid';
         const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnectionWithBasePath);
         dbWriter.documents.write(writeObject)
-            .result(function(response){})
+            .result(function(response){
+                done(new Error('Expecting an error to be thrown due to invalid basePath'));
+            })
             .catch(err=>
             {
                 assert(err.toString().includes('path: invalid/v1/documents'));
@@ -29,7 +31,9 @@ describe('basePath tests', function() {
         testconfig.restWriterConnectionWithBasePath.basePath = '/invalid';
         const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnectionWithBasePath);
         dbWriter.documents.write(writeObject)
-            .result(function(response){})
+            .result(function(response){
+                done(new Error('Expecting an error to be thrown due to invalid basePath with a leading slash'));
+            })
             .catch(err=>
             {
                 assert(err.toString().includes('path: /invalid/v1/documents'));
@@ -41,7 +45,9 @@ describe('basePath tests', function() {
         testconfig.restWriterConnectionWithBasePath.basePath = 'invalid/';
         const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnectionWithBasePath);
         dbWriter.documents.write(writeObject)
-            .result(function(response){})
+            .result(function(response){
+                done(new Error('Expecting an error to be thrown due to invalid basePath with a trailing slash'));
+            })
             .catch(err=>
             {
                 assert(err.toString().includes('path: invalid/v1/documents'));
@@ -53,7 +59,9 @@ describe('basePath tests', function() {
         testconfig.restWriterConnectionWithBasePath.basePath = '/invalid/';
         const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnectionWithBasePath);
         dbWriter.documents.write(writeObject)
-            .result(function(response){})
+            .result(function(response){
+                done(new Error('Expecting an error to be thrown due to invalid basePath with starting and trailing slashes'));
+            })
             .catch(err=>
             {
                 assert(err.toString().includes('path: /invalid/v1/documents'));
@@ -65,7 +73,9 @@ describe('basePath tests', function() {
         testconfig.restWriterConnectionWithBasePath.basePath = '//invalid//';
         const dbWriter = marklogic.createDatabaseClient(testconfig.restWriterConnectionWithBasePath);
         dbWriter.documents.write(writeObject)
-            .result(function(response){})
+            .result(function(response){
+                done(new Error('Expecting an error to be thrown due to invalid basePath with multiple starting and trailing slashes'));
+            })
             .catch(err=>
             {
                 try{

@@ -1,11 +1,10 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 const path   = require('path');
 const gulp   = require('gulp');
-const jshint = require('gulp-jshint');
+const eslint = require('gulp-eslint-new');
 const mocha  = require('gulp-mocha');
-const jsdoc  = require('gulp-jsdoc3');
 
 const { parallel, series } = gulp;
 
@@ -17,9 +16,10 @@ const basicloader = require('./lib/basic-loader.js');
 const streamToArray = require("stream-to-array");
 
 function lint() {
-  return gulp.src('lib/*')
-      .pipe(jshint({lookup:true}))
-      .pipe(jshint.reporter('default'));
+  return gulp.src('lib/*.js')
+      .pipe(eslint({ overrideConfigFile: 'eslint.config.js' }))
+      .pipe(eslint.format())
+      .pipe(eslint.failAfterError());
 }
 
 function test() {
@@ -30,14 +30,6 @@ function test() {
             should: require('should')
         }
       }));
-}
-
-function doc() {
-  // TODO: clear the directory first - maybe by following this recipe:
-  // https://github.com/gulpjs/gulp/blob/master/docs/recipes/delete-files-folder.md
-  const config = require('./jsdoc.json');
-  return gulp.src(['./lib/*.js', 'README.md'])
-    .pipe(jsdoc(config));
 }
 
 let testModulesClient = null;
@@ -183,7 +175,6 @@ function runProxyTests() {
       }));
 }
 
-exports.doc = doc;
 exports.lint = lint;
 exports.loadProxyTests     = series(parallel(loadProxyTestInspector, loadProxyTestData, loadProxyTestCases), updateMjsFiles);
 exports.generateProxyTests = parallel(positiveProxyTests, negativeProxyTests, generatedProxyTests);

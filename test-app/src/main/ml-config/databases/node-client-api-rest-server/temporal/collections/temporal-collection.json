@@ -1,0 +1,6 @@
+{
+    "collection-name": "temporalCollection",
+    "system-axis": "systemTime",
+    "valid-axis": "validTime",
+    "option": [ "updates-safe" ]
+}

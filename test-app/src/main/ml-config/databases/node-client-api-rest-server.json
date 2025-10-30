@@ -1,0 +1,226 @@
+{
+  "database-name": "node-client-api-rest-server",
+  "schema-database": "Schemas",
+  "stemmed-searches": "basic",
+  "range-element-index": [
+    {
+      "scalar-type": "double",
+      "namespace-uri": "",
+      "localname": "amt",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "double",
+      "namespace-uri": "",
+      "localname": "score",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "popularity",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "rate",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "datetime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "systemStartTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "systemEndTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "validStartTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "validEndTime",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    }
+  ],
+  "range-path-index": [
+    {
+      "scalar-type": "decimal",
+      "path-expression": "price/amt",
+      "collation": "",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-path-index": [
+    {
+      "path-expression": "gElemChildParent/gElemChildPoint",
+      "coordinate-system": "wgs84",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-element-index": [
+    {
+      "namespace-uri": "",
+      "localname": "gElemPoint",
+      "coordinate-system": "wgs84",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "namespace-uri": "",
+      "localname": "gElemPointWgs84Double",
+      "coordinate-system": "wgs84/double",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-element-child-index": [
+    {
+      "parent-namespace-uri": "",
+      "parent-localname": "gElemChildParent",
+      "namespace-uri": "",
+      "localname": "gElemChildPoint",
+      "coordinate-system": "wgs84",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "parent-namespace-uri": "",
+      "parent-localname": "gElemChildParentEtrs89Double",
+      "namespace-uri": "",
+      "localname": "gElemChildPointEtrs89Double",
+      "coordinate-system": "etrs89/double",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-element-pair-index": [
+    {
+      "parent-namespace-uri": "",
+      "parent-localname": "gElemPair",
+      "latitude-namespace-uri": "",
+      "latitude-localname": "latitude",
+      "longitude-namespace-uri": "",
+      "longitude-localname": "longitude",
+      "coordinate-system": "wgs84",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "parent-namespace-uri": "",
+      "parent-localname": "gElemPairRawDouble",
+      "latitude-namespace-uri": "",
+      "latitude-localname": "latitudeRawDouble",
+      "longitude-namespace-uri": "",
+      "longitude-localname": "longitudeRawDouble",
+      "coordinate-system": "raw/double",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-element-attribute-pair-index": [
+    {
+      "parent-namespace-uri": "",
+      "parent-localname": "gAttrPair",
+      "latitude-namespace-uri": "",
+      "latitude-localname": "latitude",
+      "longitude-namespace-uri": "",
+      "longitude-localname": "longitude",
+      "coordinate-system": "wgs84",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-region-path-index": [
+    {
+      "path-expression": "/root/item/point",
+      "coordinate-system": "wgs84",
+      "geohash-precision": 1,
+      "invalid-values": "reject"
+    },
+    {
+      "path-expression": "/root/item/linestring",
+      "coordinate-system": "wgs84/double",
+      "geohash-precision": 2,
+      "invalid-values": "ignore"
+    },
+    {
+      "path-expression": "/root/item/circle",
+      "coordinate-system": "wgs84/double",
+      "geohash-precision": 1,
+      "invalid-values": "reject"
+    },
+    {
+      "path-expression": "/root/item/circle",
+      "coordinate-system": "wgs84",
+      "geohash-precision": 1,
+      "invalid-values": "reject"
+    },
+    {
+      "path-expression": "/root/item/box",
+      "coordinate-system": "wgs84/double",
+      "geohash-precision": 2,
+      "invalid-values": "ignore"
+    },
+    {
+      "path-expression": "/root/item/polygon",
+      "coordinate-system": "wgs84",
+      "geohash-precision": 3,
+      "invalid-values": "reject"
+    },
+    {
+      "path-expression": "/root/item/complex-polygon",
+      "coordinate-system": "wgs84",
+      "geohash-precision": 1,
+      "invalid-values": "ignore"
+    }
+  ],
+  "element-word-lexicon": [
+    {
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "defaultWordKey"
+    },
+    {
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "taggedWordKey"
+    },
+    {
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "otherKey"
+    }
+  ]
+}

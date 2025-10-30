@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
@@ -1151,7 +1151,8 @@ describe('Nodejs Optic from views test', function () {
             }, done);
     });
 
-    it('TEST 38 - with old timestamp', function (done) {
+    // Skipping due to server bug MLE-24724
+    it.skip('TEST 38 - with old timestamp', function (done) {
         var oldTimestamp = db.createTimestamp('123');
         const plan1 = op.fromView('opticFunctionalTest', 'detail', 'myDetail');
         const plan2 = op.fromView('opticFunctionalTest', 'master', 'myMaster');

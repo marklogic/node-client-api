@@ -1,5 +1,5 @@
 /*
-* Copyright © 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var assert = require('assert');
 var should = require('should');
@@ -87,13 +87,21 @@ describe('database clients', function () {
     done();
   });
   it('should use a custom agent', function (done) {
-    agentDb.connectionParams.agent.options.keepAliveTimeoutMsecs.should.equal(1000);
-    done();
+    try {
+      agentDb.connectionParams.agent.options.keepAliveTimeoutMsecs.should.equal(1000);
+      done();
+    } catch(e){
+      done(e);
+    }
   });
   it('should create a timestamp', function (done) {
     let timestamp = db.createTimestamp('123');
-    timestamp.value.should.equal('123');
-    done();
+    try {
+      timestamp.value.should.equal('123');
+      done();
+    } catch(e){
+      done(e);
+    }
   });
   it('should throw Error when server expects DIGEST and authType is CERTIFICATE', function (done) {
     const db = marklogic.createDatabaseClient({
@@ -108,6 +116,7 @@ describe('database clients', function () {
       .result(function (documents) {
         documents.forEach(function (document) {
         });
+        done(new Error('Expecting an error to be thrown due to invalid authentication configuration')); 
       })
       .catch(error => {
         assert(error.toString().includes('response with invalid 401 status with path: /v1/search'));
@@ -143,7 +152,9 @@ describe('database clients', function () {
       contentType: 'application/json',
       content: '{"key1":"value 1"}'
     })
-        .result()
+        .result(function (document) {
+          done(new Error('Expecting an error to be thrown due to invalid SSL configuration'));
+        })
         .catch(error => {
           try{
             assert(error.message.toString().includes('You have attempted to access an HTTP server using HTTPS. Please check your configuration.') ||
@@ -158,6 +169,7 @@ describe('database clients', function () {
   it('should throw error when authType is OAuth and oauthToken is missing', function(done){
     try {
        marklogic.createDatabaseClient(testconfig.restConnectionForOauth);
+       done(new Error('Expecting an error to be thrown due to missing oauthToken'));
     } catch(error){
       assert(error.message.toString().includes('oauthToken required for OAuth authentication. '));
       done();

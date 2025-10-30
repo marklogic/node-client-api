@@ -1,0 +1,88 @@
+{
+  "database-name": "nodeOpticFunctionalTest",
+  "schema-database": "Schemas",
+  "fast-element-trailing-wildcard-searches": true,
+  "two-character-searches": true,
+  "one-character-searches": true,
+  "triple-index": true,
+  "uri-lexicon": true,
+  "collection-lexicon": true,
+  "range-element-index": [
+    {
+      "scalar-type": "string",
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "city",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "string",
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "cityName",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "long",
+      "namespace-uri": "",
+      "localname": "cityPopulation",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "string",
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "cityTeam",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "date",
+      "namespace-uri": "",
+      "localname": "date",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "double",
+      "namespace-uri": "",
+      "localname": "distance",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "id",
+      "range-value-positions": false,
+      "invalid-values": "ignore"
+    },
+    {
+      "scalar-type": "int",
+      "namespace-uri": "",
+      "localname": "popularity",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "geospatial-element-index": [
+    {
+      "namespace-uri": "",
+      "localname": "latLonPoint",
+      "coordinate-system": "wgs84",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+  "element-word-lexicon": [
+    {
+      "collation": "http://marklogic.com/collation/",
+      "namespace-uri": "",
+      "localname": "city"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+    "axis-name": "systemTime",
+    "axis-start": {
+        "element-reference": {
+            "namespace-uri": "",
+            "localname": "systemStartTime",
+            "scalar-type": "dateTime"
+        }
+    },
+    "axis-end": {
+        "element-reference": {
+            "namespace-uri": "",
+            "localname": "systemEndTime",
+            "scalar-type": "dateTime"
+        }
+    }
+}
