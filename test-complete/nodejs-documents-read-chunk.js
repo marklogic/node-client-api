@@ -21,7 +21,7 @@ const dbAdmin = marklogic.createDatabaseClient(testconfig.restAdminConnection);
 describe('Binary documents test', function () {
     const binaryPath = __dirname + '/data/somePdfFile.pdf';
     let binaryValue = null;
-    
+
     const uri = '/test/binary/somePdfFile.pdf';
 
     before(async function () {
@@ -46,27 +46,28 @@ describe('Binary documents test', function () {
                 content: readableBinary
             }).result();
 
+            should.exist(response);
             response.should.have.property('documents');
 
         const streamData = await new Promise((resolve, reject) => {
             const chunks = [];
             const readStream = dbReader.documents.read(uri).stream('chunked');
-            
+
             readStream.on('data', function (data) {
                 chunks.push(data);
             });
-            
+
             readStream.on('end', function () {
                 resolve(Buffer.concat(chunks));
             });
-            
+
             readStream.on('error', function (error) {
                 reject(error);
             });
         });
 
         Buffer.compare(binaryValue, streamData).should.equal(0);
-        
+
         // Verify the binary content has a string near the end of the file
         const strData = streamData.toString();
         strData.should.containEql('CVISION Technologies');
