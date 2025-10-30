@@ -29,6 +29,7 @@ fs.readdir('./examples', function(err, filenames) {
       'all.js':          true,
       'before-load.js':  true,
       'example-util.js': true,
+      'progress-cloud-connection.js': true,
       'setup.js':        true
   };
 

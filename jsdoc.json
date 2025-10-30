@@ -5,7 +5,7 @@
   },
   "templates": {
     "theme":                "marklogic",
-    "systemName":           "MarkLogic Node.js Client API",
+    "systemName":           "Progress® MarkLogic® Node Client API",
     "copyright":            "Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.",
     "navType":              "vertical",
     "inverseNav":           true,

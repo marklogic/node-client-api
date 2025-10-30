@@ -1,7 +1,6 @@
-# MarkLogic Node.js Client API
+# Progress® MarkLogic® Node Client API
 
-The MarkLogic Node.js Client API provides access to the MarkLogic database
-from Node.js applications.
+The Progress® MarkLogic® Node Client API provides access to the MarkLogic database from Node.js applications.
 
 ## Features
 
@@ -17,6 +16,19 @@ from Node.js applications.
 * Optic query DSL, document matching, relevance, multiple groups
 * Generate query based views, redaction on rows
 * Data Movement SDK - move large amounts of data into, out of, or within a MarkLogic cluster
+
+## System Requirements
+
+The Node Client 4.0.0 release requires Node.js 22 or higher. Testing has verified that the client will
+run successfully on Node 20, but we recommend 22 or higher based on
+[the Node.js release roadmap](https://nodejs.org/en/about/previous-releases), as Node 20 enters
+end-of-life in April 2026 while Node 22 is supported through April 2027.
+
+For Node Client 3.x releases, Node.js 16 or higher is required.
+
+The Node Client depends on the [MarkLogic REST API](https://docs.progress.com/bundle/marklogic-server-develop-rest-api-12/page/topics/intro.html) 
+for connecting to MarkLogic. The Node Client supports major versions 10, 11, and 12 of MarkLogic, though some features require 
+a certain version of MarkLogic due to the underlying REST API support being added in that version of MarkLogic.
 
 ## Getting Started
 
@@ -51,10 +63,10 @@ const db = marklogic.createDatabaseClient({
   enableGzippedResponses: true
 });
 
-// For MarkLogic Cloud
+// For Progress Data Cloud
 const db = marklogic.createDatabaseClient({
     apiKey:   'changeme',
-    host:     'example.beta.marklogic.com',
+    host:     'example.dev.progress.cloud',
     authType: 'cloud',
     // basePath is optional.
     basePath: '/marklogic/test',
@@ -100,7 +112,7 @@ in the online resources. To run the examples, follow the instructions here:
 
 ## Support
 
-The MarkLogic Node.js Client API is maintained by MarkLogic Engineering.
+The Progress® MarkLogic® Node Client API is maintained by MarkLogic Engineering.
 It is designed for use in production applications with MarkLogic Server.
 Everyone is encouraged to file bug reports, feature requests, and pull
 requests through GitHub. This input is critical and will be carefully
