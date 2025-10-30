@@ -21,7 +21,7 @@ const query = q.where(ctsQb.cts.directoryQuery('/test/dataMovement/requests/tran
 describe('data movement transformAll - nodejs-dmsdk-queryToTransformAll', function () {
 
     before(async function () {
-        await restAdminDB.config.transforms.write(transformName, 'javascript', 
+        await restAdminDB.config.transforms.write(transformName, 'javascript',
             fs.createReadStream(transformPath)).result();
         for (let i = 0; i < 100; i++) {
             uris.push('/test/dataMovement/requests/transformAll/' + i + '.json');
@@ -164,7 +164,7 @@ describe('data movement transformAll - nodejs-dmsdk-queryToTransformAll', functi
                 }
             });
         });
-        
+
         summary.docsTransformedSuccessfully.should.be.equal(100);
         summary.docsFailedToBeTransformed.should.be.equal(0);
         summary.timeElapsed.should.be.greaterThanOrEqual(0);
@@ -195,12 +195,12 @@ describe('data movement transformAll - nodejs-dmsdk-queryToTransformAll', functi
         summary.docsTransformedSuccessfully.should.be.equal(100);
         summary.docsFailedToBeTransformed.should.be.equal(0);
         summary.timeElapsed.should.be.greaterThanOrEqual(0);
-        
+
         await verifyDocs('transformedValue');
     });
 
     it('should queryToTransformAll documents with onCompletion option', async function () {
-        const summary = await new Promise((resolve, reject) => {    
+        const summary = await new Promise((resolve, reject) => {
             dbWriter.documents.queryToTransformAll(query, {
                 transform: [transformName, { newValue: 'transformedValue' }],
                 onCompletion: ((summary) => {
@@ -220,7 +220,7 @@ describe('data movement transformAll - nodejs-dmsdk-queryToTransformAll', functi
     });
 
     it('should work with batchSize less than 1', async function () {
-        const summary = await new Promise((resolve, reject) => {    
+        const summary = await new Promise((resolve, reject) => {
             dbWriter.documents.queryToTransformAll(query, {
                 transform: [transformName, { newValue: 'transformedValue' }],
                 batchSize: 0,
@@ -296,6 +296,8 @@ describe('data movement transformAll - nodejs-dmsdk-queryToTransformAll', functi
 
 async function verifyDocs(value) {
     const documents = await dbWriter.documents.read(uris).result();
+    should.exist(documents);
+    documents.should.be.an.Array();
     documents.length.should.equal(100);
     for (let i = 0; i < documents.length; i++) {
         documents[i].content.key.should.equal(value);
