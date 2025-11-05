@@ -6,6 +6,16 @@
   "version": "4.0.1",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
+  "types": "marklogic.d.ts",
+  "files": [
+    "lib",
+    "marklogic.d.ts",
+    "README.md",
+    "NOTICE.txt",
+    "LICENSE.txt",
+    "CHANGELOG.txt",
+    "CODEOWNERS"
+  ],
   "scripts": {
     "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
     "lint": "gulp lint"
