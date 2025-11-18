@@ -85,11 +85,11 @@ brace-expansion: "2.0.2"
 - Why needed: Prevents regex denial of service attacks
 - CVE/Issue: Related to minimatch vulnerabilities
 
-glob: "10.3.11"
-- Purpose: Fixes ReDoS and security issues in file globbing
-- Affects: mocha, gulp-mocha build tooling
-- Why needed: Older glob versions have pattern matching vulnerabilities
-- CVE/Issue: Multiple vulnerabilities in older glob versions
+glob: "12.0.0"
+- Purpose: Fixes command injection vulnerability in glob CLI
+- Affects: mocha, gulp-mocha, rimraf (via bunyan/mv)
+- Why needed: Versions 10.3.7-11.0.3 vulnerable to command injection via -c/--cmd flag
+- CVE/Issue: GHSA-5j98-mcp5-4vw2 - Command injection via shell:true execution
 
 glob-parent: "6.0.2"
 - Purpose: Fixes ReDoS in path parsing
