@@ -58,6 +58,11 @@ or
 There are also tests in the `test-complete` folder. The setup for these is more complicated and can 
 be found in the `Jenkinsfile` file in this repository in the `runE2ETests` function.
 
+## Testing TypeScript support
+
+The 4.1.0 release will add TypeScript support for the client. To try this out locally and manually, 
+see the `README.md` file in the `./typescript-test-project` directory.
+
 ## Generating documentation
 
 After installing the project dependencies, you can build the reference documentation locally from the root
