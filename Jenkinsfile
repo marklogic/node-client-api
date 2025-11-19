@@ -69,6 +69,15 @@ def runLint() {
 	'''
 }
 
+def runTypeCheck() {
+  sh label: 'run-type-check', script: '''
+    export PATH=${NODE_HOME_DIR}/bin:$PATH
+    cd node-client-api
+    npm ci
+    npm run test:types
+	'''
+}
+
 def runE2ETests() {
   sh label: 'run-e2e-tests', script: '''
     export PATH=${NODE_HOME_DIR}/bin:$PATH
@@ -130,6 +139,7 @@ pipeline {
       steps {
         runAuditReport()
         runLint()
+        runTypeCheck()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
         runTests()
         runE2ETests()
