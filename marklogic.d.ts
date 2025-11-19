@@ -61,12 +61,35 @@ declare module 'marklogic' {
   }
 
   /**
+   * Result object returned by checkConnection method.
+   */
+  export interface ConnectionCheckResult {
+    /** Whether the connection was successful */
+    connected: boolean;
+    /** HTTP status code if connection failed */
+    httpStatusCode?: number;
+    /** HTTP status message if connection failed */
+    httpStatusMessage?: string;
+  }
+
+  /**
    * A database client object returned by createDatabaseClient.
    * Provides access to document, graph, and query operations.
    */
   export interface DatabaseClient {
-    // Methods will be added as we expand the type definitions
-    // For now, this is a placeholder to enable basic typing
+    /**
+     * Tests if a connection is successful.
+     * @since 2.1
+     * @returns A promise that resolves to an object indicating connection status
+     */
+    checkConnection(): Promise<ConnectionCheckResult>;
+
+    /**
+     * Releases the client and destroys the agent.
+     * Call this method when you're done with the client to free up resources.
+     * @since 3.0.0
+     */
+    release(): void;
   }
 
   /**
@@ -76,8 +99,17 @@ declare module 'marklogic' {
    */
   export function createDatabaseClient(config: DatabaseClientConfig): DatabaseClient;
 
+  /**
+   * Releases a client and destroys its agent.
+   * This is a standalone function equivalent to calling client.release().
+   * @since 3.0.0
+   * @param client - The DatabaseClient to release
+   */
+  export function releaseClient(client: DatabaseClient): void;
+
   const marklogic: {
     createDatabaseClient: typeof createDatabaseClient;
+    releaseClient: typeof releaseClient;
   };
 
   export default marklogic;
