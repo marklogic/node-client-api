@@ -13,6 +13,14 @@ async function run() {
 
     if (result.connected) {
       console.log('✅ Connected successfully!');
+
+      const uri = '/optic/test/albums1.json';
+
+      const probeResult = await client.documents.probe(uri).result();
+      console.log('Probe result', probeResult);
+
+      const readResult = await client.documents.read(uri).result();
+      console.log('Read result', readResult);
     } else {
       console.error(`❌ Connection failed: ${result.httpStatusCode} - ${result.httpStatusMessage}`);
       process.exit(1);

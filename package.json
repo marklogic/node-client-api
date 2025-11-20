@@ -18,9 +18,10 @@
   "scripts": {
     "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
     "lint": "gulp lint",
+    "pretest:typescript": "npm run test:compile",
     "test:types": "tsc --noEmit",
-    "test:compile": "tsc test-typescript/checkConnection-runtime.test.ts",
-    "pretest:typescript": "npm run test:compile"
+    "test:compile": "tsc test-typescript/*-runtime.test.ts",
+    "test:typescript": "npx mocha test-typescript/*.js"
   },
   "keywords": [
     "marklogic",
