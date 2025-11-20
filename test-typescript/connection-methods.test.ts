@@ -2,6 +2,8 @@
 * Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
+/// <reference path="../marklogic.d.ts" />
+
 /**
  * TypeScript type checking tests for connection-related methods.
  *
@@ -14,42 +16,14 @@
  * Run with: npm run test:types
  */
 
-// Create test types that should match the actual marklogic types
-type ConnectionCheckResult = {
-  connected: boolean;
-  httpStatusCode?: number;
-  httpStatusMessage?: string;
-};
-
-type DatabaseClient = {
-  checkConnection(): Promise<ConnectionCheckResult>;
-  release(): void;
-};
-
-type DatabaseClientConfig = {
-  host?: string;
-  port?: number;
-  user?: string;
-  password?: string;
-};
-
-// Simulate the marklogic module interface
-type MarkLogicModule = {
-  createDatabaseClient(config: DatabaseClientConfig): DatabaseClient;
-  releaseClient(client: DatabaseClient): void;
-};
+import type { DatabaseClient, ConnectionCheckResult } from 'marklogic';
+import * as marklogic from 'marklogic';
 
 // Test checkConnection() return type
-async function testCheckConnection(marklogic: MarkLogicModule) {
-  const client = marklogic.createDatabaseClient({
-    host: 'localhost',
-    port: 8000,
-    user: 'admin',
-    password: 'admin'
-  });
-
-  // Should return a Promise<ConnectionCheckResult>
-  const result = await client.checkConnection();
+async function testCheckConnection(client: DatabaseClient) {
+  // Should return a ResultProvider
+  const resultProvider = client.checkConnection();
+  const result = await resultProvider.result();
 
   // result.connected should be boolean
   const isConnected: boolean = result.connected;
@@ -66,14 +40,7 @@ async function testCheckConnection(marklogic: MarkLogicModule) {
 }
 
 // Test release() method on client
-function testRelease(marklogic: MarkLogicModule) {
-  const client = marklogic.createDatabaseClient({
-    host: 'localhost',
-    port: 8000,
-    user: 'admin',
-    password: 'admin'
-  });
-
+function testRelease(client: DatabaseClient) {
   // Should be callable with no return value
   client.release();
 
@@ -81,14 +48,7 @@ function testRelease(marklogic: MarkLogicModule) {
 }
 
 // Test releaseClient() standalone function
-function testReleaseClientFunction(marklogic: MarkLogicModule) {
-  const client = marklogic.createDatabaseClient({
-    host: 'localhost',
-    port: 8000,
-    user: 'admin',
-    password: 'admin'
-  });
-
+function testReleaseClientFunction(client: DatabaseClient) {
   // Should accept a DatabaseClient and return void
   marklogic.releaseClient(client);
 
@@ -96,16 +56,9 @@ function testReleaseClientFunction(marklogic: MarkLogicModule) {
 }
 
 // Test proper cleanup pattern
-async function testProperCleanupPattern(marklogic: MarkLogicModule) {
-  const client = marklogic.createDatabaseClient({
-    host: 'localhost',
-    port: 8000,
-    user: 'admin',
-    password: 'admin'
-  });
-
+async function testProperCleanupPattern(client: DatabaseClient) {
   try {
-    const result = await client.checkConnection();
+    const result = await client.checkConnection().result();
     if (result.connected) {
       console.log('Connected successfully!');
       // Do database operations...

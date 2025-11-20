@@ -78,6 +78,17 @@ def runTypeCheck() {
 	'''
 }
 
+def runTypeScriptTests() {
+  sh label: 'run-typescript-tests', script: '''
+    export PATH=${NODE_HOME_DIR}/bin:$PATH
+    cd node-client-api
+    npm ci
+    npm run test:compile
+    ./node_modules/.bin/mocha --timeout 10000 test-typescript/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-typescript-reports.xml || true
+	'''
+  junit '**/*test-typescript-reports.xml'
+}
+
 def runE2ETests() {
   sh label: 'run-e2e-tests', script: '''
     export PATH=${NODE_HOME_DIR}/bin:$PATH
@@ -142,6 +153,7 @@ pipeline {
         runTypeCheck()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
         runTests()
+        runTypeScriptTests()
         runE2ETests()
       }
       post {
@@ -165,6 +177,7 @@ pipeline {
           steps {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
             runTests()
+            runTypeScriptTests()
             runE2ETests()
           }
           post {
@@ -185,6 +198,7 @@ pipeline {
           steps {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
             runTests()
+            runTypeScriptTests()
             runE2ETests()
           }
           post {
@@ -205,6 +219,7 @@ pipeline {
           steps {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
             runTests()
+            runTypeScriptTests()
             runE2ETests()
           }
           post {

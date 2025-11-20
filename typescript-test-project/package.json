@@ -6,7 +6,9 @@
   "scripts": {
     "setup": "npm install .. && npm install",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck"
+    "build": "tsc",
+    "start": "node test.js",
+    "test": "npm run build && npm run start"
   },
   "keywords": [
     "marklogic",

@@ -2,50 +2,35 @@
 * Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
+/// <reference path="../marklogic.d.ts" />
+
 // This file demonstrates TypeScript catching type errors
 // To see the errors, uncomment sections below and run: npm run test:types
 
-type ConfigType = {
-  host?: string;
-  port?: number;
-  user?: string;
-  password?: string;
-  database?: string;
-  authType?: 'basic' | 'digest' | 'application-level' | 'certificate' | 'kerberos' | 'saml' | 'cloud';
-  ssl?: boolean;
-  ca?: string | string[] | Buffer | Buffer[];
-  cert?: string | Buffer;
-  key?: string | Buffer;
-  pfx?: Buffer;
-  passphrase?: string;
-  rejectUnauthorized?: boolean;
-  token?: string;
-  agent?: any;
-  apiVersion?: string;
-};
+import type { DatabaseClientConfig } from 'marklogic';
 
 // ✅ This works - valid authType
-const validConfig: ConfigType = {
+const validConfig: DatabaseClientConfig = {
   authType: 'digest'
 };
 
 // ❌ UNCOMMENT THIS to see TypeScript catch an invalid authType:
-// const invalidAuthType: ConfigType = {
+// const invalidAuthType: DatabaseClientConfig = {
 //   authType: 'invalid-type'  // Error: Type '"invalid-type"' is not assignable to type 'basic' | 'digest' | ...
 // };
 
 // ❌ UNCOMMENT THIS to see TypeScript catch wrong type for port:
-// const invalidPort: ConfigType = {
+// const invalidPort: DatabaseClientConfig = {
 //   port: 'not-a-number'  // Error: Type 'string' is not assignable to type 'number'
 // };
 
 // ❌ UNCOMMENT THIS to see TypeScript catch wrong type for ssl:
-// const invalidSsl: ConfigType = {
+// const invalidSsl: DatabaseClientConfig = {
 //   ssl: 'yes'  // Error: Type 'string' is not assignable to type 'boolean'
 // };
 
 // ❌ UNCOMMENT THIS to see TypeScript catch invalid certificate type:
-// const invalidCert: ConfigType = {
+// const invalidCert: DatabaseClientConfig = {
 //   cert: 123  // Error: Type 'number' is not assignable to type 'string | Buffer'
 // };
 

@@ -24,7 +24,8 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Emit */
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "./",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 

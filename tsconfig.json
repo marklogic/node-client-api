@@ -5,11 +5,12 @@
     "lib": ["ES2020"],
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "noEmit": true
+    "noEmit": false,
+    "outDir": "test-typescript"
   },
   "include": ["test-typescript/**/*"],
   "exclude": ["node_modules", "test-typescript/basic-types.test.ts"]

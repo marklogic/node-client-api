@@ -2,37 +2,16 @@
 * Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
+/// <reference path="../marklogic.d.ts" />
+
 // Simple TypeScript type checking test
 // This test validates the DatabaseClientConfig interface without needing the actual module
 // Run with: npm run test:types
 
-/**
- * To test the types, we'll reference them directly from the .d.ts file
- * This simulates what would happen when a user imports the module
- */
-
-// Test by creating a type that should match DatabaseClientConfig
-type TestConfig = {
-  host?: string;
-  port?: number;
-  user?: string;
-  password?: string;
-  database?: string;
-  authType?: 'basic' | 'digest' | 'application-level' | 'certificate' | 'kerberos' | 'saml' | 'cloud';
-  ssl?: boolean;
-  ca?: string | string[] | Buffer | Buffer[];
-  cert?: string | Buffer;
-  key?: string | Buffer;
-  pfx?: Buffer;
-  passphrase?: string;
-  rejectUnauthorized?: boolean;
-  token?: string;
-  agent?: any;
-  apiVersion?: string;
-};
+import type { DatabaseClientConfig } from 'marklogic';
 
 // Valid configurations that should work
-const validConfig1: TestConfig = {
+const validConfig1: DatabaseClientConfig = {
   host: 'localhost',
   port: 8000,
   user: 'admin',
@@ -40,7 +19,7 @@ const validConfig1: TestConfig = {
   authType: 'digest'
 };
 
-const validConfig2: TestConfig = {
+const validConfig2: DatabaseClientConfig = {
   host: 'secure.marklogic.com',
   port: 8443,
   user: 'admin',
@@ -53,12 +32,12 @@ const validConfig2: TestConfig = {
 // Testing type constraints - these should cause errors if uncommented:
 
 // Error: Invalid authType
-// const invalidAuth: TestConfig = {
+// const invalidAuth: DatabaseClientConfig = {
 //   authType: 'invalid-type' as any
 // };
 
 // Testing that authType is properly restricted
-const validAuthTypes: Array<TestConfig['authType']> = [
+const validAuthTypes: Array<DatabaseClientConfig['authType']> = [
   'basic',
   'digest',
   'application-level',
@@ -70,13 +49,13 @@ const validAuthTypes: Array<TestConfig['authType']> = [
 ];
 
 // Testing Buffer and string union types for certificates
-const certTest1: TestConfig = {
+const certTest1: DatabaseClientConfig = {
   ca: 'string cert',
   cert: Buffer.from('cert'),
   key: 'string key'
 };
 
-const certTest2: TestConfig = {
+const certTest2: DatabaseClientConfig = {
   ca: ['cert1', 'cert2'],
   cert: 'string cert',
   key: Buffer.from('key')
