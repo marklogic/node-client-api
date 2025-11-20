@@ -18,7 +18,9 @@
   "scripts": {
     "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
     "lint": "gulp lint",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc --noEmit",
+    "test:compile": "tsc test-typescript/checkConnection-runtime.test.ts",
+    "pretest:typescript": "npm run test:compile"
   },
   "keywords": [
     "marklogic",
@@ -53,6 +55,7 @@
   },
   "devDependencies": {
     "@jsdoc/salty": "0.2.9",
+    "@types/mocha": "10.0.10",
     "@types/node": "22.10.1",
     "ajv": "8.17.1",
     "ast-types": "0.14.2",

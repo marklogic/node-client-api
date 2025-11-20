@@ -79,10 +79,11 @@ declare module 'marklogic' {
   export interface DatabaseClient {
     /**
      * Tests if a connection is successful.
+     * Call .result() to get a promise.
      * @since 2.1
-     * @returns A promise that resolves to an object indicating connection status
+     * @returns A result provider with a result() method
      */
-    checkConnection(): Promise<ConnectionCheckResult>;
+    checkConnection(): ResultProvider<ConnectionCheckResult>;
 
     /**
      * Releases the client and destroys the agent.
@@ -90,6 +91,20 @@ declare module 'marklogic' {
      * @since 3.0.0
      */
     release(): void;
+  }
+
+  /**
+   * A result provider that wraps asynchronous operations.
+   * Call .result() to get a Promise for the result.
+   */
+  export interface ResultProvider<T> {
+    /**
+     * Gets a promise for the operation result.
+     * @param onFulfilled - Optional callback for success
+     * @param onRejected - Optional callback for errors
+     * @returns A promise that resolves to the result
+     */
+    result(onFulfilled?: (value: T) => void, onRejected?: (reason: any) => void): Promise<T>;
   }
 
   /**

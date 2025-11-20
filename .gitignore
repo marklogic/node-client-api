@@ -19,3 +19,6 @@ test-complete-app/build
 test-complete-app/.gradle
 test-complete-app-mlDeploy/build
 test-complete-app-mlDeploy/.gradle
+
+# Compiled TypeScript test files
+test-typescript/*.js
