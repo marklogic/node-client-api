@@ -73,10 +73,115 @@ declare module 'marklogic' {
   }
 
   /**
+   * Generic document content type - can be JSON, XML, text, or binary
+   */
+  export type DocumentContent = any;
+
+  /**
+   * A document descriptor for reading or writing documents.
+   */
+  export interface DocumentDescriptor {
+    /** The URI identifier for the document */
+    uri: string;
+    /** The content of the document (JSON, XML, text, or Buffer for binary) */
+    content?: DocumentContent;
+    /** The MIME type of the document */
+    contentType?: string;
+    /** Collections to which the document belongs */
+    collections?: string | string[];
+    /** Permissions controlling document access */
+    permissions?: Array<{
+      'role-name': string;
+      capabilities: string[];
+    }>;
+    /** Properties (metadata) for the document */
+    properties?: Record<string, any>;
+    /** Quality ranking for the document */
+    quality?: number;
+    /** Metadata values for the document */
+    metadataValues?: Record<string, any>;
+  }
+
+  /**
+   * Result from a probe operation indicating if a document exists.
+   */
+  export interface ProbeResult {
+    /** The URI of the document */
+    uri: string;
+    /** Whether the document exists */
+    exists: boolean;
+    /** Content type if document exists */
+    contentType?: string;
+    /** Content length if document exists */
+    contentLength?: number;
+  }
+
+  /**
+   * Result from a remove operation.
+   */
+  export interface RemoveResult {
+    /** Array of removed document URIs */
+    uris: string[];
+    /** Whether documents were removed */
+    removed: boolean;
+    /** System time of the operation */
+    systemTime?: string;
+  }
+
+  /**
+   * Result from a write operation.
+   */
+  export interface WriteResult {
+    /** Array of document descriptors with URIs of written documents */
+    documents: DocumentDescriptor[];
+    /** System time of the operation */
+    systemTime?: string;
+  }
+
+  /**
+   * Documents interface for reading and writing documents.
+   */
+  export interface Documents {
+    /**
+     * Checks whether a document exists.
+     * @param uri - The URI of the document to check
+     * @returns A result provider that resolves to probe result
+     */
+    probe(uri: string): ResultProvider<ProbeResult>;
+
+    /**
+     * Reads one or more documents.
+     * @param uris - A URI string or array of URI strings
+     * @returns A result provider that resolves to an array of document descriptors
+     */
+    read(uris: string | string[]): ResultProvider<DocumentDescriptor[]>;
+
+    /**
+     * Writes one or more documents.
+     * @param documents - A document descriptor or array of document descriptors
+     * @returns A result provider that resolves to a write result with document URIs
+     */
+    write(documents: DocumentDescriptor | DocumentDescriptor[]): ResultProvider<WriteResult>;
+
+    /**
+     * Removes one or more documents.
+     * @param uris - A URI string or array of URI strings
+     * @returns A result provider that resolves to a remove result
+     */
+    remove(uris: string | string[]): ResultProvider<RemoveResult>;
+  }
+
+  /**
    * A database client object returned by createDatabaseClient.
    * Provides access to document, graph, and query operations.
    */
   export interface DatabaseClient {
+    /**
+     * Documents interface for reading and writing documents.
+     * @since 1.0
+     */
+    documents: Documents;
+
     /**
      * Tests if a connection is successful.
      * Call .result() to get a promise.
