@@ -1,10 +1,12 @@
 @Library('shared-libraries') _
 
-def runTests() {
-  sh label: 'deploy-test-app-and-run-tests', script: '''
-		export JAVA_HOME=$JAVA_HOME_DIR
-		export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
-		export PATH=$JAVA_HOME/bin:${NODE_HOME_DIR}/bin:$PATH
+def runTests(excludeFragileTests) {
+  def excludeFlag = excludeFragileTests ? '--exclude "test-basic/documents-data-movement-*.js"' : ''
+
+  sh label: 'deploy-test-app-and-run-tests', script: """
+		export JAVA_HOME=\$JAVA_HOME_DIR
+		export GRADLE_USER_HOME=\$WORKSPACE/\$GRADLE_DIR
+		export PATH=\$JAVA_HOME/bin:\${NODE_HOME_DIR}/bin:\$PATH
 		cd node-client-api
 		node --version
 		npm --version
@@ -12,18 +14,16 @@ def runTests() {
 
     cd test-app
     ./gradlew -i mlWaitTillReady
-    sleep 3
-    ./gradlew -i mlWaitTillReady
     ./gradlew -i mlTestConnections
     ./gradlew -i mlDeploy
     ./gradlew -i -Penv=e2e mlLoadData mlLoadModules
 
 		cd ..
-		rm -rf $WORKSPACE/*.xml || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml || true
+		rm -rf \$WORKSPACE/*.xml || true
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ ${excludeFlag} --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/test-basic-reports.xml || true
 		./node_modules/.bin/gulp setupProxyTests || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml || true
-	'''
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/test-basic-proxy-reports.xml || true
+	"""
 	junit '**/*.xml'
 }
 
@@ -152,7 +152,7 @@ pipeline {
         runLint()
         runTypeCheck()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-        runTests()
+        runTests(true)
         runTypeScriptTests()
         runE2ETests()
       }
@@ -176,7 +176,7 @@ pipeline {
           agent { label 'nodeclientpool' }
           steps {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
-            runTests()
+            runTests(false)
             runTypeScriptTests()
             runE2ETests()
           }
@@ -197,7 +197,7 @@ pipeline {
           agent { label 'nodeclientpool' }
           steps {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-            runTests()
+            runTests(false)
             runTypeScriptTests()
             runE2ETests()
           }
@@ -218,7 +218,7 @@ pipeline {
           agent { label 'nodeclientpool' }
           steps {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
-            runTests()
+            runTests(false)
             runTypeScriptTests()
             runE2ETests()
           }
