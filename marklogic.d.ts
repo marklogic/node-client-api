@@ -129,6 +129,60 @@ declare module 'marklogic' {
   }
 
   /**
+   * Result from a removeAll operation.
+   */
+  export interface RemoveAllResult {
+    /** Always false (indicates removal operation completed) */
+    exists: boolean;
+    /** Collection that was removed (if specified) */
+    collection?: string;
+    /** Directory that was removed (if specified) */
+    directory?: string;
+    /** Whether all documents were removed */
+    allDocuments?: boolean;
+  }
+
+  /**
+   * Result from a protect operation on a temporal document.
+   */
+  export interface ProtectResult {
+    /** The URI of the protected document */
+    uri: string;
+    /** The temporal collection name */
+    temporalCollection: string;
+    /** The protection level (noWipe, noDelete, or noUpdate) */
+    level: string;
+  }
+
+  /**
+   * Result from a wipe operation on a temporal document.
+   */
+  export interface WipeResult {
+    /** The URI of the wiped document */
+    uri: string;
+    /** The temporal collection name */
+    temporalCollection: string;
+    /** Whether the document was wiped */
+    wiped: boolean;
+  }
+
+  /**
+   * Result from advancing LSQT on a temporal collection.
+   */
+  export interface AdvanceLsqtResult {
+    /** The new Last Stable Query Time */
+    lsqt: string;
+  }
+
+  /**
+   * Result from a patch operation.
+   */
+  export interface PatchResult {
+    /** The URI of the patched document */
+    uri: string;
+  }
+
+  /**
    * Result from a write operation.
    */
   export interface WriteResult {
@@ -164,11 +218,157 @@ declare module 'marklogic' {
     write(documents: DocumentDescriptor | DocumentDescriptor[]): ResultProvider<WriteResult>;
 
     /**
+     * Writes one or more documents with additional parameters.
+     * @param params - Configuration object with documents and optional parameters
+     * @returns A result provider that resolves to a write result with document URIs
+     */
+    write(params: {
+      /** The document(s) to write */
+      documents: DocumentDescriptor | DocumentDescriptor[];
+      /** Categories of information to write */
+      categories?: string | string[];
+      /** Transaction id or Transaction object */
+      txid?: string | object;
+      /** Transform to apply on the server */
+      transform?: string | object;
+      /** Forest name to write to */
+      forestName?: string;
+      /** Temporal collection for temporal documents */
+      temporalCollection?: string;
+      /** System time for temporal documents (ISO 8601 string or Date object) */
+      systemTime?: string | Date;
+    }): ResultProvider<WriteResult>;
+
+    /**
      * Removes one or more documents.
      * @param uris - A URI string or array of URI strings
      * @returns A result provider that resolves to a remove result
      */
     remove(uris: string | string[]): ResultProvider<RemoveResult>;
+
+    /**
+     * Removes all documents in a collection, directory, or database.
+     * Requires rest-admin role to delete all documents, rest-writer role otherwise.
+     * @param params - Configuration object with collection, directory, all, or txid properties
+     * @returns A result provider that resolves to a remove all result
+     */
+    removeAll(params: {
+      /** The collection whose documents should be deleted */
+      collection?: string;
+      /** A directory whose documents should be deleted */
+      directory?: string;
+      /** Delete all documents (requires rest-admin role) */
+      all?: boolean;
+      /** Transaction id or Transaction object */
+      txid?: string | object;
+    }): ResultProvider<RemoveAllResult>;
+
+    /**
+     * Protects a temporal document from certain operations.
+     * Must specify either duration or expireTime.
+     * @param params - Configuration object with either duration or expireTime
+     * @returns A result provider that resolves to protect result
+     */
+    protect(params: {
+      /** The URI of the temporal document */
+      uri: string;
+      /** The temporal collection name */
+      temporalCollection: string;
+      /** Protection level: 'noWipe' | 'noDelete' | 'noUpdate' (default: 'noDelete') */
+      level?: string;
+      /** Archive path for the document */
+      archivePath?: string;
+    } & (
+      { /** Duration as XSD duration string (e.g., 'P30D') */ duration: string; expireTime?: never; } |
+      { /** Expire time (alternative to duration) */ expireTime: string; duration?: never; }
+    )): ResultProvider<ProtectResult>;
+
+    /**
+     * Deletes all versions of a temporal document.
+     * @param params - Configuration object with uri and temporalCollection
+     * @returns A result provider that resolves to wipe result
+     */
+    wipe(params: {
+      /** The URI of the temporal document to wipe */
+      uri: string;
+      /** The temporal collection name */
+      temporalCollection: string;
+    }): ResultProvider<WipeResult>;
+
+    /**
+     * Advances the LSQT (Last Stable Query Time) of a temporal collection.
+     * @param params - Configuration object or temporal collection name
+     * @returns A result provider that resolves to the new LSQT
+     */
+    advanceLsqt(params: string | {
+      /** The temporal collection name */
+      temporalCollection: string;
+      /** Lag in seconds to subtract from maximum system start time */
+      lag?: number;
+    }): ResultProvider<AdvanceLsqtResult>;
+
+    /**
+     * Creates a writable stream for writing large documents (typically binary) in incremental chunks.
+     * The document descriptor should NOT include a content property - content is written via the stream.
+     * @param document - Document descriptor without content property
+     * @returns A WritableStream with a result() method for tracking completion
+     */
+    createWriteStream(document: {
+      /** The URI for the document to write to the database */
+      uri: string;
+      /** Collections to which the document should belong */
+      collections?: string[];
+      /** Permissions controlling document access */
+      permissions?: Array<{ roleName: string; capabilities: string[] }>;
+      /** Additional properties of the document */
+      properties?: object;
+      /** Weight to increase or decrease document rank */
+      quality?: number;
+      /** Metadata values of the document */
+      metadataValues?: object;
+      /** Version identifier for optimistic locking */
+      versionId?: number;
+      /** Transaction id or Transaction object */
+      txid?: string | object;
+      /** Transform extension name or [name, params] array */
+      transform?: string | [string, object];
+      /** Content type of the document */
+      contentType?: string;
+    }): NodeJS.WritableStream & ResultProvider<WriteResult>;
+
+    /**
+     * Applies changes to a document using patch operations.
+     * @param params - Configuration object with uri and operations
+     * @returns A result provider that resolves to patch result
+     */
+    patch(params: {
+      /** The URI of the document to patch */
+      uri: string;
+      /** Patch operations (from patchBuilder) or raw patch string/Buffer */
+      operations: any[] | string | Buffer;
+      /** Categories of information to modify (typically 'content') */
+      categories?: string | string[];
+      /** Temporal collection name (for temporal documents) */
+      temporalCollection?: string;
+      /** Temporal document URI */
+      temporalDocument?: string;
+      /** Source document URI */
+      sourceDocument?: string;
+      /** Transaction id or Transaction object */
+      txid?: string | object;
+      /** Version identifier for optimistic locking */
+      versionId?: string;
+      /** Format: 'json' or 'xml' */
+      format?: string;
+    }): ResultProvider<PatchResult>;
+
+    /**
+     * Applies changes to a document using patch operations.
+     * @param uri - The URI of the document to patch
+     * @param operations - One or more patch operations from patchBuilder
+     * @returns A result provider that resolves to patch result
+     */
+    patch(uri: string, ...operations: any[]): ResultProvider<PatchResult>;
   }
 
   /**

@@ -4,6 +4,7 @@
   "password": "x",
   "role": [
     "rest-writer",
-    "rest-evaluator"
+    "rest-evaluator",
+    "temporal-admin"
   ]
 }
