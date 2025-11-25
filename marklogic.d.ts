@@ -129,6 +129,29 @@ declare module 'marklogic' {
   }
 
   /**
+   * A timestamp object representing a point in time on the server.
+   * Used for point-in-time queries and operations.
+   * @since 2.1.1
+   */
+  export interface Timestamp {
+    /** The timestamp value as a string */
+    value: string | null;
+  }
+
+  /**
+   * Result value from eval, xqueryEval, or invoke operations.
+   * Each returned value includes format, datatype, and the actual value.
+   */
+  export interface EvalResult {
+    /** Format of the value: 'json', 'xml', 'text', or 'binary' */
+    format: 'json' | 'xml' | 'text' | 'binary';
+    /** Datatype of the value (e.g., 'node()', 'string', 'boolean', 'integer') */
+    datatype: string;
+    /** The actual value (type depends on format and datatype) */
+    value: any;
+  }
+
+  /**
    * Result from a removeAll operation.
    */
   export interface RemoveAllResult {
@@ -389,6 +412,114 @@ declare module 'marklogic' {
      * @returns A result provider with a result() method
      */
     checkConnection(): ResultProvider<ConnectionCheckResult>;
+
+    /**
+     * Creates one or more JSON documents for a collection.
+     * The server assigns URI identifiers to the documents.
+     * This is a simplified convenience method - use documents.write() for more control.
+     * @since 1.0
+     * @param collection - The collection name for the documents
+     * @param content - The JSON content object(s) for the documents
+     * @returns A result provider that resolves to an array of assigned URIs
+     */
+    createCollection(collection: string, ...content: any[]): ResultProvider<string[]>;
+
+    /**
+     * Probes whether a document exists.
+     * This is a simplified convenience method - use documents.probe() for more information.
+     * @since 1.0
+     * @param uri - The URI of the document to check
+     * @returns A result provider that resolves to a boolean
+     */
+    probe(uri: string): ResultProvider<boolean>;
+
+    /**
+     * Queries documents in a collection.
+     * This is a simplified convenience method - use documents.query() for more control.
+     * @since 1.0
+     * @param collection - The collection name
+     * @param query - Optional query built by queryBuilder
+     * @returns A result provider that resolves to an array of document content
+     */
+    queryCollection(collection: string, query?: any): ResultProvider<DocumentContent[]>;
+
+    /**
+     * Reads one or more documents, returning just the content.
+     * This is a simplified convenience method - use documents.read() for metadata too.
+     * @since 1.0
+     * @param uris - One or more document URIs
+     * @returns A result provider that resolves to an array of document content
+     */
+    read(...uris: string[]): ResultProvider<DocumentContent[]>;
+
+    /**
+     * Removes one or more documents.
+     * This is a simplified convenience method - use documents.remove() for more control.
+     * @since 1.0
+     * @param uris - One or more document URIs to remove
+     * @returns A result provider that resolves to an array of removed URIs
+     */
+    remove(...uris: string[]): ResultProvider<string[]>;
+
+    /**
+     * Removes all documents in a collection.
+     * This is a simplified convenience method - use documents.removeAll() for more options.
+     * @since 1.0
+     * @param collection - The collection whose documents should be deleted
+     * @returns A result provider that resolves to the collection name
+     */
+    removeCollection(collection: string): ResultProvider<string>;
+
+    /**
+     * Writes documents to a collection using a URI-to-content mapping.
+     * This is a simplified convenience method - use documents.write() for more control.
+     * @since 1.0
+     * @param collection - The collection name for the documents
+     * @param documents - An object mapping URIs to document content
+     * @returns A result provider that resolves to an array of written URIs
+     */
+    writeCollection(collection: string, documents: Record<string, DocumentContent>): ResultProvider<string[]>;
+
+    /**
+     * Creates a timestamp object for point-in-time operations.
+     * @since 2.1.1
+     * @param value - Optional timestamp value as a string
+     * @returns A Timestamp object
+     */
+    createTimestamp(value?: string): Timestamp;
+
+    /**
+     * Evaluates JavaScript code on the server.
+     * The user must have permission to evaluate code and execute the actions performed.
+     * @since 1.0
+     * @param source - The JavaScript source code to evaluate
+     * @param variables - Optional object with variable name-value pairs
+     * @param txid - Optional transaction ID or Transaction object
+     * @returns A result provider that resolves to an array of EvalResult objects
+     */
+    eval(source: string, variables?: Record<string, any>, txid?: string | object): ResultProvider<EvalResult[]>;
+
+    /**
+     * Evaluates XQuery code on the server.
+     * The user must have permission to evaluate code and execute the actions performed.
+     * @since 1.0
+     * @param source - The XQuery source code to evaluate
+     * @param variables - Optional object with variable name-value pairs (keys may use Clark notation)
+     * @param txid - Optional transaction ID or Transaction object
+     * @returns A result provider that resolves to an array of EvalResult objects
+     */
+    xqueryEval(source: string, variables?: Record<string, any>, txid?: string | object): ResultProvider<EvalResult[]>;
+
+    /**
+     * Invokes a JavaScript or XQuery module on the server.
+     * The module must have been installed previously (typically with config.extlibs.write()).
+     * @since 1.0
+     * @param path - The path of the module in the modules database
+     * @param variables - Optional object with variable name-value pairs
+     * @param txid - Optional transaction ID or Transaction object
+     * @returns A result provider that resolves to an array of EvalResult objects
+     */
+    invoke(path: string, variables?: Record<string, any>, txid?: string | object): ResultProvider<EvalResult[]>;
 
     /**
      * Releases the client and destroys the agent.
