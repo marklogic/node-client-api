@@ -56,6 +56,17 @@ async function run() {
 
       const wipeResult = await client.documents.wipe({uri: temporalUri, temporalCollection: temporalCollection}).result();
       console.log('wipe', wipeResult);
+
+      // Try out eval / invoke
+      const evalResult = await client.eval('fn.currentDateTime()').result();
+      console.log('eval', evalResult);
+
+      const xqueryEvalResult = await client.xqueryEval('fn:current-dateTime()').result();
+      console.log('xqueryEval', xqueryEvalResult);
+
+      const invokeResult = await client.invoke('/hello.xqy').result();
+      console.log('invoke', invokeResult);
+
     } else {
       console.error(`❌ Connection failed: ${result.httpStatusCode} - ${result.httpStatusMessage}`);
       process.exit(1);
