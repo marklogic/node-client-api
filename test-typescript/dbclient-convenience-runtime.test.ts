@@ -158,4 +158,47 @@ describe('DatabaseClient convenience methods runtime validation', function() {
     results[0].should.have.property('value');
     results[0].value.should.be.a.String();
   });
+
+
+
+  it('should use setLogger with a level string', async function() {
+    // Set logger to 'info' level
+    client.setLogger('info');
+
+    // Write a test document
+    await client.documents.write({
+      uri: '/test-typescript/setlogger-test.json',
+      content: { test: 'setLogger' }
+    }).result();
+
+    // Verify client is still functional after setting logger
+    const exists = await client.probe('/test-typescript/setlogger-test.json').result();
+    exists.should.be.a.Boolean();
+    exists.should.equal(true);
+  });
+
+  it('should use setLogger with a logger object', async function() {
+    // Create a simple logger object
+    const testLogger = {
+      debug: (msg: string) => console.log('DEBUG:', msg),
+      info: (msg: string) => console.log('INFO:', msg),
+      warn: (msg: string) => console.log('WARN:', msg),
+      error: (msg: string) => console.log('ERROR:', msg)
+    };
+
+    // Set logger with object
+    client.setLogger(testLogger, false);
+
+    // Write a test document
+    await client.documents.write({
+      uri: '/test-typescript/setlogger-test2.json',
+      content: { test: 'setLogger with object' }
+    }).result();
+
+    // Verify client is still functional after setting logger
+    const exists = await client.probe('/test-typescript/setlogger-test2.json').result();
+    exists.should.be.a.Boolean();
+    exists.should.equal(true);
+  });
+
 });

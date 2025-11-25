@@ -522,6 +522,29 @@ declare module 'marklogic' {
     invoke(path: string, variables?: Record<string, any>, txid?: string | object): ResultProvider<EvalResult[]>;
 
     /**
+     * Configures logging for database interactions with a logger object.
+     * @since 1.0
+     * @param logger - A logger object with debug(), info(), warn(), and error() methods (e.g., Bunyan or Winston)
+     * @param isErrorFirst - Whether to log errors as the first parameter (true for Bunyan, false for Winston). Defaults to false.
+     */
+    setLogger(logger: any, isErrorFirst?: boolean): void;
+    /**
+     * Sets the logging level for an existing ConsoleLogger.
+     * @since 1.0
+     * @param level - The logging level to set
+     */
+    setLogger(level: 'debug' | 'info' | 'warn' | 'error' | 'silent'): void;
+
+    /**
+     * Updates the SAML authentication token for subsequent requests.
+     * Only supported for clients created with authType: 'saml'.
+     * @since 2.2.0
+     * @param token - The new SAML authentication token
+     * @throws Error if the client is not using SAML authentication
+     */
+    setAuthToken(token: string): void;
+
+    /**
      * Releases the client and destroys the agent.
      * Call this method when you're done with the client to free up resources.
      * @since 3.0.0
