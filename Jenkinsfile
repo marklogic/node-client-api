@@ -89,16 +89,18 @@ def runTypeScriptTests() {
   junit '**/*test-typescript-reports.xml'
 }
 
-def runE2ETests() {
-  sh label: 'run-e2e-tests', script: '''
-    export PATH=${NODE_HOME_DIR}/bin:$PATH
+def runE2ETests(excludeFragileTests) {
+  def excludeFlag = excludeFragileTests ? '--exclude "test-complete/nodejs-dmsdk*.js"' : ''
+
+  sh label: 'run-e2e-tests', script: """
+    export PATH=\${NODE_HOME_DIR}/bin:\$PATH
 		cd node-client-api
 		node --version
 		npm --version
 		npm ci
 
     echo "Running test-complete tests"
-    ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
+    ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ ${excludeFlag} --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/test-complete-results.xml  || true
     echo "Done with test-complete tests"
 
     cd test-complete-proxy
@@ -110,12 +112,12 @@ def runE2ETests() {
 		cp -R ml-modules/ ../test-complete
 		cd ../test-complete
 		../node_modules/.bin/mocha -R xunit --timeout 20000 nodejs-ds-setup-docs.js
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-required-params-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
-	'''
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-required-params-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-multipleWorker-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-multipleWorker-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-transactions-results.js.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-dynamic-results.xml || true
+	"""
   junit '**/*.xml'
 }
 
@@ -154,7 +156,7 @@ pipeline {
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
         runTests(true)
         runTypeScriptTests()
-        runE2ETests()
+        runE2ETests(true)
       }
       post {
         always {
@@ -178,7 +180,7 @@ pipeline {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
             runTests(false)
             runTypeScriptTests()
-            runE2ETests()
+            runE2ETests(false)
           }
           post {
             always {
@@ -199,7 +201,7 @@ pipeline {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
             runTests(false)
             runTypeScriptTests()
-            runE2ETests()
+            runE2ETests(false)
           }
           post {
             always {
@@ -220,7 +222,7 @@ pipeline {
             runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
             runTests(false)
             runTypeScriptTests()
-            runE2ETests()
+            runE2ETests(false)
           }
           post {
             always {
