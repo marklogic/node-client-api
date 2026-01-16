@@ -14,7 +14,7 @@ This folder serves as:
 
 ### 1. Setup (First Time Only)
 ```bash
-cd test-project
+cd typescript-test-project
 npm run setup
 ```
 
