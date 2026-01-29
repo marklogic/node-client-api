@@ -167,6 +167,7 @@ pipeline {
     }
 
     stage('regressions') {
+      agent { label 'nodeclientpool' }
       when {
         allOf {
           branch 'develop'
@@ -177,29 +178,19 @@ pipeline {
         script {
           def imageTags = params.MARKLOGIC_IMAGE_TAGS.split(',')
           def imagePrefix = 'ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/'
-          def parallelStages = [:]
 
           imageTags.each { tag ->
             def fullImage = imagePrefix + tag.trim()
-            def stageName = "regressions-${tag.trim().replace(':', '-')}"
 
-            parallelStages[stageName] = {
-              stage(stageName) {
-                node('nodeclientpool') {
-                  try {
-                    runDockerCompose(fullImage)
-                    runTests(false)
-                    runTypeScriptTests()
-                    runE2ETests(false)
-                  } finally {
-                    teardownAfterTests()
-                  }
-                }
-              }
+            try {
+              runDockerCompose(fullImage)
+              runTests(false)
+              runTypeScriptTests()
+              runE2ETests(false)
+            } finally {
+              teardownAfterTests()
             }
           }
-
-          parallel parallelStages
         }
       }
     }
