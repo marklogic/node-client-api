@@ -130,6 +130,7 @@ pipeline {
 
   parameters {
     booleanParam(name: 'regressions', defaultValue: false, description: 'indicator if build is for regressions')
+    string(name: 'MARKLOGIC_IMAGE_TAGS', defaultValue: 'marklogic-server-ubi:latest-11,marklogic-server-ubi:latest-12', description: 'Comma-delimited list of MarkLogic image tags including variant (e.g., marklogic-server-ubi:latest-11,marklogic-server-ubi-rootless:11.3.2). The registry/org (ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic) path will be prepended automatically.')
   }
 
   options {
@@ -166,69 +167,39 @@ pipeline {
     }
 
     stage('regressions') {
-      parallel {
-
-        stage('runtests-11-nightly') {
-          when {
-            allOf {
-              branch 'develop'
-              expression { return params.regressions }
-            }
-          }
-          agent { label 'nodeclientpool' }
-          steps {
-            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
-            runTests(false)
-            runTypeScriptTests()
-            runE2ETests(false)
-          }
-          post {
-            always {
-              teardownAfterTests()
-            }
-          }
+      when {
+        allOf {
+          branch 'develop'
+          expression { return params.regressions }
         }
+      }
+      steps {
+        script {
+          def imageTags = params.MARKLOGIC_IMAGE_TAGS.split(',')
+          def imagePrefix = 'ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/'
+          def parallelStages = [:]
 
-        stage('runtests-12-nightly') {
-          when {
-            allOf {
-              branch 'develop'
-              expression { return params.regressions }
-            }
-          }
-          agent { label 'nodeclientpool' }
-          steps {
-            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-            runTests(false)
-            runTypeScriptTests()
-            runE2ETests(false)
-          }
-          post {
-            always {
-              teardownAfterTests()
-            }
-          }
-        }
+          imageTags.each { tag ->
+            def fullImage = imagePrefix + tag.trim()
+            def stageName = "regressions-${tag.trim().replace(':', '-')}"
 
-        stage('runtests-10-nightly') {
-          when {
-            allOf {
-              branch 'develop'
-              expression { return params.regressions }
+            parallelStages[stageName] = {
+              stage(stageName) {
+                node('nodeclientpool') {
+                  try {
+                    runDockerCompose(fullImage)
+                    runTests(false)
+                    runTypeScriptTests()
+                    runE2ETests(false)
+                  } finally {
+                    teardownAfterTests()
+                  }
+                }
+              }
             }
           }
-          agent { label 'nodeclientpool' }
-          steps {
-            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
-            runTests(false)
-            runTypeScriptTests()
-            runE2ETests(false)
-          }
-          post {
-            always {
-              teardownAfterTests()
-            }
-          }
+
+          parallel parallelStages
         }
       }
     }
