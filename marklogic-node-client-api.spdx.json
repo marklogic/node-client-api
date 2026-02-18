@@ -1519,24 +1519,24 @@
     } ],
     "downloadLocation" : "https://registry.npmjs.org/es-object-atoms/-/es-object-atoms-1.1.1.tgz"
   }, {
-    "SPDXID" : "SPDXRef-C62:qs:6.14.1",
+    "SPDXID" : "SPDXRef-C62:qs:6.15.0",
     "name" : "qs",
-    "versionInfo" : "6.14.1",
+    "versionInfo" : "6.15.0",
     "copyrightText" : "Nathan LaFreniere and contributors",
     "checksums" : [ {
       "algorithm" : "MD5",
-      "checksumValue" : "9213adb3eeadb5184f29bb70a67d19d1"
+      "checksumValue" : "deedeb86cddda69276df2f4400c39782"
     }, {
       "algorithm" : "SHA1",
-      "checksumValue" : "a41d85b9d3902f31d27861790506294881871159"
+      "checksumValue" : "db8fd5d1b1d2d6b5b33adaf87429805f1909e7b3"
     }, {
       "algorithm" : "SHA256",
-      "checksumValue" : "4712ac8ae3b49dd1c382c5fa4eb5a44fe92156db1bd30039280dedf5cf058e06"
+      "checksumValue" : "6c4f1565a52098c5ae7b45d7bb7441778452fdaacb6a0a92ab97c116b832d5bf"
     }, {
       "algorithm" : "SHA512",
-      "checksumValue" : "e042b7fb1265f13b3aee72d8370ab0fddb0556709ffaa47b4605d22bd8c4126f6e9daa379e3c0c0dd9ac76fa0a04a1f3c5deed098cf97b933e4a732376d5c641"
+      "checksumValue" : "980653b4d09e7ad28c1fea528eb6fbe8d00cf15f5ad3923d68164e1f3b56cbf52a70975060db1fe7dbeb44a5a7a23013f58f866c8be84c10bef823c7aa90c185"
     } ],
-    "downloadLocation" : "https://registry.npmjs.org/qs/-/qs-6.14.1.tgz"
+    "downloadLocation" : "https://registry.npmjs.org/qs/-/qs-6.15.0.tgz"
   }, {
     "SPDXID" : "SPDXRef-C65:remove-trailing-separator:1.1.0",
     "name" : "remove-trailing-separator",
