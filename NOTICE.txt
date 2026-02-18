@@ -33,7 +33,7 @@ Apache License 2.0:
   The MongoDB NodeJS Team   | node-kerberos        | 2.2.2
 
 BSD 3-Clause "New" or "Revised" License:
-  Nathan LaFreniere and contributors | qs -  QS Querystring | 6.14.1
+  Nathan LaFreniere and contributors | qs -  QS Querystring | 6.15.0
 
 ISC License:
   Isaac Z. Schlueter and…          | isaacs/once               | 1.4.0
@@ -454,7 +454,7 @@ Contents of NOTICE text file for text-decoder 1.2.3:
 (2) BSD 3-Clause "New" or "Revised" License:
 
 Progress MarkLogic Node Client API 4.1.0 incorporates qs -  QS Querystring
-6.14.1.
+6.15.0.
 
   Copyright (c) , Nathan LaFreniere and contributors All rights reserved.
 
