@@ -3,12 +3,25 @@
   "name": "marklogic",
   "description": "The official MarkLogic Node.js client API.",
   "homepage": "https://github.com/marklogic/node-client-api",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "license": "Apache-2.0",
   "main": "./lib/marklogic.js",
+  "types": "marklogic.d.ts",
+  "files": [
+    "lib",
+    "marklogic.d.ts",
+    "README.md",
+    "NOTICE.txt",
+    "LICENSE.txt",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
-    "lint": "gulp lint"
+    "lint": "gulp lint",
+    "pretest:typescript": "npm run test:compile",
+    "test:types": "tsc --noEmit",
+    "test:compile": "tsc test-typescript/*-runtime.test.ts",
+    "test:typescript": "npx mocha test-typescript/*.js"
   },
   "keywords": [
     "marklogic",
@@ -31,7 +44,7 @@
     "form-data": "4.0.4",
     "json-text-sequence": "4.0.2",
     "multipart-stream": "2.0.1",
-    "qs": "6.14.0",
+    "qs": "6.15.0",
     "through2": "4.0.2"
   },
   "repository": {
@@ -43,6 +56,8 @@
   },
   "devDependencies": {
     "@jsdoc/salty": "0.2.9",
+    "@types/mocha": "10.0.10",
+    "@types/node": "22.10.1",
     "ajv": "8.17.1",
     "ast-types": "0.14.2",
     "astring": "1.9.0",
@@ -55,12 +70,13 @@
     "gulp-mocha": "10.0.1",
     "intercept-stdout": "0.1.2",
     "jsdoc": "4.0.5",
-    "mocha": "11.7.4",
+    "mocha": "11.7.5",
     "mocha-junit-reporter": "2.2.1",
     "moment": "2.30.1",
     "sanitize-html": "2.17.0",
     "should": "13.2.3",
-    "stream-to-array": "2.3.0"
+    "stream-to-array": "2.3.0",
+    "typescript": "5.7.2"
   },
   "optionalDependencies": {
     "kerberos": "^2.0.1",
@@ -76,7 +92,7 @@
     "color-name": "2.0.0",
     "cross-spawn": "7.0.6",
     "debug": "4.3.6",
-    "glob": "10.3.11",
+    "glob": "12.0.0",
     "glob-parent": "6.0.2",
     "minimatch": "5.1.0",
     "semver": "7.5.3",

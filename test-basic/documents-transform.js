@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var should = require('should');
 
@@ -26,6 +26,7 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should write the transform with named parameters', function(done){
       this.timeout(3000);
       restAdminDB.config.transforms.write({
@@ -35,13 +36,18 @@ describe('document transform', function(){
         provider:    'Banner Business',
         version:     0.1,
         format:      'xquery',
-        source:      fs.createReadStream(xqyTransformPath)
+        source:      fs.createReadStream(xqyTransformPath),
+        transformParams: {
+          'flag': 'xs:string?',
+          'count': 'xs:integer*'
+        }
         })
       .result(function(response){
         done();
         })
       .catch(done);
     });
+
     it('should read the transform', function(done){
       restAdminDB.config.transforms.read(xqyTransformName)
       .result(function(source){
@@ -51,19 +57,35 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should list the transform', function(done){
       db.config.transforms.list()
       .result(function(response){
         response.should.have.property('transforms');
         response.transforms.should.have.property('transform');
         response.transforms.transform.length.should.be.greaterThan(0);
-        response.transforms.transform.some(function(item){
+
+        const flagTransform = response.transforms.transform.find(function(item){
           return item.name === xqyTransformName;
-          }).should.equal(true);
+        });
+        should.exist(flagTransform);
+        flagTransform.should.have.property('transform-parameters');
+        flagTransform['transform-parameters'].should.have.property('parameter');
+
+        const params = flagTransform['transform-parameters'].parameter;
+        params.should.be.an.Array();
+        params.length.should.equal(2);
+        params.some(function(p){
+          return p['parameter-name'] === 'flag' && p['parameter-type'] === 'xs:string?';
+        }).should.equal(true);
+        params.some(function(p){
+          return p['parameter-name'] === 'count' && p['parameter-type'] === 'xs:integer*';
+        }).should.equal(true);
         done();
-        })
+      })
       .catch(done);
     });
+
     it('should delete the transform', function(done){
       restAdminDB.config.transforms.remove(xqyTransformName)
       .result(function(response){
@@ -83,6 +105,7 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should modify during write', function(done){
       db.documents.write({
         uri: uri,
@@ -100,6 +123,7 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should modify during read', function(done){
       db.documents.read({
         uris: uri,
@@ -112,6 +136,7 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should modify during query', function(done){
       db.documents.query(
           q.where(
@@ -147,6 +172,7 @@ describe('document transform', function(){
       .then(function(response){done();})
       .catch(done);
     });
+
     it('should modify during write', function(done){
       db.documents.write({
         uri: writeUri,
@@ -166,6 +192,7 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should modify during read', function(done){
       db.documents.read({
         uris: readUri,
@@ -180,6 +207,7 @@ describe('document transform', function(){
         })
       .catch(done);
     });
+
     it('should modify during query', function(done){
       db.documents.query(
           q.where(

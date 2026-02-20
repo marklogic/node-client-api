@@ -1,0 +1,27 @@
+{
+  "name": "marklogic-typescript-test-project",
+  "version": "1.0.0",
+  "description": "Test project for validating MarkLogic Node.js Client TypeScript definitions",
+  "private": true,
+  "scripts": {
+    "setup": "npm install .. && npm install",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "start": "node test.js",
+    "test": "npm run build && npm run start"
+  },
+  "keywords": [
+    "marklogic",
+    "typescript",
+    "test"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "marklogic": "file:.."
+  }
+}

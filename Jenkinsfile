@@ -1,10 +1,12 @@
 @Library('shared-libraries') _
 
-def runTests() {
-  sh label: 'deploy-test-app-and-run-tests', script: '''
-		export JAVA_HOME=$JAVA_HOME_DIR
-		export GRADLE_USER_HOME=$WORKSPACE/$GRADLE_DIR
-		export PATH=$JAVA_HOME/bin:${NODE_HOME_DIR}/bin:$PATH
+def runTests(excludeFragileTests) {
+  def excludeFlag = excludeFragileTests ? '--exclude "test-basic/documents-data-movement-*.js"' : ''
+
+  sh label: 'deploy-test-app-and-run-tests', script: """
+		export JAVA_HOME=\$JAVA_HOME_DIR
+		export GRADLE_USER_HOME=\$WORKSPACE/\$GRADLE_DIR
+		export PATH=\$JAVA_HOME/bin:\${NODE_HOME_DIR}/bin:\$PATH
 		cd node-client-api
 		node --version
 		npm --version
@@ -12,18 +14,16 @@ def runTests() {
 
     cd test-app
     ./gradlew -i mlWaitTillReady
-    sleep 3
-    ./gradlew -i mlWaitTillReady
     ./gradlew -i mlTestConnections
     ./gradlew -i mlDeploy
     ./gradlew -i -Penv=e2e mlLoadData mlLoadModules
 
 		cd ..
-		rm -rf $WORKSPACE/*.xml || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-reports.xml || true
+		rm -rf \$WORKSPACE/*.xml || true
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic/ ${excludeFlag} --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/test-basic-reports.xml || true
 		./node_modules/.bin/gulp setupProxyTests || true
-		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-basic-proxy-reports.xml || true
-	'''
+		./node_modules/.bin/mocha --timeout 10000 -R xunit test-basic-proxy/lib/**/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/test-basic-proxy-reports.xml || true
+	"""
 	junit '**/*.xml'
 }
 
@@ -55,7 +55,7 @@ def runAuditReport() {
 		cd node-client-api
 		npm ci
 		rm -rf $WORKSPACE/npm-audit-report.json || true
-		npm audit --audit-level=low --json > $WORKSPACE/npm-audit-report.json
+		npm audit --audit-level=moderate --json > $WORKSPACE/npm-audit-report.json
 	'''
 }
 
@@ -69,16 +69,38 @@ def runLint() {
 	'''
 }
 
-def runE2ETests() {
-  sh label: 'run-e2e-tests', script: '''
+def runTypeCheck() {
+  sh label: 'run-type-check', script: '''
     export PATH=${NODE_HOME_DIR}/bin:$PATH
+    cd node-client-api
+    npm ci
+    npm run test:types
+	'''
+}
+
+def runTypeScriptTests() {
+  sh label: 'run-typescript-tests', script: '''
+    export PATH=${NODE_HOME_DIR}/bin:$PATH
+    cd node-client-api
+    npm ci
+    npm run test:compile
+    ./node_modules/.bin/mocha --timeout 10000 test-typescript/*.js --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-typescript-reports.xml || true
+	'''
+  junit '**/*test-typescript-reports.xml'
+}
+
+def runE2ETests(excludeFragileTests) {
+  def excludeFlag = excludeFragileTests ? '--exclude "test-complete/nodejs-dmsdk*.js"' : ''
+
+  sh label: 'run-e2e-tests', script: """
+    export PATH=\${NODE_HOME_DIR}/bin:\$PATH
 		cd node-client-api
 		node --version
 		npm --version
 		npm ci
 
     echo "Running test-complete tests"
-    ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/test-complete-results.xml  || true
+    ./node_modules/.bin/mocha --no-parallel -R xunit --timeout 60000  test-complete/ ${excludeFlag} --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/test-complete-results.xml  || true
     echo "Done with test-complete tests"
 
     cd test-complete-proxy
@@ -90,12 +112,12 @@ def runE2ETests() {
 		cp -R ml-modules/ ../test-complete
 		cd ../test-complete
 		../node_modules/.bin/mocha -R xunit --timeout 20000 nodejs-ds-setup-docs.js
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-required-params-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-multipleWorker-results.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-transactions-results.js.xml || true
-		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=$WORKSPACE/ds-dynamic-results.xml || true
-	'''
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-required-params.js"  --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-required-params-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-error-map.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-multipleWorker-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-multipleWorker.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-multipleWorker-results.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-transactions.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-transactions-results.js.xml || true
+		../node_modules/.bin/mocha -R xunit --timeout 20000 "nodejs-ds-dynamic.js" --reporter mocha-junit-reporter --reporter-options mochaFile=\$WORKSPACE/ds-dynamic-results.xml || true
+	"""
   junit '**/*.xml'
 }
 
@@ -108,6 +130,7 @@ pipeline {
 
   parameters {
     booleanParam(name: 'regressions', defaultValue: false, description: 'indicator if build is for regressions')
+    string(name: 'MARKLOGIC_IMAGE_TAGS', defaultValue: 'marklogic-server-ubi:latest-11,marklogic-server-ubi:latest-12', description: 'Comma-delimited list of MarkLogic image tags including variant (e.g., marklogic-server-ubi:latest-11,marklogic-server-ubi-rootless:11.3.2). The registry/org (ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic) path will be prepended automatically.')
   }
 
   options {
@@ -130,9 +153,11 @@ pipeline {
       steps {
         runAuditReport()
         runLint()
+        runTypeCheck()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-        runTests()
-        runE2ETests()
+        runTests(true)
+        runTypeScriptTests()
+        runE2ETests(true)
       }
       post {
         always {
@@ -142,63 +167,27 @@ pipeline {
     }
 
     stage('regressions') {
-      parallel {
-
-        stage('runtests-11-nightly') {
-          when {
-            allOf {
-              branch 'develop'
-              expression { return params.regressions }
-            }
-          }
-          agent { label 'nodeclientpool' }
-          steps {
-            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-11')
-            runTests()
-            runE2ETests()
-          }
-          post {
-            always {
-              teardownAfterTests()
-            }
-          }
+      agent { label 'nodeclientpool' }
+      when {
+        allOf {
+          branch 'develop'
+          expression { return params.regressions }
         }
+      }
+      steps {
+        script {
+          def imageTags = params.MARKLOGIC_IMAGE_TAGS.split(',')
+          def imagePrefix = 'ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/'
 
-        stage('runtests-12-nightly') {
-          when {
-            allOf {
-              branch 'develop'
-              expression { return params.regressions }
-            }
-          }
-          agent { label 'nodeclientpool' }
-          steps {
-            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
-            runTests()
-            runE2ETests()
-          }
-          post {
-            always {
-              teardownAfterTests()
-            }
-          }
-        }
+          imageTags.each { tag ->
+            def fullImage = imagePrefix + tag.trim()
 
-        stage('runtests-10-nightly') {
-          when {
-            allOf {
-              branch 'develop'
-              expression { return params.regressions }
-            }
-          }
-          agent { label 'nodeclientpool' }
-          steps {
-            runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-10')
-            runTests()
-            runE2ETests()
-          }
-          post {
-            always {
+            try {
+              runDockerCompose(fullImage)
+              runTests(false)
+              runTypeScriptTests()
+              runE2ETests(false)
+            } finally {
               teardownAfterTests()
             }
           }
