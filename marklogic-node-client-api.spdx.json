@@ -607,9 +607,9 @@
     } ],
     "downloadLocation" : "https://registry.npmjs.org/lodash/-/lodash-4.17.23.tgz"
   }, {
-    "SPDXID" : "SPDXRef-C47:marklogic:4.0.0",
+    "SPDXID" : "SPDXRef-C47:marklogic:4.1.0",
     "name" : "marklogic",
-    "versionInfo" : "4.0.0",
+    "versionInfo" : "4.1.0",
     "copyrightText" : "MarkLogic",
     "checksums" : [ {
       "algorithm" : "MD5",
@@ -624,7 +624,7 @@
       "algorithm" : "SHA512",
       "checksumValue" : "4b2812810df3bad43e41bd78c4bbcc1f0ef8222d956b0361c9e9f1c84077333873a93c9a292913d5ff6a43aa9728351c245901ff9646a71b14f3d5523720b4dc"
     } ],
-    "downloadLocation" : "https://registry.npmjs.org/marklogic/-/marklogic-4.0.0.tgz"
+    "downloadLocation" : "https://registry.npmjs.org/marklogic/-/marklogic-4.1.0.tgz"
   }, {
     "SPDXID" : "SPDXRef-C1:@fastify/busboy:3.2.0",
     "name" : "@fastify/busboy",

@@ -27,7 +27,7 @@ Apache License 2.0:
   Holepunch                 | events-universal     | 1.0.1
   Holepunch                 | text-decoder         | 1.2.3
   Lovell Fuller and others. | detect-libc          | 2.1.2
-  MarkLogic                 | marklogic            | 4.0.0
+  MarkLogic                 | marklogic            | 4.1.0
   Mikeal Rogers             | request/tunnel-agent | 0.6.0
   Paul Connolley (connrs)   | sandwich-stream      | 1.0.0
   The MongoDB NodeJS Team   | node-kerberos        | 2.2.2
@@ -141,7 +141,7 @@ conditions:
 
 Progress MarkLogic Node Client API 4.1.0 incorporates b4a 1.7.3, bare-events
 2.8.1, detect-libc 2.1.2, dominictarr/rc 1.2.8, events-universal 1.0.1,
-marklogic 4.0.0, node-kerberos 2.2.2, request/tunnel-agent 0.6.0,
+marklogic 4.1.0, node-kerberos 2.2.2, request/tunnel-agent 0.6.0,
 sandwich-stream 1.0.0, and text-decoder 1.2.3.
 
   Apache License Version 2.0, January 2004

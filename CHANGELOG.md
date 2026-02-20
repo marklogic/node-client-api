@@ -1,10 +1,16 @@
 # CHANGELOG
 
+## 4.1.0
+
+- Added TypeScript typings for core client/document/connection APIs, with better autocomplete and compile-time checks to catch mistakes earlier.
+- Added support for transform parameters when writing transforms.
+- Performed dependency/security maintenance (including lodash and qs updates).
+
 ## 4.0.0
 
 This major release does not impact any client functionality, but rather raises the minimum required version of Node.js
 to 22 or higher. It also updates all dependencies to their latest version and removes unnecessary dependencies that
-were included in previous releases. 
+were included in previous releases.
 
 ## 3.7.1
 #### Bug Fix
