@@ -13,7 +13,7 @@
     "README.md",
     "NOTICE.txt",
     "LICENSE.txt",
-    "CHANGELOG.txt"
+    "CHANGELOG.md"
   ],
   "scripts": {
     "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
