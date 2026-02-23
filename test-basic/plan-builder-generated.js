@@ -1728,7 +1728,7 @@ describe('plan builder', function() {
             this.skip();
         }
         // AAAAAAMAAAAAAIA/AAAAQAAAQEA= is the ML base64 encoding string of the vector [1,2,3]
-        // Run vec.base64Encode(vec.vector([1,2,3])) in query console to generate 
+        // Run vec.base64Encode(vec.vector([1,2,3])) in query console to generate this encoded value.
         testPlan([p.xs.string("AAAAAAMAAAAAAIA/AAAAQAAAQEA=")],p.vec.base64Decode(p.col("1")))
           .then(function(response) {
             should(String(getResult(response).value)).equal('1,2,3');
