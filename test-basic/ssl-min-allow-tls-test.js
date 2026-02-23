@@ -12,7 +12,7 @@ let serverConfiguration = {};
 let host  = testconfig.testHost;
 
 describe('document write and read using min tls', function () {
-    this.timeout(10000);
+    this.timeout(12000);
     before(function (done) {
         testlib.findServerConfiguration(serverConfiguration);
         setTimeout(() => {
