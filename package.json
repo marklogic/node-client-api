@@ -95,11 +95,13 @@
     "glob": "12.0.0",
     "glob-parent": "6.0.2",
     "markdown-it": "14.1.1",
-    "minimatch": "10.2.2",
+    "minimatch": "10.2.4",
     "semver": "7.5.3",
+    "serialize-javascript": "7.0.4",
     "strip-ansi": "6.0.0",
     "supports-color": "7.2.0",
     "tar-fs": "2.1.4",
+    "underscore": "1.13.8",
     "wrap-ansi": "6.2.0"
   }
 }
