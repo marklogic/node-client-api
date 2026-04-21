@@ -1,4 +1,11 @@
 {
+  "source": {
+    "include": [
+      "lib",
+      "README.md"
+    ],
+    "includePattern": ".+\\.js$"
+  },
   "opts": {
     "destination":          "./doc",
     "template":             "./etc/marklogic-template"

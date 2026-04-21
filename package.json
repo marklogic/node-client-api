@@ -16,7 +16,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
+    "doc": "jsdoc -c jsdoc.json",
     "lint": "gulp lint",
     "pretest:typescript": "npm run test:compile",
     "test:types": "tsc --noEmit",
