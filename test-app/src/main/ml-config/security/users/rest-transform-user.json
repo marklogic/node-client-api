@@ -1,0 +1,4 @@
+{
+  "user-name": "rest-transform-user",
+  "role": ["rest-transform-internal", "rest-reader", "rest-invoke-user"]
+}
