@@ -1,7 +1,10 @@
 {
   "role-name": "rest-evaluator",
   "description": "REST writer who can eval, invoke, or set a dynamic databases",
-  "role": ["rest-writer", "sparql-update-user"],
+  "role": [
+    "rest-writer",
+    "sparql-update-user"
+  ],
   "privilege": [
     {
       "privilege-name": "xdmp-eval",

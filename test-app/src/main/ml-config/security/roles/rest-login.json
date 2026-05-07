@@ -1,5 +1,5 @@
 {
-  "role-name": "rest-invoke-user",
+  "role-name": "rest-login",
   "description": "Role granting xdmp:login privilege needed for REST transform invocations with different-transaction isolation",
   "privilege": [
     {

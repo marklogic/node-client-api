@@ -2,5 +2,9 @@
   "user-name": "rest-reader",
   "description": "rest-reader user",
   "password": "x",
-  "role": ["rest-reader", "rest-extension-user", "rest-invoke-user"]
+  "role": [
+    "rest-reader",
+    "rest-extension-user",
+    "rest-login"
+  ]
 }
