@@ -6,7 +6,8 @@
  * Integration test for cts.param support in Optic plan builder (MLE-27883).
  * 
  * This test requires a running MarkLogic server with:
- * - A "manager" collection with sample documents
+ * - Documents in the /optic/test collection
+ * - TDE views under the opticUnitTest schema, including master and musician
  * - Connection configured via testconfig or environment
  * 
  * Run with: npx mocha test-basic/optic-cts-param-test.js
