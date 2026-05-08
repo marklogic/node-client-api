@@ -68,7 +68,11 @@ describe('cts.param integration tests (MLE-27883)', function() {
       // Verify cts.param is present with correct namespace
       should(serialized).containEql('"param"');
       should(serialized).containEql('"cts"');
-      should(serialized).not.containEql('collection-query.*"ns":"op"');
+      // Traverse the exported plan to verify collection-query uses ns:"cts"
+      const whereClause = exported.$optic.args.find(a => a.fn === 'where');
+      should.exist(whereClause, 'plan should have a where clause');
+      should(whereClause.args[0].ns).equal('cts', 'collection-query should use ns:"cts"');
+      should(whereClause.args[0].fn).equal('collection-query');
     });
 
     it('should execute query with collection parameter binding', function() {
@@ -218,28 +222,21 @@ describe('cts.param integration tests (MLE-27883)', function() {
         .select(['id', 'name']);
       
       const exported = plan.export();
-      const serialized = JSON.stringify(exported);
       
-      // Find the param node and verify namespace
-      const lines = serialized.split('\n');
-      let foundCtsParam = false;
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes('"fn":"param"')) {
-          // Check preceding and following lines for ns
-          const contextStart = Math.max(0, i - 5);
-          const contextEnd = Math.min(lines.length, i + 5);
-          const context = lines.slice(contextStart, contextEnd).join('\n');
-          
-          if (context.includes('"ns":"cts"')) {
-            foundCtsParam = true;
-            // Ensure it's not op.param
-            should(context).not.containEql('"ns":"op".*"fn":"param"');
-            break;
-          }
+      // Traverse the exported plan to find the param node and verify its namespace
+      function findNode(obj, fnName) {
+        if (!obj || typeof obj !== 'object') { return null; }
+        if (obj.fn === fnName) { return obj; }
+        for (const val of Object.values(obj)) {
+          const found = findNode(val, fnName);
+          if (found) { return found; }
         }
+        return null;
       }
       
-      should(foundCtsParam).equal(true, 'should find cts.param with ns:"cts"');
+      const paramNode = findNode(exported, 'param');
+      should.exist(paramNode, 'should find a param node in the exported plan');
+      should(paramNode.ns).equal('cts', 'param node should use ns:"cts" not ns:"op"');
     });
 
   });
