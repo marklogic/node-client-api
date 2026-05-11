@@ -20,6 +20,8 @@ let uris = [];
 let serverConfiguration = {};
 
 describe('optic-update fromDocs tests', function() {
+    // NOTE: op.fromDocs() with op.columnBuilder() is only supported in MarkLogic 12.1.0 and later.
+    // Tests in this suite are skipped automatically on earlier versions.
 
     this.timeout(15000);
     before(function (done) {
@@ -34,6 +36,10 @@ describe('optic-update fromDocs tests', function() {
     describe('fromDocs', function () {
 
         before(function (done) {
+            if (serverConfiguration.serverVersion < 12.1) {
+                this.skip();
+                return;
+            }
             // Insert test documents
             const testDocs = [
                 {
@@ -73,7 +79,7 @@ describe('optic-update fromDocs tests', function() {
                     }
                 },
                 {
-                    // we already have a geospatial element index for 'point' in wgs84 
+                    // we already have a geospatial element index for 'point' in wgs84
                     // in the test-app ml-gradle project. Use that.  Use 'point' to indicate location.
                     uri: '/test/fromDocs/location-portland.json',
                     contentType: 'application/json',
@@ -127,14 +133,14 @@ describe('optic-update fromDocs tests', function() {
                     }
                 }
             ];
-            
+
             let readable = new Stream.Readable({objectMode: true});
             testDocs.forEach(doc => {
                 readable.push(doc);
                 uris.push(doc.uri);
             });
             readable.push(null);
-            
+
             db.documents.writeAll(readable, {
                 onCompletion: () => done()
             });
@@ -252,7 +258,7 @@ describe('optic-update fromDocs tests', function() {
 
             const portlandPoint = op.cts.point(45.52, -122.68);
             const searchRadius = 650; // miles
-            // geospatial element index is defined for 'point' in wgs84 
+            // geospatial element index is defined for 'point' in wgs84
             const plan = op.fromDocs(
                     op.cts.collectionQuery('fromDocs'),
                     '/location',
@@ -270,7 +276,7 @@ describe('optic-update fromDocs tests', function() {
                         ['coordinate-system=wgs84']
                     )
                 );
-            
+
             execPlan(plan).then(function (response) {
                 const output = getResults(response);
                 output.length.should.be.equal(3);

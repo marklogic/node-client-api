@@ -1,6 +1,6 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
-*/
+ * Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+ */
 var fs     = require('fs');
 const path = require('path');
 
@@ -143,6 +143,7 @@ describe('readAll-tests-one', function () {
         function (err, arr) {
             if (err) {
                 done(err);
+                return;
             }
             arr.forEach(item => {
                 setTimeout(() => {
@@ -158,8 +159,8 @@ describe('readAll-tests-one', function () {
             for (var c of resulContents) {
                 expect(verifyCurrentContents(c)).to.be.true;
             }
+            done();
         });
-        done();
     });
 
     it('readAll one document with batch options', function (done) {
@@ -173,6 +174,7 @@ describe('readAll-tests-one', function () {
         function (err, arr) {
             if (err) {
                 done(err);
+                return;
             }
             arr.forEach(item => {
                 setTimeout(() => {
@@ -180,8 +182,8 @@ describe('readAll-tests-one', function () {
                 }, 3000);
                 expect(item.uri).to.equal('dmsdk.txt');
             });
+            done();
         });
-        done();
     });
 
     //Verify no errors when readAll has no Uris to read

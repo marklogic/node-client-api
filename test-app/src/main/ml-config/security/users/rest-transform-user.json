@@ -1,0 +1,10 @@
+{
+  "user-name": "rest-transform-user",
+  "description": "rest-transform-user user",
+  "password": "x",
+  "role": [
+    "rest-transform-internal",
+    "rest-reader",
+    "rest-login"
+  ]
+}

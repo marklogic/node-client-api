@@ -1,0 +1,11 @@
+{
+  "role-name": "rest-login",
+  "description": "Role granting xdmp:login privilege needed for REST transform invocations with different-transaction isolation",
+  "privilege": [
+    {
+      "privilege-name": "xdmp-login",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-login",
+      "kind": "execute"
+    }
+  ]
+}

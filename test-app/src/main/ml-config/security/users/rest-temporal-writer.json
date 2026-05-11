@@ -3,6 +3,7 @@
   "description": "rest-writer user with temporal privileges",
   "password": "x",
   "role": [
-    "rest-temporal-writer"
+    "rest-temporal-writer",
+    "rest-extension-user"
   ]
 }

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var should = require('should');
 var fs = require('fs');
@@ -73,9 +73,11 @@ describe('Transform test with javascript', function () {
             result(function (response) {
                 //console.log(JSON.stringify(response, null, 4));
                 response[0].content.should.have.property('timestamp');
-                response[0].content.userName.should.equal('rest-reader');
+                response[0].content.userName.should.equal('rest-transform-user',
+                    'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
                 done();
-            }, done);
+            })
+            .catch(done);
     });
 
     it('should  query', function (done) {
@@ -130,9 +132,11 @@ describe('Transform test with javascript', function () {
             result(function (response) {
                 //console.log(JSON.stringify(response, null, 4));
                 response[0].content.should.have.property('timestamp');
-                response[0].content.userName.should.equal('rest-reader');
+                response[0].content.userName.should.equal('rest-transform-user',
+                    'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
                 done();
-            }, done);
+            })
+            .catch(done);
     });
     /*it('should modify during write', function(done){
     dbWriter.documents.write({
