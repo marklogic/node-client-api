@@ -308,4 +308,185 @@ describe('search', function() {
       }).catch(error => done(error));
     });
   });
+
+  describe('fragment option tests for fromSearch', function() {
+    const setupXquery = `
+      xquery version "1.0-ml";
+      let $jsondoc1 := object-node {"AllDataTypes": array-node {object-node {"word":"dog"}, object-node {"rank":1}, object-node {"score":4}}}
+      let $jsondoc2 := object-node {"AllDataTypes": array-node {object-node {"word":"cat"}, object-node {"rank":2}, object-node {"score":5}}}
+      let $jsondoc3 := object-node {"AllDataTypes": array-node {object-node {"word":"duck"}, object-node {"rank":3}, object-node {"score":6}}}
+      return (
+        xdmp:document-insert("range-prop-1.json", $jsondoc1, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
+        xdmp:document-insert("range-prop-2.json", $jsondoc2, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
+        xdmp:document-insert("range-prop-3.json", $jsondoc3, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
+        xdmp:document-set-properties("range-prop-1.json", (<my-prop>opticfragmentpropvalue</my-prop>)),
+        xdmp:lock-acquire("range-prop-1.json", "exclusive", "0", "dog rose",  xs:unsignedLong(120)),
+        xdmp:lock-acquire("range-prop-2.json", "exclusive", "0", "cat tulip", xs:unsignedLong(120)),
+        xdmp:lock-acquire("range-prop-3.json", "exclusive", "0", "duck lily", xs:unsignedLong(120))
+      )
+    `;
+
+    const teardownReleaseLocks = `
+      xquery version "1.0-ml";
+      (
+        xdmp:lock-release("range-prop-1.json"),
+        xdmp:lock-release("range-prop-2.json"),
+        xdmp:lock-release("range-prop-3.json")
+      )
+    `;
+
+    const teardownDeleteDocs = `
+      xquery version "1.0-ml";
+      (
+        xdmp:document-delete("range-prop-1.json"),
+        xdmp:document-delete("range-prop-2.json"),
+        xdmp:document-delete("range-prop-3.json")
+      )
+    `;
+
+    before(function(done) {
+      if (serverConfiguration.serverVersion < 12.1) {
+        this.skip();
+      }
+      pbb.dbWriter.xqueryEval(setupXquery).result()
+        .then(() => done())
+        .catch(done);
+    });
+
+    after(function(done) {
+      pbb.dbWriter.xqueryEval(teardownReleaseLocks).result()
+        .then(() => pbb.dbWriter.xqueryEval(teardownDeleteDocs).result())
+        .then(() => done())
+        .catch(done);
+    });
+
+    // TC0: No fragment option — default behavior searches document content (same as fragment:'document')
+    it('TC0: fromSearch without fragment option should search document content by default', function(done) {
+      execPlan(
+        p.fromSearch(
+          p.cts.wordQuery('dog')
+        )
+        .joinDocAndUri('doc', 'uri', p.fragmentIdCol('fragmentId'))
+        .orderBy('uri')
+        .select(['uri', 'doc'])
+      ).then(function(response) {
+        const output = getResults(response);
+        assert(output.length === 1, 'Expected exactly 1 document containing "dog" with default fragment');
+        assert(output[0].uri.value === 'range-prop-1.json', 'Expected range-prop-1.json');
+        assert(output[0].doc.type === 'object', 'Expected default fragment to return JSON document');
+        assert(output[0].doc.value.AllDataTypes[0].word === 'dog', 'Expected word "dog" in document content');
+        done();
+      }).catch(done);
+    });
+
+    // TC0b: Invalid fragment value → client-side error (no server call needed)
+    it('TC0b: should throw error for invalid fragment value', function() {
+      assert.throws(function() {
+        p.fromSearch(
+          p.cts.wordQuery('dog'), null, null, { fragment: 'unknown' }
+        );
+      }, /fragment can only be/);
+    });
+
+    // TC1: fragment:'locks' — doc joined from locks fragment must be XML containing 'lock-type'
+    it('TC1: fromSearch with fragment:locks should find documents by lock token', function(done) {
+      execPlan(
+        p.fromSearch(
+          p.cts.locksFragmentQuery(p.cts.wordQuery('dog')),
+          null, null, { fragment: 'locks' }
+        )
+        .joinDocAndUri('doc', 'uri', p.fragmentIdCol('fragmentId'))
+        .orderBy('uri')
+        .select(['uri', 'doc'])
+      ).then(function(response) {
+        const output = getResults(response);
+        assert(output.length === 1, 'Expected exactly 1 result from locks fragment');
+        assert(output[0].uri.value === 'range-prop-1.json', 'Expected range-prop-1.json');
+        assert(output[0].doc.type === 'element', 'Expected lock doc to be XML element');
+        assert(output[0].doc.value.includes('lock-type'), 'Expected lock-type element in lock document');
+        done();
+      }).catch(done);
+    });
+
+    // TC2: fragment:'properties' — doc joined from properties fragment must be XML containing the property value
+    it('TC2: fromSearch with fragment:properties should find doc by its properties', function(done) {
+      execPlan(
+        p.fromSearch(
+          p.cts.wordQuery('opticfragmentpropvalue'),
+          null, null, { fragment: 'properties' }
+        )
+        .joinDocAndUri('doc', 'uri', p.fragmentIdCol('fragmentId'))
+        .orderBy('uri')
+        .select(['uri', 'doc'])
+      ).then(function(response) {
+        const output = getResults(response);
+        assert(output.length === 1, 'Expected exactly 1 result from properties fragment');
+        assert(output[0].uri.value === 'range-prop-1.json', 'Expected range-prop-1.json');
+        assert(output[0].doc.type === 'element', 'Expected properties doc to be XML element');
+        assert(output[0].doc.value.includes('opticfragmentpropvalue'), 'Expected property value in properties document');
+        done();
+      }).catch(done);
+    });
+
+    // TC3: fragment:'any' — returns all fragment types; verify both XML (lock/properties) and JSON (document) rows present
+    it('TC3: fromSearch with fragment:any should return results across fragment types', function(done) {
+      execPlan(
+        p.fromSearch(
+          p.cts.locksFragmentQuery(p.cts.wordQuery('dog')),
+          null, null, { fragment: 'any' }
+        )
+        .joinDocAndUri('doc', 'uri', p.fragmentIdCol('fragmentId'))
+        .orderBy('uri')
+        .select(['uri', 'doc'])
+      ).then(function(response) {
+        const output = getResults(response);
+        assert(output.length > 1, 'Expected multiple rows (all fragment types) with fragment:any');
+        const types = output.map(row => row.doc.type);
+        assert(types.includes('element'), 'Expected at least one XML fragment (lock or properties)');
+        assert(types.includes('object'), 'Expected at least one JSON document fragment');
+        done();
+      }).catch(done);
+    });
+
+    // TC4: fragment:'document' — doc must be JSON containing the word 'dog'
+    it('TC4: fromSearch with fragment:document should find documents by content word', function(done) {
+      execPlan(
+        p.fromSearch(
+          p.cts.wordQuery('dog'),
+          null, null, { fragment: 'document' }
+        )
+        .joinDocAndUri('doc', 'uri', p.fragmentIdCol('fragmentId'))
+        .orderBy('uri')
+        .select(['uri', 'doc'])
+      ).then(function(response) {
+        const output = getResults(response);
+        assert(output.length === 1, 'Expected exactly 1 document containing "dog"');
+        assert(output[0].uri.value === 'range-prop-1.json', 'Expected range-prop-1.json');
+        assert(output[0].doc.type === 'object', 'Expected document fragment to be JSON');
+        assert(output[0].doc.value.AllDataTypes[0].word === 'dog', 'Expected word "dog" in document content');
+        done();
+      }).catch(done);
+    });
+
+    // TC5: explain() on a locks fragment plan should return a valid execution plan structure.
+    // Note: the server-side equivalent (TEST26) additionally exercises plan:parse()/plan:execute()
+    // on the explain output, but the Node client has no equivalent of those functions.
+    it('TC5: explain() on a locks fragment plan should return a valid plan structure', function(done) {
+      const plan = p.fromSearch(
+        p.cts.locksFragmentQuery(p.cts.wordQuery('dog')),
+        null, null, { fragment: 'locks' }
+      )
+      .joinDocAndUri('doc', 'uri', p.fragmentIdCol('fragmentId'))
+      .orderBy('uri')
+      .select(['uri', 'doc']);
+
+      pbb.explainPlan(plan)
+        .then(function(output) {
+          assert(output.node === 'plan', 'Expected explain output to have node:"plan"');
+          assert(output.expr != null, 'Expected expr to be present in explain output');
+          done();
+        })
+        .catch(done);
+    });
+  });
 });
