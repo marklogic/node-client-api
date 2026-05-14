@@ -488,5 +488,25 @@ describe('search', function() {
         })
         .catch(done);
     });
+
+    // TC6: fromSearchDocs with fragment:'locks' — confirms fromSearchDocs honors the fragment option (MLS 12.1+)
+    it('TC6: fromSearchDocs with fragment:locks should find documents by lock token', function(done) {
+      execPlan(
+        p.fromSearchDocs(
+          p.cts.locksFragmentQuery(p.cts.wordQuery('dog')),
+          null,
+          { fragment: 'locks' }
+        )
+        .orderBy('uri')
+        .select(['uri', 'doc'])
+      ).then(function(response) {
+        const output = getResults(response);
+        assert(output.length === 1, 'Expected exactly 1 result from fromSearchDocs with fragment:locks');
+        assert(output[0].uri.value === 'range-prop-1.json', 'Expected range-prop-1.json');
+        assert(output[0].doc.type === 'element', 'Expected lock doc to be XML element');
+        assert(output[0].doc.value.includes('lock-type'), 'Expected lock-type element in lock document');
+        done();
+      }).catch(done);
+    });
   });
 });
