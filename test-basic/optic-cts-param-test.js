@@ -18,6 +18,8 @@ const valcheck = require('core-util-is');
 
 const testconfig = require('../etc/test-config.js');
 const marklogic = require('../');
+const testlib = require('../etc/test-lib');
+let serverConfiguration = {};
 
 // Allow overriding connection info via environment or direct config
 const connInfo = {
@@ -34,6 +36,21 @@ const op = marklogic.planBuilder;
 
 describe('cts.param integration tests (MLE-27883)', function() {
   this.timeout(10000); // Allow 10 seconds for server queries
+
+  before(function(done) {
+    try {
+      testlib.findServerConfiguration(serverConfiguration);
+      setTimeout(() => { done(); }, 3000);
+    } catch(error) {
+      done(error);
+    }
+  });
+
+  before(function() {
+    if (serverConfiguration.serverVersion < 12.1) {
+      this.skip();
+    }
+  });
 
   // ──────────────────────────────────────────────────────────────────────────────
   // Test: collectionQuery with cts.param binding
