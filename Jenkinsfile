@@ -125,7 +125,7 @@ pipeline {
   agent none
 
   triggers {
-    parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
+    parameterizedCron(env.BRANCH_NAME == "develop" ? "00 05 * * * % regressions=true" : "")
   }
 
   parameters {
