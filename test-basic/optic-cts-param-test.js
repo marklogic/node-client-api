@@ -21,17 +21,7 @@ const marklogic = require('../');
 const testlib = require('../etc/test-lib');
 let serverConfiguration = {};
 
-// Allow overriding connection info via environment or direct config
-const connInfo = {
-  host: process.env.ML_TEST_HOST || testconfig.testHost || 'localhost',
-  port: process.env.ML_TEST_PORT || 8000,
-  database: process.env.ML_TEST_DATABASE || 'Documents',
-  authType: process.env.ML_TEST_AUTH_TYPE || 'digest',
-  user: process.env.ML_TEST_USER || testconfig.restWriterConnection.user,
-  password: process.env.ML_TEST_PASSWORD || testconfig.restWriterConnection.password,
-};
-
-const db = marklogic.createDatabaseClient(connInfo);
+const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 const op = marklogic.planBuilder;
 
 describe('cts.param integration tests (MLE-27883)', function() {
