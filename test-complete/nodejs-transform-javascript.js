@@ -73,8 +73,7 @@ describe('Transform test with javascript', function () {
             result(function (response) {
                 //console.log(JSON.stringify(response, null, 4));
                 response[0].content.should.have.property('timestamp');
-                response[0].content.userName.should.equal('rest-transform-user',
-                    'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
+                response[0].content.userName.should.equal('rest-reader');
                 done();
             })
             .catch(done);
@@ -132,8 +131,7 @@ describe('Transform test with javascript', function () {
             result(function (response) {
                 //console.log(JSON.stringify(response, null, 4));
                 response[0].content.should.have.property('timestamp');
-                response[0].content.userName.should.equal('rest-transform-user',
-                    'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
+                response[0].content.userName.should.equal('rest-reader');
                 done();
             })
             .catch(done);

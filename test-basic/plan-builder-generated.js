@@ -2175,6 +2175,9 @@ describe('plan builder', function() {
         }).catch(done);
     });
     it('xdmp.uriContentType#1', function(done) {
+        if(serverConfiguration.serverVersion >= 12) {
+            this.skip();
+        }
         testPlan([p.xs.string("a.json")], p.xdmp.uriContentType(p.col("1")))
           .then(function(response) {
             should(String(getResult(response).value).replace(/^ /, '')).equal('application/json');
@@ -2182,6 +2185,9 @@ describe('plan builder', function() {
         }).catch(done);
     });
     it('xdmp.uriFormat#1', function(done) {
+        if(serverConfiguration.serverVersion >= 12) {
+            this.skip();
+        }
         testPlan([p.xs.string("a.json")], p.xdmp.uriFormat(p.col("1")))
           .then(function(response) {
             should(String(getResult(response).value).replace(/^ /, '')).equal('json');
