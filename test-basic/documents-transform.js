@@ -187,8 +187,7 @@ describe('document transform', function(){
         documents.length.should.equal(1);
         documents[0].content.should.have.property('timestamp');
         documents[0].content.should.have.property('userName');
-        documents[0].content.userName.should.eql('rest-transform-user',
-          'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
+        documents[0].content.userName.should.eql('rest-writer');
         done();
         })
       .catch(done);
@@ -203,8 +202,7 @@ describe('document transform', function(){
         documents.length.should.equal(1);
         documents[0].content.should.have.property('timestamp');
         documents[0].content.should.have.property('userName');
-        documents[0].content.userName.should.eql('rest-transform-user',
-          'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
+        documents[0].content.userName.should.eql('rest-writer');
         done();
         })
       .catch(done);
@@ -223,8 +221,7 @@ describe('document transform', function(){
           documents.length.should.equal(1);
           documents[0].content.should.have.property('timestamp');
           documents[0].content.should.have.property('userName');
-          documents[0].content.userName.should.eql('rest-transform-user',
-            'As of MarkLogic 11.3.5 and 12.0.2 JavaScript transforms execute as the dedicated rest-transform-user rather than the calling user\'s identity, preventing privilege escalation via malicious transforms');
+          documents[0].content.userName.should.eql('rest-writer');
           done();
           })
         .catch(done);
