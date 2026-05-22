@@ -56,7 +56,7 @@ tasks.register("curlPeople", Exec) {
     '-X', 'POST',
     '--data-binary', '@./src/main/turtle/people/people.ttl',
     '-H', 'Content-type: text/turtle',
-    'http://localhost:8079/v1/graphs?graph=/people'
+    "http://${mlHost}:8079/v1/graphs?graph=/people"
   ]
 }
 
@@ -69,7 +69,7 @@ tasks.register("curlCompanies", Exec) {
     '-X', 'POST',
     '--data-binary', '@./src/main/turtle/companies/companies_100.ttl',
     '-H', 'Content-type: text/turtle',
-    'http://localhost:8079/v1/graphs?graph=/optic/sparql/test/companies.ttl'
+    "http://${mlHost}:8079/v1/graphs?graph=/optic/sparql/test/companies.ttl"
   ]
 }
 

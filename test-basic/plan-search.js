@@ -320,18 +320,18 @@ describe('search', function() {
         xdmp:document-insert("range-prop-2.json", $jsondoc2, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
         xdmp:document-insert("range-prop-3.json", $jsondoc3, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
         xdmp:document-set-properties("range-prop-1.json", (<my-prop>opticfragmentpropvalue</my-prop>)),
-        xdmp:lock-acquire("range-prop-1.json", "exclusive", "0", "dog rose",  xs:unsignedLong(120)),
-        xdmp:lock-acquire("range-prop-2.json", "exclusive", "0", "cat tulip", xs:unsignedLong(120)),
-        xdmp:lock-acquire("range-prop-3.json", "exclusive", "0", "duck lily", xs:unsignedLong(120))
+        xdmp:lock-acquire("range-prop-1.json", "exclusive", "0", "dog rose",  xs:unsignedLong(600)),
+        xdmp:lock-acquire("range-prop-2.json", "exclusive", "0", "cat tulip", xs:unsignedLong(600)),
+        xdmp:lock-acquire("range-prop-3.json", "exclusive", "0", "duck lily", xs:unsignedLong(600))
       )
     `;
 
     const teardownReleaseLocks = `
       xquery version "1.0-ml";
       (
-        xdmp:lock-release("range-prop-1.json"),
-        xdmp:lock-release("range-prop-2.json"),
-        xdmp:lock-release("range-prop-3.json")
+        try { xdmp:lock-release("range-prop-1.json") } catch ($e) { () },
+        try { xdmp:lock-release("range-prop-2.json") } catch ($e) { () },
+        try { xdmp:lock-release("range-prop-3.json") } catch ($e) { () }
       )
     `;
 
