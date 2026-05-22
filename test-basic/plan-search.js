@@ -320,7 +320,7 @@ describe('search', function() {
         xdmp:document-insert("range-prop-2.json", $jsondoc2, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
         xdmp:document-insert("range-prop-3.json", $jsondoc3, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
         xdmp:document-set-properties("range-prop-1.json", (<my-prop>opticfragmentpropvalue</my-prop>)),
-        (: 600s required for CI pipelines where after-hook may run well after setup :)
+        (: 300s required for CI pipelines where after-hook may run well after setup :)
         xdmp:lock-acquire("range-prop-1.json", "exclusive", "0", "dog rose",  xs:unsignedLong(300)),
         xdmp:lock-acquire("range-prop-2.json", "exclusive", "0", "cat tulip", xs:unsignedLong(300)),
         xdmp:lock-acquire("range-prop-3.json", "exclusive", "0", "duck lily", xs:unsignedLong(300))
