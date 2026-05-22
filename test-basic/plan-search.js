@@ -320,27 +320,28 @@ describe('search', function() {
         xdmp:document-insert("range-prop-2.json", $jsondoc2, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
         xdmp:document-insert("range-prop-3.json", $jsondoc3, xdmp:default-permissions(), ("elemCol","jsondoc-range")),
         xdmp:document-set-properties("range-prop-1.json", (<my-prop>opticfragmentpropvalue</my-prop>)),
-        xdmp:lock-acquire("range-prop-1.json", "exclusive", "0", "dog rose",  xs:unsignedLong(600)),
-        xdmp:lock-acquire("range-prop-2.json", "exclusive", "0", "cat tulip", xs:unsignedLong(600)),
-        xdmp:lock-acquire("range-prop-3.json", "exclusive", "0", "duck lily", xs:unsignedLong(600))
+        (: 600s required for CI pipelines where after-hook may run well after setup :)
+        xdmp:lock-acquire("range-prop-1.json", "exclusive", "0", "dog rose",  xs:unsignedLong(300)),
+        xdmp:lock-acquire("range-prop-2.json", "exclusive", "0", "cat tulip", xs:unsignedLong(300)),
+        xdmp:lock-acquire("range-prop-3.json", "exclusive", "0", "duck lily", xs:unsignedLong(300))
       )
     `;
 
     const teardownReleaseLocks = `
       xquery version "1.0-ml";
       (
-        try { xdmp:lock-release("range-prop-1.json") } catch ($e) { () },
-        try { xdmp:lock-release("range-prop-2.json") } catch ($e) { () },
-        try { xdmp:lock-release("range-prop-3.json") } catch ($e) { () }
+        try { xdmp:lock-release("range-prop-1.json") } catch ($e) { if ($e/error:code = "XDMP-NOTLOCKED") then () else xdmp:rethrow() },
+        try { xdmp:lock-release("range-prop-2.json") } catch ($e) { if ($e/error:code = "XDMP-NOTLOCKED") then () else xdmp:rethrow() },
+        try { xdmp:lock-release("range-prop-3.json") } catch ($e) { if ($e/error:code = "XDMP-NOTLOCKED") then () else xdmp:rethrow() }
       )
     `;
 
     const teardownDeleteDocs = `
       xquery version "1.0-ml";
       (
-        xdmp:document-delete("range-prop-1.json"),
-        xdmp:document-delete("range-prop-2.json"),
-        xdmp:document-delete("range-prop-3.json")
+        try { xdmp:document-delete("range-prop-1.json") } catch ($e) { if ($e/error:code = "XDMP-DOCNOTFOUND") then () else xdmp:rethrow() },
+        try { xdmp:document-delete("range-prop-2.json") } catch ($e) { if ($e/error:code = "XDMP-DOCNOTFOUND") then () else xdmp:rethrow() },
+        try { xdmp:document-delete("range-prop-3.json") } catch ($e) { if ($e/error:code = "XDMP-DOCNOTFOUND") then () else xdmp:rethrow() }
       )
     `;
 
