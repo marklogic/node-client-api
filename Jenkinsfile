@@ -55,7 +55,7 @@ def runAuditReport() {
 		cd node-client-api
 		npm ci
 		rm -rf $WORKSPACE/npm-audit-report.json || true
-		npm audit --audit-level=moderate --json > $WORKSPACE/npm-audit-report.json
+		npm audit --audit-level=moderate --json > $WORKSPACE/npm-audit-report.json || true
 	'''
 }
 
@@ -151,8 +151,8 @@ pipeline {
     stage('pull-request-tests') {
       agent { label 'nodeclientpool' }
       steps {
-        // Skipping runAuditReport() for now, as Harness Artifact Repository does not currently support `npm audit`.
-        // runAuditReport()
+        // npm audit is non-blocking; Harness Artifact Repository does not currently support it so failures are ignored.
+        runAuditReport()
         runLint()
         runTypeCheck()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
