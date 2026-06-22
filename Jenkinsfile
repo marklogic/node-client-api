@@ -151,7 +151,8 @@ pipeline {
     stage('pull-request-tests') {
       agent { label 'nodeclientpool' }
       steps {
-        runAuditReport()
+        // Skipping runAuditReport() for now, as Harness Artifact Repository does not currently support `npm audit`.
+        // runAuditReport()
         runLint()
         runTypeCheck()
         runDockerCompose('ml-docker-db-dev-tierpoint.bed-artifactory.bedford.progress.com/marklogic/marklogic-server-ubi:latest-12')
