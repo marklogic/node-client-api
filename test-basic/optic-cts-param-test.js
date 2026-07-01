@@ -189,6 +189,30 @@ describe('cts.param integration tests', function() {
       should(serialized).containEql('"param"');
     });
 
+    it('should return musician1 and musician4 (trumpet) but not musician2 or musician3 for wordQuery with cts.param', function() {
+      const plan = op.fromSearchDocs(op.cts.wordQuery(op.cts.param('searchWord')))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, {
+        bindings: {
+          searchWord: { value: 'trumpet', type: 'string' }
+        }
+      })
+      .then(function(response) {
+        should.exist(response, 'response should exist');
+        response.should.have.property('rows');
+        const rows = response.rows;
+        rows.length.should.be.above(0);
+
+        const uris = rows.map(row => row['uri'].value || row['uri']);
+
+        uris.should.containEql('/optic/test/musician1.json');
+        uris.should.containEql('/optic/test/musician4.json');
+        uris.should.not.containEql('/optic/test/musician2.json');
+        uris.should.not.containEql('/optic/test/musician3.json');
+      });
+    });
+
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
