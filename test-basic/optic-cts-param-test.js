@@ -255,11 +255,9 @@ describe('cts.param integration tests', function() {
   // cts.param() as direct sub-query of composite CTS functions
   // ──────────────────────────────────────────────────────────────────────────────
 
-  describe('cts.param() as direct child of orQuery/andQuery', function() {
+  describe('cts.param() as direct child of orQuery', function() {
 
-    it('orQuery with cts.param sub-query is accepted by the server', function() {
-      // The string binding for a cts.param inside orQuery is handled by the server;
-      // whether rows are returned depends on test data in the environment.
+    it('orQuery with cts.param bound to string is accepted by the server', function() {
       const plan = op
         .fromSearchDocs(op.cts.orQuery([
           op.cts.wordQuery('saxophone'),
@@ -300,7 +298,7 @@ describe('cts.param integration tests', function() {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
-  // Plan#bindParam with CtsQuery literal
+  // Param binding with CtsQuery literal
   // ──────────────────────────────────────────────────────────────────────────────
 
   describe('CtsQuery binding via options.bindings (second arg)', function() {
@@ -364,18 +362,16 @@ describe('cts.param integration tests', function() {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
-  // op.param() bound to CtsQuery at runtime (third arg)
+  // op.param() bound to CtsQuery at runtime via bindingArg (third arg)
   //
   // The Node.js pattern: pass the CTS query as the third arg of db.rows.query.
-  // rows.js intercepts plan-builder objects in the third arg and embeds them in
-  // the plan via bindParam before sending, so the server sees them as plan literals.
+  // rows.js intercepts plan-builder objects in the third arg and substitutes them
+  // into the exported plan JSON via substitutePlanParam before sending, so the server sees them as plan literals.
   // ──────────────────────────────────────────────────────────────────────────────
 
-  describe('op.param() bound to CtsQuery at runtime via third arg', function() {
+  describe('op.param() bound to CtsQuery at runtime via bindingArg (third arg)', function() {
 
     it('fromSearchDocs(op.param("q")) with CtsQuery binding is accepted by the server', function() {
-      // rows.js embeds the wordQuery into the plan via bindParam; the server executes
-      // the bound plan.  Whether rows come back depends on test data in the environment.
       const plan = op
         .fromSearchDocs(op.param('q'))
         .select(['uri', 'doc']);
