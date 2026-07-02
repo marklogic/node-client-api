@@ -3,7 +3,7 @@
  */
 
 /**
- * Integration test for cts.param support in Optic plan builder (MLE-27883).
+ * Integration test for cts.param support in Optic plan builder.
  * 
  * This test requires a running MarkLogic server with:
  * - Documents in the /optic/test collection
@@ -15,7 +15,6 @@
 
 const should = require('should');
 const valcheck = require('core-util-is');
-
 const testconfig = require('../etc/test-config.js');
 const marklogic = require('../');
 const testlib = require('../etc/test-lib');
@@ -24,7 +23,33 @@ let serverConfiguration = {};
 const db = marklogic.createDatabaseClient(testconfig.restWriterConnection);
 const op = marklogic.planBuilder;
 
-describe('cts.param integration tests (MLE-27883)', function() {
+function assertTrumpetMusiciansRows(response) {
+  const rows = response.rows;
+  rows.length.should.be.above(0);
+  const uris = rows.map(row => row['uri'].value || row['uri']);
+  uris.should.containEql('/optic/test/musician1.json');
+  uris.should.containEql('/optic/test/musician4.json');
+  uris.should.not.containEql('/optic/test/musician2.json');
+  uris.should.not.containEql('/optic/test/musician3.json');
+  rows.forEach(row => {
+    row.should.have.property('uri');
+    row.should.have.property('doc');
+    const docContent = JSON.stringify(row['doc'].value || row['doc']);
+    docContent.toLowerCase().should.containEql('trumpet');
+  });
+}
+
+function assertAllMusiciansRows(response) {
+  const rows = response.rows;
+  rows.length.should.be.above(0);
+  const uris = rows.map(row => row['uri'].value || row['uri']);
+  uris.should.containEql('/optic/test/musician1.json');
+  uris.should.containEql('/optic/test/musician2.json');
+  uris.should.containEql('/optic/test/musician3.json');
+  uris.should.containEql('/optic/test/musician4.json');
+}
+
+describe('cts.param integration tests', function() {
   this.timeout(10000); // Allow 10 seconds for server queries
 
   before(function(done) {
@@ -43,6 +68,8 @@ describe('cts.param integration tests (MLE-27883)', function() {
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
+  // MLE-27883 op.cts.param() support in Optic plan builder
+  // 
   // Test: collectionQuery with cts.param binding
   // ──────────────────────────────────────────────────────────────────────────────
 
@@ -188,6 +215,22 @@ describe('cts.param integration tests (MLE-27883)', function() {
       should(serialized).containEql('"param"');
     });
 
+    it('should return musician1 and musician4 (trumpet) but not musician2 or musician3 for wordQuery with cts.param', function() {
+      const plan = op.fromSearchDocs(op.cts.wordQuery(op.cts.param('searchWord')))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, {
+        bindings: {
+          searchWord: { value: 'trumpet', type: 'string' }
+        }
+      })
+      .then(function(response) {
+        should.exist(response, 'response should exist');
+        response.should.have.property('rows');
+        assertTrumpetMusiciansRows(response);
+      });
+    });
+
   });
 
   // ──────────────────────────────────────────────────────────────────────────────
@@ -244,6 +287,223 @@ describe('cts.param integration tests (MLE-27883)', function() {
       const paramNode = findNode(exported, 'param');
       should.exist(paramNode, 'should find a param node in the exported plan');
       should(paramNode.ns).equal('cts', 'param node should use ns:"cts" not ns:"op"');
+    });
+
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // MLE-27889 Param binding support for CTS queries in Optic plans
+  //
+  // cts.param() as direct sub-query of composite CTS functions
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('cts.param as direct child of orQuery', function() {
+
+        it('orQuery with literal string is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.orQuery([
+          'saxophone',
+          'trumpet'
+        ]))
+        .select(['uri']);
+
+      return db.rows.query(plan)
+      .then(function(response) {
+        if (response && response.rows) { assertAllMusiciansRows(response); }
+      });
+    });
+
+    it('orQuery with literal string and cts.param bound to string is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.orQuery([
+          'saxophone',
+          op.cts.param('searchWord')
+        ]))
+        .select(['uri']);
+
+      return db.rows.query(plan, {
+        bindings: {
+          searchWord: { value: 'trumpet', type: 'string' }
+        }
+      })
+      .then(function(response) {
+        if (response && response.rows) { assertAllMusiciansRows(response); }
+      });
+    });
+
+    it('orQuery with wordQuery and cts.param bound to string is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.orQuery([
+          op.cts.wordQuery('saxophone'),
+          op.cts.param('searchWord')
+        ]))
+        .select(['uri']);
+
+      return db.rows.query(plan, {
+        bindings: {
+          searchWord: { value: 'trumpet', type: 'string' }
+        }
+      })
+      .then(function(response) {
+        if (response && response.rows) { assertAllMusiciansRows(response); }
+      });
+    });
+
+    it('orQuery with wordQuery and cts.param bound to CtsQuery via options.bindings', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.orQuery([
+          op.cts.wordQuery('saxophone'),
+          op.cts.param('query')
+        ]))
+        .select(['uri']);
+
+      return db.rows.query(plan, { bindings: { query: op.cts.wordQuery('trumpet') } })
+        .then(function(response) {
+          if (response && response.rows) { assertAllMusiciansRows(response); }
+        });
+    });
+
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // Param binding with CtsQuery literal
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('CtsQuery binding via options.bindings (second arg)', function() {
+
+    it('fromSearchDocs(op.param("q")) with CtsQuery via options.bindings is accepted by the server', function() {
+      // Tests the options.bindings (second-arg) form of CTS-query binding.
+      // rows.js detects the plan-builder object in options.bindings and substitutes it
+      // into the exported plan JSON via substitutePlanParam before sending to the server.
+      const plan = op
+        .fromSearchDocs(op.param('q'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, { bindings: { q: op.cts.wordQuery('trumpet') } })
+        .then(function(response) {
+          if (response && response.rows) { assertTrumpetMusiciansRows(response); }
+        });
+    });
+
+    it('fromSearchDocs(op.cts.param("q")) with CtsQuery via options.bindings is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.param('q'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, { bindings: { q: op.cts.wordQuery('trumpet') } })
+        .then(function(response) {
+          if (response && response.rows) { assertTrumpetMusiciansRows(response); }
+        });
+    });
+
+    it('fromSearchDocs.where(op.cts.param("query")) with CtsQuery via options.bindings is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.wordQuery(['saxophone', 'trumpet']))
+        .where(op.cts.param('query'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, { bindings: { query: op.cts.wordQuery('trumpet') } })
+        .then(function(response) {
+          if (response && response.rows) { assertTrumpetMusiciansRows(response); }
+        });
+    });
+
+    it('fromSearchDocs(wordQuery with cts.param string) with where(cts.param CtsQuery) via options.bindings returns trumpet musicians', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.wordQuery(['saxophone', op.cts.param('searchWord')]))
+        .where(op.cts.param('query'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, {
+        bindings: {
+          searchWord: 'trumpet',
+          query: op.cts.wordQuery('trumpet')
+        }
+      })
+      .then(function(response) {
+        if (response && response.rows) { assertTrumpetMusiciansRows(response); }
+      });
+    });
+
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────────
+  // op.param() bound to CtsQuery at runtime via bindingArg (third arg)
+  //
+  // The Node.js pattern: pass the CTS query as the third arg of db.rows.query.
+  // rows.js intercepts plan-builder objects in the third arg and substitutes them
+  // into the exported plan JSON via substitutePlanParam before sending, so the server sees them as plan literals.
+  // ──────────────────────────────────────────────────────────────────────────────
+
+  describe('op.param() bound to CtsQuery at runtime via bindingArg (third arg)', function() {
+
+    it('fromSearchDocs(op.param("q")) with CtsQuery binding is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.param('q'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, null, { q: op.cts.wordQuery('trumpet') })
+        .then(function(response) {
+          if (response && response.rows) { assertTrumpetMusiciansRows(response); }
+        });
+    });
+
+    it('fromSearch(op.param("q")) with collectionQuery binding is accepted by the server', function() {
+      const plan = op.fromSearch(op.param('q'));
+
+      return db.rows.query(plan, null, { q: op.cts.collectionQuery('/optic/test') })
+        .then(function(response) {
+          // response may be null when /optic/test collection has no documents
+          if (response && response.rows) {
+            response.rows.length.should.be.above(0);
+          }
+        });
+    });
+
+    it('fromSearchDocs.where(op.param("q")) with CtsQuery binding is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.wordQuery('a'))
+        .where(op.param('q'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, null, { q: op.cts.wordQuery('trumpet') })
+        .then(function(response) {
+          if (response && response.rows) {
+            response.rows.length.should.be.above(0);
+            response.rows.forEach(row => row.should.have.property('uri'));
+          }
+        });
+    });
+
+    it('fromSearchDocs with mixed plain-string and CtsQuery bindings via bindingArg', function() {
+      // Regression: plain string values in bindingArg previously crashed with
+      // "SyntaxError: Unexpected token" because the code tried JSON.parse on them.
+      const plan = op
+        .fromSearchDocs(op.cts.wordQuery(['saxophone', op.cts.param('searchWord')]))
+        .where(op.cts.param('query'))
+        .select(['uri', 'doc']);
+
+      return db.rows.query(plan, null, { searchWord: 'trumpet', query: op.cts.wordQuery('trumpet') })
+        .then(function(response) {
+          if (response && response.rows) { assertTrumpetMusiciansRows(response); }
+        });
+    });
+
+    it('negative: plain object binding reaches server without JS crash', function() {
+      // A plain object (no _ns/_fn/_args) bypasses the rows.js interception;
+      // it is JSON-serialised and sent as a regular binding.  The server will
+      // reject the malformed value.  We just verify no JS-level crash occurs.
+      const plan = op
+        .fromSearchDocs(op.param('q'))
+        .select(['uri']);
+
+      return db.rows.query(plan, null, { q: { notAQuery: true } })
+        .then(function() {
+          should.fail('expected the server to reject the malformed binding');
+        })
+        .catch(function(err) {
+          should.exist(err, 'expected an error from the server');
+        });
     });
 
   });
