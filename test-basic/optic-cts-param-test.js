@@ -39,6 +39,16 @@ function assertTrumpetMusiciansRows(response) {
   });
 }
 
+function assertAllMusiciansRows(response) {
+  const rows = response.rows;
+  rows.length.should.be.above(0);
+  const uris = rows.map(row => row['uri'].value || row['uri']);
+  uris.should.containEql('/optic/test/musician1.json');
+  uris.should.containEql('/optic/test/musician2.json');
+  uris.should.containEql('/optic/test/musician3.json');
+  uris.should.containEql('/optic/test/musician4.json');
+}
+
 describe('cts.param integration tests', function() {
   this.timeout(10000); // Allow 10 seconds for server queries
 
@@ -287,15 +297,29 @@ describe('cts.param integration tests', function() {
   // cts.param() as direct sub-query of composite CTS functions
   // ──────────────────────────────────────────────────────────────────────────────
 
-  describe('cts.param() as direct child of orQuery', function() {
+  describe('cts.param as direct child of orQuery', function() {
 
-    it('orQuery with cts.param bound to string is accepted by the server', function() {
+        it('orQuery with literal string is accepted by the server', function() {
       const plan = op
         .fromSearchDocs(op.cts.orQuery([
-          op.cts.wordQuery('saxophone'),
+          'saxophone',
+          'trumpet'
+        ]))
+        .select(['uri']);
+
+      return db.rows.query(plan)
+      .then(function(response) {
+        if (response && response.rows) { assertAllMusiciansRows(response); }
+      });
+    });
+
+    it('orQuery with literal string and cts.param bound to string is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.orQuery([
+          'saxophone',
           op.cts.param('searchWord')
         ]))
-        .select(['uri', 'doc']);
+        .select(['uri']);
 
       return db.rows.query(plan, {
         bindings: {
@@ -303,27 +327,39 @@ describe('cts.param integration tests', function() {
         }
       })
       .then(function(response) {
-        // response may be null when no documents match on this server
-        if (response && response.rows) {
-          response.rows.length.should.be.above(0, 'if rows returned, expect at least one match');
-        }
+        if (response && response.rows) { assertAllMusiciansRows(response); }
       });
     });
 
-    it('orQuery with cts.param bound to CtsQuery via options.bindings', function() {
+    it('orQuery with wordQuery and cts.param bound to string is accepted by the server', function() {
+      const plan = op
+        .fromSearchDocs(op.cts.orQuery([
+          op.cts.wordQuery('saxophone'),
+          op.cts.param('searchWord')
+        ]))
+        .select(['uri']);
+
+      return db.rows.query(plan, {
+        bindings: {
+          searchWord: { value: 'trumpet', type: 'string' }
+        }
+      })
+      .then(function(response) {
+        if (response && response.rows) { assertAllMusiciansRows(response); }
+      });
+    });
+
+    it('orQuery with wordQuery and cts.param bound to CtsQuery via options.bindings', function() {
       const plan = op
         .fromSearchDocs(op.cts.orQuery([
           op.cts.wordQuery('saxophone'),
           op.cts.param('query')
         ]))
-        .select(['uri', 'doc']);
+        .select(['uri']);
 
       return db.rows.query(plan, { bindings: { query: op.cts.wordQuery('trumpet') } })
         .then(function(response) {
-          // response may be null when no documents match on this server
-          if (response && response.rows) {
-            response.rows.length.should.be.above(0, 'if rows returned, expect at least one match');
-          }
+          if (response && response.rows) { assertAllMusiciansRows(response); }
         });
     });
 
