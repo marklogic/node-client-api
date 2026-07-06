@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 const marklogic = require('../');
@@ -51,6 +51,40 @@ describe('cloud-authentication tests', function() {
             expect(()=>db.documents.write(writeObject).throws(Error('API Key is not valid.')));
         } catch (error) {
             done(error);
+        }
+    });
+
+    it('should produce the correct plain token path when accessTokenDuration is a valid integer', function() {
+        const operation = {
+            client: {
+                connectionParams: {
+                    host: 'example.marklogic.cloud',
+                    apiKey: 'test-key',
+                    accessTokenDuration: 300
+                }
+            }
+        };
+
+        const duration = operation.client.connectionParams.accessTokenDuration;
+        const path = duration
+            ? '/token?duration=' + encodeURIComponent(duration)
+            : '/token';
+
+        assert.strictEqual(path, '/token?duration=300');
+    });
+
+    it('should throw an error when accessTokenDuration is not a positive integer', function() {
+        try {
+            marklogic.createDatabaseClient({
+                host: 'example.marklogic.cloud',
+                authType: 'cloud',
+                apiKey: 'test-key',
+                accessTokenDuration: '100&extra=injected'
+            });
+            throw new Error('Expected validation error was not thrown');
+        } catch (error) {
+            assert(error.message.includes('accessTokenDuration must be a positive integer'),
+                'Error message should mention accessTokenDuration validation');
         }
     });
 });
