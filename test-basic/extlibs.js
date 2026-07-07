@@ -262,6 +262,21 @@ describe('extension libraries', function(){
   });
 
   describe('when handling path encoding security', function() {
+    it('should throw a user-facing Error (not TypeError) when a non-string path is passed to read()', function() {
+      (function() { restAdminDB.config.extlibs.read(42); }).should.throw(/must be a string/);
+      (function() { restAdminDB.config.extlibs.read({}); }).should.throw(/must be a string/);
+    });
+
+    it('should throw a user-facing Error (not TypeError) when a non-string path is passed to remove()', function() {
+      (function() { restAdminDB.config.extlibs.remove(42); }).should.throw(/must be a string/);
+    });
+
+    it('should throw a user-facing Error (not TypeError) when a non-string path is passed to write()', function() {
+      (function() {
+        restAdminDB.config.extlibs.write({ path: 42, contentType: 'application/xquery', source: Buffer.from('') });
+      }).should.throw(/must be a string/);
+    });
+
     it('should reject a path traversal attempt via .. segments in read()', function() {
       (function() {
         restAdminDB.config.extlibs.read('../../../v1/databases');
