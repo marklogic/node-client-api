@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 const marklogic = require('../');
@@ -51,6 +51,52 @@ describe('cloud-authentication tests', function() {
             expect(()=>db.documents.write(writeObject).throws(Error('API Key is not valid.')));
         } catch (error) {
             done(error);
+        }
+    });
+
+    it('should URL-encode accessTokenDuration when building the token request path', function() {
+        const requester = require('../lib/requester');
+        const https = require('https');
+
+        const operation = {
+            client: {
+                connectionParams: {
+                    host: 'example.marklogic.cloud',
+                    apiKey: 'test-key',
+                    accessTokenDuration: '100&extra=injected'
+                }
+            }
+        };
+
+        let capturedPath;
+        const originalRequest = https.request;
+        https.request = (options) => {
+          capturedPath = options.path;
+          throw new Error('stop');
+        };
+
+        try {
+          requester.getAccessToken(operation);
+        } catch (e) {
+          // ignore stubbed error
+        } finally {
+          https.request = originalRequest;
+        }
+          assert.strictEqual(capturedPath, '/token?duration=100%26extra%3Dinjected');
+    });
+
+    it('should throw an error when accessTokenDuration is not a positive integer', function() {
+        try {
+            marklogic.createDatabaseClient({
+                host: 'example.marklogic.cloud',
+                authType: 'cloud',
+                apiKey: 'test-key',
+                accessTokenDuration: '100&extra=injected'
+            });
+            throw new Error('Expected validation error was not thrown');
+        } catch (error) {
+            assert(error.message.includes('accessTokenDuration must be a positive integer'),
+                'Error message should mention accessTokenDuration validation');
         }
     });
 });
