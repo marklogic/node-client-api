@@ -319,7 +319,7 @@ describe('extension libraries', function(){
                   // A 404/403 response from MarkLogic is acceptable — it confirms that
                   // the percent-encoded URL was sent and understood by the server.
                   // A client-side URL construction error is a different failure class.
-                  if (err && err.statusCode) { done(); } else { done(err); }
+                  if (err && (err.statusCode === 404 || err.statusCode === 403)) { done(); } else { done(err); }
                 });
     });
 
