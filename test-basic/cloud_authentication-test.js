@@ -54,23 +54,35 @@ describe('cloud-authentication tests', function() {
         }
     });
 
-    it('should produce the correct plain token path when accessTokenDuration is a valid integer', function() {
+    it('should URL-encode accessTokenDuration when building the token request path', function() {
+        const requester = require('../lib/requester');
+        const https = require('https');
+
         const operation = {
             client: {
                 connectionParams: {
                     host: 'example.marklogic.cloud',
                     apiKey: 'test-key',
-                    accessTokenDuration: 300
+                    accessTokenDuration: '100&extra=injected'
                 }
             }
         };
 
-        const duration = operation.client.connectionParams.accessTokenDuration;
-        const path = duration
-            ? '/token?duration=' + encodeURIComponent(duration)
-            : '/token';
+        let capturedPath;
+        const originalRequest = https.request;
+        https.request = (options) => {
+          capturedPath = options.path;
+          throw new Error('stop');
+        };
 
-        assert.strictEqual(path, '/token?duration=300');
+        try {
+          requester.getAccessToken(operation);
+        } catch (e) {
+          // ignore stubbed error
+        } finally {
+          https.request = originalRequest;
+        }
+          assert.strictEqual(capturedPath, '/token?duration=100%26extra%3Dinjected');
     });
 
     it('should throw an error when accessTokenDuration is not a positive integer', function() {
