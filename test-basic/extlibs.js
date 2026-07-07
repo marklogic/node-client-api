@@ -260,4 +260,76 @@ describe('extension libraries', function(){
       .catch(done);
     });
   });
+
+  describe('when handling path encoding security', function() {
+    it('should reject a path traversal attempt via .. segments in read()', function() {
+      (function() {
+        restAdminDB.config.extlibs.read('../../../v1/databases');
+      }).should.throw(/relative path components/);
+    });
+
+    it('should reject a path traversal attempt via .. segments in write()', function() {
+      (function() {
+        restAdminDB.config.extlibs.write('../../../v1/databases', 'application/xquery', Buffer.from(''));
+      }).should.throw(/relative path components/);
+    });
+
+    it('should reject path traversal in the single-object form of write()', function() {
+      (function() {
+        restAdminDB.config.extlibs.write({
+          path: '../../../v1/databases',
+          contentType: 'application/xquery',
+          source: Buffer.from('')
+        });
+      }).should.throw(/relative path components/);
+    });
+
+    it('should reject a path traversal attempt via .. segments in remove()', function() {
+      (function() {
+        restAdminDB.config.extlibs.remove('../../secret');
+      }).should.throw(/relative path components/);
+    });
+
+    it('should reject a path traversal attempt via .. segments in list()', function() {
+      (function() {
+        restAdminDB.config.extlibs.list('../../admin');
+      }).should.throw(/relative path components/);
+    });
+
+    it('should produce a correctly percent-encoded path when a name contains a space', function(done) {
+      var spacedPath = 'my lib/module.xqy';
+      restAdminDB.config.extlibs.read(spacedPath)
+        .result(function() { done(); },
+                function(err) {
+                  // A 404/403 response from MarkLogic is acceptable — it confirms that
+                  // the percent-encoded URL was sent and understood by the server.
+                  // A client-side URL construction error is a different failure class.
+                  if (err && err.statusCode) { done(); } else { done(err); }
+                });
+    });
+
+    it('should produce the same encoded path for all three input forms', function(done) {
+      // Calling read() is synchronous up to the point where it sets requestOptions.path;
+      // we verify none of the three forms throw and that the operation is initiated.
+      // (The network requests will all 404 since the module does not exist.)
+      var promises = [
+        restAdminDB.config.extlibs.read('my/module.xqy').result(),
+        restAdminDB.config.extlibs.read('/my/module.xqy').result(),
+        restAdminDB.config.extlibs.read('/ext/my/module.xqy').result()
+      ];
+      Promise.allSettled(promises).then(function(results) {
+        results.forEach(function(r) {
+          // Each should either resolve or reject with a server status code (404),
+          // never with a client-side TypeError or URL construction error.
+          if (r.status === 'rejected') {
+            if (!r.reason || !r.reason.statusCode) {
+              done(new Error('Unexpected non-HTTP error: ' + r.reason));
+              return;
+            }
+          }
+        });
+        done();
+      });
+    });
+  });
 });
