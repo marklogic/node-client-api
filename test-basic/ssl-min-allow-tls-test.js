@@ -7,6 +7,8 @@ let should = require('should');
 let marklogic = require('../');
 const { exec } = require('child_process');
 const testlib = require("../etc/test-lib");
+// This suite validates TLS protocol min/max behavior, not certificate trust chain handling.
+testconfig.restConnectionForTls.rejectUnauthorized = false;
 let db = marklogic.createDatabaseClient(testconfig.restConnectionForTls);
 let serverConfiguration = {};
 let host  = testconfig.testHost;

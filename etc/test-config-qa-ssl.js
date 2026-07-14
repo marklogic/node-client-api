@@ -1,6 +1,10 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
+const fs = require('fs');
+const path = require('path');
+const strictTlsVerification = process.env.ML_TEST_SSL_STRICT === 'true';
+
 var testHost = 'localhost';
 
 var restPort     = '8016';
@@ -23,7 +27,8 @@ var restEvaluatorPassword = 'x';
 
 var testServerName = 'node-client-api-ssl-server';
 
-// For SSL without client cert, use rejectUnauthorized: false
+// Do NOT disable TLS certificate validation in production.
+// Prefer providing ca with a trusted certificate instead (CWE-295).
 module.exports = {
     testServerName: testServerName,
     testHost:       testHost,
@@ -63,13 +68,16 @@ module.exports = {
         password: restAdminPassword,
         authType: manageAuthType
     },
+    // Do NOT disable TLS certificate validation in production.
+    // Prefer providing ca with a trusted certificate instead (CWE-295).
     restSslConnection: {
         host:     testHost,
         port:     restPort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: 'BASIC',
-        rejectUnauthorized: false,
-        ssl:      true
+        ssl:      true,
+        rejectUnauthorized: strictTlsVerification,
+        ca:       fs.readFileSync(path.join(__dirname, '../test-app/src/main/ml-config/self-signed-ca.pem'))
     }
 };

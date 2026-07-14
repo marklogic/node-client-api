@@ -1,6 +1,10 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
+const fs = require('fs');
+const path = require('path');
+const strictTlsVerification = process.env.ML_TEST_SSL_STRICT === 'true';
+
 let testHost = 'localhost';
 
 let restPort     = '8015';
@@ -33,7 +37,8 @@ let testPassword = 'x';
 let tdeUser = 'tde-user';
 let tdePassword = 'x';
 
-// For SSL without client cert, use rejectUnauthorized: false
+// Do NOT disable TLS certificate verification in production.
+// Prefer providing ca with a trusted certificate instead (CWE-295).
 module.exports = {
     testServerName: testServerName,
     testHost:       testHost,
@@ -87,14 +92,17 @@ module.exports = {
         authType: manageAuthType,
         enableGzippedResponses: true
     },
+    // Do NOT disable TLS certificate validation in production.
+    // Prefer providing ca with a trusted certificate instead (CWE-295).
     restSslConnection: {
         host:     testHost,
         port:     restPort,
         user:     restAdminUser,
         password: restAdminPassword,
         authType: 'BASIC',
-        rejectUnauthorized: false,
         ssl:      true,
+        rejectUnauthorized: strictTlsVerification,
+        ca:       fs.readFileSync(path.join(__dirname, '../test-app/src/main/ml-config/self-signed-ca.pem')),
         enableGzippedResponses: true
     },
     testConnection: {
@@ -103,7 +111,6 @@ module.exports = {
         user:     testUser,
         password: testPassword,
         authType: restAuthType,
-        rejectUnauthorized: false,
         enableGzippedResponses: true
     },
     tdeConnection: {
@@ -112,7 +119,6 @@ module.exports = {
         user:     tdeUser,
         password: tdePassword,
         authType: restAuthType,
-        rejectUnauthorized: false,
         enableGzippedResponses: true
     },
     restWriterConnectionWithBasePath: {
@@ -138,6 +144,8 @@ module.exports = {
         port:     restPort,
         authType: 'oauth'
     },
+    // Do NOT disable TLS certificate validation in production.
+    // Prefer providing ca with a trusted certificate instead (CWE-295).
     restConnectionForTls: {
         host:     testHost,
         port:     restSslPort,
@@ -145,6 +153,7 @@ module.exports = {
         password: restWriterPassword,
         authType: restAuthType,
         ssl: true,
-        rejectUnauthorized: false
+        rejectUnauthorized: strictTlsVerification,
+        ca:       fs.readFileSync(path.join(__dirname, '../test-app/src/main/ml-config/self-signed-ca.pem'))
     }
 };

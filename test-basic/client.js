@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+ * Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var assert = require('assert');
 var should = require('should');
@@ -132,13 +132,13 @@ describe('database clients', function () {
       port: testconfig.restWriterConnection.port,
       user: testconfig.restWriterConnection.user,
       password: testconfig.restWriterConnection.password,
-      rejectUnauthorized: false,
+      rejectUnauthorized: true,
       ssl: true
     };
     let databaseClient = marklogic.createDatabaseClient(connectionOptions);
     try {
       assert(databaseClient);
-      assert(databaseClient.connectionParams.rejectUnauthorized === false);
+      assert(databaseClient.connectionParams.rejectUnauthorized === true);
       done();
     } catch (error) {
       done(error);
