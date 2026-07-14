@@ -7,6 +7,7 @@ let assert = require('assert');
 const testconfig = require("../etc/test-config");
 const mlutil = require("../lib/mlutil");
 const expect = require('chai').expect;
+const EventEmitter = require('events');
 
 describe('cloud-authentication tests', function() {
     it('should throw error without apiKey.', function(done){
@@ -98,5 +99,91 @@ describe('cloud-authentication tests', function() {
             assert(error.message.includes('accessTokenDuration must be a positive integer'),
                 'Error message should mention accessTokenDuration validation');
         }
+    });
+
+    it('should route token request network errors to operation.errorListener', function(done) {
+        this.timeout(500);
+        const requester = require('../lib/requester');
+        const https = require('https');
+        const originalRequest = https.request;
+
+        const operation = {
+            client: {
+                connectionParams: {
+                    host: 'example.marklogic.cloud',
+                    apiKey: 'test-key'
+                }
+            },
+            lockAccessToken: true,
+            errorListener: (error) => {
+                https.request = originalRequest;
+                try {
+                    assert(error instanceof Error);
+                    assert(error.message.includes('Failed to obtain access token'));
+                    assert(error.message.includes('ECONNRESET'));
+                    assert.strictEqual(operation.lockAccessToken, false);
+                    done();
+                } catch (assertionError) {
+                    done(assertionError);
+                }
+            }
+        };
+
+        https.request = () => {
+            const req = new EventEmitter();
+            req.write = () => {};
+            req.end = () => {
+                process.nextTick(() => req.emit('error', new Error('ECONNRESET')));
+            };
+            return req;
+        };
+
+        requester.getAccessToken(operation);
+    });
+
+    it('should route token endpoint 400 responses to operation.errorListener', function(done) {
+        this.timeout(500);
+        const requester = require('../lib/requester');
+        const https = require('https');
+        const originalRequest = https.request;
+
+        const operation = {
+            client: {
+                connectionParams: {
+                    host: 'example.marklogic.cloud',
+                    apiKey: 'test-key'
+                }
+            },
+            lockAccessToken: true,
+            errorListener: (error) => {
+                https.request = originalRequest;
+                try {
+                    assert(error instanceof Error);
+                    assert(error.message.includes('Token endpoint returned 400'));
+                    assert(error.message.includes('invalid key payload'));
+                    done();
+                } catch (assertionError) {
+                    done(assertionError);
+                }
+            }
+        };
+
+        https.request = (options, callback) => {
+            const req = new EventEmitter();
+            req.write = () => {};
+            req.end = () => {
+                process.nextTick(() => {
+                    const res = new EventEmitter();
+                    res.statusCode = 400;
+                    callback(res);
+                    res.emit('data', Buffer.from('invalid key '));
+                    res.emit('data', Buffer.from('payload'));
+                    res.emit('end');
+                });
+            };
+            return req;
+        };
+
+        requester.getAccessToken(operation);
     });
 });
