@@ -22,3 +22,15 @@ test-complete-app-mlDeploy/.gradle
 
 # Compiled TypeScript test files
 test-typescript/*.js
+
+# AI generated documents
+documents
+
+# Generated proxy stubs (created by gulp setupProxyTests / generateProxyTests)
+# Files in the generated directory are fully generated
+test-basic-proxy/lib/generated/
+# the proxy stubs (non-Test.js) are generated; the *Test.js files are hand-written and must be kept
+test-basic-proxy/lib/positive/*.js
+!test-basic-proxy/lib/positive/*Test.js
+test-basic-proxy/lib/negative/*.js
+!test-basic-proxy/lib/negative/*Test.js
