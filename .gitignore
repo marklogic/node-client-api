@@ -34,3 +34,13 @@ test-basic-proxy/lib/positive/*.js
 !test-basic-proxy/lib/positive/*Test.js
 test-basic-proxy/lib/negative/*.js
 !test-basic-proxy/lib/negative/*Test.js
+
+# SSL certificates generated at deploy time by mlDeploy/generateAndInstallSslCertificate.
+# Never commit private keys or regenerated certs — they change on every deployment.
+test-app/src/main/ml-config/self-signed-ca.pem
+test-app/src/main/ml-config/self-signed-ca.key
+test-app/src/main/ml-config/ssl-server.pem
+test-app/src/main/ml-config/ssl-server.key
+test-app/src/main/ml-config/ssl-server.csr
+test-app/src/main/ml-config/ssl-server-ext.cnf
+test-app/src/main/ml-config/*.srl
