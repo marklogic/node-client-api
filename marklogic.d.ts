@@ -56,6 +56,8 @@ declare module 'marklogic' {
     token?: string;
     /** Connection pooling agent */
     agent?: any;
+    /** When true, disables telemetry usage; see https://docs.progress.com/bundle/marklogic-server-monitor-12/page/topics/telemetry.html */
+    disableTelemetryHeader?: boolean;
     /** API version to use */
     apiVersion?: string;
   }
