@@ -52,11 +52,6 @@
       "kind": "execute"
     },
     {
-      "privilege-name": "xdmp-login",
-      "action": "http://marklogic.com/xdmp/privileges/xdmp-login",
-      "kind": "execute"
-    },
-    {
       "privilege-name": "unprotected-collections",
       "action": "http://marklogic.com/xdmp/privileges/unprotected-collections",
       "kind": "execute"

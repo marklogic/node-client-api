@@ -4,7 +4,6 @@
   "password": "x",
   "role": [
     "rest-reader",
-    "rest-extension-user",
-    "rest-login"
+    "rest-extension-user"
   ]
 }
