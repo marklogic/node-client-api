@@ -61,7 +61,24 @@ module.exports = [
       "no-console": "off",
 
       // Bracket notation preference
-      "dot-notation": "error"
+      "dot-notation": "error",
+
+      // Security: Prevent MD5 imports outside www-authenticate-patched/ (Issue #1109)
+      "no-restricted-modules": ["error", {
+        "paths": [{
+          "name": "./lib/www-authenticate-patched/md5",
+          "message": "⚠️  SECURITY: Do not import MD5 from www-authenticate-patched. This is ONLY for HTTP Digest Auth (RFC 2617). Use bcrypt/scrypt/Argon2id for passwords, SHA-256/SHA-3 for general hashing."
+        }, {
+          "name": "./lib/www-authenticate-patched/md5.js",
+          "message": "⚠️  SECURITY: Do not import MD5 from www-authenticate-patched. This is ONLY for HTTP Digest Auth (RFC 2617). Use bcrypt/scrypt/Argon2id for passwords, SHA-256/SHA-3 for general hashing."
+        }, {
+          "name": "lib/www-authenticate-patched/md5",
+          "message": "⚠️  SECURITY: Do not import MD5 from www-authenticate-patched. This is ONLY for HTTP Digest Auth (RFC 2617). Use bcrypt/scrypt/Argon2id for passwords, SHA-256/SHA-3 for general hashing."
+        }, {
+          "name": "lib/www-authenticate-patched/md5.js",
+          "message": "⚠️  SECURITY: Do not import MD5 from www-authenticate-patched. This is ONLY for HTTP Digest Auth (RFC 2617). Use bcrypt/scrypt/Argon2id for passwords, SHA-256/SHA-3 for general hashing."
+        }]
+      }]
     }
   },
   {
