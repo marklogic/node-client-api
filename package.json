@@ -104,6 +104,7 @@
     "supports-color": "7.2.0",
     "tar-fs": "2.1.4",
     "underscore": "1.13.8",
-    "wrap-ansi": "6.2.0"
+    "wrap-ansi": "6.2.0",
+    "postcss": "8.5.23"
   }
 }
