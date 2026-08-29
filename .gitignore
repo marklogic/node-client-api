@@ -20,6 +20,9 @@ test-complete-app/.gradle
 test-complete-app-mlDeploy/build
 test-complete-app-mlDeploy/.gradle
 
+# Generated files for publishing to npm
+marklogic-*.spdx.json
+
 # Compiled TypeScript test files
 test-typescript/*.js
 

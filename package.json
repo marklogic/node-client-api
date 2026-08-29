@@ -13,11 +13,13 @@
     "README.md",
     "NOTICE.txt",
     "LICENSE.txt",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "marklogic-*.spdx.json"
   ],
   "scripts": {
     "doc": "jsdoc -c jsdoc.json lib/*.js README.md",
     "lint": "gulp lint",
+    "prepublishOnly": "cp sbom.spdx.json \"marklogic-${npm_package_version}.spdx.json\"",
     "pretest:typescript": "npm run test:compile",
     "test:types": "tsc --noEmit",
     "test:compile": "tsc test-typescript/*-runtime.test.ts",
