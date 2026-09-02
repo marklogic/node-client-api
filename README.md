@@ -19,7 +19,7 @@ The Progress® MarkLogic® Node Client API provides access to the MarkLogic data
 
 ## System Requirements
 
-The Node Client 4.1.0 release requires Node.js 22 or higher. Testing has verified that the client will
+The Node Client 4.2.0 release requires Node.js 22 or higher. Testing has verified that the client will
 run successfully on Node 20, but we recommend 22 or higher based on
 [the Node.js release roadmap](https://nodejs.org/en/about/previous-releases), as Node 20 enters
 end-of-life in April 2026 while Node 22 is supported through April 2027.
