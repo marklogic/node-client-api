@@ -5,7 +5,7 @@
 let testconfig = require('../etc/test-config.js');
 let should = require('should');
 let marklogic = require('../');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const testlib = require("../etc/test-lib");
 let db = marklogic.createDatabaseClient(testconfig.restConnectionForTls);
 let serverConfiguration = {};
@@ -141,12 +141,13 @@ describe('document write and read using min tls', function () {
 
 function updateTlsVersion(tlsVersion) {
     return new Promise((resolve, reject) => {
-        const curlCommand = `
-            curl --anyauth --user admin:admin -X PUT -H "Content-Type: application/json" \
--d '{"ssl-min-allow-tls": "${tlsVersion}"}' \
-'http://${host}:8002/manage/v2/servers/unittest-nodeapi-ssl/properties?group-id=Default'
-    `;
-        exec(curlCommand, (error, stdout, stderr) => {
+        const curlArgs = [
+            '--anyauth', '--user', 'admin:admin', '-X', 'PUT',
+            '-H', 'Content-Type: application/json',
+            '-d', JSON.stringify({'ssl-min-allow-tls': tlsVersion}),
+            `http://${host}:8002/manage/v2/servers/unittest-nodeapi-ssl/properties?group-id=Default`
+        ];
+        execFile('curl', curlArgs, (error, stdout, stderr) => {
             if (error) {
                 throw new Error(`Error executing curl: ${stderr}`);
             }
