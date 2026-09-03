@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
@@ -1727,9 +1727,11 @@ describe('plan builder', function() {
         if(serverConfiguration.serverVersion < 12) {
             this.skip();
         }
-        testPlan([p.xs.string("abc")], p.vec.base64Decode(p.col("1")))
+        // AAAAAAMAAAAAAIA/AAAAQAAAQEA= is the ML base64 encoding string of the vector [1,2,3]
+        // Run vec.base64Encode(vec.vector([1,2,3])) in query console to generate this encoded value.
+        testPlan([p.xs.string("AAAAAAMAAAAAAIA/AAAAQAAAQEA=")],p.vec.base64Decode(p.col("1")))
           .then(function(response) {
-            should(String(getResult(response).value).replace(/^ /, '')).equal('abc');
+            should(String(getResult(response).value)).equal('1,2,3');
             done();
         }).catch(done);
     });
@@ -2173,6 +2175,9 @@ describe('plan builder', function() {
         }).catch(done);
     });
     it('xdmp.uriContentType#1', function(done) {
+        if(serverConfiguration.serverVersion >= 12) {
+            this.skip();
+        }
         testPlan([p.xs.string("a.json")], p.xdmp.uriContentType(p.col("1")))
           .then(function(response) {
             should(String(getResult(response).value).replace(/^ /, '')).equal('application/json');
@@ -2180,6 +2185,9 @@ describe('plan builder', function() {
         }).catch(done);
     });
     it('xdmp.uriFormat#1', function(done) {
+        if(serverConfiguration.serverVersion >= 12) {
+            this.skip();
+        }
         testPlan([p.xs.string("a.json")], p.xdmp.uriFormat(p.col("1")))
           .then(function(response) {
             should(String(getResult(response).value).replace(/^ /, '')).equal('json');

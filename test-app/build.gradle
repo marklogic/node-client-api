@@ -36,16 +36,67 @@ mlDeploy.dependsOn addMarkLogic12SchemasIfNecessary
 mlLoadSchemas.dependsOn addMarkLogic12SchemasIfNecessary
 
 /*
- * Required for forcing MarkLogic to generate a temporary certificate for the app server
- * that requires SSL.
+ * Generates a CA + server certificate pair using openssl and inserts the server
+ * cert into the MarkLogic node-client-ssl-template. The self-signed CA cert is
+ * written to src/main/ml-config/self-signed-ca.pem so Node.js test clients can
+ * trust the MarkLogic SSL server via the `ca` option.
+ *
+ * The generated files are listed in .gitignore and recreated on every run.
  */
-ext {
-  def command = new com.marklogic.appdeployer.command.security.GenerateTemporaryCertificateCommand()
-  command.setTemplateIdOrName("node-client-ssl-template")
-  command.setCommonName("localhost")
-  command.setValidFor(365)
-  mlAppDeployer.commands.add(command)
+tasks.register("generateAndInstallSslCertificate", com.marklogic.gradle.task.MarkLogicTask) {
+  description = "Generates CA + server certs with openssl and inserts the server cert into MarkLogic."
+  doLast {
+    def certDir = file("src/main/ml-config")
+    certDir.mkdirs()
+
+    def caKeyFile   = new File(certDir, "self-signed-ca.key")
+    def caCertFile  = new File(certDir, "self-signed-ca.pem")
+    def srvKeyFile  = new File(certDir, "ssl-server.key")
+    def srvCsrFile  = new File(certDir, "ssl-server.csr")
+    def srvCertFile = new File(certDir, "ssl-server.pem")
+    def extFile     = new File(certDir, "ssl-server-ext.cnf")
+
+    // Step 1 — self-signed CA cert
+    exec {
+      commandLine "openssl", "req", "-x509", "-newkey", "rsa:2048",
+        "-keyout", caKeyFile.absolutePath, "-out", caCertFile.absolutePath,
+        "-days", "365", "-nodes",
+        "-subj", "/C=US/ST=VA/L=McLean/O=MarkLogic/OU=Sales/CN=localhost"
+      errorOutput = System.err
+    }
+
+    // Step 2 — server CSR
+    exec {
+      commandLine "openssl", "req", "-newkey", "rsa:2048",
+        "-keyout", srvKeyFile.absolutePath, "-out", srvCsrFile.absolutePath,
+        "-nodes", "-subj", "/CN=localhost"
+      errorOutput = System.err
+    }
+
+    // Step 3 — server cert signed by our CA (SAN required by modern TLS clients)
+    extFile.text = "subjectAltName=IP:127.0.0.1,DNS:localhost\nextendedKeyUsage=serverAuth"
+    exec {
+      commandLine "openssl", "x509", "-req",
+        "-in", srvCsrFile.absolutePath,
+        "-CA", caCertFile.absolutePath, "-CAkey", caKeyFile.absolutePath,
+        "-CAcreateserial", "-out", srvCertFile.absolutePath,
+        "-days", "365", "-extfile", extFile.absolutePath
+      errorOutput = System.err
+    }
+
+    // Step 4 — insert server cert + key into the MarkLogic certificate template.
+    def payload = new groovy.json.JsonBuilder([
+      operation    : "insert-host-certificates",
+      certificates : [[certificate: [cert: srvCertFile.text, pkey: srvKeyFile.text]]]
+    ]).toString()
+    getManageClient().postJson(
+      "/manage/v2/certificate-templates/node-client-ssl-template", payload)
+
+    println "SSL CA cert  -> ${caCertFile.absolutePath}"
+    println "SSL server cert inserted into MarkLogic template: node-client-ssl-template"
+  }
 }
+mlDeploy.finalizedBy generateAndInstallSslCertificate
 
 tasks.register("curlPeople", Exec) {
   commandLine = [
@@ -56,7 +107,7 @@ tasks.register("curlPeople", Exec) {
     '-X', 'POST',
     '--data-binary', '@./src/main/turtle/people/people.ttl',
     '-H', 'Content-type: text/turtle',
-    'http://localhost:8079/v1/graphs?graph=/people'
+    "http://${mlHost}:8079/v1/graphs?graph=/people"
   ]
 }
 
@@ -69,7 +120,7 @@ tasks.register("curlCompanies", Exec) {
     '-X', 'POST',
     '--data-binary', '@./src/main/turtle/companies/companies_100.ttl',
     '-H', 'Content-type: text/turtle',
-    'http://localhost:8079/v1/graphs?graph=/optic/sparql/test/companies.ttl'
+    "http://${mlHost}:8079/v1/graphs?graph=/optic/sparql/test/companies.ttl"
   ]
 }
 

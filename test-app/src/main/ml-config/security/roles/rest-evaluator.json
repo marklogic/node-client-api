@@ -2,7 +2,8 @@
   "role-name": "rest-evaluator",
   "description": "REST writer who can eval, invoke, or set a dynamic databases",
   "role": [
-    "rest-writer"
+    "rest-writer",
+    "sparql-update-user"
   ],
   "privilege": [
     {
@@ -48,6 +49,26 @@
     {
       "privilege-name": "xdmp-get-session-field",
       "action": "http://marklogic.com/xdmp/privileges/xdmp-get-session-field",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "unprotected-collections",
+      "action": "http://marklogic.com/xdmp/privileges/unprotected-collections",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-xslt-invoke",
+      "action": "http://marklogic.com/xdmp/privileges/xslt-invoke",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-lock-acquire",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-lock-acquire",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "xdmp-lock-release",
+      "action": "http://marklogic.com/xdmp/privileges/xdmp-lock-release",
       "kind": "execute"
     }
   ]

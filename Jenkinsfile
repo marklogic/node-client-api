@@ -55,7 +55,7 @@ def runAuditReport() {
 		cd node-client-api
 		npm ci
 		rm -rf $WORKSPACE/npm-audit-report.json || true
-		npm audit --audit-level=moderate --json > $WORKSPACE/npm-audit-report.json
+		npm audit --audit-level=moderate --json > $WORKSPACE/npm-audit-report.json || true
 	'''
 }
 
@@ -125,7 +125,7 @@ pipeline {
   agent none
 
   triggers {
-    parameterizedCron(env.BRANCH_NAME == "develop" ? "00 02 * * * % regressions=true" : "")
+    parameterizedCron(env.BRANCH_NAME == "develop" ? "00 05 * * * % regressions=true" : "")
   }
 
   parameters {
@@ -151,6 +151,7 @@ pipeline {
     stage('pull-request-tests') {
       agent { label 'nodeclientpool' }
       steps {
+        // npm audit is non-blocking; Harness Artifact Repository does not currently support it so failures are ignored.
         runAuditReport()
         runLint()
         runTypeCheck()

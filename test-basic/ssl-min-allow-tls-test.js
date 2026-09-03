@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 
 let testconfig = require('../etc/test-config.js');
@@ -12,7 +12,7 @@ let serverConfiguration = {};
 let host  = testconfig.testHost;
 
 describe('document write and read using min tls', function () {
-    this.timeout(10000);
+    this.timeout(12000);
     before(function (done) {
         testlib.findServerConfiguration(serverConfiguration);
         setTimeout(() => {

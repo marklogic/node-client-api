@@ -19,7 +19,7 @@ The Progress® MarkLogic® Node Client API provides access to the MarkLogic data
 
 ## System Requirements
 
-The Node Client 4.1.0 release requires Node.js 22 or higher. Testing has verified that the client will
+The Node Client 4.2.0 release requires Node.js 22 or higher. Testing has verified that the client will
 run successfully on Node 20, but we recommend 22 or higher based on
 [the Node.js release roadmap](https://nodejs.org/en/about/previous-releases), as Node 20 enters
 end-of-life in April 2026 while Node 22 is supported through April 2027.
@@ -58,8 +58,10 @@ const db = marklogic.createDatabaseClient({
   user:     'admin',
   password: 'admin',
   authType: 'DIGEST',
-  // enableGzippedResponses is optional and can be set to true in order to request MarkLogic to compress the response for better performance,
-    // the client will automatically decompress the response before it returns a value.
+  // Set to true to suppress the ML-Agent-ID header in each request to MarkLogic.
+  // See https://docs.progress.com/bundle/marklogic-server-monitor-12/page/topics/telemetry.html
+  disableTelemetryHeader: false,
+  // Optional; set to true to request compressed responses for improved performance. The client automatically decompresses returned values.
   enableGzippedResponses: true
 });
 
@@ -70,10 +72,9 @@ const db = marklogic.createDatabaseClient({
     authType: 'cloud',
     // basePath is optional.
     basePath: '/marklogic/test',
-    // accessTokenDuration (in seconds) is optional and can be used to customize the expiration of the access token.
+    // Optional (in seconds); customizes the expiration of the access token.
     accessTokenDuration: 10,
-    // enableGzippedResponses is optional and can be set to true in order to request MarkLogic to compress the response for better performance,
-    // the client will automatically decompress the response before it returns a value.
+    // Set to true to request compressed responses for improved performance. The client automatically decompresses returned values.
     enableGzippedResponses: true
 });
 

@@ -3,6 +3,7 @@
   "description": "rest-reader user",
   "password": "x",
   "role": [
-    "rest-reader"
+    "rest-reader",
+    "rest-extension-user"
   ]
 }

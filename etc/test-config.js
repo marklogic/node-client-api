@@ -1,6 +1,15 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
+const fs = require('fs');
+const path = require('path');
+
+// self-signed-ca.pem is written by the Gradle extractSslCertificate task after mlDeploy.
+// It is not committed to the repository. SSL test connections fail gracefully
+// (cert verification error) if mlDeploy has not been run yet.
+const CA_PATH = path.join(__dirname, '../test-app/src/main/ml-config/self-signed-ca.pem');
+const SSL_CA  = fs.existsSync(CA_PATH) ? fs.readFileSync(CA_PATH) : undefined;
+
 let testHost = 'localhost';
 
 let restPort     = '8015';
@@ -33,7 +42,7 @@ let testPassword = 'x';
 let tdeUser = 'tde-user';
 let tdePassword = 'x';
 
-// For SSL without client cert, use rejectUnauthorized: false
+// Do NOT use rejectUnauthorized: false in production.
 module.exports = {
     testServerName: testServerName,
     testHost:       testHost,
@@ -93,8 +102,8 @@ module.exports = {
         user:     restAdminUser,
         password: restAdminPassword,
         authType: 'BASIC',
-        rejectUnauthorized: false,
         ssl:      true,
+        ca:       SSL_CA,
         enableGzippedResponses: true
     },
     testConnection: {
@@ -103,7 +112,6 @@ module.exports = {
         user:     testUser,
         password: testPassword,
         authType: restAuthType,
-        rejectUnauthorized: false,
         enableGzippedResponses: true
     },
     tdeConnection: {
@@ -112,7 +120,6 @@ module.exports = {
         user:     tdeUser,
         password: tdePassword,
         authType: restAuthType,
-        rejectUnauthorized: false,
         enableGzippedResponses: true
     },
     restWriterConnectionWithBasePath: {
@@ -144,7 +151,7 @@ module.exports = {
         user:     restWriterUser,
         password: restWriterPassword,
         authType: restAuthType,
-        ssl: true,
-        rejectUnauthorized: false
+        ssl:      true,
+        ca:       SSL_CA
     }
 };

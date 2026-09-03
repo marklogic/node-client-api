@@ -51,6 +51,14 @@ const minimalConfig: marklogic.DatabaseClientConfig = {
   password: 'admin'
 };
 
+// Test 5b: Telemetry header opt-out option should type-check
+const telemetryConfig: marklogic.DatabaseClientConfig = {
+  user: 'admin',
+  password: 'admin',
+  disableTelemetryHeader: true
+};
+const telemetryDb = marklogic.createDatabaseClient(telemetryConfig);
+
 // Test 6: Testing all auth types (all should be valid)
 const authTypes: Array<marklogic.DatabaseClientConfig['authType']> = [
   'basic',

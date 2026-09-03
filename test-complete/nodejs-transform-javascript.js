@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var should = require('should');
 var fs = require('fs');
@@ -75,7 +75,8 @@ describe('Transform test with javascript', function () {
                 response[0].content.should.have.property('timestamp');
                 response[0].content.userName.should.equal('rest-reader');
                 done();
-            }, done);
+            })
+            .catch(done);
     });
 
     it('should  query', function (done) {
@@ -132,7 +133,8 @@ describe('Transform test with javascript', function () {
                 response[0].content.should.have.property('timestamp');
                 response[0].content.userName.should.equal('rest-reader');
                 done();
-            }, done);
+            })
+            .catch(done);
     });
     /*it('should modify during write', function(done){
     dbWriter.documents.write({

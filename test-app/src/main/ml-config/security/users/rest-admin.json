@@ -3,6 +3,9 @@
   "description": "rest-admin user",
   "password": "x",
   "role": [
-    "rest-admin"
+    "rest-admin",
+    "rest-evaluator",
+    "rest-extension-user",
+    "sparql-update-user"
   ]
 }

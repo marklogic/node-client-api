@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var valcheck = require('core-util-is');
 
@@ -67,6 +67,16 @@ function setupUsers(manager, done) {
 	  {
             'privilege-name': 'xdmp-get-session-field',
             action: 'http://marklogic.com/xdmp/privileges/xdmp-get-session-field',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdmp-lock-acquire',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-lock-acquire',
+            kind: 'execute'
+          },
+          {
+            'privilege-name': 'xdmp-lock-release',
+            action: 'http://marklogic.com/xdmp/privileges/xdmp-lock-release',
             kind: 'execute'
           }
         ]

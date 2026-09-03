@@ -20,5 +20,30 @@ test-complete-app/.gradle
 test-complete-app-mlDeploy/build
 test-complete-app-mlDeploy/.gradle
 
+# Generated files for publishing to npm
+marklogic-*.spdx.json
+
 # Compiled TypeScript test files
 test-typescript/*.js
+
+# AI generated documents
+documents
+
+# Generated proxy stubs (created by gulp setupProxyTests / generateProxyTests)
+# Files in the generated directory are fully generated
+test-basic-proxy/lib/generated/
+# the proxy stubs (non-Test.js) are generated; the *Test.js files are hand-written and must be kept
+test-basic-proxy/lib/positive/*.js
+!test-basic-proxy/lib/positive/*Test.js
+test-basic-proxy/lib/negative/*.js
+!test-basic-proxy/lib/negative/*Test.js
+
+# SSL certificates generated at deploy time by mlDeploy/generateAndInstallSslCertificate.
+# Never commit private keys or regenerated certs — they change on every deployment.
+test-app/src/main/ml-config/self-signed-ca.pem
+test-app/src/main/ml-config/self-signed-ca.key
+test-app/src/main/ml-config/ssl-server.pem
+test-app/src/main/ml-config/ssl-server.key
+test-app/src/main/ml-config/ssl-server.csr
+test-app/src/main/ml-config/ssl-server-ext.cnf
+test-app/src/main/ml-config/*.srl

@@ -5,6 +5,7 @@
   "role": [
     "rest-writer",
     "rest-evaluator",
-    "temporal-admin"
+    "temporal-admin",
+    "rest-extension-user"
   ]
 }
