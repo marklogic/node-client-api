@@ -1,0 +1,27 @@
+# This workflow runs a Node.js build and publishes the package to the npm registry when a release is published
+# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+
+name: Node.js Publish Package
+
+on:
+  release:
+    types: [published]
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false  # never use caching in release builds
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm run test:types
+      # TODO: Create a way to run non-integration tests that don't rely on a MarkLogic Server instance
+      - run: npm publish  # Or: npm stage publish
