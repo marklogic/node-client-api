@@ -24,4 +24,4 @@ jobs:
       - run: npm run build --if-present
       - run: npm run test:types
       # TODO: Create a way to run non-integration tests that don't rely on a MarkLogic Server instance
-      - run: npm publish  # Or: npm stage publish
+      - run: npm publish --registry=https://registry.npmjs.org/  # Or: npm stage publish
