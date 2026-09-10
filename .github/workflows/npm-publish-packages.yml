@@ -7,6 +7,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Set to true to publish to npm'
+        required: true
+        type: boolean
 permissions:
   id-token: write # Required for OIDC
   contents: read
@@ -24,5 +29,6 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm run test:types
+      - run: npm run prepublishOnly
       # TODO: Create a way to run non-integration tests that don't rely on a MarkLogic Server instance
       - run: npm publish --registry=https://registry.npmjs.org  # Or: npm stage publish
