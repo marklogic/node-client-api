@@ -39,7 +39,7 @@
     "xpath"
   ],
   "dependencies": {
-    "@fastify/busboy": "3.2.0",
+    "@fastify/busboy": "3.2.4",
     "big-integer": "1.6.52",
     "concat-stream": "2.0.0",
     "duplexify": "4.1.3",
