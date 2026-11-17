@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2015-2025 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 var should = require('should');
 
@@ -92,7 +92,7 @@ describe('document negative', function(){
       uri: '/test/negative/writeInvalidTransaction1.txt',
       contentType: 'text/plain',
       content: 'the text',
-      txid: encodeURIComponent('not a real transaction')
+      txid: 'not a real transaction'
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');
@@ -127,7 +127,7 @@ describe('document negative', function(){
   it('should fail to delete a document with a non-existent transaction', function(done){
     db.documents.remove({
       uris: '/test/negative/deleteInvalidTransaction1.txt',
-      txid: encodeURIComponent('not a real transaction')
+      txid: 'not a real transaction'
       }).
     result(function(response){
       response.should.equal('SHOULD HAVE FAILED');
