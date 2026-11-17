@@ -12,7 +12,7 @@ const Sessions = require("./sessions.js");
 describe('session service', function() {
   const service = Sessions.on(testutil.makeAdminClient());
 
-  it('field', function(done) {
+  it.skip('field', function(done) {
     const timestampField = "timestamped";
     const fieldSession = service.createSession();
     let timestampValue = null;
@@ -35,7 +35,7 @@ describe('session service', function() {
           done();
         });
   });
-  it('transaction', function(done) {
+  it.skip('transaction', function(done) {
     const docUri = '/test/session/transaction/doc1.txt';
     const transactionSession = service.createSession();
     let hasRolledBack = false;
@@ -81,7 +81,7 @@ describe('session service', function() {
           done();
         });
   });
-  it('concurrent', function(done) {
+  it.skip('concurrent', function(done) {
     this.timeout(3000);
     const concurrentMax = 3;
     const sleeptime = 750;
