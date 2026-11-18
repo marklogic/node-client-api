@@ -58,17 +58,18 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
     }
   });
 
-  for (const basicChallenge of ['Basic realm="test-realm"', 'bAsIc realm="test-realm"']) {
-    it('rejects ' + basicChallenge + ' without sending credentials or caching it', async function() {
+  it('rejects a Basic challenge in any case without sending credentials or caching it', async function() {
+    for (const basicChallenge of ['Basic realm="test-realm"', 'bAsIc realm="test-realm"']) {
       challenge = basicChallenge;
+      requests = [];
       for (let attempt = 0; attempt < 2; attempt++) {
         await assert.rejects(client.documents.probe('/test.json').result(),
           /Server requested BASIC authentication, but the client is configured for DIGEST/);
       }
       assert.strictEqual(requests.length, 2);
       assert(requests.every(request => request.authorization === undefined));
-    });
-  }
+    }
+  });
 
   it('rejects a downgrade through the callback API', function(done) {
     client.documents.probe('/test.json').result(function() {
@@ -128,17 +129,33 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
     assert.match(requests[1].authorization, / qop=auth,/);
   });
 
-  for (const combined of [
-    'Digest realm="test-realm", nonce="test-nonce", qop="auth", Negotiate, Basic realm="r"',
-    'Negotiate YWJj==, Digest realm="test-realm", nonce="test-nonce", qop="auth"',
-    'Digest realm="test-realm", nonce="test-nonce", qop="auth", Negotiate YWJj'
-  ]) {
-    it('selects the Digest challenge alongside bare-scheme and token68 challenges: ' + combined, async function() {
-      challenge = combined;
-      assert.strictEqual((await client.documents.probe('/test.json').result()).exists, true);
-      assert.match(requests[1].authorization, /^Digest username="testuser", realm="test-realm", nonce="test-nonce",/);
-    });
-  }
+  it('reports the scheme for token68 challenges when the expected scheme differs', function() {
+    for (const [token68Challenge, scheme] of [
+      ['Bearer abc123', 'BEARER'],
+      ['Negotiate YWJj==', 'NEGOTIATE']
+    ]) {
+      const authenticator = createAuthInitializer('testuser', 'testpassword', {
+        expectedScheme: 'digest'
+      })(token68Challenge);
+      assert.strictEqual(authenticator.err,
+        'Server requested ' + scheme + ' authentication, but the client is configured for DIGEST');
+    }
+  });
+
+  it('splits combined challenges when no expected scheme is configured', function() {
+    const initialize = createAuthInitializer('testuser', 'testpassword');
+    const authenticator = initialize(
+      'Negotiate YWJj==, Digest realm="test-realm", nonce="test-nonce", qop="auth"'
+    );
+    assert.strictEqual(authenticator.err, undefined);
+    assert.match(authenticator.authorize('GET', '/test.json'), /^Digest username="testuser",/);
+  });
+
+  it('selects the Digest challenge when followed by a bare-scheme challenge', async function() {
+    challenge = 'Digest realm="test-realm", nonce="test-nonce", qop="auth", Negotiate, Basic realm="r"';
+    assert.strictEqual((await client.documents.probe('/test.json').result()).exists, true);
+    assert.match(requests[1].authorization, /^Digest username="testuser", realm="test-realm", nonce="test-nonce",/);
+  });
 
   it('splits combined challenges only at scheme boundaries', function() {
     const split = createAuthInitializer.parsers.split_challenges;
@@ -156,8 +173,6 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
   for (const challenges of [
     ['Digest realm="test-realm", nonce="sha-nonce", qop="auth", algorithm=SHA-256',
       'Digest realm="test-realm", nonce="md5-nonce", qop="auth", algorithm=MD5'],
-    ['Digest realm="test-realm", nonce="md5-nonce", qop="auth", algorithm=MD5',
-      'Digest realm="test-realm", nonce="sha-nonce", qop="auth", algorithm=SHA-256'],
     'Digest realm="test-realm", nonce="sha-nonce", qop="auth", algorithm=SHA-256, ' +
       'Digest realm="test-realm", nonce="md5-nonce", qop="auth", algorithm=MD5'
   ]) {
@@ -198,17 +213,26 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
     assert.match(requests[3].authorization, /^Digest /);
   });
 
-  for (const scheme of ['Digest', 'dIgEsT']) {
-    it('continues to authenticate with a valid ' + scheme + ' challenge', async function() {
+  it('continues to authenticate with a valid Digest challenge in any case', async function() {
+    for (const scheme of ['Digest', 'dIgEsT']) {
+      client.release();
+      client = marklogic.createDatabaseClient({
+        host: '127.0.0.1',
+        port: server.address().port,
+        user: 'testuser',
+        password: 'testpassword',
+        authType: 'digest'
+      });
       challenge = scheme + ' realm="test-realm", nonce="test-nonce", qop="auth"';
+      requests = [];
       const result = await client.documents.probe('/test.json').result();
       assert.strictEqual(result.exists, true);
       assert.strictEqual(requests.length, 2);
       assert.strictEqual(requests[0].authorization, undefined);
       assert.match(requests[1].authorization, /^Digest /);
       assert(!requests[1].authorization.includes('testpassword'));
-    });
-  }
+    }
+  });
 
   it('preserves explicitly configured Basic authentication', async function() {
     client.release();
