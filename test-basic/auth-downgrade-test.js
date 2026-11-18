@@ -128,6 +128,31 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
     assert.match(requests[1].authorization, / qop=auth,/);
   });
 
+  for (const combined of [
+    'Digest realm="test-realm", nonce="test-nonce", qop="auth", Negotiate, Basic realm="r"',
+    'Negotiate YWJj==, Digest realm="test-realm", nonce="test-nonce", qop="auth"',
+    'Digest realm="test-realm", nonce="test-nonce", qop="auth", Negotiate YWJj'
+  ]) {
+    it('selects the Digest challenge alongside bare-scheme and token68 challenges: ' + combined, async function() {
+      challenge = combined;
+      assert.strictEqual((await client.documents.probe('/test.json').result()).exists, true);
+      assert.match(requests[1].authorization, /^Digest username="testuser", realm="test-realm", nonce="test-nonce",/);
+    });
+  }
+
+  it('splits combined challenges only at scheme boundaries', function() {
+    const split = createAuthInitializer.parsers.split_challenges;
+    assert.deepStrictEqual(
+      split('Digest realm="r", nonce="n", qop="auth", Negotiate, Basic realm="r"'),
+      ['Digest realm="r", nonce="n", qop="auth"', 'Negotiate', 'Basic realm="r"']);
+    assert.deepStrictEqual(
+      split('Negotiate YWJj==, Digest realm="r", algorithm=MD5, nonce = "n"'),
+      ['Negotiate YWJj==', 'Digest realm="r", algorithm=MD5, nonce = "n"']);
+    assert.deepStrictEqual(
+      split('Basic realm="a, Digest b", Digest realm="r"'),
+      ['Basic realm="a, Digest b"', 'Digest realm="r"']);
+  });
+
   it('lists every offered scheme when none matches', async function() {
     challenge = ['Basic realm="test-realm"', 'Bearer realm="test-realm"'];
     await assert.rejects(client.documents.probe('/test.json').result(),
