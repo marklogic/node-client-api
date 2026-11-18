@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
+* Copyright (c) 2015-2026 Progress Software Corporation and/or its subsidiaries or affiliates. All Rights Reserved.
 */
 'use strict';
 
@@ -21,7 +21,8 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
       requests.push({authorization: request.headers.authorization, method: request.method});
       request.resume();
       if (!request.headers.authorization) {
-        response.writeHead(401, {'WWW-Authenticate': challenge});
+        // An array sends one WWW-Authenticate header per element.
+        response.writeHead(401, [].concat(challenge).map(value => ['WWW-Authenticate', value]).flat());
       } else {
         response.writeHead(200);
       }
@@ -91,20 +92,48 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
     assert.deepStrictEqual(requests, [{authorization: undefined, method: 'HEAD'}]);
   });
 
-  for (const invalidChallenge of [
-    'Digest realm',
-    'Digest realm="test-realm"',
-    'Digest nonce="test-nonce"',
-    'Digest realm="test-realm", nonce="test-nonce", qop="auth-int"',
-    'Bearer realm="test-realm"'
+  for (const [invalidChallenge, expectedError] of [
+    ['Digest', /Realm not found/],
+    ['Digest realm', /Unexpected end of www-authenticate value/],
+    ['Digest realm="test-realm"', /Nonce not found/],
+    ['Digest nonce="test-nonce"', /Realm not found/],
+    ['Digest realm="test-realm", nonce="test-nonce", qop="auth-int"',
+      /does not accept any supported quality of protection/],
+    ['Digest realm="test-realm", nonce="test-nonce"', /did not offer a quality of protection \(qop\)/],
+    ['Digest realm="test-realm", nonce="test-nonce", qop="auth", algorithm=SHA-256',
+      /Unsupported Digest algorithm: SHA-256/],
+    ['Digest realm="test-realm", nonce="test-nonce", qop="auth", algorithm="MD5-unknown"',
+      /Unsupported Digest algorithm: MD5-unknown/],
+    ['Bearer realm="test-realm"', /Server requested BEARER authentication, but the client is configured for DIGEST/]
   ]) {
     it('rejects an invalid or unsupported challenge: ' + invalidChallenge, async function() {
       challenge = invalidChallenge;
-      await assert.rejects(client.documents.probe('/test.json').result());
+      await assert.rejects(client.documents.probe('/test.json').result(), expectedError);
       assert.strictEqual(requests.length, 1);
       assert.strictEqual(requests[0].authorization, undefined);
     });
   }
+
+  it('selects the Digest challenge when the server also offers Basic in separate headers', async function() {
+    challenge = ['Basic realm="test-realm"', 'Digest realm="test-realm", nonce="test-nonce", qop="auth"'];
+    assert.strictEqual((await client.documents.probe('/test.json').result()).exists, true);
+    assert.strictEqual(requests.length, 2);
+    assert.match(requests[1].authorization, /^Digest username="testuser", realm="test-realm", nonce="test-nonce",/);
+  });
+
+  it('selects the Digest challenge from a single combined header value', async function() {
+    challenge = 'Basic realm="a, b", Digest realm="test-realm", nonce="test-nonce", qop="auth-int, auth"';
+    assert.strictEqual((await client.documents.probe('/test.json').result()).exists, true);
+    assert.match(requests[1].authorization, /^Digest username="testuser", realm="test-realm",/);
+    assert.match(requests[1].authorization, / qop=auth,/);
+  });
+
+  it('lists every offered scheme when none matches', async function() {
+    challenge = ['Basic realm="test-realm"', 'Bearer realm="test-realm"'];
+    await assert.rejects(client.documents.probe('/test.json').result(),
+      /Server requested BASIC, BEARER authentication, but the client is configured for DIGEST/);
+    assert.strictEqual(requests.length, 1);
+  });
 
   it('can authenticate after a rejected downgrade and reuse only the valid authenticator', async function() {
     await assert.rejects(client.documents.probe('/test.json').result(),
@@ -149,9 +178,35 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
 
   it('enforces the expected scheme in the authenticator itself', function() {
     const initialize = createAuthInitializer('testuser', 'testpassword', {expectedScheme: 'digest'});
-    assert.throws(function() {
-      initialize('Basic realm="test-realm"');
-    }, /Server requested BASIC authentication, but the client is configured for DIGEST/);
+    const authenticator = initialize('Basic realm="test-realm"');
+    assert.match(authenticator.err, /Server requested BASIC authentication, but the client is configured for DIGEST/);
+    assert.strictEqual(authenticator.authorize, undefined);
+  });
+
+  it('reports a scheme mismatch as an error from the deprecated higher-level API', function() {
+    const higherLevel = createAuthInitializer.authenticator('testuser', 'testpassword', {expectedScheme: 'digest'});
+    const error = higherLevel.get_challenge({
+      statusCode: 401, headers: {'www-authenticate': 'Basic realm="test-realm"'}
+    });
+    assert.match(error, /Server requested BASIC authentication/);
+  });
+
+  it('reports a malformed header as an error instead of throwing', function() {
+    for (const header of ['', '   ', '"quoted"', undefined]) {
+      const authenticator = createAuthInitializer('testuser', 'testpassword', {})(header);
+      assert.strictEqual(authenticator.err, 'Invalid www-authenticate header.');
+    }
+  });
+
+  it('supports MD5-sess regardless of algorithm case', function() {
+    const options = {expectedScheme: 'digest', cnonce: '0a4f113b'};
+    const challengeText = 'Digest realm="r", nonce="n", qop="auth", algorithm=';
+    const upper = createAuthInitializer('u', 'p', options)(challengeText + 'MD5-sess').authorize('GET', '/');
+    const lower = createAuthInitializer('u', 'p', options)(challengeText + 'md5-sess').authorize('GET', '/');
+    const plain = createAuthInitializer('u', 'p', options)(challengeText + 'MD5').authorize('GET', '/');
+    const responseOf = header => header.match(/response="([0-9a-f]+)"/)[1];
+    assert.strictEqual(responseOf(upper), responseOf(lower));
+    assert.notStrictEqual(responseOf(upper), responseOf(plain));
   });
 
   it('preserves the RFC Digest response calculation', function() {
