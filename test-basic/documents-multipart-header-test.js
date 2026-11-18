@@ -5,6 +5,7 @@ const http = require('http');
 const assert = require('assert');
 const should = require('should');
 const marklogic = require('../');
+const op = marklogic.planBuilder;
 
 describe('documents.write multipart headers', function() {
   const db = marklogic.createDatabaseClient({
@@ -54,7 +55,7 @@ describe('documents.write multipart headers', function() {
             contentType: 'application/json',
             content: {b: 2}
           }]);
-        }, /must not contain CR, LF, or NUL/);
+        }, /must not contain/);
       }
 
       for (const method of ['post', 'put']) {
@@ -63,8 +64,79 @@ describe('documents.write multipart headers', function() {
             name: 'example',
             documents: [{contentType: 'application/json' + injected, content: {a: 1}}]
           });
-        }, /must not contain CR, LF, or NUL/);
+        }, /must not contain/);
       }
+    }
+  });
+
+  it('rejects quoted content-disposition parameters in multipart writes', function() {
+    const documents = [
+      {extension: 'json"', contentType: 'application/json', content: {a: 1}},
+      {extension: 'json', directory: '/poc/"files', contentType: 'application/json', content: {a: 1}},
+      {uri: '/poc/file.json', versionId: '"1', contentType: 'application/json', content: {a: 1}}
+    ];
+    for (const document of documents) {
+      assert.throws(function() {
+        db.documents.write([document, {
+          uri: '/poc/second.json',
+          contentType: 'application/json',
+          content: {b: 2}
+        }]);
+      }, /Content-Disposition values must not contain/);
+    }
+  });
+
+  it('rejects semicolons in unquoted content-disposition parameters', function() {
+    const documents = [
+      {extension: 'json; category=metadata', contentType: 'application/json', content: {a: 1}},
+      {extension: 'json', directory: '/poc/; category=metadata', contentType: 'application/json', content: {a: 1}},
+      {uri: '/poc/file.json', versionId: '1; category=metadata', contentType: 'application/json', content: {a: 1}}
+    ];
+    for (const document of documents) {
+      assert.throws(function() {
+        db.documents.write([document, {
+          uri: '/poc/second.json',
+          contentType: 'application/json',
+          content: {b: 2}
+        }]);
+      }, /Unquoted Content-Disposition values must not contain semicolons/);
+    }
+  });
+
+  it('rejects unsafe binding parameter and attachment names', function() {
+    for (const invalidCharacter of ['\r', '\n', '\0', '"']) {
+      const bindingKey = 'binding' + invalidCharacter;
+      assert.throws(function() {
+        db.rows.query(op.fromParam(bindingKey, null, op.docColTypes()), null, {
+          [bindingKey]: []
+        });
+      }, /Content-Disposition values must not contain/);
+
+      const invalidAttachmentKey = 'file' + invalidCharacter;
+      for (const attachments of [
+        {[invalidAttachmentKey]: 'content'},
+        [{[invalidAttachmentKey]: 'content'}]
+      ]) {
+        assert.throws(function() {
+          db.rows.query(op.fromParam('bindingParam', null, op.docColTypes()), null, {
+            bindingParam: [],
+            attachments: attachments
+          });
+        }, /Content-Disposition values must not contain/);
+      }
+    }
+  });
+
+  it('rejects unsafe part headers in multipart streaming writes', function() {
+    for (const invalidCharacter of ['\r', '\n', '\0']) {
+      assert.throws(function() {
+        // properties selects the chunkedMultipart request type.
+        db.documents.createWriteStream({
+          uri: '/poc/stream.json',
+          properties: {},
+          contentType: 'application/json' + invalidCharacter + 'X-Injected: yes'
+        });
+      }, /must not contain CR, LF, or NUL/);
     }
   });
 
