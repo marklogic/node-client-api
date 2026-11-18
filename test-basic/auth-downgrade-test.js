@@ -153,6 +153,31 @@ describe('Authentication downgrade prevention (MLE-33480)', function() {
       ['Basic realm="a, Digest b"', 'Digest realm="r"']);
   });
 
+  for (const challenges of [
+    ['Digest realm="test-realm", nonce="sha-nonce", qop="auth", algorithm=SHA-256',
+      'Digest realm="test-realm", nonce="md5-nonce", qop="auth", algorithm=MD5'],
+    ['Digest realm="test-realm", nonce="md5-nonce", qop="auth", algorithm=MD5',
+      'Digest realm="test-realm", nonce="sha-nonce", qop="auth", algorithm=SHA-256'],
+    'Digest realm="test-realm", nonce="sha-nonce", qop="auth", algorithm=SHA-256, ' +
+      'Digest realm="test-realm", nonce="md5-nonce", qop="auth", algorithm=MD5'
+  ]) {
+    it('skips an unsupported Digest challenge when a supported one is offered: ' + [].concat(challenges).join(' | '),
+      async function() {
+        challenge = challenges;
+        assert.strictEqual((await client.documents.probe('/test.json').result()).exists, true);
+        assert.strictEqual(requests.length, 2);
+        assert.match(requests[1].authorization, /^Digest .* nonce="md5-nonce", algorithm="MD5",/);
+      });
+  }
+
+  it('rejects when no Digest challenge is supported, without falling back to Basic', async function() {
+    challenge = ['Digest realm="test-realm", nonce="n", qop="auth", algorithm=SHA-256',
+      'Digest realm="test-realm", nonce="n", qop="auth-int"', 'Basic realm="test-realm"'];
+    await assert.rejects(client.documents.probe('/test.json').result(), /Unsupported Digest algorithm: SHA-256/);
+    assert.strictEqual(requests.length, 1);
+    assert.strictEqual(requests[0].authorization, undefined);
+  });
+
   it('lists every offered scheme when none matches', async function() {
     challenge = ['Basic realm="test-realm"', 'Bearer realm="test-realm"'];
     await assert.rejects(client.documents.probe('/test.json').result(),
