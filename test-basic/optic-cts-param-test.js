@@ -285,7 +285,9 @@ describe('cts.param integration tests', function() {
       }
       
       const paramNode = findNode(exported, 'param');
-      should.exist(paramNode, 'should find a param node in the exported plan');
+      if (!paramNode) {
+        throw new Error('should find a param node in the exported plan');
+      }
       should(paramNode.ns).equal('cts', 'param node should use ns:"cts" not ns:"op"');
     });
 
