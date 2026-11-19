@@ -19,29 +19,46 @@
  */
 
 import should = require('should');
+import assert = require('node:assert/strict');
 const marklogic = require('../lib/marklogic.js');
 
 const op = marklogic.planBuilder;
 
-// Helper: extract the cts.param node from a serialized plan arg
-function findCtsParam(obj: any): any {
-  if (obj && typeof obj === 'object') {
-    if (obj.ns === 'cts' && obj.fn === 'param') return obj;
-    for (const key of Object.keys(obj)) {
-      const found = findCtsParam(obj[key]);
-      if (found) return found;
-    }
-  }
-  if (Array.isArray(obj)) {
-    for (const item of obj) {
-      const found = findCtsParam(item);
-      if (found) return found;
-    }
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object';
+}
+
+function findCtsParam(obj: unknown): Record<string, unknown> | null {
+  if (!isRecord(obj)) return null;
+  if (obj.ns === 'cts' && obj.fn === 'param') return obj;
+  for (const value of Object.values(obj)) {
+    const found = findCtsParam(value);
+    if (found !== null) return found;
   }
   return null;
 }
 
+function requireCtsParam(obj: unknown): Record<string, unknown> {
+  const paramNode = findCtsParam(obj);
+  assert.ok(paramNode, 'expected a cts.param node in the exported plan');
+  return paramNode;
+}
+
 describe('cts.param Optic plan builder smoke tests (MLE-27883)', function() {
+
+  describe('finding a cts.param node', function() {
+    it('handles null, undefined, and missing nodes', function() {
+      assert.strictEqual(findCtsParam(null), null);
+      assert.strictEqual(findCtsParam(undefined), null);
+      assert.strictEqual(findCtsParam({ args: [null, undefined, {}] }), null);
+      assert.throws(() => requireCtsParam(null), /expected a cts\.param node/);
+    });
+
+    it('finds a node nested in objects and arrays', function() {
+      const node = { ns: 'cts', fn: 'param', args: ['col'] };
+      assert.strictEqual(findCtsParam({ args: [null, { nested: node }] }), node);
+    });
+  });
 
   // ── cts.param construction ──────────────────────────────────────────────────
 
@@ -57,34 +74,32 @@ describe('cts.param Optic plan builder smoke tests (MLE-27883)', function() {
       const plan = op.fromView('s', 'v')
         .where(op.cts.collectionQuery(op.cts.param('col')));
       const exported = plan.export();
-      const paramNode = findCtsParam(exported);
-      should.exist(paramNode, 'expected a cts.param node in the exported plan');
-      paramNode.ns.should.equal('cts');
+      const paramNode = requireCtsParam(exported);
+      assert.strictEqual(paramNode.ns, 'cts');
     });
 
     it('serializes with fn:"param"', function() {
       const plan = op.fromView('s', 'v')
         .where(op.cts.collectionQuery(op.cts.param('col')));
       const exported = plan.export();
-      const paramNode = findCtsParam(exported);
-      paramNode.fn.should.equal('param');
+      const paramNode = requireCtsParam(exported);
+      assert.strictEqual(paramNode.fn, 'param');
     });
 
     it('serializes the name as the sole arg', function() {
       const plan = op.fromView('s', 'v')
         .where(op.cts.collectionQuery(op.cts.param('myCollection')));
       const exported = plan.export();
-      const paramNode = findCtsParam(exported);
-      paramNode.args.should.be.an.Array().and.have.length(1);
-      paramNode.args[0].should.equal('myCollection');
+      const paramNode = requireCtsParam(exported);
+      assert.deepStrictEqual(paramNode.args, ['myCollection']);
     });
 
     it('is distinct from op.param (ns must be "cts" not "op")', function() {
       const plan = op.fromView('s', 'v')
         .where(op.cts.collectionQuery(op.cts.param('col')));
       const exported = plan.export();
-      const paramNode = findCtsParam(exported);
-      paramNode.ns.should.not.equal('op');
+      const paramNode = requireCtsParam(exported);
+      assert.notStrictEqual(paramNode.ns, 'op');
     });
 
   });
